@@ -801,7 +801,8 @@ const Index = () => {
                             : "bg-white",
                         )}
                       >
-                        <FileText
+                        <FontAwesomeIcon
+                          icon={faFileText}
                           className={cn(
                             "w-5 h-5",
                             activeTab === "documents"
