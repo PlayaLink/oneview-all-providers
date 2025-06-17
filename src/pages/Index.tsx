@@ -414,7 +414,10 @@ const Index = () => {
               <div className="flex items-center gap-3">
                 {/* Section Icon and Title */}
                 <div className="flex items-center gap-2">
-                  <User className="w-4 h-4 text-[#545454]" />
+                  <FontAwesomeIcon
+                    icon={faUserDoctor}
+                    className="w-4 h-4 text-[#545454]"
+                  />
                   <span className="text-[#545454] font-bold text-xs tracking-wider uppercase">
                     Provider Info
                   </span>
