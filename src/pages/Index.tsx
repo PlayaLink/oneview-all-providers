@@ -28,7 +28,7 @@ import {
   faWeight,
   faHouse,
   faAddressBook,
-  faTriangle,
+  faPlay,
   faFileMedical,
   faRoad,
   faClipboard,
