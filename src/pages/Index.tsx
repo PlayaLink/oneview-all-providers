@@ -149,22 +149,13 @@ const TagsCellRenderer = ({ value }: { value: string[] }) => {
   );
 };
 
-const ActionsCellRenderer = ({
-  data,
-  onRowClick,
-}: {
-  data: HealthcareProvider;
-  onRowClick: (provider: HealthcareProvider) => void;
-}) => {
+const ActionsCellRenderer = () => {
   return (
     <div className="flex items-center justify-end gap-2 h-full">
       <button className="p-1 hover:bg-gray-100 rounded">
         <Download className="w-5 h-5 text-[#BABABA]" />
       </button>
-      <button
-        className="p-1 hover:bg-gray-100 rounded"
-        onClick={() => onRowClick(data)}
-      >
+      <button className="p-1 hover:bg-gray-100 rounded">
         <ExternalLink className="w-5 h-5 text-[#545454]" />
       </button>
       <button className="p-1 hover:bg-gray-100 rounded">
