@@ -429,25 +429,19 @@ const Index = () => {
                   </div>
                   <div className="pl-3 flex flex-col gap-0.5">
                     <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                      <FontAwesomeIcon icon={faRoute} className="w-4 h-4" />
+                      <FontAwesomeIcon icon={faRoad} className="w-4 h-4" />
                       <span className="text-xs font-semibold">
                         State Licenses
                       </span>
                     </div>
                     <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                      <FontAwesomeIcon
-                        icon={faClipboardCheck}
-                        className="w-4 h-4"
-                      />
+                      <FontAwesomeIcon icon={faClipboard} className="w-4 h-4" />
                       <span className="text-xs font-semibold">
                         DEA Licenses
                       </span>
                     </div>
                     <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                      <FontAwesomeIcon
-                        icon={faPrescription}
-                        className="w-4 h-4"
-                      />
+                      <FontAwesomeIcon icon={faPills} className="w-4 h-4" />
                       <span className="text-xs font-semibold">
                         State Controlled Substance Licenses
                       </span>
