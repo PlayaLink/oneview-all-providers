@@ -467,46 +467,53 @@ const Index = () => {
         </div>
 
         {/* Main Grid Area */}
-        <div className="flex-1 flex flex-col">
-          {/* Provider Info Section Header */}
-          <div className="flex items-center justify-between p-2 bg-[#CFD8DC] border-b border-gray-300">
-            <div className="flex items-center gap-3">
-              {/* Section Icon and Title */}
-              <div className="flex items-center gap-2">
-                <User className="w-4 h-4 text-[#545454]" />
-                <span className="text-[#545454] font-bold text-xs tracking-wider uppercase">
-                  Provider Info
-                </span>
+        <div className="flex-1 flex">
+          <div className="flex-1">
+            {/* Provider Info Section Header */}
+            <div className="flex items-center justify-between p-2 bg-[#CFD8DC] border-b border-gray-300">
+              <div className="flex items-center gap-3">
+                {/* Section Icon and Title */}
+                <div className="flex items-center gap-2">
+                  <User className="w-4 h-4 text-[#545454]" />
+                  <span className="text-[#545454] font-bold text-xs tracking-wider uppercase">
+                    Provider Info
+                  </span>
+                </div>
+
+                {/* Status Badges */}
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#F48100] rounded-full">
+                    <span className="text-white font-bold text-xs">1</span>
+                    <span className="text-white font-bold text-xs">
+                      Expiring
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#DB0D00] rounded-full">
+                    <span className="text-white font-bold text-xs">1</span>
+                    <span className="text-white font-bold text-xs">
+                      Expired
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#545454] rounded-full">
+                    <span className="text-white font-bold text-xs">900+</span>
+                    <span className="text-white font-bold text-xs">Total</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Status Badges */}
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#F48100] rounded-full">
-                  <span className="text-white font-bold text-xs">1</span>
-                  <span className="text-white font-bold text-xs">Expiring</span>
-                </div>
-                <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#DB0D00] rounded-full">
-                  <span className="text-white font-bold text-xs">1</span>
-                  <span className="text-white font-bold text-xs">Expired</span>
-                </div>
-                <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#545454] rounded-full">
-                  <span className="text-white font-bold text-xs">900+</span>
-                  <span className="text-white font-bold text-xs">Total</span>
+              {/* Toggle Switch */}
+              <div className="flex items-center">
+                <div className="w-9 h-5 bg-[#79AC48] rounded-full relative">
+                  <div className="w-4 h-4 bg-white rounded-full absolute right-0.5 top-0.5"></div>
                 </div>
               </div>
             </div>
 
-            {/* Toggle Switch */}
-            <div className="flex items-center">
-              <div className="w-9 h-5 bg-[#79AC48] rounded-full relative">
-                <div className="w-4 h-4 bg-white rounded-full absolute right-0.5 top-0.5"></div>
-              </div>
-            </div>
-          </div>
-
-          {/* AG Grid with Custom Styling */}
-          <div className="flex-1 min-h-0">
-            <div className="ag-theme-alpine w-full h-full">
+            {/* AG Grid Container */}
+            <div
+              style={{ height: "600px", width: "100%" }}
+              className="ag-theme-alpine"
+            >
               <AgGridReact
                 rowData={sampleProviders}
                 columnDefs={columnDefs}
@@ -517,7 +524,6 @@ const Index = () => {
                 suppressRowClickSelection={false}
                 domLayout="normal"
                 floatingFilter={true}
-                animateRows={true}
                 defaultColDef={{
                   sortable: true,
                   filter: true,
@@ -526,9 +532,6 @@ const Index = () => {
               />
             </div>
           </div>
-
-          {/* Placeholder for side panel container */}
-          <div className="flex-1"></div>
 
           {/* Right Side Panel */}
           {selectedProvider && (
@@ -552,7 +555,7 @@ const Index = () => {
                   </h2>
                 </div>
                 <button className="text-[#545454] p-2">
-                  <div className="w-5 h-5">⛶</div>
+                  <div className="w-5 h-5">���</div>
                 </button>
               </div>
 
