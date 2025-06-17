@@ -606,7 +606,7 @@ const Index = () => {
                 </div>
 
                 {/* Actions */}
-                <div className="col-span-3 flex items-center justify-start gap-2 px-4 bg-white shadow-[-4px_0px_30px_0px_rgba(0,0,0,0.3)] w-[190px]">
+                <div className="col-span-3 flex items-center justify-start gap-2 px-4 bg-white shadow-[-4px_0px_30px_0px_rgba(0,0,0,0.3)] w-[190px] ml-[52px]">
                   <button className="p-1 hover:bg-gray-100 rounded">
                     <FontAwesomeIcon
                       icon={faCircleDown}
