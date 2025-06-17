@@ -547,7 +547,7 @@ const Index = () => {
                       </span>
                       <FontAwesomeIcon
                         icon={faCircleQuestion}
-                        className="w-4 h-4 text-[#BABABA]"
+                        className="w-3 h-3 text-[#BABABA]"
                       />
                     </div>
                     <div className="flex items-center gap-1">
