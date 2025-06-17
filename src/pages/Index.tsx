@@ -779,7 +779,8 @@ const Index = () => {
                           activeTab === "notes" ? "bg-gray-100" : "bg-white",
                         )}
                       >
-                        <MessageSquare
+                        <FontAwesomeIcon
+                          icon={faMessage}
                           className={cn(
                             "w-5 h-5",
                             activeTab === "notes"
