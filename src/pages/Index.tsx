@@ -363,7 +363,7 @@ const Index = () => {
                       <span>Addresses</span>
                     </div>
                     <div className="flex items-center gap-2 p-2 text-[#008BC9] text-xs font-semibold hover:bg-gray-50 rounded cursor-pointer">
-                      <div className="w-4 h-4">��</div>
+                      <div className="w-4 h-4">📖</div>
                       <span>Additional Names</span>
                     </div>
                     <div className="flex items-center gap-2 p-2 text-[#008BC9] text-xs font-semibold hover:bg-gray-50 rounded cursor-pointer">
@@ -559,7 +559,7 @@ const Index = () => {
                       </button>
                       <FontAwesomeIcon
                         icon={faEllipsisVertical}
-                        className="w-6 h-6 text-[#545454]"
+                        className="w-5 h-5 text-[#545454]"
                       />
                     </div>
                   </div>
