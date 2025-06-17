@@ -157,20 +157,20 @@ const ActionsCellRenderer = () => {
       <button className="p-1 hover:bg-gray-100 rounded">
         <FontAwesomeIcon
           icon={faCircleDown}
-          className="w-5 h-5 text-[#BABABA]"
+          className="w-4 h-4 text-[#BABABA]"
         />
       </button>
       <button className="p-1 hover:bg-gray-100 rounded">
         <FontAwesomeIcon
           icon={faUpRightFromSquare}
-          className="w-5 h-5 text-[#545454]"
+          className="w-4 h-4 text-[#545454]"
         />
       </button>
       <button className="p-1 hover:bg-gray-100 rounded">
-        <FontAwesomeIcon icon={faEdit} className="w-5 h-5 text-[#545454]" />
+        <FontAwesomeIcon icon={faEdit} className="w-4 h-4 text-[#545454]" />
       </button>
       <button className="p-1 hover:bg-gray-100 rounded">
-        <FontAwesomeIcon icon={faFlag} className="w-5 h-5 text-[#545454]" />
+        <FontAwesomeIcon icon={faFlag} className="w-4 h-4 text-[#545454]" />
       </button>
       <div className="flex items-center">
         <div className="w-6 h-3 bg-[#79AC48] rounded-full relative">
