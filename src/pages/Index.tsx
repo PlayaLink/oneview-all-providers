@@ -289,38 +289,24 @@ const Index = () => {
         <div className="border-t border-gray-300 bg-white">
           <div className="flex items-center justify-between px-4 py-4">
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-4">
-                <h1 className="text-[#545454] font-bold text-sm tracking-wide">
-                  All Providers
-                </h1>
+              <h1 className="text-[#545454] font-bold text-sm tracking-wide">
+                All Providers
+              </h1>
+            </div>
 
-                <div className="relative">
-                  <FontAwesomeIcon
-                    icon={faSearch}
-                    className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#545454]"
-                  />
-                  <Input
-                    placeholder="Search a Provider Name or NPI..."
-                    className="pl-8 pr-10 py-1 text-xs border-gray-300 w-96"
-                  />
-                  <FontAwesomeIcon
-                    icon={faChevronDown}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#545454]"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 px-2.5 py-1.5 rounded border">
+            <div className="flex items-center justify-center flex-1">
+              <div className="relative">
                 <FontAwesomeIcon
-                  icon={faUserDoctor}
-                  className="w-4 h-4 text-[#545454]"
+                  icon={faSearch}
+                  className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#545454]"
                 />
-                <span className="font-bold text-xs text-[#545454]">
-                  Provider filters
-                </span>
+                <Input
+                  placeholder="Search a Provider Name or NPI..."
+                  className="pl-8 pr-10 py-1 text-xs border-gray-300 w-96"
+                />
                 <FontAwesomeIcon
                   icon={faChevronDown}
-                  className="w-3 h-3 text-[#545454]"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#545454]"
                 />
               </div>
             </div>
