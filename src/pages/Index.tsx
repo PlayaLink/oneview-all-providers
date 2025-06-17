@@ -609,47 +609,67 @@ const Index = () => {
 
                 {/* Work Experience Section */}
                 <div className="flex flex-col">
-                  <div className="flex items-center justify-between p-2 rounded">
+                  <div
+                    className="flex items-center justify-between p-2 rounded hover:bg-gray-50 cursor-pointer"
+                    onClick={() => toggleSection("workExperience")}
+                  >
                     <span className="text-xs uppercase text-[#545454] font-medium tracking-wide">
                       Work Experience
                     </span>
                     <FontAwesomeIcon
                       icon={faChevronDown}
-                      className="w-4 h-4 text-[#545454]"
+                      className={cn(
+                        "w-4 h-4 text-[#545454] transition-transform duration-200",
+                        !expandedSections.workExperience && "rotate-180",
+                      )}
                     />
                   </div>
-                  <div className="flex flex-col gap-0.5">
-                    <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                      <FontAwesomeIcon icon={faBuilding} className="w-4 h-4" />
-                      <span className="text-xs font-semibold">
-                        Practice/Employer
-                      </span>
+                  {expandedSections.workExperience && (
+                    <div className="flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
+                      <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                        <FontAwesomeIcon
+                          icon={faBuilding}
+                          className="w-4 h-4"
+                        />
+                        <span className="text-xs font-semibold">
+                          Practice/Employer
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                        <FontAwesomeIcon
+                          icon={faHospital}
+                          className="w-4 h-4"
+                        />
+                        <span className="text-xs font-semibold">
+                          Facility Affiliations
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                        <FontAwesomeIcon
+                          icon={faBriefcase}
+                          className="w-4 h-4"
+                        />
+                        <span className="text-xs font-semibold">
+                          Work History
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                        <FontAwesomeIcon
+                          icon={faUserGroup}
+                          className="w-4 h-4"
+                        />
+                        <span className="text-xs font-semibold">
+                          Peer References
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                        <FontAwesomeIcon icon={faMedal} className="w-4 h-4" />
+                        <span className="text-xs font-semibold">
+                          Military Experience
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                      <FontAwesomeIcon icon={faHospital} className="w-4 h-4" />
-                      <span className="text-xs font-semibold">
-                        Facility Affiliations
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                      <FontAwesomeIcon icon={faBriefcase} className="w-4 h-4" />
-                      <span className="text-xs font-semibold">
-                        Work History
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                      <FontAwesomeIcon icon={faUserGroup} className="w-4 h-4" />
-                      <span className="text-xs font-semibold">
-                        Peer References
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                      <FontAwesomeIcon icon={faMedal} className="w-4 h-4" />
-                      <span className="text-xs font-semibold">
-                        Military Experience
-                      </span>
-                    </div>
-                  </div>
+                  )}
                 </div>
 
                 {/* Malpractice Insurance Section */}
