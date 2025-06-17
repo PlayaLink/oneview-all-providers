@@ -565,7 +565,10 @@ const Index = () => {
                           className="w-3 h-3 text-white"
                         />
                       </button>
-                      <MoreVertical className="w-6 h-6 text-[#545454]" />
+                      <FontAwesomeIcon
+                        icon={faEllipsisVertical}
+                        className="w-6 h-6 text-[#545454]"
+                      />
                     </div>
                   </div>
                 </div>
