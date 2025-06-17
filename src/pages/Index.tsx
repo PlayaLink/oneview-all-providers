@@ -289,12 +289,18 @@ const Index = () => {
                 </h1>
 
                 <div className="relative">
-                  <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#545454]" />
+                  <FontAwesomeIcon
+                    icon={faSearch}
+                    className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#545454]"
+                  />
                   <Input
                     placeholder="Search a Provider Name or NPI..."
                     className="pl-8 pr-10 py-1 text-xs border-gray-300 w-96"
                   />
-                  <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#545454]" />
+                  <FontAwesomeIcon
+                    icon={faChevronDown}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#545454]"
+                  />
                 </div>
               </div>
 
