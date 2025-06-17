@@ -305,11 +305,17 @@ const Index = () => {
               </div>
 
               <div className="flex items-center gap-2 px-2.5 py-1.5 rounded border">
-                <User className="w-4 h-4 text-[#545454]" />
+                <FontAwesomeIcon
+                  icon={faUserDoctor}
+                  className="w-4 h-4 text-[#545454]"
+                />
                 <span className="font-bold text-xs text-[#545454]">
                   Provider filters
                 </span>
-                <ChevronDown className="w-3 h-3 text-[#545454]" />
+                <FontAwesomeIcon
+                  icon={faChevronDown}
+                  className="w-3 h-3 text-[#545454]"
+                />
               </div>
             </div>
 
