@@ -553,7 +553,10 @@ const Index = () => {
                       <span className="text-[#545454] font-semibold text-xs tracking-wide">
                         Actions
                       </span>
-                      <HelpCircle className="w-4 h-4 text-[#BABABA]" />
+                      <FontAwesomeIcon
+                        icon={faCircleQuestion}
+                        className="w-4 h-4 text-[#BABABA]"
+                      />
                     </div>
                     <div className="flex items-center gap-1">
                       <button className="w-6 h-6 bg-[#79AC48] rounded flex items-center justify-center">
