@@ -408,7 +408,7 @@ const Index = () => {
                     </div>
                     <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
                       <FontAwesomeIcon
-                        icon={faFilesMedical}
+                        icon={faFileMedical}
                         className="w-4 h-4"
                       />
                       <span className="text-xs font-semibold">Health Info</span>
