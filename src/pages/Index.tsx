@@ -321,7 +321,7 @@ const Index = () => {
 
             <Button className="bg-[#545454] hover:bg-[#3f3f3f] text-white px-3.5 py-1.5 text-xs font-bold">
               Add Provider
-              <UserPlus className="w-3 h-3 ml-2" />
+              <FontAwesomeIcon icon={faUserPlus} className="w-3 h-3 ml-2" />
             </Button>
           </div>
         </div>
