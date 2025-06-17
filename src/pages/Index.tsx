@@ -403,7 +403,7 @@ const Index = () => {
                       </span>
                     </div>
                     <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                      <FontAwesomeIcon icon={faTriangle} className="w-4 h-4" />
+                      <FontAwesomeIcon icon={faPlay} className="w-4 h-4" />
                       <span className="text-xs font-semibold">CAQH</span>
                     </div>
                     <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
