@@ -729,7 +729,7 @@ const Index = () => {
                 className="absolute right-0 top-64 w-6 h-6 bg-[#545454] text-white rounded-full flex items-center justify-center hover:bg-[#3f3f3f] transition-colors z-10"
                 style={{ transform: "translateX(12px)" }}
               >
-                <ChevronRight className="w-4 h-4" />
+                <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" />
               </button>
 
               {/* Side Panel Header */}
