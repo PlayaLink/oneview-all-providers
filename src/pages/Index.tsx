@@ -387,54 +387,66 @@ const Index = () => {
 
                 {/* Provider Info Section */}
                 <div className="flex flex-col">
-                  <div className="flex items-center justify-between p-2 rounded">
+                  <div
+                    className="flex items-center justify-between p-2 rounded hover:bg-gray-50 cursor-pointer"
+                    onClick={() => toggleSection("providerInfo")}
+                  >
                     <span className="text-xs uppercase text-[#545454] font-medium tracking-wide">
                       Provider Info
                     </span>
                     <FontAwesomeIcon
                       icon={faChevronDown}
-                      className="w-4 h-4 text-[#545454]"
+                      className={cn(
+                        "w-4 h-4 text-[#545454] transition-transform duration-200",
+                        !expandedSections.providerInfo && "rotate-180",
+                      )}
                     />
                   </div>
-                  <div className="pl-3 flex flex-col gap-0.5">
-                    <div className="flex items-center gap-2 p-2 bg-[#008BC9] text-white rounded">
-                      <FontAwesomeIcon
-                        icon={faUserDoctor}
-                        className="w-4 h-4"
-                      />
-                      <span className="text-xs font-semibold">
-                        Provider Info
-                      </span>
+                  {expandedSections.providerInfo && (
+                    <div className="pl-3 flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
+                      <div className="flex items-center gap-2 p-2 bg-[#008BC9] text-white rounded">
+                        <FontAwesomeIcon
+                          icon={faUserDoctor}
+                          className="w-4 h-4"
+                        />
+                        <span className="text-xs font-semibold">
+                          Provider Info
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                        <FontAwesomeIcon icon={faWeight} className="w-4 h-4" />
+                        <span className="text-xs font-semibold">
+                          Birth Info
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                        <FontAwesomeIcon icon={faHouse} className="w-4 h-4" />
+                        <span className="text-xs font-semibold">Addresses</span>
+                      </div>
+                      <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                        <FontAwesomeIcon
+                          icon={faAddressBook}
+                          className="w-4 h-4"
+                        />
+                        <span className="text-xs font-semibold">
+                          Additional Names
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                        <FontAwesomeIcon icon={faPlay} className="w-4 h-4" />
+                        <span className="text-xs font-semibold">CAQH</span>
+                      </div>
+                      <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                        <FontAwesomeIcon
+                          icon={faFileMedical}
+                          className="w-4 h-4"
+                        />
+                        <span className="text-xs font-semibold">
+                          Health Info
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                      <FontAwesomeIcon icon={faWeight} className="w-4 h-4" />
-                      <span className="text-xs font-semibold">Birth Info</span>
-                    </div>
-                    <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                      <FontAwesomeIcon icon={faHouse} className="w-4 h-4" />
-                      <span className="text-xs font-semibold">Addresses</span>
-                    </div>
-                    <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                      <FontAwesomeIcon
-                        icon={faAddressBook}
-                        className="w-4 h-4"
-                      />
-                      <span className="text-xs font-semibold">
-                        Additional Names
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                      <FontAwesomeIcon icon={faPlay} className="w-4 h-4" />
-                      <span className="text-xs font-semibold">CAQH</span>
-                    </div>
-                    <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                      <FontAwesomeIcon
-                        icon={faFileMedical}
-                        className="w-4 h-4"
-                      />
-                      <span className="text-xs font-semibold">Health Info</span>
-                    </div>
-                  </div>
+                  )}
                 </div>
 
                 {/* Licensure Section */}
