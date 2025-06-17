@@ -628,7 +628,10 @@ const Index = () => {
                     />
                   </button>
                   <button className="p-1 hover:bg-gray-100 rounded">
-                    <Edit className="w-5 h-5 text-[#545454]" />
+                    <FontAwesomeIcon
+                      icon={faEdit}
+                      className="w-5 h-5 text-[#545454]"
+                    />
                   </button>
                   <button className="p-1 hover:bg-gray-100 rounded">
                     <Flag className="w-5 h-5 text-[#545454]" />
