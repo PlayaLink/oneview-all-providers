@@ -523,8 +523,8 @@ const Index = () => {
             </div>
 
             {/* AG Grid with Custom Styling */}
-            <div className="flex-1">
-              <div className="ag-theme-alpine h-full provider-grid">
+            <div className="flex-1" style={{ height: "calc(100vh - 200px)" }}>
+              <div className="ag-theme-alpine w-full h-full">
                 <AgGridReact
                   rowData={sampleProviders}
                   columnDefs={columnDefs}
@@ -534,9 +534,13 @@ const Index = () => {
                   rowHeight={42}
                   suppressRowClickSelection={false}
                   domLayout="normal"
-                  className="text-sm"
                   floatingFilter={true}
                   animateRows={true}
+                  defaultColDef={{
+                    sortable: true,
+                    filter: true,
+                    resizable: true,
+                  }}
                 />
               </div>
             </div>
