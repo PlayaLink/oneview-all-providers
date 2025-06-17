@@ -5,27 +5,29 @@ import {
   GridReadyEvent,
   SelectionChangedEvent,
 } from "ag-grid-community";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  ChevronDown,
-  Search,
-  UserPlus,
-  User,
-  ChevronLeft,
-  ChevronRight,
-  BarChart3,
-  MessageSquare,
-  FileText,
-  Users,
-  X,
-  Download,
-  ExternalLink,
-  Edit,
-  Flag,
-  MoreVertical,
-  Plus,
-  Filter,
-  HelpCircle,
-} from "lucide-react";
+  faChevronDown,
+  faSearch,
+  faUserPlus,
+  faUserDoctor,
+  faChevronLeft,
+  faChevronRight,
+  faChartBar,
+  faMessage,
+  faFileText,
+  faUsers,
+  faXmark,
+  faCircleDown,
+  faUpRightFromSquare,
+  faFlag,
+  faEllipsisVertical,
+  faPlus,
+  faFilter,
+  faCircleQuestion,
+  faSidebarFlip,
+} from "@fortawesome/free-solid-svg-icons";
+import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
