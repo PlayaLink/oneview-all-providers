@@ -345,7 +345,7 @@ const Index = () => {
           <div className="p-2">
             {!sidebarCollapsed && (
               <>
-                <div className="flex items-center justify-between p-2 mb-2">
+                <div className="flex items-center justify-between px-2 pt-0 pb-2 mb-2">
                   <span className="font-bold text-sm text-[#545454] tracking-wide">
                     All Sections
                   </span>
