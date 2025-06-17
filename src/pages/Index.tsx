@@ -733,7 +733,7 @@ const Index = () => {
               </button>
 
               {/* Side Panel Header */}
-              <div className="flex items-center justify-between p-4 border-b border-gray-300">
+              <div className="flex items-center justify-between px-4 pt-[5px] pb-4 border-b border-gray-300">
                 <div className="flex-1 px-2">
                   <h2 className="text-[#545454] font-bold text-xl">
                     Provider Info for {selectedProvider.firstName}{" "}
