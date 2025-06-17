@@ -432,81 +432,229 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Test Grid */}
-            <div className="p-4 bg-white">
-              <h3 className="text-lg font-bold mb-4 text-black">
-                Provider Grid Test
-              </h3>
-              <p className="mb-4 text-black">
-                Testing if AG Grid renders at all...
-              </p>
+            {/* Custom Provider Grid */}
+            <div className="bg-white">
+              {/* Grid Header with Filters */}
+              <div className="grid grid-cols-12 bg-white border-b border-[#E2E2E2]">
+                {/* Checkbox Column */}
+                <div className="col-span-1 h-12 bg-[#E6E7EB] border border-[#E6E6E6] flex items-center justify-center">
+                  <div className="flex items-center gap-2 p-1 bg-[#E6E7EB] border border-[#E6E6E6] rounded">
+                    <Filter className="w-4 h-4 text-[#4E5872]" />
+                  </div>
+                </div>
 
-              {/* Basic Table Fallback */}
-              <div className="mb-4">
-                <table className="border border-gray-300 w-full">
-                  <thead className="bg-gray-100">
-                    <tr>
-                      <th className="border border-gray-300 p-2 text-left">
-                        Provider Name
-                      </th>
-                      <th className="border border-gray-300 p-2 text-left">
-                        Title
-                      </th>
-                      <th className="border border-gray-300 p-2 text-left">
-                        Specialty
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className="border border-gray-300 p-2">
-                        García, Sofia
-                      </td>
-                      <td className="border border-gray-300 p-2">MD</td>
-                      <td className="border border-gray-300 p-2">
-                        Acupuncture
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="border border-gray-300 p-2">Petty, Tom</td>
-                      <td className="border border-gray-300 p-2">MD</td>
-                      <td className="border border-gray-300 p-2">
-                        General Surgery
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                {/* Provider Name */}
+                <div className="col-span-2 border-b border-[#E2E2E2]">
+                  <div className="h-12 flex items-center px-4 bg-white">
+                    <span className="text-[#545454] font-bold text-xs tracking-wide">
+                      Provider Name
+                    </span>
+                  </div>
+                  <div className="px-4 pb-4 bg-white">
+                    <input
+                      type="text"
+                      className="w-full h-8 px-4 border border-[#E2E2E2] rounded text-xs"
+                      placeholder=""
+                    />
+                  </div>
+                </div>
+
+                {/* Title */}
+                <div className="col-span-1 border-b border-[#E2E2E2]">
+                  <div className="h-12 flex items-center px-4 bg-white">
+                    <span className="text-[#545454] font-bold text-xs tracking-wide">
+                      Title
+                    </span>
+                  </div>
+                  <div className="px-4 pb-4 bg-white">
+                    <input
+                      type="text"
+                      className="w-full h-8 px-4 border border-[#E2E2E2] rounded text-xs"
+                      placeholder=""
+                    />
+                  </div>
+                </div>
+
+                {/* Specialty */}
+                <div className="col-span-2 border-b border-[#E2E2E2]">
+                  <div className="h-12 flex items-center px-4 bg-white">
+                    <span className="text-[#545454] font-bold text-xs tracking-wide">
+                      Specialty
+                    </span>
+                  </div>
+                  <div className="px-4 pb-4 bg-white">
+                    <input
+                      type="text"
+                      className="w-full h-8 px-4 border border-[#E2E2E2] rounded text-xs"
+                      placeholder=""
+                    />
+                  </div>
+                </div>
+
+                {/* NPI # */}
+                <div className="col-span-1 border-b border-[#E2E2E2]">
+                  <div className="h-12 flex items-center px-4 bg-white">
+                    <span className="text-[#545454] font-bold text-xs tracking-wide">
+                      NPI #
+                    </span>
+                  </div>
+                  <div className="px-4 pb-4 bg-white">
+                    <input
+                      type="text"
+                      className="w-full h-8 px-4 border border-[#E2E2E2] rounded text-xs"
+                      placeholder=""
+                    />
+                  </div>
+                </div>
+
+                {/* Work Email */}
+                <div className="col-span-2 border-b border-[#E2E2E2]">
+                  <div className="h-12 flex items-center px-4 bg-white">
+                    <span className="text-[#545454] font-bold text-xs tracking-wide">
+                      Work Email
+                    </span>
+                  </div>
+                  <div className="px-4 pb-4 bg-white">
+                    <input
+                      type="text"
+                      className="w-full h-8 px-4 border border-[#E2E2E2] rounded text-xs"
+                      placeholder=""
+                    />
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="col-span-3 border-b border-[#E2E2E2] bg-white shadow-[-4px_0px_30px_0px_rgba(0,0,0,0.3)]">
+                  <div className="h-12 flex items-center justify-between px-4">
+                    <div className="flex items-center gap-1">
+                      <span className="text-[#545454] font-semibold text-xs tracking-wide">
+                        Actions
+                      </span>
+                      <HelpCircle className="w-4 h-4 text-[#BABABA]" />
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <button className="w-6 h-6 bg-[#79AC48] rounded flex items-center justify-center">
+                        <Plus className="w-3 h-3 text-white" />
+                      </button>
+                      <MoreVertical className="w-6 h-6 text-[#545454]" />
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <p className="mb-2 text-black">AG Grid below (if visible):</p>
+              {/* Grid Data Row */}
               <div
-                style={{
-                  height: "300px",
-                  width: "100%",
-                  border: "2px solid red",
-                }}
-                className="ag-theme-alpine"
+                className="grid grid-cols-12 h-[42px] border-b border-[#D2D5DC] bg-white hover:bg-gray-50 cursor-pointer"
+                onClick={() => setSelectedProvider(sampleProviders[0])}
               >
-                <AgGridReact
-                  rowData={[
-                    {
-                      name: "García, Sofia",
-                      title: "MD",
-                      specialty: "Acupuncture",
-                    },
-                    {
-                      name: "Petty, Tom",
-                      title: "MD",
-                      specialty: "General Surgery",
-                    },
-                  ]}
-                  columnDefs={[
-                    { field: "name", headerName: "Provider Name" },
-                    { field: "title", headerName: "Title" },
-                    { field: "specialty", headerName: "Specialty" },
-                  ]}
-                />
+                {/* Checkbox */}
+                <div className="col-span-1 flex items-center justify-center">
+                  <div className="w-4 h-4 border border-[#BABABA] rounded-sm bg-white"></div>
+                </div>
+
+                {/* Provider Name */}
+                <div className="col-span-2 flex items-center px-4">
+                  <span className="text-[#545454] text-xs font-medium">
+                    García, Sofia
+                  </span>
+                </div>
+
+                {/* Title */}
+                <div className="col-span-1 flex items-center px-4">
+                  <span className="text-[#545454] text-xs">MD</span>
+                </div>
+
+                {/* Specialty */}
+                <div className="col-span-2 flex items-center px-4">
+                  <span className="text-[#545454] text-xs">Acupuncture</span>
+                </div>
+
+                {/* NPI # */}
+                <div className="col-span-1 flex items-center px-4">
+                  <span className="text-[#545454] text-xs">1477552867</span>
+                </div>
+
+                {/* Work Email */}
+                <div className="col-span-2 flex items-center px-4">
+                  <span className="text-[#545454] text-xs">
+                    michelle.rivera@example.com
+                  </span>
+                </div>
+
+                {/* Actions */}
+                <div className="col-span-3 flex items-center justify-end gap-2 px-4 bg-white shadow-[-4px_0px_30px_0px_rgba(0,0,0,0.3)]">
+                  <button className="p-1 hover:bg-gray-100 rounded">
+                    <Download className="w-5 h-5 text-[#BABABA]" />
+                  </button>
+                  <button className="p-1 hover:bg-gray-100 rounded">
+                    <ExternalLink className="w-5 h-5 text-[#545454]" />
+                  </button>
+                  <button className="p-1 hover:bg-gray-100 rounded">
+                    <Edit className="w-5 h-5 text-[#545454]" />
+                  </button>
+                  <button className="p-1 hover:bg-gray-100 rounded">
+                    <Flag className="w-5 h-5 text-[#545454]" />
+                  </button>
+                  <div className="w-6 h-3 bg-[#79AC48] rounded-full relative">
+                    <div className="w-2.5 h-2.5 bg-white rounded-full absolute right-0.5 top-0.25"></div>
+                  </div>
+                </div>
               </div>
+
+              {/* Additional sample rows */}
+              {sampleProviders.slice(1, 4).map((provider, index) => (
+                <div
+                  key={provider.id}
+                  className="grid grid-cols-12 h-[42px] border-b border-[#D2D5DC] bg-white hover:bg-gray-50 cursor-pointer"
+                  onClick={() => setSelectedProvider(provider)}
+                >
+                  <div className="col-span-1 flex items-center justify-center">
+                    <div className="w-4 h-4 border border-[#BABABA] rounded-sm bg-white"></div>
+                  </div>
+                  <div className="col-span-2 flex items-center px-4">
+                    <span className="text-[#545454] text-xs font-medium">
+                      {provider.lastName}, {provider.firstName}
+                    </span>
+                  </div>
+                  <div className="col-span-1 flex items-center px-4">
+                    <span className="text-[#545454] text-xs">
+                      {provider.title}
+                    </span>
+                  </div>
+                  <div className="col-span-2 flex items-center px-4">
+                    <span className="text-[#545454] text-xs">
+                      {provider.primarySpecialty}
+                    </span>
+                  </div>
+                  <div className="col-span-1 flex items-center px-4">
+                    <span className="text-[#545454] text-xs">
+                      {provider.npiNumber}
+                    </span>
+                  </div>
+                  <div className="col-span-2 flex items-center px-4">
+                    <span className="text-[#545454] text-xs">
+                      {provider.workEmail}
+                    </span>
+                  </div>
+                  <div className="col-span-3 flex items-center justify-end gap-2 px-4 bg-white shadow-[-4px_0px_30px_0px_rgba(0,0,0,0.3)]">
+                    <button className="p-1 hover:bg-gray-100 rounded">
+                      <Download className="w-5 h-5 text-[#BABABA]" />
+                    </button>
+                    <button className="p-1 hover:bg-gray-100 rounded">
+                      <ExternalLink className="w-5 h-5 text-[#545454]" />
+                    </button>
+                    <button className="p-1 hover:bg-gray-100 rounded">
+                      <Edit className="w-5 h-5 text-[#545454]" />
+                    </button>
+                    <button className="p-1 hover:bg-gray-100 rounded">
+                      <Flag className="w-5 h-5 text-[#545454]" />
+                    </button>
+                    <div className="w-6 h-3 bg-[#79AC48] rounded-full relative">
+                      <div className="w-2.5 h-2.5 bg-white rounded-full absolute right-0.5 top-0.25"></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
