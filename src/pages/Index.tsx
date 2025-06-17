@@ -253,7 +253,7 @@ const Index = () => {
                 </div>
                 <div className="text-xs opacity-90">(Salt Lake City, Utah)</div>
               </div>
-              <ChevronDown className="w-4 h-4" />
+              <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" />
             </div>
 
             {/* Navigation Items */}
