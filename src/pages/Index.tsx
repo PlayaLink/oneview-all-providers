@@ -616,7 +616,10 @@ const Index = () => {
                 {/* Actions */}
                 <div className="col-span-3 flex items-center justify-end gap-2 px-4 bg-white shadow-[-4px_0px_30px_0px_rgba(0,0,0,0.3)]">
                   <button className="p-1 hover:bg-gray-100 rounded">
-                    <Download className="w-5 h-5 text-[#BABABA]" />
+                    <FontAwesomeIcon
+                      icon={faCircleDown}
+                      className="w-5 h-5 text-[#BABABA]"
+                    />
                   </button>
                   <button className="p-1 hover:bg-gray-100 rounded">
                     <ExternalLink className="w-5 h-5 text-[#545454]" />
