@@ -432,27 +432,38 @@ const Index = () => {
               </div>
             </div>
 
-            {/* AG Grid Container */}
-            <div
-              style={{ height: "600px", width: "100%" }}
-              className="ag-theme-alpine"
-            >
-              <AgGridReact
-                rowData={sampleProviders}
-                columnDefs={columnDefs}
-                rowSelection="single"
-                onSelectionChanged={handleSelectionChanged}
-                headerHeight={48}
-                rowHeight={42}
-                suppressRowClickSelection={false}
-                domLayout="normal"
-                floatingFilter={true}
-                defaultColDef={{
-                  sortable: true,
-                  filter: true,
-                  resizable: true,
-                }}
-              />
+            {/* Test Grid */}
+            <div className="p-4">
+              <h3 className="text-lg font-bold mb-4">Provider Grid Test</h3>
+              <div
+                style={{ height: "400px", width: "100%" }}
+                className="ag-theme-alpine border border-gray-300"
+              >
+                <AgGridReact
+                  rowData={[
+                    {
+                      name: "García, Sofia",
+                      title: "MD",
+                      specialty: "Acupuncture",
+                    },
+                    {
+                      name: "Petty, Tom",
+                      title: "MD",
+                      specialty: "General Surgery",
+                    },
+                    {
+                      name: "Johnson, Sarah",
+                      title: "MD",
+                      specialty: "Cardiology",
+                    },
+                  ]}
+                  columnDefs={[
+                    { field: "name", headerName: "Provider Name", width: 200 },
+                    { field: "title", headerName: "Title", width: 100 },
+                    { field: "specialty", headerName: "Specialty", width: 200 },
+                  ]}
+                />
+              </div>
             </div>
           </div>
 
