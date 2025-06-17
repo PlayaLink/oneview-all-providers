@@ -495,31 +495,39 @@ const Index = () => {
 
                 {/* Actions & Exclusions Section */}
                 <div className="flex flex-col">
-                  <div className="flex items-center justify-between p-2 rounded">
+                  <div
+                    className="flex items-center justify-between p-2 rounded hover:bg-gray-50 cursor-pointer"
+                    onClick={() => toggleSection("actionsExclusions")}
+                  >
                     <span className="text-xs uppercase text-[#545454] font-medium tracking-wide">
                       Actions & Exclusions
                     </span>
                     <FontAwesomeIcon
                       icon={faChevronDown}
-                      className="w-4 h-4 text-[#545454]"
+                      className={cn(
+                        "w-4 h-4 text-[#545454] transition-transform duration-200",
+                        !expandedSections.actionsExclusions && "rotate-180",
+                      )}
                     />
                   </div>
-                  <div className="flex flex-col gap-0.5">
-                    <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                      <FontAwesomeIcon
-                        icon={faClipboardList}
-                        className="w-4 h-4"
-                      />
-                      <span className="text-xs font-semibold">Event log</span>
+                  {expandedSections.actionsExclusions && (
+                    <div className="flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
+                      <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                        <FontAwesomeIcon
+                          icon={faClipboardList}
+                          className="w-4 h-4"
+                        />
+                        <span className="text-xs font-semibold">Event log</span>
+                      </div>
+                      <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                        <FontAwesomeIcon
+                          icon={faCheckCircle}
+                          className="w-4 h-4"
+                        />
+                        <span className="text-xs font-semibold">OIG</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                      <FontAwesomeIcon
-                        icon={faCheckCircle}
-                        className="w-4 h-4"
-                      />
-                      <span className="text-xs font-semibold">OIG</span>
-                    </div>
-                  </div>
+                  )}
                 </div>
 
                 {/* Certifications Section */}
