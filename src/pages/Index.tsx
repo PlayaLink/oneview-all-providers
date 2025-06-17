@@ -149,6 +149,39 @@ const TagsCellRenderer = ({ value }: { value: string[] }) => {
   );
 };
 
+const ActionsCellRenderer = ({
+  data,
+  onRowClick,
+}: {
+  data: HealthcareProvider;
+  onRowClick: (provider: HealthcareProvider) => void;
+}) => {
+  return (
+    <div className="flex items-center justify-end gap-2 h-full">
+      <button className="p-1 hover:bg-gray-100 rounded">
+        <Download className="w-5 h-5 text-[#BABABA]" />
+      </button>
+      <button
+        className="p-1 hover:bg-gray-100 rounded"
+        onClick={() => onRowClick(data)}
+      >
+        <ExternalLink className="w-5 h-5 text-[#545454]" />
+      </button>
+      <button className="p-1 hover:bg-gray-100 rounded">
+        <Edit className="w-5 h-5 text-[#545454]" />
+      </button>
+      <button className="p-1 hover:bg-gray-100 rounded">
+        <Flag className="w-5 h-5 text-[#545454]" />
+      </button>
+      <div className="flex items-center">
+        <div className="w-6 h-3 bg-[#79AC48] rounded-full relative">
+          <div className="w-2.5 h-2.5 bg-white rounded-full absolute right-0.5 top-0.25"></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Index = () => {
   const [selectedProvider, setSelectedProvider] =
     useState<HealthcareProvider | null>(null);
