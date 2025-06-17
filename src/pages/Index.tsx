@@ -373,19 +373,64 @@ const Index = () => {
 
         {/* Main Grid Area */}
         <div className="flex-1 flex">
-          <div className="flex-1 p-0">
-            <div className="ag-theme-alpine h-full">
-              <AgGridReact
-                rowData={sampleProviders}
-                columnDefs={columnDefs}
-                rowSelection="single"
-                onSelectionChanged={handleSelectionChanged}
-                headerHeight={40}
-                rowHeight={50}
-                suppressRowClickSelection={false}
-                domLayout="normal"
-                className="text-sm"
-              />
+          <div className="flex-1 flex flex-col">
+            {/* Provider Info Section Header */}
+            <div className="flex items-center justify-between p-2 bg-[#CFD8DC] border-b border-gray-300">
+              <div className="flex items-center gap-3">
+                {/* Section Icon and Title */}
+                <div className="flex items-center gap-2">
+                  <User className="w-4 h-4 text-[#545454]" />
+                  <span className="text-[#545454] font-bold text-xs tracking-wider uppercase">
+                    Provider Info
+                  </span>
+                </div>
+
+                {/* Status Badges */}
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#F48100] rounded-full">
+                    <span className="text-white font-bold text-xs">1</span>
+                    <span className="text-white font-bold text-xs">
+                      Expiring
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#DB0D00] rounded-full">
+                    <span className="text-white font-bold text-xs">1</span>
+                    <span className="text-white font-bold text-xs">
+                      Expired
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#545454] rounded-full">
+                    <span className="text-white font-bold text-xs">900+</span>
+                    <span className="text-white font-bold text-xs">Total</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Toggle Switch */}
+              <div className="flex items-center">
+                <div className="w-9 h-5 bg-[#79AC48] rounded-full relative">
+                  <div className="w-4 h-4 bg-white rounded-full absolute right-0.5 top-0.5"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* AG Grid with Custom Styling */}
+            <div className="flex-1">
+              <div className="ag-theme-alpine h-full provider-grid">
+                <AgGridReact
+                  rowData={sampleProviders}
+                  columnDefs={columnDefs}
+                  rowSelection="single"
+                  onSelectionChanged={handleSelectionChanged}
+                  headerHeight={48}
+                  rowHeight={42}
+                  suppressRowClickSelection={false}
+                  domLayout="normal"
+                  className="text-sm"
+                  floatingFilter={true}
+                  animateRows={true}
+                />
+              </div>
             </div>
           </div>
 
