@@ -762,7 +762,8 @@ const Index = () => {
                           activeTab === "details" ? "bg-gray-100" : "bg-white",
                         )}
                       >
-                        <BarChart3
+                        <FontAwesomeIcon
+                          icon={faChartBar}
                           className={cn(
                             "w-5 h-5",
                             activeTab === "details"
