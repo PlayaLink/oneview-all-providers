@@ -356,7 +356,10 @@ const Index = () => {
                   </div>
                   <div className="ml-3 space-y-0.5">
                     <div className="flex items-center gap-2 p-2 bg-[#008BC9] text-white rounded text-xs font-semibold">
-                      <User className="w-4 h-4" />
+                      <FontAwesomeIcon
+                        icon={faUserDoctor}
+                        className="w-4 h-4"
+                      />
                       <span>Provider Info</span>
                     </div>
                     <div className="flex items-center gap-2 p-2 text-[#008BC9] text-xs font-semibold hover:bg-gray-50 rounded cursor-pointer">
