@@ -399,9 +399,9 @@ const Index = () => {
             }}
           >
             {sidebarCollapsed ? (
-              <ChevronRight className="w-4 h-4" />
+              <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" />
             ) : (
-              <ChevronLeft className="w-4 h-4" />
+              <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />
             )}
           </button>
         </div>
