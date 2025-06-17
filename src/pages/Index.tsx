@@ -433,11 +433,59 @@ const Index = () => {
             </div>
 
             {/* Test Grid */}
-            <div className="p-4">
-              <h3 className="text-lg font-bold mb-4">Provider Grid Test</h3>
+            <div className="p-4 bg-white">
+              <h3 className="text-lg font-bold mb-4 text-black">
+                Provider Grid Test
+              </h3>
+              <p className="mb-4 text-black">
+                Testing if AG Grid renders at all...
+              </p>
+
+              {/* Basic Table Fallback */}
+              <div className="mb-4">
+                <table className="border border-gray-300 w-full">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="border border-gray-300 p-2 text-left">
+                        Provider Name
+                      </th>
+                      <th className="border border-gray-300 p-2 text-left">
+                        Title
+                      </th>
+                      <th className="border border-gray-300 p-2 text-left">
+                        Specialty
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="border border-gray-300 p-2">
+                        García, Sofia
+                      </td>
+                      <td className="border border-gray-300 p-2">MD</td>
+                      <td className="border border-gray-300 p-2">
+                        Acupuncture
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 p-2">Petty, Tom</td>
+                      <td className="border border-gray-300 p-2">MD</td>
+                      <td className="border border-gray-300 p-2">
+                        General Surgery
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p className="mb-2 text-black">AG Grid below (if visible):</p>
               <div
-                style={{ height: "400px", width: "100%" }}
-                className="ag-theme-alpine border border-gray-300"
+                style={{
+                  height: "300px",
+                  width: "100%",
+                  border: "2px solid red",
+                }}
+                className="ag-theme-alpine"
               >
                 <AgGridReact
                   rowData={[
@@ -451,16 +499,11 @@ const Index = () => {
                       title: "MD",
                       specialty: "General Surgery",
                     },
-                    {
-                      name: "Johnson, Sarah",
-                      title: "MD",
-                      specialty: "Cardiology",
-                    },
                   ]}
                   columnDefs={[
-                    { field: "name", headerName: "Provider Name", width: 200 },
-                    { field: "title", headerName: "Title", width: 100 },
-                    { field: "specialty", headerName: "Specialty", width: 200 },
+                    { field: "name", headerName: "Provider Name" },
+                    { field: "title", headerName: "Title" },
+                    { field: "specialty", headerName: "Specialty" },
                   ]}
                 />
               </div>
