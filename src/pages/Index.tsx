@@ -459,7 +459,10 @@ const Index = () => {
                 {/* Checkbox Column */}
                 <div className="col-span-1 h-12 bg-[#E6E7EB] border border-[#E6E6E6] flex items-center justify-center">
                   <div className="flex items-center gap-2 p-1 bg-[#E6E7EB] border border-[#E6E6E6] rounded">
-                    <Filter className="w-4 h-4 text-[#4E5872]" />
+                    <FontAwesomeIcon
+                      icon={faFilter}
+                      className="w-4 h-4 text-[#4E5872]"
+                    />
                   </div>
                 </div>
 
