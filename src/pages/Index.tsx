@@ -291,7 +291,7 @@ const Index = () => {
         headerClass: "actions-header",
       },
     ],
-    [setSelectedProvider],
+    [],
   );
 
   const handleSelectionChanged = (event: SelectionChangedEvent) => {
