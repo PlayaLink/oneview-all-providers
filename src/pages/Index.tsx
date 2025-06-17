@@ -416,7 +416,7 @@ const Index = () => {
         <div className="flex-1 flex">
           <div className="flex-1">
             {/* Provider Info Section Header */}
-            <div className="flex items-center justify-between p-2 bg-[#CFD8DC] border-b border-gray-300">
+            <div className="flex items-center justify-between px-2 py-[9px] bg-[#CFD8DC] border-b border-gray-300">
               <div className="flex items-center gap-3">
                 {/* Section Icon and Title */}
                 <div className="flex items-center gap-2">
