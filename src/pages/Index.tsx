@@ -779,7 +779,8 @@ const Index = () => {
                           activeTab === "teams" ? "bg-gray-100" : "bg-white",
                         )}
                       >
-                        <Users
+                        <FontAwesomeIcon
+                          icon={faUsers}
                           className={cn(
                             "w-5 h-5",
                             activeTab === "teams"
