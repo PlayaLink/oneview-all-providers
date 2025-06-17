@@ -352,7 +352,7 @@ const Index = () => {
                 <div className="mb-1">
                   <div className="flex items-center justify-between p-2 text-xs uppercase text-[#545454] font-medium tracking-wide">
                     <span>Provider Info</span>
-                    <ChevronDown className="w-3 h-3" />
+                    <FontAwesomeIcon icon={faChevronDown} className="w-3 h-3" />
                   </div>
                   <div className="ml-3 space-y-0.5">
                     <div className="flex items-center gap-2 p-2 bg-[#008BC9] text-white rounded text-xs font-semibold">
