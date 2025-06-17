@@ -209,6 +209,27 @@ const Index = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activeTab, setActiveTab] = useState("details");
 
+  // State for collapsible sections
+  const [expandedSections, setExpandedSections] = useState<
+    Record<string, boolean>
+  >({
+    providerInfo: true,
+    licensure: true,
+    actionsExclusions: true,
+    certifications: true,
+    educationTraining: true,
+    workExperience: true,
+    malpracticeInsurance: true,
+    documents: true,
+  });
+
+  const toggleSection = (sectionKey: string) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [sectionKey]: !prev[sectionKey],
+    }));
+  };
+
   const columnDefs: ColDef[] = useMemo(
     () => [
       {
