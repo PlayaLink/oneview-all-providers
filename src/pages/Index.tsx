@@ -282,11 +282,7 @@ const Index = () => {
         headerName: "Actions",
         field: "actions",
         width: 194,
-        cellRenderer: (params: any) =>
-          ActionsCellRenderer({
-            data: params.data,
-            onRowClick: setSelectedProvider,
-          }),
+        cellRenderer: ActionsCellRenderer,
         pinned: "right",
         lockPosition: true,
         sortable: false,
