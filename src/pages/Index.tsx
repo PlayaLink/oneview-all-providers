@@ -29,7 +29,7 @@ import {
   faHouse,
   faAddressBook,
   faTriangle,
-  faFilesMedical,
+  faFileMedical,
   faRoad,
   faClipboard,
   faPills,
