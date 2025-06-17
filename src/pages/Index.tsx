@@ -674,21 +674,29 @@ const Index = () => {
 
                 {/* Malpractice Insurance Section */}
                 <div className="flex flex-col">
-                  <div className="flex items-center justify-between p-2 rounded">
+                  <div
+                    className="flex items-center justify-between p-2 rounded hover:bg-gray-50 cursor-pointer"
+                    onClick={() => toggleSection("malpracticeInsurance")}
+                  >
                     <span className="text-xs uppercase text-[#545454] font-medium tracking-wide">
                       Malpractice Insurance
                     </span>
                     <FontAwesomeIcon
                       icon={faChevronDown}
-                      className="w-4 h-4 text-[#545454]"
+                      className={cn(
+                        "w-4 h-4 text-[#545454] transition-transform duration-200",
+                        !expandedSections.malpracticeInsurance && "rotate-180",
+                      )}
                     />
                   </div>
-                  <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                    <FontAwesomeIcon icon={faGavel} className="w-4 h-4" />
-                    <span className="text-xs font-semibold">
-                      Malpractice Insurance
-                    </span>
-                  </div>
+                  {expandedSections.malpracticeInsurance && (
+                    <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer overflow-hidden transition-all duration-200">
+                      <FontAwesomeIcon icon={faGavel} className="w-4 h-4" />
+                      <span className="text-xs font-semibold">
+                        Malpractice Insurance
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Documents Section */}
