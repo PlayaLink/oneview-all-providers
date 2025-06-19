@@ -31,12 +31,19 @@ import { cn } from "@/lib/utils";
 
 interface SideNavProps {
   collapsed: boolean;
+  selectedItem: string | null;
+  selectedSection: string | null;
+  onItemSelect: (item: string) => void;
+  onSectionSelect: (section: string) => void;
 }
 
-const SideNav: React.FC<SideNavProps> = ({ collapsed }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
+const SideNav: React.FC<SideNavProps> = ({
+  collapsed,
+  selectedItem,
+  selectedSection,
+  onItemSelect,
+  onSectionSelect,
+}) => {
   // State for collapsible sections
   const [expandedSections, setExpandedSections] = useState<
     Record<string, boolean>
@@ -58,11 +65,16 @@ const SideNav: React.FC<SideNavProps> = ({ collapsed }) => {
     }));
   };
 
-  const handleNavClick = (path: string) => {
-    navigate(path);
+  const handleItemClick = (item: string) => {
+    onItemSelect(item);
   };
 
-  const isActive = (path: string) => location.pathname === path;
+  const handleSectionClick = (section: string) => {
+    onSectionSelect(section);
+  };
+
+  const isItemActive = (item: string) => selectedItem === item;
+  const isSectionActive = (section: string) => selectedSection === section;
 
   return (
     <div className="p-2 flex flex-col gap-2">
