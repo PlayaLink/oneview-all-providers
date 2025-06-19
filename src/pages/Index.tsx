@@ -725,11 +725,8 @@ const Index = () => {
                       sortable: false,
                       filter: false,
                       resizable: false,
-                      cellStyle: { borderRight: "none" },
-                      headerStyle: {
-                        borderRight: "none",
-                        borderLeft: "none",
-                      },
+                      cellClass: "ag-cell-no-border",
+                      headerClass: "ag-header-no-border",
                     },
                     {
                       headerName: "Provider Name",
