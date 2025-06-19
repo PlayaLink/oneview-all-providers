@@ -860,29 +860,17 @@ const Index = () => {
           </div>
         </div>
 
-        {/* All Providers Section */}
-        <div className="bg-white text-[#545454] px-4 py-3 border-b border-gray-300">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <FontAwesomeIcon
-                icon={faUsers}
-                className="w-4 h-4 text-[#545454]"
-              />
-              <span className="font-bold text-xs tracking-wider uppercase">
-                All Providers
-              </span>
-            </div>
-            <div className="flex items-center gap-4">
-              <Button
-                size="sm"
-                className="bg-[#79AC48] hover:bg-[#6B9A3F] text-white"
-              >
-                <FontAwesomeIcon icon={faUserPlus} className="w-4 h-4 mr-2" />
-                Add Provider
-              </Button>
-            </div>
-          </div>
-        </div>
+        {/* Page Header */}
+        <PageHeader
+          title="All Providers"
+          icon={faUsers}
+          buttonText="Add Provider"
+          buttonIcon={faUserPlus}
+          onButtonClick={() => {
+            // Handle add provider action
+            console.log("Add Provider clicked");
+          }}
+        />
       </div>
 
       {/* Main Content */}
