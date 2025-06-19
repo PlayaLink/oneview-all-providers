@@ -357,13 +357,29 @@ const SideNav: React.FC<SideNavProps> = ({ collapsed }) => {
             </div>
             {expandedSections.educationTraining && (
               <div className="pl-3 flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
-                <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded cursor-pointer",
+                    isActive("/education-training")
+                      ? "bg-[#008BC9] text-white"
+                      : "text-[#008BC9] hover:bg-gray-50",
+                  )}
+                  onClick={() => handleNavClick("/education-training")}
+                >
                   <FontAwesomeIcon icon={faUniversity} className="w-4 h-4" />
                   <span className="text-xs font-semibold">
                     Education & Training
                   </span>
                 </div>
-                <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded cursor-pointer",
+                    isActive("/exams")
+                      ? "bg-[#008BC9] text-white"
+                      : "text-[#008BC9] hover:bg-gray-50",
+                  )}
+                  onClick={() => handleNavClick("/exams")}
+                >
                   <FontAwesomeIcon icon={faBook} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Exams</span>
                 </div>
