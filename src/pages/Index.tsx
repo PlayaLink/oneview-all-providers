@@ -437,8 +437,16 @@ const Index = () => {
             <div className="bg-white mt-8">
               {/* AG Grid Header */}
               <div className="flex items-center justify-between px-2 py-[9px] bg-[#CFD8DC] border-b border-gray-300">
-                {/* Checkbox Column */}
-                <div className="col-span-1 h-12 bg-[#E6E7EB] border border-[#E6E6E6] flex items-center justify-center">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <FontAwesomeIcon
+                      icon={faUsers}
+                      className="w-4 h-4 text-[#545454]"
+                    />
+                    <span className="text-[#545454] font-bold text-xs tracking-wider uppercase">
+                      Provider Data (AG Grid)
+                    </span>
+                  </div>
                   <div className="flex items-center gap-2 p-1 bg-[#E6E7EB] border border-[#E6E6E6] rounded">
                     <FontAwesomeIcon
                       icon={faFilter}
