@@ -259,11 +259,27 @@ const SideNav: React.FC<SideNavProps> = ({ collapsed }) => {
             </div>
             {expandedSections.actionsExclusions && (
               <div className="pl-3 flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
-                <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded cursor-pointer",
+                    isActive("/event-log")
+                      ? "bg-[#008BC9] text-white"
+                      : "text-[#008BC9] hover:bg-gray-50",
+                  )}
+                  onClick={() => handleNavClick("/event-log")}
+                >
                   <FontAwesomeIcon icon={faClipboardList} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Event log</span>
                 </div>
-                <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded cursor-pointer",
+                    isActive("/oig")
+                      ? "bg-[#008BC9] text-white"
+                      : "text-[#008BC9] hover:bg-gray-50",
+                  )}
+                  onClick={() => handleNavClick("/oig")}
+                >
                   <FontAwesomeIcon icon={faCheckCircle} className="w-4 h-4" />
                   <span className="text-xs font-semibold">OIG</span>
                 </div>
