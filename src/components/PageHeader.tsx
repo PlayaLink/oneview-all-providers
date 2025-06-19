@@ -21,7 +21,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   buttonClassName = "bg-[#79AC48] hover:bg-[#6B9A3F] text-white",
 }) => {
   return (
-    <div className="bg-white text-[#545454] px-4 py-3 border-b border-gray-300">
+    <div className="bg-white text-[#545454] px-4 py-3 border-b border-gray-300 relative z-10">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <FontAwesomeIcon icon={icon} className="w-4 h-4 text-[#545454]" />
