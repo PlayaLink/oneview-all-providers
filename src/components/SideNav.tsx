@@ -419,11 +419,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/education-training")
+                    isItemActive("education-training")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/education-training")}
+                  onClick={() => handleItemClick("education-training")}
                 >
                   <FontAwesomeIcon icon={faUniversity} className="w-4 h-4" />
                   <span className="text-xs font-semibold">
@@ -433,11 +433,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/exams")
+                    isItemActive("exams")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/exams")}
+                  onClick={() => handleItemClick("exams")}
                 >
                   <FontAwesomeIcon icon={faBook} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Exams</span>
