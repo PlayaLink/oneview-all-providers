@@ -42,7 +42,7 @@ const SideNav: React.FC<SideNavProps> = ({
   selectedItem,
   selectedSection,
   onItemSelect,
-  onSectionSelect,
+  onSectionSelect
 }) => {
   // State for collapsible sections
   const [expandedSections, setExpandedSections] = useState<
@@ -86,23 +86,21 @@ const SideNav: React.FC<SideNavProps> = ({
               "flex items-center justify-between p-2 rounded cursor-pointer",
               isItemActive("all-sections")
                 ? "bg-[#008BC9] text-white"
-                : "hover:bg-gray-50",
+                : "hover:bg-gray-50"
             )}
             onClick={() => handleItemClick("all-sections")}
           >
-            <span
-              className={cn(
-                "font-bold text-sm tracking-wide",
-                isItemActive("all-sections") ? "text-white" : "text-[#545454]",
-              )}
-            >
+            <span className={cn(
+              "font-bold text-sm tracking-wide",
+              isItemActive("all-sections") ? "text-white" : "text-[#545454]"
+            )}>
               All Sections
             </span>
             <FontAwesomeIcon
               icon={faEllipsis}
               className={cn(
                 "w-4 h-4",
-                isItemActive("all-sections") ? "text-white" : "text-[#545454]",
+                isItemActive("all-sections") ? "text-white" : "text-[#545454]"
               )}
             />
           </div>
@@ -114,15 +112,13 @@ const SideNav: React.FC<SideNavProps> = ({
                 "flex items-center justify-between p-2 rounded cursor-pointer",
                 isSectionActive("providerInfo")
                   ? "bg-[#008BC9] text-white"
-                  : "hover:bg-gray-50",
+                  : "hover:bg-gray-50"
               )}
             >
               <span
                 className={cn(
                   "text-xs uppercase font-medium tracking-wide flex-1",
-                  isSectionActive("providerInfo")
-                    ? "text-white"
-                    : "text-[#545454]",
+                  isSectionActive("providerInfo") ? "text-white" : "text-[#545454]"
                 )}
                 onClick={() => handleSectionClick("providerInfo")}
               >
@@ -133,9 +129,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 className={cn(
                   "w-4 h-4 transition-transform duration-200",
                   !expandedSections.providerInfo && "rotate-180",
-                  isSectionActive("providerInfo")
-                    ? "text-white"
-                    : "text-[#545454]",
+                  isSectionActive("providerInfo") ? "text-white" : "text-[#545454]"
                 )}
                 onClick={() => toggleSection("providerInfo")}
               />
@@ -145,9 +139,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("provider-info")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                    isItemActive("provider-info") ? "bg-[#008BC9] text-white" : "text-[#545454] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("provider-info")}
                 >
@@ -157,9 +149,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("birth-info")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                    isItemActive("birth-info") ? "bg-[#008BC9] text-white" : "text-[#545454] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("birth-info")}
                 >
@@ -169,9 +159,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("addresses")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+: "text-[#545454] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("addresses")}
                 >
@@ -181,23 +169,17 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("additional-names")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                    isItemActive("additional-names") ? "bg-[#008BC9] text-white" : "text-[#008BC9] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("additional-names")}
                 >
                   <FontAwesomeIcon icon={faAddressBook} className="w-4 h-4" />
-                  <span className="text-xs font-semibold">
-                    Additional Names
-                  </span>
+                  <span className="text-xs font-semibold">Additional Names</span>
                 </div>
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("caqh")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                    isItemActive("caqh") ? "bg-[#008BC9] text-white" : "text-[#008BC9] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("caqh")}
                 >
@@ -207,9 +189,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("health-info")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                    isItemActive("health-info") ? "bg-[#008BC9] text-white" : "text-[#008BC9] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("health-info")}
                 >
@@ -227,15 +207,13 @@ const SideNav: React.FC<SideNavProps> = ({
                 "flex items-center justify-between p-2 rounded cursor-pointer",
                 isSectionActive("licensure")
                   ? "bg-[#008BC9] text-white"
-                  : "hover:bg-gray-50",
+                  : "hover:bg-gray-50"
               )}
             >
               <span
                 className={cn(
                   "text-xs uppercase font-medium tracking-wide flex-1",
-                  isSectionActive("licensure")
-                    ? "text-white"
-                    : "text-[#545454]",
+                  isSectionActive("licensure") ? "text-white" : "text-[#545454]"
                 )}
                 onClick={() => handleSectionClick("licensure")}
               >
@@ -246,9 +224,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 className={cn(
                   "w-4 h-4 transition-transform duration-200",
                   !expandedSections.licensure && "rotate-180",
-                  isSectionActive("licensure")
-                    ? "text-white"
-                    : "text-[#545454]",
+                  isSectionActive("licensure") ? "text-white" : "text-[#545454]"
                 )}
                 onClick={() => toggleSection("licensure")}
               />
@@ -258,9 +234,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("state-licenses")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                    isItemActive("state-licenses") ? "bg-[#008BC9] text-white" : "text-[#008BC9] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("state-licenses")}
                 >
@@ -270,9 +244,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("dea-licenses")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                    isItemActive("dea-licenses") ? "bg-[#008BC9] text-white" : "text-[#008BC9] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("dea-licenses")}
                 >
@@ -282,13 +254,9 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("controlled-substance-licenses")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                    isItemActive("controlled-substance-licenses") ? "bg-[#008BC9] text-white" : "text-[#008BC9] hover:bg-gray-50"
                   )}
-                  onClick={() =>
-                    handleItemClick("controlled-substance-licenses")
-                  }
+                  onClick={() => handleItemClick("controlled-substance-licenses")}
                 >
                   <FontAwesomeIcon icon={faPills} className="w-4 h-4" />
                   <span className="text-xs font-semibold">
@@ -306,15 +274,13 @@ const SideNav: React.FC<SideNavProps> = ({
                 "flex items-center justify-between p-2 rounded cursor-pointer",
                 isSectionActive("actionsExclusions")
                   ? "bg-[#008BC9] text-white"
-                  : "hover:bg-gray-50",
+                  : "hover:bg-gray-50"
               )}
             >
               <span
                 className={cn(
                   "text-xs uppercase font-medium tracking-wide flex-1",
-                  isSectionActive("actionsExclusions")
-                    ? "text-white"
-                    : "text-[#545454]",
+                  isSectionActive("actionsExclusions") ? "text-white" : "text-[#545454]"
                 )}
                 onClick={() => handleSectionClick("actionsExclusions")}
               >
@@ -325,9 +291,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 className={cn(
                   "w-4 h-4 transition-transform duration-200",
                   !expandedSections.actionsExclusions && "rotate-180",
-                  isSectionActive("actionsExclusions")
-                    ? "text-white"
-                    : "text-[#545454]",
+                  isSectionActive("actionsExclusions") ? "text-white" : "text-[#545454]"
                 )}
                 onClick={() => toggleSection("actionsExclusions")}
               />
@@ -337,9 +301,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("event-log")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                    isItemActive("event-log") ? "bg-[#008BC9] text-white" : "text-[#008BC9] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("event-log")}
                 >
@@ -349,9 +311,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("oig")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                    isItemActive("oig") ? "bg-[#008BC9] text-white" : "text-[#008BC9] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("oig")}
                 >
@@ -369,15 +329,13 @@ const SideNav: React.FC<SideNavProps> = ({
                 "flex items-center justify-between p-2 rounded cursor-pointer",
                 isSectionActive("certifications")
                   ? "bg-[#008BC9] text-white"
-                  : "hover:bg-gray-50",
+                  : "hover:bg-gray-50"
               )}
             >
               <span
                 className={cn(
                   "text-xs uppercase font-medium tracking-wide flex-1",
-                  isSectionActive("certifications")
-                    ? "text-white"
-                    : "text-[#545454]",
+                  isSectionActive("certifications") ? "text-white" : "text-[#545454]"
                 )}
                 onClick={() => handleSectionClick("certifications")}
               >
@@ -388,9 +346,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 className={cn(
                   "w-4 h-4 transition-transform duration-200",
                   !expandedSections.certifications && "rotate-180",
-                  isSectionActive("certifications")
-                    ? "text-white"
-                    : "text-[#545454]",
+                  isSectionActive("certifications") ? "text-white" : "text-[#545454]"
                 )}
                 onClick={() => toggleSection("certifications")}
               />
@@ -400,30 +356,22 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("board-certifications")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                    isItemActive("board-certifications") ? "bg-[#008BC9] text-white" : "text-[#008BC9] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("board-certifications")}
                 >
                   <FontAwesomeIcon icon={faCertificate} className="w-4 h-4" />
-                  <span className="text-xs font-semibold">
-                    Board Certifications
-                  </span>
+                  <span className="text-xs font-semibold">Board Certifications</span>
                 </div>
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("other-certifications")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                    isItemActive("other-certifications") ? "bg-[#008BC9] text-white" : "text-[#008BC9] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("other-certifications")}
                 >
                   <FontAwesomeIcon icon={faHeartbeat} className="w-4 h-4" />
-                  <span className="text-xs font-semibold">
-                    Other Certifications
-                  </span>
+                  <span className="text-xs font-semibold">Other Certifications</span>
                 </div>
               </div>
             )}
@@ -436,15 +384,13 @@ const SideNav: React.FC<SideNavProps> = ({
                 "flex items-center justify-between p-2 rounded cursor-pointer",
                 isSectionActive("educationTraining")
                   ? "bg-[#008BC9] text-white"
-                  : "hover:bg-gray-50",
+                  : "hover:bg-gray-50"
               )}
             >
               <span
                 className={cn(
                   "text-xs uppercase font-medium tracking-wide flex-1",
-                  isSectionActive("educationTraining")
-                    ? "text-white"
-                    : "text-[#545454]",
+                  isSectionActive("educationTraining") ? "text-white" : "text-[#545454]"
                 )}
                 onClick={() => handleSectionClick("educationTraining")}
               >
@@ -455,9 +401,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 className={cn(
                   "w-4 h-4 transition-transform duration-200",
                   !expandedSections.educationTraining && "rotate-180",
-                  isSectionActive("educationTraining")
-                    ? "text-white"
-                    : "text-[#545454]",
+                  isSectionActive("educationTraining") ? "text-white" : "text-[#545454]"
                 )}
                 onClick={() => toggleSection("educationTraining")}
               />
@@ -467,23 +411,17 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("education-training")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                    isItemActive("education-training") ? "bg-[#008BC9] text-white" : "text-[#008BC9] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("education-training")}
                 >
                   <FontAwesomeIcon icon={faUniversity} className="w-4 h-4" />
-                  <span className="text-xs font-semibold">
-                    Education & Training
-                  </span>
+                  <span className="text-xs font-semibold">Education & Training</span>
                 </div>
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("exams")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                    isItemActive("exams") ? "bg-[#008BC9] text-white" : "text-[#008BC9] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("exams")}
                 >
@@ -501,15 +439,13 @@ const SideNav: React.FC<SideNavProps> = ({
                 "flex items-center justify-between p-2 rounded cursor-pointer",
                 isSectionActive("workExperience")
                   ? "bg-[#008BC9] text-white"
-                  : "hover:bg-gray-50",
+                  : "hover:bg-gray-50"
               )}
             >
               <span
                 className={cn(
                   "text-xs uppercase font-medium tracking-wide flex-1",
-                  isSectionActive("workExperience")
-                    ? "text-white"
-                    : "text-[#545454]",
+                  isSectionActive("workExperience") ? "text-white" : "text-[#545454]"
                 )}
                 onClick={() => handleSectionClick("workExperience")}
               >
@@ -520,9 +456,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 className={cn(
                   "w-4 h-4 transition-transform duration-200",
                   !expandedSections.workExperience && "rotate-180",
-                  isSectionActive("workExperience")
-                    ? "text-white"
-                    : "text-[#545454]",
+                  isSectionActive("workExperience") ? "text-white" : "text-[#545454]"
                 )}
                 onClick={() => toggleSection("workExperience")}
               />
@@ -532,37 +466,27 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("practice-employer")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                    isItemActive("practice-employer") ? "bg-[#008BC9] text-white" : "text-[#008BC9] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("practice-employer")}
                 >
                   <FontAwesomeIcon icon={faBuilding} className="w-4 h-4" />
-                  <span className="text-xs font-semibold">
-                    Practice/Employer
-                  </span>
+                  <span className="text-xs font-semibold">Practice/Employer</span>
                 </div>
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("facility-affiliations")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                    isItemActive("facility-affiliations") ? "bg-[#008BC9] text-white" : "text-[#008BC9] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("facility-affiliations")}
                 >
                   <FontAwesomeIcon icon={faHospital} className="w-4 h-4" />
-                  <span className="text-xs font-semibold">
-                    Facility Affiliations
-                  </span>
+                  <span className="text-xs font-semibold">Facility Affiliations</span>
                 </div>
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("work-history")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                    isItemActive("work-history") ? "bg-[#008BC9] text-white" : "text-[#008BC9] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("work-history")}
                 >
@@ -572,9 +496,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("peer-references")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                    isItemActive("peer-references") ? "bg-[#008BC9] text-white" : "text-[#008BC9] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("peer-references")}
                 >
@@ -584,16 +506,12 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("military-experience")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                    isItemActive("military-experience") ? "bg-[#008BC9] text-white" : "text-[#008BC9] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("military-experience")}
                 >
                   <FontAwesomeIcon icon={faMedal} className="w-4 h-4" />
-                  <span className="text-xs font-semibold">
-                    Military Experience
-                  </span>
+                  <span className="text-xs font-semibold">Military Experience</span>
                 </div>
               </div>
             )}
@@ -606,15 +524,13 @@ const SideNav: React.FC<SideNavProps> = ({
                 "flex items-center justify-between p-2 rounded cursor-pointer",
                 isSectionActive("malpracticeInsurance")
                   ? "bg-[#008BC9] text-white"
-                  : "hover:bg-gray-50",
+                  : "hover:bg-gray-50"
               )}
             >
               <span
                 className={cn(
                   "text-xs uppercase font-medium tracking-wide flex-1",
-                  isSectionActive("malpracticeInsurance")
-                    ? "text-white"
-                    : "text-[#545454]",
+                  isSectionActive("malpracticeInsurance") ? "text-white" : "text-[#545454]"
                 )}
                 onClick={() => handleSectionClick("malpracticeInsurance")}
               >
@@ -625,9 +541,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 className={cn(
                   "w-4 h-4 transition-transform duration-200",
                   !expandedSections.malpracticeInsurance && "rotate-180",
-                  isSectionActive("malpracticeInsurance")
-                    ? "text-white"
-                    : "text-[#545454]",
+                  isSectionActive("malpracticeInsurance") ? "text-white" : "text-[#545454]"
                 )}
                 onClick={() => toggleSection("malpracticeInsurance")}
               />
@@ -637,16 +551,12 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("malpractice-insurance")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                    isItemActive("malpractice-insurance") ? "bg-[#008BC9] text-white" : "text-[#008BC9] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("malpractice-insurance")}
                 >
                   <FontAwesomeIcon icon={faGavel} className="w-4 h-4" />
-                  <span className="text-xs font-semibold">
-                    Malpractice Insurance
-                  </span>
+                  <span className="text-xs font-semibold">Malpractice Insurance</span>
                 </div>
               </div>
             )}
@@ -659,15 +569,13 @@ const SideNav: React.FC<SideNavProps> = ({
                 "flex items-center justify-between p-2 rounded cursor-pointer",
                 isSectionActive("documents")
                   ? "bg-[#008BC9] text-white"
-                  : "hover:bg-gray-50",
+                  : "hover:bg-gray-50"
               )}
             >
               <span
                 className={cn(
                   "text-xs uppercase font-medium tracking-wide flex-1",
-                  isSectionActive("documents")
-                    ? "text-white"
-                    : "text-[#545454]",
+                  isSectionActive("documents") ? "text-white" : "text-[#545454]"
                 )}
                 onClick={() => handleSectionClick("documents")}
               >
@@ -678,9 +586,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 className={cn(
                   "w-4 h-4 transition-transform duration-200",
                   !expandedSections.documents && "rotate-180",
-                  isSectionActive("documents")
-                    ? "text-white"
-                    : "text-[#545454]",
+                  isSectionActive("documents") ? "text-white" : "text-[#545454]"
                 )}
                 onClick={() => toggleSection("documents")}
               />
@@ -690,9 +596,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("documents")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                    isItemActive("documents") ? "bg-[#008BC9] text-white" : "text-[#008BC9] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("documents")}
                 >
@@ -702,9 +606,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isItemActive("sent-forms")
-                      ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                    isItemActive("sent-forms") ? "bg-[#008BC9] text-white" : "text-[#008BC9] hover:bg-gray-50"
                   )}
                   onClick={() => handleItemClick("sent-forms")}
                 >
