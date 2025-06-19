@@ -196,15 +196,41 @@ const SideNav: React.FC<SideNavProps> = ({ collapsed }) => {
             </div>
             {expandedSections.licensure && (
               <div className="pl-3 flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
-                <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded cursor-pointer",
+                    isActive("/state-licenses")
+                      ? "bg-[#008BC9] text-white"
+                      : "text-[#008BC9] hover:bg-gray-50",
+                  )}
+                  onClick={() => handleNavClick("/state-licenses")}
+                >
                   <FontAwesomeIcon icon={faShieldAlt} className="w-4 h-4" />
                   <span className="text-xs font-semibold">State Licenses</span>
                 </div>
-                <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded cursor-pointer",
+                    isActive("/dea-licenses")
+                      ? "bg-[#008BC9] text-white"
+                      : "text-[#008BC9] hover:bg-gray-50",
+                  )}
+                  onClick={() => handleNavClick("/dea-licenses")}
+                >
                   <FontAwesomeIcon icon={faClipboard} className="w-4 h-4" />
                   <span className="text-xs font-semibold">DEA Licenses</span>
                 </div>
-                <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded cursor-pointer",
+                    isActive("/controlled-substance-licenses")
+                      ? "bg-[#008BC9] text-white"
+                      : "text-[#008BC9] hover:bg-gray-50",
+                  )}
+                  onClick={() =>
+                    handleNavClick("/controlled-substance-licenses")
+                  }
+                >
                   <FontAwesomeIcon icon={faPills} className="w-4 h-4" />
                   <span className="text-xs font-semibold">
                     State Controlled Substance Licenses
