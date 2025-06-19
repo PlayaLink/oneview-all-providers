@@ -141,6 +141,7 @@ const DataGrid: React.FC<DataGridProps> = ({
           headerHeight={40}
           rowHeight={42}
           suppressRowClickSelection={showCheckboxes}
+          domLayout="normal"
           getRowStyle={() => ({
             borderBottom: "0.5px solid #D2D5DC",
             backgroundColor: "white",
