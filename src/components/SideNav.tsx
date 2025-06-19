@@ -365,18 +365,34 @@ const SideNav: React.FC<SideNavProps> = ({
           {/* Certifications Section */}
           <div className="flex flex-col">
             <div
-              className="flex items-center justify-between p-2 rounded hover:bg-gray-50 cursor-pointer"
-              onClick={() => toggleSection("certifications")}
+              className={cn(
+                "flex items-center justify-between p-2 rounded cursor-pointer",
+                isSectionActive("certifications")
+                  ? "bg-[#008BC9] text-white"
+                  : "hover:bg-gray-50",
+              )}
             >
-              <span className="text-xs uppercase text-[#545454] font-medium tracking-wide">
+              <span
+                className={cn(
+                  "text-xs uppercase font-medium tracking-wide flex-1",
+                  isSectionActive("certifications")
+                    ? "text-white"
+                    : "text-[#545454]",
+                )}
+                onClick={() => handleSectionClick("certifications")}
+              >
                 Certifications
               </span>
               <FontAwesomeIcon
                 icon={faChevronDown}
                 className={cn(
-                  "w-4 h-4 text-[#545454] transition-transform duration-200",
+                  "w-4 h-4 transition-transform duration-200",
                   !expandedSections.certifications && "rotate-180",
+                  isSectionActive("certifications")
+                    ? "text-white"
+                    : "text-[#545454]",
                 )}
+                onClick={() => toggleSection("certifications")}
               />
             </div>
             {expandedSections.certifications && (
