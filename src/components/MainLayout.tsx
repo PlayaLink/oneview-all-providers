@@ -98,7 +98,7 @@ const MainLayout: React.FC = () => {
           {/* Left Sidebar */}
           <div
             className={cn(
-              "relative border-r border-gray-300 bg-white transition-all duration-300",
+              "relative border-r border-gray-300 bg-white transition-all duration-300 flex flex-col",
               sidebarCollapsed ? "w-0" : "w-48",
             )}
           >
