@@ -5,7 +5,7 @@ import {
   GridReadyEvent,
   SelectionChangedEvent,
 } from "ag-grid-community";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronDown,
   faSearch,
@@ -26,8 +26,8 @@ import {
   faFilter,
   faCircleQuestion,
   faBarsStaggered,
-} from '@fortawesome/free-solid-svg-icons';
-import { faEdit } from '@fortawesome/free-regular-svg-icons';
+} from "@fortawesome/free-solid-svg-icons";
+import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -730,10 +730,16 @@ const ActionsCellRenderer = () => {
   return (
     <div className="flex items-center justify-end gap-2 h-full">
       <button className="p-1 hover:bg-gray-100 rounded">
-        <FontAwesomeIcon icon={faCircleDown} className="w-4 h-4 text-[#BABABA]" />
+        <FontAwesomeIcon
+          icon={faCircleDown}
+          className="w-4 h-4 text-[#BABABA]"
+        />
       </button>
       <button className="p-1 hover:bg-gray-100 rounded">
-        <FontAwesomeIcon icon={faUpRightFromSquare} className="w-4 h-4 text-[#545454]" />
+        <FontAwesomeIcon
+          icon={faUpRightFromSquare}
+          className="w-4 h-4 text-[#545454]"
+        />
       </button>
       <button className="p-1 hover:bg-gray-100 rounded">
         <FontAwesomeIcon icon={faEdit} className="w-4 h-4 text-[#545454]" />
@@ -871,110 +877,116 @@ const Index = () => {
       <div className="flex flex-1 border-t border-gray-300 overflow-hidden">
         {/* Wrapper to allow arrow overflow */}
         <div className="flex flex-1 overflow-visible">
-        {/* Left Sidebar */}
-        <div
-          className={cn(
-            "relative border-r border-gray-300 bg-white transition-all duration-300",
-            sidebarCollapsed ? "w-0" : "w-48",
-          )}
-        >
-          <SideNav collapsed={sidebarCollapsed} />
-
-          {/* Collapse Toggle */}
-          <button
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className="absolute w-6 h-6 bg-[#545454] text-white rounded-full flex items-center justify-center hover:bg-[#3f3f3f] transition-colors z-20"
-            style={{
-              right: sidebarCollapsed ? "-12px" : "-12px",
-              top: "-12px",
-            }}
-          >
-            {sidebarCollapsed ? (
-              <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" />
-            ) : (
-              <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />
+          {/* Left Sidebar */}
+          <div
+            className={cn(
+              "relative border-r border-gray-300 bg-white transition-all duration-300",
+              sidebarCollapsed ? "w-0" : "w-48",
             )}
-          </button>
-        </div>
+          >
+            <SideNav collapsed={sidebarCollapsed} />
 
-        {/* Main Grid Area - Flexible */}
-        <div className={cn("flex-1 flex flex-col", sidebarCollapsed && "ml-4 border-l border-gray-300")}>
-          {/* Provider Info Grid - Fills Available Space */}
-          <div className="flex-1 min-h-0">
-            <DataGrid
-              title="Provider Info"
-              icon={faUserDoctor}
-              data={sampleProviders}
-              columns={[
-                {
-                  headerName: "Provider Name",
-                  valueGetter: (params) =>
-                    `${params.data.lastName}, ${params.data.firstName}`,
-                  width: 200,
-                },
-                {
-                  headerName: "Title",
-                  field: "title",
-                  width: 120,
-                },
-                {
-                  headerName: "Specialty",
-                  field: "primarySpecialty",
-                  width: 200,
-                },
-                {
-                  headerName: "NPI #",
-                  field: "npiNumber",
-                  width: 140,
-                },
-                {
-                  headerName: "Work Email",
-                  field: "workEmail",
-                  width: 250,
-                },
-                {
-                  headerName: "Personal Email",
-                  field: "personalEmail",
-                  width: 250,
-                },
-                {
-                  headerName: "Mobile Phone",
-                  field: "mobilePhone",
-                  width: 145,
-                },
-                {
-                  headerName: "Tags",
-                  field: "tags",
-                  width: 200,
-                  valueFormatter: (params) => {
-                    return params.value && Array.isArray(params.value)
-                      ? params.value.join(', ')
-                      : '';
+            {/* Collapse Toggle */}
+            <button
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="absolute w-6 h-6 bg-[#545454] text-white rounded-full flex items-center justify-center hover:bg-[#3f3f3f] transition-colors z-20"
+              style={{
+                right: sidebarCollapsed ? "-12px" : "-12px",
+                top: "-12px",
+              }}
+            >
+              {sidebarCollapsed ? (
+                <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" />
+              ) : (
+                <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />
+              )}
+            </button>
+          </div>
+
+          {/* Main Grid Area - Flexible */}
+          <div
+            className={cn(
+              "flex-1 flex flex-col",
+              sidebarCollapsed && "ml-4 border-l border-gray-300",
+            )}
+          >
+            {/* Provider Info Grid - Fills Available Space */}
+            <div className="flex-1 min-h-0">
+              <DataGrid
+                title="Provider Info"
+                icon={faUserDoctor}
+                data={sampleProviders}
+                columns={[
+                  {
+                    headerName: "Provider Name",
+                    valueGetter: (params) =>
+                      `${params.data.lastName}, ${params.data.firstName}`,
+                    width: 200,
                   },
-                },
-                {
-                  headerName: "Last Updated",
-                  field: "lastUpdated",
-                  width: 120,
-                },
-                {
-                  headerName: "Actions",
-                  cellRenderer: ActionsCellRenderer,
-                  width: 190,
-                  sortable: false,
-                  filter: false,
-                  pinned: 'right',
-                  cellStyle: {
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'start',
-                    paddingLeft: '16px'
-                  }
-                },
-              ]}
-              onRowClicked={setSelectedProvider}
-              height="100%"
-            />
+                  {
+                    headerName: "Title",
+                    field: "title",
+                    width: 120,
+                  },
+                  {
+                    headerName: "Specialty",
+                    field: "primarySpecialty",
+                    width: 200,
+                  },
+                  {
+                    headerName: "NPI #",
+                    field: "npiNumber",
+                    width: 140,
+                  },
+                  {
+                    headerName: "Work Email",
+                    field: "workEmail",
+                    width: 250,
+                  },
+                  {
+                    headerName: "Personal Email",
+                    field: "personalEmail",
+                    width: 250,
+                  },
+                  {
+                    headerName: "Mobile Phone",
+                    field: "mobilePhone",
+                    width: 145,
+                  },
+                  {
+                    headerName: "Tags",
+                    field: "tags",
+                    width: 200,
+                    valueFormatter: (params) => {
+                      return params.value && Array.isArray(params.value)
+                        ? params.value.join(", ")
+                        : "";
+                    },
+                  },
+                  {
+                    headerName: "Last Updated",
+                    field: "lastUpdated",
+                    width: 120,
+                  },
+                  {
+                    headerName: "Actions",
+                    cellRenderer: ActionsCellRenderer,
+                    width: 190,
+                    sortable: false,
+                    filter: false,
+                    pinned: "right",
+                    cellStyle: {
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "start",
+                      paddingLeft: "16px",
+                    },
+                  },
+                ]}
+                onRowClicked={setSelectedProvider}
+                height="100%"
+              />
+            </div>
           </div>
         </div>
       </div>
