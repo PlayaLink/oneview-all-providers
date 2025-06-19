@@ -790,6 +790,67 @@ const Index = () => {
                         paddingLeft: "16px",
                       },
                     },
+                    {
+                      headerName: "Personal Email",
+                      field: "personalEmail",
+                      width: 250,
+                      cellStyle: {
+                        color: "#545454",
+                        fontSize: "12px",
+                        display: "flex",
+                        alignItems: "center",
+                        paddingLeft: "16px",
+                      },
+                    },
+                    {
+                      headerName: "Mobile Phone",
+                      field: "mobilePhone",
+                      width: 145,
+                      cellStyle: {
+                        color: "#545454",
+                        fontSize: "12px",
+                        display: "flex",
+                        alignItems: "center",
+                        paddingLeft: "16px",
+                      },
+                    },
+                    {
+                      headerName: "Tags",
+                      field: "tags",
+                      width: 200,
+                      cellRenderer: TagsCellRenderer,
+                      cellStyle: {
+                        display: "flex",
+                        alignItems: "center",
+                        paddingLeft: "16px",
+                      },
+                    },
+                    {
+                      headerName: "Last Updated",
+                      field: "lastUpdated",
+                      width: 120,
+                      cellStyle: {
+                        color: "#545454",
+                        fontSize: "12px",
+                        display: "flex",
+                        alignItems: "center",
+                        paddingLeft: "16px",
+                      },
+                    },
+                    {
+                      headerName: "Actions",
+                      cellRenderer: ActionsCellRenderer,
+                      width: 190,
+                      sortable: false,
+                      filter: false,
+                      pinned: "right",
+                      cellStyle: {
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "start",
+                        paddingLeft: "16px",
+                      },
+                    },
                   ]}
                   onSelectionChanged={handleSelectionChanged}
                   rowSelection="multiple"
