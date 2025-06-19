@@ -142,8 +142,13 @@ const DataGrid: React.FC<DataGridProps> = ({
             sortable: true,
             filter: true,
             cellStyle: {
-              borderRight: "1px solid #E2E2E2",
+              borderRight: "none",
             },
+          }}
+          suppressColumnVirtualisation={false}
+          gridOptions={{
+            suppressBorderLeft: true,
+            suppressBorderRight: true,
           }}
           icons={{
             filter: () => (
