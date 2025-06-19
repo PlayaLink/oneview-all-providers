@@ -336,7 +336,7 @@ const Index = () => {
             className="absolute w-6 h-6 bg-[#545454] text-white rounded-full flex items-center justify-center hover:bg-[#3f3f3f] transition-colors z-20"
             style={{
               right: "-12px", // Position on the right edge of the sidebar
-              top: "18px", // Vertically aligned with "All Sections" title
+              top: "-3px", // Vertically centered on the top border stroke
             }}
           >
             {sidebarCollapsed ? (
