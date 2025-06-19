@@ -99,29 +99,77 @@ const SideNav: React.FC<SideNavProps> = ({ collapsed }) => {
             </div>
             {expandedSections.providerInfo && (
               <div className="pl-3 flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
-                <div className="flex items-center gap-2 p-2 bg-[#008BC9] text-white rounded">
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded cursor-pointer",
+                    isActive("/")
+                      ? "bg-[#008BC9] text-white"
+                      : "text-[#008BC9] hover:bg-gray-50",
+                  )}
+                  onClick={() => handleNavClick("/")}
+                >
                   <FontAwesomeIcon icon={faUserDoctor} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Provider Info</span>
                 </div>
-                <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded cursor-pointer",
+                    isActive("/birth-info")
+                      ? "bg-[#008BC9] text-white"
+                      : "text-[#008BC9] hover:bg-gray-50",
+                  )}
+                  onClick={() => handleNavClick("/birth-info")}
+                >
                   <FontAwesomeIcon icon={faWeight} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Birth Info</span>
                 </div>
-                <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded cursor-pointer",
+                    isActive("/addresses")
+                      ? "bg-[#008BC9] text-white"
+                      : "text-[#008BC9] hover:bg-gray-50",
+                  )}
+                  onClick={() => handleNavClick("/addresses")}
+                >
                   <FontAwesomeIcon icon={faHouse} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Addresses</span>
                 </div>
-                <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded cursor-pointer",
+                    isActive("/additional-names")
+                      ? "bg-[#008BC9] text-white"
+                      : "text-[#008BC9] hover:bg-gray-50",
+                  )}
+                  onClick={() => handleNavClick("/additional-names")}
+                >
                   <FontAwesomeIcon icon={faAddressBook} className="w-4 h-4" />
                   <span className="text-xs font-semibold">
                     Additional Names
                   </span>
                 </div>
-                <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded cursor-pointer",
+                    isActive("/caqh")
+                      ? "bg-[#008BC9] text-white"
+                      : "text-[#008BC9] hover:bg-gray-50",
+                  )}
+                  onClick={() => handleNavClick("/caqh")}
+                >
                   <FontAwesomeIcon icon={faPlay} className="w-4 h-4" />
                   <span className="text-xs font-semibold">CAQH</span>
                 </div>
-                <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded cursor-pointer",
+                    isActive("/health-info")
+                      ? "bg-[#008BC9] text-white"
+                      : "text-[#008BC9] hover:bg-gray-50",
+                  )}
+                  onClick={() => handleNavClick("/health-info")}
+                >
                   <FontAwesomeIcon icon={faFileMedical} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Health Info</span>
                 </div>
