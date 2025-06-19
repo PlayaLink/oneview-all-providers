@@ -658,6 +658,69 @@ const Index = () => {
                 </div>
               ))}
             </div>
+
+            {/* AG Grid Section */}
+            <div className="bg-white mt-8">
+              {/* AG Grid Header */}
+              <div className="flex items-center justify-between px-2 py-[9px] bg-[#CFD8DC] border-b border-gray-300">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <FontAwesomeIcon
+                      icon={faUsers}
+                      className="w-4 h-4 text-[#545454]"
+                    />
+                    <span className="text-[#545454] font-bold text-xs tracking-wider uppercase">
+                      Provider Data (AG Grid)
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#F48100] rounded-full">
+                      <span className="text-white font-bold text-xs">1</span>
+                      <span className="text-white font-bold text-xs">
+                        Expiring
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#DB0D00] rounded-full">
+                      <span className="text-white font-bold text-xs">1</span>
+                      <span className="text-white font-bold text-xs">
+                        Expired
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#545454] rounded-full">
+                      <span className="text-white font-bold text-xs">900+</span>
+                      <span className="text-white font-bold text-xs">
+                        Total
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-9 h-5 bg-[#79AC48] rounded-full relative">
+                    <div className="w-4 h-4 bg-white rounded-full absolute right-0.5 top-0.5"></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* AG Grid Container */}
+              <div
+                className="ag-theme-alpine"
+                style={{ height: "400px", width: "100%" }}
+              >
+                <AgGridReact
+                  rowData={sampleProviders}
+                  columnDefs={columnDefs}
+                  onSelectionChanged={handleSelectionChanged}
+                  rowSelection="single"
+                  suppressRowClickSelection={false}
+                  domLayout="normal"
+                  headerHeight={40}
+                  rowHeight={42}
+                  suppressHorizontalScroll={false}
+                  animateRows={true}
+                  className="ag-grid-custom"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Right Side Panel */}
