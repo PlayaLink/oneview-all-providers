@@ -499,24 +499,6 @@ const Index = () => {
 
         {/* Right Side Panel */}
         {selectedProvider && (
-
-                {/* Specialty */}
-                <div className="col-span-2 border-b border-[#E2E2E2]">
-                  <div className="h-12 flex items-center px-4 bg-white">
-                    <span className="text-[#545454] font-bold text-xs tracking-wide">Specialty</span>
-                  </div>
-                  <div className="px-4 pb-4 bg-white">
-                    <input
-                      type="text"
-                      className="w-full h-8 px-4 border border-[#E2E2E2] rounded text-xs"
-                      placeholder=""
-                    />
-                  </div>
-                </div>
-
-                {/* NPI # */}
-                <div className="col-span-1 border-b border-[#E2E2E2]">
-                  <div className="h-12 flex items-center px-4 bg-white">
                     <span className="text-[#545454] font-bold text-xs tracking-wide">NPI #</span>
                   </div>
                   <div className="px-4 pb-4 bg-white">
