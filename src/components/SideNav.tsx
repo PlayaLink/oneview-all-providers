@@ -144,11 +144,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/")
+                    isItemActive("provider-info")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/")}
+                  onClick={() => handleItemClick("provider-info")}
                 >
                   <FontAwesomeIcon icon={faUserDoctor} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Provider Info</span>
@@ -156,11 +156,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/birth-info")
+                    isItemActive("birth-info")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/birth-info")}
+                  onClick={() => handleItemClick("birth-info")}
                 >
                   <FontAwesomeIcon icon={faWeight} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Birth Info</span>
@@ -168,11 +168,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/addresses")
+                    isItemActive("addresses")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/addresses")}
+                  onClick={() => handleItemClick("addresses")}
                 >
                   <FontAwesomeIcon icon={faHouse} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Addresses</span>
@@ -180,11 +180,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/additional-names")
+                    isItemActive("additional-names")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/additional-names")}
+                  onClick={() => handleItemClick("additional-names")}
                 >
                   <FontAwesomeIcon icon={faAddressBook} className="w-4 h-4" />
                   <span className="text-xs font-semibold">
@@ -194,11 +194,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/caqh")
+                    isItemActive("caqh")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/caqh")}
+                  onClick={() => handleItemClick("caqh")}
                 >
                   <FontAwesomeIcon icon={faPlay} className="w-4 h-4" />
                   <span className="text-xs font-semibold">CAQH</span>
@@ -206,11 +206,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/health-info")
+                    isItemActive("health-info")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/health-info")}
+                  onClick={() => handleItemClick("health-info")}
                 >
                   <FontAwesomeIcon icon={faFileMedical} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Health Info</span>
