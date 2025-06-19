@@ -44,7 +44,7 @@
 /* Custom AG Grid styling to match existing design */
 .ag-grid-custom .ag-header {
   background-color: #cfd8dc;
-  border-bottom: 0.5px solid #d2d5dc;
+  border-bottom: 0.5px solid #d2d5dc !important;
 }
 
 .ag-grid-custom .ag-header-cell {
@@ -60,6 +60,15 @@
 .ag-grid-custom .ag-row {
   border-bottom: 0.5px solid #d2d5dc !important;
   background-color: white !important;
+}
+
+/* More specific selectors for row borders */
+.ag-theme-alpine.ag-grid-custom .ag-row {
+  border-bottom: 0.5px solid #d2d5dc !important;
+}
+
+.ag-theme-alpine.ag-grid-custom .ag-header {
+  border-bottom: 0.5px solid #d2d5dc !important;
 }
 
 .ag-grid-custom .ag-row:hover {
