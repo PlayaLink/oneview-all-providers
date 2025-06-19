@@ -292,7 +292,7 @@ const Index = () => {
             </div>
             <div className="flex items-center gap-4">
               <Button size="sm" className="bg-[#79AC48] hover:bg-[#6B9A3F] text-white">
-                <FontAwesome
+                <FontAwesomeIcon icon={faUserPlus} className="w-4 h-4 mr-2" />
                 Add Provider
               </Button>
             </div>
