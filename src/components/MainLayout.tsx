@@ -102,7 +102,13 @@ const MainLayout: React.FC = () => {
               sidebarCollapsed ? "w-0" : "w-48",
             )}
           >
-            <SideNav collapsed={sidebarCollapsed} />
+            <SideNav
+              collapsed={sidebarCollapsed}
+              selectedItem={selectedItem}
+              selectedSection={selectedSection}
+              onItemSelect={handleItemSelect}
+              onSectionSelect={handleSectionSelect}
+            />
 
             {/* Collapse Toggle */}
             <button
