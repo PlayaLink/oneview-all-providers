@@ -15,6 +15,20 @@ import MainContent from "@/components/MainContent";
 
 const MainLayout: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<string | null>(
+    "provider-info",
+  );
+  const [selectedSection, setSelectedSection] = useState<string | null>(null);
+
+  const handleItemSelect = (item: string) => {
+    setSelectedItem(item);
+    setSelectedSection(null);
+  };
+
+  const handleSectionSelect = (section: string) => {
+    setSelectedSection(section);
+    setSelectedItem(null);
+  };
 
   return (
     <div className="h-screen flex flex-col bg-white">
