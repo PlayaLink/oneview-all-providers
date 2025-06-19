@@ -711,7 +711,6 @@ const Index = () => {
                   columnDefs={[
                     {
                       headerName: "Provider Name",
-                      field: "providerName",
                       valueGetter: (params) =>
                         `${params.data.lastName}, ${params.data.firstName}`,
                       width: 200,
@@ -736,32 +735,11 @@ const Index = () => {
                       field: "workEmail",
                       width: 250,
                     },
-                    {
-                      headerName: "Mobile Phone",
-                      field: "mobilePhone",
-                      width: 145,
-                    },
-                    {
-                      headerName: "Actions",
-                      cellRenderer: ActionsCellRenderer,
-                      width: 190,
-                      sortable: false,
-                      filter: false,
-                    },
                   ]}
                   onSelectionChanged={handleSelectionChanged}
                   rowSelection="single"
-                  suppressRowClickSelection={false}
-                  domLayout="normal"
                   headerHeight={40}
                   rowHeight={42}
-                  suppressHorizontalScroll={false}
-                  animateRows={true}
-                  defaultColDef={{
-                    resizable: true,
-                    sortable: true,
-                    filter: true,
-                  }}
                 />
               </div>
             </div>
