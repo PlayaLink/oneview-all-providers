@@ -40,3 +40,45 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Custom AG Grid styling to match existing design */
+.ag-grid-custom .ag-header {
+  background-color: #cfd8dc;
+  border-bottom: 1px solid #d2d5dc;
+}
+
+.ag-grid-custom .ag-header-cell {
+  background-color: #cfd8dc !important;
+  color: #545454 !important;
+  font-weight: bold !important;
+  font-size: 12px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  border-right: 1px solid #e2e2e2 !important;
+}
+
+.ag-grid-custom .ag-row {
+  border-bottom: 1px solid #d2d5dc !important;
+  background-color: white !important;
+}
+
+.ag-grid-custom .ag-row:hover {
+  background-color: rgb(249, 250, 251) !important;
+}
+
+.ag-grid-custom .ag-cell {
+  color: #545454 !important;
+  font-size: 12px !important;
+  border-right: 1px solid #e2e2e2 !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 16px !important;
+}
+
+.ag-grid-custom .ag-row-selected {
+  background-color: rgb(229, 246, 253) !important;
+}
+
+.ag-grid-custom .ag-row-selected:hover {
+  background-color: rgb(219, 234, 254) !important;
+}
