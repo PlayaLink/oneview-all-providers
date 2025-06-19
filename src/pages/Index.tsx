@@ -5,7 +5,7 @@ import {
   GridReadyEvent,
   SelectionChangedEvent,
 } from "ag-grid-community";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChevronDown,
   faSearch,
@@ -25,8 +25,8 @@ import {
   faPlus,
   faFilter,
   faCircleQuestion,
-} from "@fortawesome/free-solid-svg-icons";
-import { faEdit } from "@fortawesome/free-regular-svg-icons";
+} from '@fortawesome/free-solid-svg-icons';
+import { faEdit } from '@fortawesome/free-regular-svg-icons';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -155,16 +155,10 @@ const ActionsCellRenderer = () => {
   return (
     <div className="flex items-center justify-end gap-2 h-full">
       <button className="p-1 hover:bg-gray-100 rounded">
-        <FontAwesomeIcon
-          icon={faCircleDown}
-          className="w-4 h-4 text-[#BABABA]"
-        />
+        <FontAwesomeIcon icon={faCircleDown} className="w-4 h-4 text-[#BABABA]" />
       </button>
       <button className="p-1 hover:bg-gray-100 rounded">
-        <FontAwesomeIcon
-          icon={faUpRightFromSquare}
-          className="w-4 h-4 text-[#545454]"
-        />
+        <FontAwesomeIcon icon={faUpRightFromSquare} className="w-4 h-4 text-[#545454]" />
       </button>
       <button className="p-1 hover:bg-gray-100 rounded">
         <FontAwesomeIcon icon={faEdit} className="w-4 h-4 text-[#545454]" />
@@ -296,18 +290,12 @@ const Index = () => {
 
             <div className="flex items-center justify-center flex-1">
               <div className="relative">
-                <FontAwesomeIcon
-                  icon={faSearch}
-                  className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#545454]"
-                />
+                <FontAwesomeIcon icon={faSearch} className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#545454]" />
                 <Input
                   placeholder="Search a Provider Name or NPI..."
                   className="pl-8 pr-10 py-1 text-xs border-gray-300 w-96"
                 />
-                <FontAwesomeIcon
-                  icon={faChevronDown}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#545454]"
-                />
+                <FontAwesomeIcon icon={faChevronDown} className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#545454]" />
               </div>
             </div>
 
@@ -328,25 +316,13 @@ const Index = () => {
             sidebarCollapsed ? "w-12" : "w-48",
           )}
         >
-          <div className="p-2 flex flex-col gap-2">
-            {!sidebarCollapsed && (
-              <>
-                {/* All Sections Header */}
-                <div className="flex items-center justify-between p-2 rounded">
-                  <span className="font-bold text-sm text-[#545454] tracking-wide">
-                    All Sections
-                  </span>
-                  <FontAwesomeIcon
-                    icon={faEllipsis}
-                    className="w-4 h-4 text-[#545454]"
-                  />
-                </div>
+          <SideNav collapsed={sidebarCollapsed} />
 
                 {/* Provider Info Section */}
                 <div className="flex flex-col">
                   <div
                     className="flex items-center justify-between p-2 rounded hover:bg-gray-50 cursor-pointer"
-                    onClick={() => toggleSection("providerInfo")}
+                    onClick={() => toggleSection('providerInfo')}
                   >
                     <span className="text-xs uppercase text-[#545454] font-medium tracking-wide">
                       Provider Info
@@ -355,52 +331,35 @@ const Index = () => {
                       icon={faChevronDown}
                       className={cn(
                         "w-4 h-4 text-[#545454] transition-transform duration-200",
-                        !expandedSections.providerInfo && "rotate-180",
+                        !expandedSections.providerInfo && "rotate-180"
                       )}
                     />
                   </div>
                   {expandedSections.providerInfo && (
                     <div className="pl-3 flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
                       <div className="flex items-center gap-2 p-2 bg-[#008BC9] text-white rounded">
-                        <FontAwesomeIcon
-                          icon={faUserDoctor}
-                          className="w-4 h-4"
-                        />
-                        <span className="text-xs font-semibold">
-                          Provider Info
-                        </span>
+                        <FontAwesomeIcon icon={faUserDoctor} className="w-4 h-4" />
+                        <span className="text-xs font-semibold">Provider Info</span>
                       </div>
                       <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
                         <FontAwesomeIcon icon={faWeight} className="w-4 h-4" />
-                        <span className="text-xs font-semibold">
-                          Birth Info
-                        </span>
+                        <span className="text-xs font-semibold">Birth Info</span>
                       </div>
                       <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
                         <FontAwesomeIcon icon={faHouse} className="w-4 h-4" />
                         <span className="text-xs font-semibold">Addresses</span>
                       </div>
                       <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                        <FontAwesomeIcon
-                          icon={faAddressBook}
-                          className="w-4 h-4"
-                        />
-                        <span className="text-xs font-semibold">
-                          Additional Names
-                        </span>
+                        <FontAwesomeIcon icon={faAddressBook} className="w-4 h-4" />
+                        <span className="text-xs font-semibold">Additional Names</span>
                       </div>
                       <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
                         <FontAwesomeIcon icon={faPlay} className="w-4 h-4" />
                         <span className="text-xs font-semibold">CAQH</span>
                       </div>
                       <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                        <FontAwesomeIcon
-                          icon={faFileMedical}
-                          className="w-4 h-4"
-                        />
-                        <span className="text-xs font-semibold">
-                          Health Info
-                        </span>
+                        <FontAwesomeIcon icon={faFileMedical} className="w-4 h-4" />
+                        <span className="text-xs font-semibold">Health Info</span>
                       </div>
                     </div>
                   )}
@@ -410,7 +369,7 @@ const Index = () => {
                 <div className="flex flex-col">
                   <div
                     className="flex items-center justify-between p-2 rounded hover:bg-gray-50 cursor-pointer"
-                    onClick={() => toggleSection("licensure")}
+                    onClick={() => toggleSection('licensure')}
                   >
                     <span className="text-xs uppercase text-[#545454] font-medium tracking-wide">
                       Licensure
@@ -419,7 +378,7 @@ const Index = () => {
                       icon={faChevronDown}
                       className={cn(
                         "w-4 h-4 text-[#545454] transition-transform duration-200",
-                        !expandedSections.licensure && "rotate-180",
+                        !expandedSections.licensure && "rotate-180"
                       )}
                     />
                   </div>
@@ -427,24 +386,15 @@ const Index = () => {
                     <div className="pl-3 flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
                       <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
                         <FontAwesomeIcon icon={faRoad} className="w-4 h-4" />
-                        <span className="text-xs font-semibold">
-                          State Licenses
-                        </span>
+                        <span className="text-xs font-semibold">State Licenses</span>
                       </div>
                       <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                        <FontAwesomeIcon
-                          icon={faClipboard}
-                          className="w-4 h-4"
-                        />
-                        <span className="text-xs font-semibold">
-                          DEA Licenses
-                        </span>
+                        <FontAwesomeIcon icon={faClipboard} className="w-4 h-4" />
+                        <span className="text-xs font-semibold">DEA Licenses</span>
                       </div>
                       <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
                         <FontAwesomeIcon icon={faPills} className="w-4 h-4" />
-                        <span className="text-xs font-semibold">
-                          State Controlled Substance Licenses
-                        </span>
+                        <span className="text-xs font-semibold">State Controlled Substance Licenses</span>
                       </div>
                     </div>
                   )}
@@ -454,7 +404,7 @@ const Index = () => {
                 <div className="flex flex-col">
                   <div
                     className="flex items-center justify-between p-2 rounded hover:bg-gray-50 cursor-pointer"
-                    onClick={() => toggleSection("actionsExclusions")}
+                    onClick={() => toggleSection('actionsExclusions')}
                   >
                     <span className="text-xs uppercase text-[#545454] font-medium tracking-wide">
                       Actions & Exclusions
@@ -463,24 +413,18 @@ const Index = () => {
                       icon={faChevronDown}
                       className={cn(
                         "w-4 h-4 text-[#545454] transition-transform duration-200",
-                        !expandedSections.actionsExclusions && "rotate-180",
+                        !expandedSections.actionsExclusions && "rotate-180"
                       )}
                     />
                   </div>
                   {expandedSections.actionsExclusions && (
                     <div className="flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
                       <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                        <FontAwesomeIcon
-                          icon={faClipboardList}
-                          className="w-4 h-4"
-                        />
+                        <FontAwesomeIcon icon={faClipboardList} className="w-4 h-4" />
                         <span className="text-xs font-semibold">Event log</span>
                       </div>
                       <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                        <FontAwesomeIcon
-                          icon={faCheckCircle}
-                          className="w-4 h-4"
-                        />
+                        <FontAwesomeIcon icon={faCheckCircle} className="w-4 h-4" />
                         <span className="text-xs font-semibold">OIG</span>
                       </div>
                     </div>
@@ -491,7 +435,7 @@ const Index = () => {
                 <div className="flex flex-col">
                   <div
                     className="flex items-center justify-between p-2 rounded hover:bg-gray-50 cursor-pointer"
-                    onClick={() => toggleSection("certifications")}
+                    onClick={() => toggleSection('certifications')}
                   >
                     <span className="text-xs uppercase text-[#545454] font-medium tracking-wide">
                       Certifications
@@ -500,29 +444,19 @@ const Index = () => {
                       icon={faChevronDown}
                       className={cn(
                         "w-4 h-4 text-[#545454] transition-transform duration-200",
-                        !expandedSections.certifications && "rotate-180",
+                        !expandedSections.certifications && "rotate-180"
                       )}
                     />
                   </div>
                   {expandedSections.certifications && (
                     <div className="flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
                       <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                        <FontAwesomeIcon
-                          icon={faCertificate}
-                          className="w-4 h-4"
-                        />
-                        <span className="text-xs font-semibold">
-                          Board Certifications
-                        </span>
+                        <FontAwesomeIcon icon={faCertificate} className="w-4 h-4" />
+                        <span className="text-xs font-semibold">Board Certifications</span>
                       </div>
                       <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                        <FontAwesomeIcon
-                          icon={faHeartbeat}
-                          className="w-4 h-4"
-                        />
-                        <span className="text-xs font-semibold">
-                          Other Certifications
-                        </span>
+                        <FontAwesomeIcon icon={faHeartbeat} className="w-4 h-4" />
+                        <span className="text-xs font-semibold">Other Certifications</span>
                       </div>
                     </div>
                   )}
@@ -532,7 +466,7 @@ const Index = () => {
                 <div className="flex flex-col">
                   <div
                     className="flex items-center justify-between p-2 rounded hover:bg-gray-50 cursor-pointer"
-                    onClick={() => toggleSection("educationTraining")}
+                    onClick={() => toggleSection('educationTraining')}
                   >
                     <span className="text-xs uppercase text-[#545454] font-medium tracking-wide">
                       Education & Training
@@ -541,20 +475,15 @@ const Index = () => {
                       icon={faChevronDown}
                       className={cn(
                         "w-4 h-4 text-[#545454] transition-transform duration-200",
-                        !expandedSections.educationTraining && "rotate-180",
+                        !expandedSections.educationTraining && "rotate-180"
                       )}
                     />
                   </div>
                   {expandedSections.educationTraining && (
                     <div className="flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
                       <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                        <FontAwesomeIcon
-                          icon={faUniversity}
-                          className="w-4 h-4"
-                        />
-                        <span className="text-xs font-semibold">
-                          Education & Training
-                        </span>
+                        <FontAwesomeIcon icon={faUniversity} className="w-4 h-4" />
+                        <span className="text-xs font-semibold">Education & Training</span>
                       </div>
                       <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
                         <FontAwesomeIcon icon={faBook} className="w-4 h-4" />
@@ -568,7 +497,7 @@ const Index = () => {
                 <div className="flex flex-col">
                   <div
                     className="flex items-center justify-between p-2 rounded hover:bg-gray-50 cursor-pointer"
-                    onClick={() => toggleSection("workExperience")}
+                    onClick={() => toggleSection('workExperience')}
                   >
                     <span className="text-xs uppercase text-[#545454] font-medium tracking-wide">
                       Work Experience
@@ -577,53 +506,31 @@ const Index = () => {
                       icon={faChevronDown}
                       className={cn(
                         "w-4 h-4 text-[#545454] transition-transform duration-200",
-                        !expandedSections.workExperience && "rotate-180",
+                        !expandedSections.workExperience && "rotate-180"
                       )}
                     />
                   </div>
                   {expandedSections.workExperience && (
                     <div className="flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
                       <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                        <FontAwesomeIcon
-                          icon={faBuilding}
-                          className="w-4 h-4"
-                        />
-                        <span className="text-xs font-semibold">
-                          Practice/Employer
-                        </span>
+                        <FontAwesomeIcon icon={faBuilding} className="w-4 h-4" />
+                        <span className="text-xs font-semibold">Practice/Employer</span>
                       </div>
                       <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                        <FontAwesomeIcon
-                          icon={faHospital}
-                          className="w-4 h-4"
-                        />
-                        <span className="text-xs font-semibold">
-                          Facility Affiliations
-                        </span>
+                        <FontAwesomeIcon icon={faHospital} className="w-4 h-4" />
+                        <span className="text-xs font-semibold">Facility Affiliations</span>
                       </div>
                       <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                        <FontAwesomeIcon
-                          icon={faBriefcase}
-                          className="w-4 h-4"
-                        />
-                        <span className="text-xs font-semibold">
-                          Work History
-                        </span>
+                        <FontAwesomeIcon icon={faBriefcase} className="w-4 h-4" />
+                        <span className="text-xs font-semibold">Work History</span>
                       </div>
                       <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                        <FontAwesomeIcon
-                          icon={faUserGroup}
-                          className="w-4 h-4"
-                        />
-                        <span className="text-xs font-semibold">
-                          Peer References
-                        </span>
+                        <FontAwesomeIcon icon={faUserGroup} className="w-4 h-4" />
+                        <span className="text-xs font-semibold">Peer References</span>
                       </div>
                       <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
                         <FontAwesomeIcon icon={faMedal} className="w-4 h-4" />
-                        <span className="text-xs font-semibold">
-                          Military Experience
-                        </span>
+                        <span className="text-xs font-semibold">Military Experience</span>
                       </div>
                     </div>
                   )}
@@ -633,7 +540,7 @@ const Index = () => {
                 <div className="flex flex-col">
                   <div
                     className="flex items-center justify-between p-2 rounded hover:bg-gray-50 cursor-pointer"
-                    onClick={() => toggleSection("malpracticeInsurance")}
+                    onClick={() => toggleSection('malpracticeInsurance')}
                   >
                     <span className="text-xs uppercase text-[#545454] font-medium tracking-wide">
                       Malpractice Insurance
@@ -642,16 +549,14 @@ const Index = () => {
                       icon={faChevronDown}
                       className={cn(
                         "w-4 h-4 text-[#545454] transition-transform duration-200",
-                        !expandedSections.malpracticeInsurance && "rotate-180",
+                        !expandedSections.malpracticeInsurance && "rotate-180"
                       )}
                     />
                   </div>
                   {expandedSections.malpracticeInsurance && (
                     <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer overflow-hidden transition-all duration-200">
                       <FontAwesomeIcon icon={faGavel} className="w-4 h-4" />
-                      <span className="text-xs font-semibold">
-                        Malpractice Insurance
-                      </span>
+                      <span className="text-xs font-semibold">Malpractice Insurance</span>
                     </div>
                   )}
                 </div>
@@ -660,7 +565,7 @@ const Index = () => {
                 <div className="flex flex-col">
                   <div
                     className="flex items-center justify-between p-2 rounded hover:bg-gray-50 cursor-pointer"
-                    onClick={() => toggleSection("documents")}
+                    onClick={() => toggleSection('documents')}
                   >
                     <span className="text-xs uppercase text-[#545454] font-medium tracking-wide">
                       Documents
@@ -669,7 +574,7 @@ const Index = () => {
                       icon={faChevronDown}
                       className={cn(
                         "w-4 h-4 text-[#545454] transition-transform duration-200",
-                        !expandedSections.documents && "rotate-180",
+                        !expandedSections.documents && "rotate-180"
                       )}
                     />
                   </div>
@@ -680,13 +585,8 @@ const Index = () => {
                         <span className="text-xs font-semibold">Documents</span>
                       </div>
                       <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                        <FontAwesomeIcon
-                          icon={faFileArrowUp}
-                          className="w-4 h-4"
-                        />
-                        <span className="text-xs font-semibold">
-                          Sent Forms
-                        </span>
+                        <FontAwesomeIcon icon={faFileArrowUp} className="w-4 h-4" />
+                        <span className="text-xs font-semibold">Sent Forms</span>
                       </div>
                     </div>
                   )}
@@ -721,10 +621,7 @@ const Index = () => {
               <div className="flex items-center gap-3">
                 {/* Section Icon and Title */}
                 <div className="flex items-center gap-2">
-                  <FontAwesomeIcon
-                    icon={faUserDoctor}
-                    className="w-4 h-4 text-[#545454]"
-                  />
+                  <FontAwesomeIcon icon={faUserDoctor} className="w-4 h-4 text-[#545454]" />
                   <span className="text-[#545454] font-bold text-xs tracking-wider uppercase">
                     Provider Info
                   </span>
@@ -734,15 +631,11 @@ const Index = () => {
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#F48100] rounded-full">
                     <span className="text-white font-bold text-xs">1</span>
-                    <span className="text-white font-bold text-xs">
-                      Expiring
-                    </span>
+                    <span className="text-white font-bold text-xs">Expiring</span>
                   </div>
                   <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#DB0D00] rounded-full">
                     <span className="text-white font-bold text-xs">1</span>
-                    <span className="text-white font-bold text-xs">
-                      Expired
-                    </span>
+                    <span className="text-white font-bold text-xs">Expired</span>
                   </div>
                   <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#545454] rounded-full">
                     <span className="text-white font-bold text-xs">900+</span>
@@ -766,19 +659,14 @@ const Index = () => {
                 {/* Checkbox Column */}
                 <div className="col-span-1 h-12 bg-[#E6E7EB] border border-[#E6E6E6] flex items-center justify-center">
                   <div className="flex items-center gap-2 p-1 bg-[#E6E7EB] border border-[#E6E6E6] rounded">
-                    <FontAwesomeIcon
-                      icon={faFilter}
-                      className="w-4 h-4 text-[#4E5872]"
-                    />
+                    <FontAwesomeIcon icon={faFilter} className="w-4 h-4 text-[#4E5872]" />
                   </div>
                 </div>
 
                 {/* Provider Name */}
                 <div className="col-span-2 border-b border-[#E2E2E2]">
                   <div className="h-12 flex items-center px-4 bg-white">
-                    <span className="text-[#545454] font-bold text-xs tracking-wide">
-                      Provider Name
-                    </span>
+                    <span className="text-[#545454] font-bold text-xs tracking-wide">Provider Name</span>
                   </div>
                   <div className="px-4 pb-4 bg-white">
                     <input
@@ -792,9 +680,7 @@ const Index = () => {
                 {/* Title */}
                 <div className="col-span-1 border-b border-[#E2E2E2]">
                   <div className="h-12 flex items-center px-4 bg-white">
-                    <span className="text-[#545454] font-bold text-xs tracking-wide">
-                      Title
-                    </span>
+                    <span className="text-[#545454] font-bold text-xs tracking-wide">Title</span>
                   </div>
                   <div className="px-4 pb-4 bg-white">
                     <input
@@ -808,9 +694,7 @@ const Index = () => {
                 {/* Specialty */}
                 <div className="col-span-2 border-b border-[#E2E2E2]">
                   <div className="h-12 flex items-center px-4 bg-white">
-                    <span className="text-[#545454] font-bold text-xs tracking-wide">
-                      Specialty
-                    </span>
+                    <span className="text-[#545454] font-bold text-xs tracking-wide">Specialty</span>
                   </div>
                   <div className="px-4 pb-4 bg-white">
                     <input
@@ -824,9 +708,7 @@ const Index = () => {
                 {/* NPI # */}
                 <div className="col-span-1 border-b border-[#E2E2E2]">
                   <div className="h-12 flex items-center px-4 bg-white">
-                    <span className="text-[#545454] font-bold text-xs tracking-wide">
-                      NPI #
-                    </span>
+                    <span className="text-[#545454] font-bold text-xs tracking-wide">NPI #</span>
                   </div>
                   <div className="px-4 pb-4 bg-white">
                     <input
@@ -840,9 +722,7 @@ const Index = () => {
                 {/* Work Email */}
                 <div className="col-span-2 border-b border-[#E2E2E2]">
                   <div className="h-12 flex items-center px-4 bg-white">
-                    <span className="text-[#545454] font-bold text-xs tracking-wide">
-                      Work Email
-                    </span>
+                    <span className="text-[#545454] font-bold text-xs tracking-wide">Work Email</span>
                   </div>
                   <div className="px-4 pb-4 bg-white">
                     <input
@@ -857,35 +737,22 @@ const Index = () => {
                 <div className="col-span-3 border-b border-[#E2E2E2] bg-white shadow-[-4px_0px_30px_0px_rgba(0,0,0,0.3)] w-[190px] ml-[52px]">
                   <div className="h-12 flex items-center justify-between px-4">
                     <div className="flex items-center gap-1">
-                      <span className="text-[#545454] font-semibold text-xs tracking-wide">
-                        Actions
-                      </span>
-                      <FontAwesomeIcon
-                        icon={faCircleQuestion}
-                        className="w-3 h-3 text-[#BABABA]"
-                      />
+                      <span className="text-[#545454] font-semibold text-xs tracking-wide">Actions</span>
+                      <FontAwesomeIcon icon={faCircleQuestion} className="w-3 h-3 text-[#BABABA]" />
                     </div>
                     <div className="flex items-center gap-1">
                       <button className="w-6 h-6 bg-[#79AC48] rounded flex items-center justify-center">
-                        <FontAwesomeIcon
-                          icon={faPlus}
-                          className="w-2.5 h-2.5 text-white"
-                        />
+                        <FontAwesomeIcon icon={faPlus} className="w-2.5 h-2.5 text-white" />
                       </button>
-                      <FontAwesomeIcon
-                        icon={faEllipsisVertical}
-                        className="w-5 h-5 text-[#545454]"
-                      />
+                      <FontAwesomeIcon icon={faEllipsisVertical} className="w-5 h-5 text-[#545454]" />
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Grid Data Row */}
-              <div
-                className="grid grid-cols-12 h-[42px] border-b border-[#D2D5DC] bg-white hover:bg-gray-50 cursor-pointer"
-                onClick={() => setSelectedProvider(sampleProviders[0])}
-              >
+              <div className="grid grid-cols-12 h-[42px] border-b border-[#D2D5DC] bg-white hover:bg-gray-50 cursor-pointer"
+                   onClick={() => setSelectedProvider(sampleProviders[0])}>
                 {/* Checkbox */}
                 <div className="col-span-1 flex items-center justify-center">
                   <div className="w-4 h-4 border border-[#BABABA] rounded-sm bg-white"></div>
@@ -893,9 +760,7 @@ const Index = () => {
 
                 {/* Provider Name */}
                 <div className="col-span-2 flex items-center px-4">
-                  <span className="text-[#545454] text-xs font-medium">
-                    García, Sofia
-                  </span>
+                  <span className="text-[#545454] text-xs font-medium">García, Sofia</span>
                 </div>
 
                 {/* Title */}
@@ -915,36 +780,22 @@ const Index = () => {
 
                 {/* Work Email */}
                 <div className="col-span-2 flex items-center px-4">
-                  <span className="text-[#545454] text-xs">
-                    michelle.rivera@example.com
-                  </span>
+                  <span className="text-[#545454] text-xs">michelle.rivera@example.com</span>
                 </div>
 
                 {/* Actions */}
                 <div className="col-span-3 flex items-center justify-start gap-2 px-4 bg-white shadow-[-4px_0px_30px_0px_rgba(0,0,0,0.3)] w-[190px] ml-[52px]">
                   <button className="p-1 hover:bg-gray-100 rounded">
-                    <FontAwesomeIcon
-                      icon={faCircleDown}
-                      className="w-4 h-4 text-[#BABABA]"
-                    />
+                    <FontAwesomeIcon icon={faCircleDown} className="w-4 h-4 text-[#BABABA]" />
                   </button>
                   <button className="p-1 hover:bg-gray-100 rounded">
-                    <FontAwesomeIcon
-                      icon={faUpRightFromSquare}
-                      className="w-4 h-4 text-[#545454]"
-                    />
+                    <FontAwesomeIcon icon={faUpRightFromSquare} className="w-4 h-4 text-[#545454]" />
                   </button>
                   <button className="p-1 hover:bg-gray-100 rounded">
-                    <FontAwesomeIcon
-                      icon={faEdit}
-                      className="w-4 h-4 text-[#545454]"
-                    />
+                    <FontAwesomeIcon icon={faEdit} className="w-4 h-4 text-[#545454]" />
                   </button>
                   <button className="p-1 hover:bg-gray-100 rounded">
-                    <FontAwesomeIcon
-                      icon={faFlag}
-                      className="w-4 h-4 text-[#545454]"
-                    />
+                    <FontAwesomeIcon icon={faFlag} className="w-4 h-4 text-[#545454]" />
                   </button>
                   <div className="w-6 h-3 bg-[#79AC48] rounded-full relative">
                     <div className="w-2.5 h-2.5 bg-white rounded-full absolute right-0.5 top-0.25"></div>
@@ -954,63 +805,39 @@ const Index = () => {
 
               {/* Additional sample rows */}
               {sampleProviders.slice(1, 4).map((provider, index) => (
-                <div
-                  key={provider.id}
-                  className="grid grid-cols-12 h-[42px] border-b border-[#D2D5DC] bg-white hover:bg-gray-50 cursor-pointer"
-                  onClick={() => setSelectedProvider(provider)}
-                >
+                <div key={provider.id}
+                     className="grid grid-cols-12 h-[42px] border-b border-[#D2D5DC] bg-white hover:bg-gray-50 cursor-pointer"
+                     onClick={() => setSelectedProvider(provider)}>
                   <div className="col-span-1 flex items-center justify-center">
                     <div className="w-4 h-4 border border-[#BABABA] rounded-sm bg-white"></div>
                   </div>
                   <div className="col-span-2 flex items-center px-4">
-                    <span className="text-[#545454] text-xs font-medium">
-                      {provider.lastName}, {provider.firstName}
-                    </span>
+                    <span className="text-[#545454] text-xs font-medium">{provider.lastName}, {provider.firstName}</span>
                   </div>
                   <div className="col-span-1 flex items-center px-4">
-                    <span className="text-[#545454] text-xs">
-                      {provider.title}
-                    </span>
+                    <span className="text-[#545454] text-xs">{provider.title}</span>
                   </div>
                   <div className="col-span-2 flex items-center px-4">
-                    <span className="text-[#545454] text-xs">
-                      {provider.primarySpecialty}
-                    </span>
+                    <span className="text-[#545454] text-xs">{provider.primarySpecialty}</span>
                   </div>
                   <div className="col-span-1 flex items-center px-4">
-                    <span className="text-[#545454] text-xs">
-                      {provider.npiNumber}
-                    </span>
+                    <span className="text-[#545454] text-xs">{provider.npiNumber}</span>
                   </div>
                   <div className="col-span-2 flex items-center px-4">
-                    <span className="text-[#545454] text-xs">
-                      {provider.workEmail}
-                    </span>
+                    <span className="text-[#545454] text-xs">{provider.workEmail}</span>
                   </div>
                   <div className="col-span-3 flex items-center justify-start gap-2 px-4 bg-white shadow-[-4px_0px_30px_0px_rgba(0,0,0,0.3)] w-[190px] ml-[52px]">
                     <button className="p-1 hover:bg-gray-100 rounded">
-                      <FontAwesomeIcon
-                        icon={faCircleDown}
-                        className="w-4 h-4 text-[#BABABA]"
-                      />
+                      <FontAwesomeIcon icon={faCircleDown} className="w-4 h-4 text-[#BABABA]" />
                     </button>
                     <button className="p-1 hover:bg-gray-100 rounded">
-                      <FontAwesomeIcon
-                        icon={faUpRightFromSquare}
-                        className="w-4 h-4 text-[#545454]"
-                      />
+                      <FontAwesomeIcon icon={faUpRightFromSquare} className="w-4 h-4 text-[#545454]" />
                     </button>
                     <button className="p-1 hover:bg-gray-100 rounded">
-                      <FontAwesomeIcon
-                        icon={faEdit}
-                        className="w-4 h-4 text-[#545454]"
-                      />
+                      <FontAwesomeIcon icon={faEdit} className="w-4 h-4 text-[#545454]" />
                     </button>
                     <button className="p-1 hover:bg-gray-100 rounded">
-                      <FontAwesomeIcon
-                        icon={faFlag}
-                        className="w-4 h-4 text-[#545454]"
-                      />
+                      <FontAwesomeIcon icon={faFlag} className="w-4 h-4 text-[#545454]" />
                     </button>
                     <div className="w-6 h-3 bg-[#79AC48] rounded-full relative">
                       <div className="w-2.5 h-2.5 bg-white rounded-full absolute right-0.5 top-0.25"></div>
