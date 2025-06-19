@@ -35,6 +35,9 @@ interface SideNavProps {
 }
 
 const SideNav: React.FC<SideNavProps> = ({ collapsed }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   // State for collapsible sections
   const [expandedSections, setExpandedSections] = useState<
     Record<string, boolean>
@@ -55,6 +58,12 @@ const SideNav: React.FC<SideNavProps> = ({ collapsed }) => {
       [sectionKey]: !prev[sectionKey],
     }));
   };
+
+  const handleNavClick = (path: string) => {
+    navigate(path);
+  };
+
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <div className="p-2 flex flex-col gap-2">
