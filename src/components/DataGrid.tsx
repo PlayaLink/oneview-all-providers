@@ -116,8 +116,14 @@ const DataGrid: React.FC<DataGridProps> = ({
 
       {/* AG Grid Container */}
       <div
-        className="ag-theme-alpine ag-grid-custom"
-        style={{ height, width: "100%", border: "none", borderWidth: "0px" }}
+        className="ag-theme-alpine ag-grid-custom flex-1"
+        style={{
+          height: height === "100%" ? "auto" : height,
+          width: "100%",
+          border: "none",
+          borderWidth: "0px",
+          minHeight: 0,
+        }}
       >
         <AgGridReact
           rowData={data}
