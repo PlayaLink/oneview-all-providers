@@ -532,11 +532,27 @@ const SideNav: React.FC<SideNavProps> = ({ collapsed }) => {
             </div>
             {expandedSections.documents && (
               <div className="pl-3 flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
-                <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded cursor-pointer",
+                    isActive("/documents")
+                      ? "bg-[#008BC9] text-white"
+                      : "text-[#008BC9] hover:bg-gray-50",
+                  )}
+                  onClick={() => handleNavClick("/documents")}
+                >
                   <FontAwesomeIcon icon={faFolder} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Documents</span>
                 </div>
-                <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded cursor-pointer",
+                    isActive("/sent-forms")
+                      ? "bg-[#008BC9] text-white"
+                      : "text-[#008BC9] hover:bg-gray-50",
+                  )}
+                  onClick={() => handleNavClick("/sent-forms")}
+                >
                   <FontAwesomeIcon icon={faFileArrowUp} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Sent Forms</span>
                 </div>
