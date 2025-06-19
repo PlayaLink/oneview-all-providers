@@ -159,7 +159,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
                     isItemActive("birth-info")
                       ? "bg-[#008BC9] text-white"
-                      : "text-[#008BC9] hover:bg-gray-50",
+                      : "text-[#545454] hover:bg-gray-50",
                   )}
                   onClick={() => handleItemClick("birth-info")}
                 >
