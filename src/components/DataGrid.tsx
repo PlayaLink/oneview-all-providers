@@ -161,7 +161,7 @@ const DataGrid: React.FC<DataGridProps> = ({
           icons={{
             filter: () => (
               <FontAwesomeIcon
-                icon={faBarsFilter}
+                icon={faFilter}
                 className="w-3 h-3 text-[#545454]"
                 style={{ fontSize: "12px" }}
               />
