@@ -594,11 +594,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/documents")
+                    isItemActive("documents")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/documents")}
+                  onClick={() => handleItemClick("documents")}
                 >
                   <FontAwesomeIcon icon={faFolder} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Documents</span>
@@ -606,11 +606,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/sent-forms")
+                    isItemActive("sent-forms")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/sent-forms")}
+                  onClick={() => handleItemClick("sent-forms")}
                 >
                   <FontAwesomeIcon icon={faFileArrowUp} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Sent Forms</span>
