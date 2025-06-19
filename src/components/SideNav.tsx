@@ -83,8 +83,10 @@ const SideNav: React.FC<SideNavProps> = ({
           {/* All Sections Header */}
           <div
             className={cn(
-              "flex items-center justify-between p-2 rounded cursor-pointer hover:bg-gray-50",
-              isItemActive("all-sections") && "bg-[#008BC9] text-white",
+              "flex items-center justify-between p-2 rounded cursor-pointer",
+              isItemActive("all-sections")
+                ? "bg-[#008BC9] text-white"
+                : "hover:bg-gray-50",
             )}
             onClick={() => handleItemClick("all-sections")}
           >
