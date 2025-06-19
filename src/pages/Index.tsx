@@ -335,7 +335,7 @@ const Index = () => {
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
             className="absolute w-6 h-6 bg-[#545454] text-white rounded-full flex items-center justify-center hover:bg-[#3f3f3f] transition-colors z-20"
             style={{
-              right: "-12px", // Position on the right edge of the sidebar
+              right: sidebarCollapsed ? "-28px" : "-12px", // Position on left edge of Provider Info grid when collapsed
               top: "-12px", // Vertically centered on the top border stroke (half the button height)
             }}
           >
