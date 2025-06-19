@@ -726,6 +726,10 @@ const Index = () => {
                       filter: false,
                       resizable: false,
                       cellStyle: { borderRight: "none" },
+                      headerStyle: {
+                        border:
+                          "1px none rgb(226, 232, 240) rgb(226, 232, 240) rgb(226, 226, 226)",
+                      },
                     },
                     {
                       headerName: "Provider Name",
