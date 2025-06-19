@@ -255,8 +255,7 @@ const Index = () => {
                 </div>
                 <div className="text-xs opacity-90">(Salt Lake City, Utah)</div>
               </div>
-              <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" />
-            </div>
+              <FontAwesome
 
             {/* Navigation Items */}
             <div className="flex items-center gap-6">
@@ -276,41 +275,32 @@ const Index = () => {
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 bg-white rounded-full"></div>
               <span className="font-bold text-xs">John Smith</span>
-              <FontAwesomeIcon icon={faChevronDown} className="w-5 h-5" />
+              <FontAwesome
             </div>
           </div>
         </div>
 
-        {/* Main Navigation */}
-        <div className="border-t border-gray-300 bg-white">
-          <div className="flex items-center justify-between px-4 py-4">
-            <div className="flex items-center gap-4">
-              <h1 className="text-[#545454] font-bold text-sm tracking-wide">
+        {/* All Providers Section */}
+        <div className="bg-white text-[#545454] px-4 py-3 border-b border-gray-300">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <FontAwesomeIcon icon={faUsers} className="w-4 h-4 text-[#545454]" />
+              <span className="font-bold text-xs tracking-wider uppercase">
                 All Providers
-              </h1>
+              </span>
             </div>
-
-            <div className="flex items-center justify-center flex-1">
-              <div className="relative">
-                <FontAwesomeIcon icon={faSearch} className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#545454]" />
-                <Input
-                  placeholder="Search a Provider Name or NPI..."
-                  className="pl-8 pr-10 py-1 text-xs border-gray-300 w-96"
-                />
-                <FontAwesomeIcon icon={faChevronDown} className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#545454]" />
-              </div>
+            <div className="flex items-center gap-4">
+              <Button size="sm" className="bg-[#79AC48] hover:bg-[#6B9A3F] text-white">
+                <FontAwesome
+                Add Provider
+              </Button>
             </div>
-
-            <Button className="bg-[#545454] hover:bg-[#3f3f3f] text-white px-3.5 py-1.5 text-xs font-bold">
-              Add Provider
-              <FontAwesomeIcon icon={faUserPlus} className="w-3 h-3 ml-2" />
-            </Button>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-1 border-t border-gray-300">
+      <div className="flex flex-1 border-t border-gray-300 overflow-hidden">
         {/* Left Sidebar */}
         <div
           className={cn(
@@ -325,22 +315,22 @@ const Index = () => {
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
             className="absolute w-6 h-6 bg-[#545454] text-white rounded-full flex items-center justify-center hover:bg-[#3f3f3f] transition-colors z-20"
             style={{
-              right: sidebarCollapsed ? "-28px" : "-12px", // Position on left edge of Provider Info grid when collapsed
-              top: "-12px", // Vertically centered on the top border stroke (half the button height)
+              right: sidebarCollapsed ? "-28px" : "-12px",
+              top: "-12px",
             }}
           >
             {sidebarCollapsed ? (
-              <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" />
+              <FontAwesome
             ) : (
-              <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />
+              <FontAwesome
             )}
           </button>
         </div>
 
-        {/* Main Grid Area */}
-        <div className="flex-1 flex">
-          <div className={cn("flex-1", sidebarCollapsed && "ml-4 border-l border-gray-300")}>
-            {/* Provider Info Grid */}
+        {/* Main Grid Area - Flexible */}
+        <div className={cn("flex-1 flex flex-col", sidebarCollapsed && "ml-4 border-l border-gray-300")}>
+          {/* Provider Info Grid - Fills Available Space */}
+          <div className="flex-1 min-h-0">
             <DataGrid
               title="Provider Info"
               icon={faUserDoctor}
@@ -387,8 +377,8 @@ const Index = () => {
                   field: "tags",
                   width: 200,
                   valueFormatter: (params) => {
-                    return params.value && Array.isArray(params.value)
-                      ? params.value.join(', ')
+                    return params.value && Array.isArray(params.value) 
+                      ? params.value.join(', ') 
                       : '';
                   },
                 },
@@ -404,7 +394,7 @@ const Index = () => {
                   sortable: false,
                   filter: false,
                   pinned: 'right',
-                  cellStyle: {
+                  cellStyle: { 
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'start',
@@ -413,575 +403,9 @@ const Index = () => {
                 },
               ]}
               onRowClicked={setSelectedProvider}
-              height="400px"
+              height="100%"
             />
-
-            {/* Provider Data Grid (Example of how to use the new DataGrid component) */}
-            <div className="mt-8">
-              <DataGrid
-                title="Provider Data (AG Grid)"
-                icon={faUsers}
-                data={sampleProviders}
-                columns={[
-                  {
-                    headerName: "Provider Name",
-                    valueGetter: (params) =>
-                      `${params.data.lastName}, ${params.data.firstName}`,
-                    width: 200,
-                  },
-                  {
-                    headerName: "Title",
-                    field: "title",
-                    width: 120,
-                  },
-                  {
-                    headerName: "Specialty",
-                    field: "primarySpecialty",
-                    width: 200,
-                  },
-                  {
-                    headerName: "NPI #",
-                    field: "npiNumber",
-                    width: 140,
-                  },
-                  {
-                    headerName: "Work Email",
-                    field: "workEmail",
-                    width: 250,
-                  },
-                  {
-                    headerName: "Personal Email",
-                    field: "personalEmail",
-                    width: 250,
-                  },
-                  {
-                    headerName: "Mobile Phone",
-                    field: "mobilePhone",
-                    width: 145,
-                  },
-                  {
-                    headerName: "Tags",
-                    field: "tags",
-                    width: 200,
-                    valueFormatter: (params) => {
-                      return params.value && Array.isArray(params.value)
-                        ? params.value.join(', ')
-                        : '';
-                    },
-                  },
-                  {
-                    headerName: "Last Updated",
-                    field: "lastUpdated",
-                    width: 120,
-                  },
-                  {
-                    headerName: "Actions",
-                    cellRenderer: ActionsCellRenderer,
-                    width: 190,
-                    sortable: false,
-                    filter: false,
-                    pinned: 'right',
-                    cellStyle: {
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'start',
-                      paddingLeft: '16px'
-                    }
-                  },
-                ]}
-                onRowClicked={setSelectedProvider}
-                height="400px"
-              />
-            </div>
-        </div>
-
-        </div>
-      </div>
-
-      {/* Footer */}
-                <div className="col-span-3 border-b border-[#E2E2E2] bg-white shadow-[-4px_0px_30px_0px_rgba(0,0,0,0.3)] w-[190px] ml-[52px]">
-                  <div className="h-12 flex items-center justify-between px-4">
-                    <div className="flex items-center gap-1">
-                      <span className="text-[#545454] font-semibold text-xs tracking-wide">Actions</span>
-                      <FontAwesomeIcon icon={faCircleQuestion} className="w-3 h-3 text-[#BABABA]" />
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <button className="w-6 h-6 bg-[#79AC48] rounded flex items-center justify-center">
-                        <FontAwesomeIcon icon={faPlus} className="w-2.5 h-2.5 text-white" />
-                      </button>
-                      <FontAwesomeIcon icon={faEllipsisVertical} className="w-5 h-5 text-[#545454]" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Grid Data Row */}
-              <div className="grid grid-cols-12 h-[42px] border-b border-[#D2D5DC] bg-white hover:bg-gray-50 cursor-pointer"
-                   onClick={() => setSelectedProvider(sampleProviders[0])}>
-                {/* Checkbox */}
-                <div className="col-span-1 flex items-center justify-center">
-                  <div className="w-4 h-4 border border-[#BABABA] rounded-sm bg-white"></div>
-                </div>
-
-                {/* Provider Name */}
-                <div className="col-span-2 flex items-center px-4">
-                  <span className="text-[#545454] text-xs font-medium">García, Sofia</span>
-                </div>
-
-                {/* Title */}
-                <div className="col-span-1 flex items-center px-4">
-                  <span className="text-[#545454] text-xs">MD</span>
-                </div>
-
-                {/* Specialty */}
-                <div className="col-span-2 flex items-center px-4">
-                  <span className="text-[#545454] text-xs">Acupuncture</span>
-                </div>
-
-                {/* NPI # */}
-                <div className="col-span-1 flex items-center px-4">
-                  <span className="text-[#545454] text-xs">1477552867</span>
-                </div>
-
-                {/* Work Email */}
-                <div className="col-span-2 flex items-center px-4">
-                  <span className="text-[#545454] text-xs">michelle.rivera@example.com</span>
-                </div>
-
-                {/* Actions */}
-                <div className="col-span-3 flex items-center justify-start gap-2 px-4 bg-white shadow-[-4px_0px_30px_0px_rgba(0,0,0,0.3)] w-[190px] ml-[52px]">
-                  <button className="p-1 hover:bg-gray-100 rounded">
-                    <FontAwesomeIcon icon={faCircleDown} className="w-4 h-4 text-[#BABABA]" />
-                  </button>
-                  <button className="p-1 hover:bg-gray-100 rounded">
-                    <FontAwesomeIcon icon={faUpRightFromSquare} className="w-4 h-4 text-[#545454]" />
-                  </button>
-                  <button className="p-1 hover:bg-gray-100 rounded">
-                    <FontAwesomeIcon icon={faEdit} className="w-4 h-4 text-[#545454]" />
-                  </button>
-                  <button className="p-1 hover:bg-gray-100 rounded">
-                    <FontAwesomeIcon icon={faFlag} className="w-4 h-4 text-[#545454]" />
-                  </button>
-                  <div className="w-6 h-3 bg-[#79AC48] rounded-full relative">
-                    <div className="w-2.5 h-2.5 bg-white rounded-full absolute right-0.5 top-0.25"></div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Additional sample rows */}
-              {sampleProviders.slice(1, 4).map((provider, index) => (
-                <div key={provider.id}
-                     className="grid grid-cols-12 h-[42px] border-b border-[#D2D5DC] bg-white hover:bg-gray-50 cursor-pointer"
-                     onClick={() => setSelectedProvider(provider)}>
-                  <div className="col-span-1 flex items-center justify-center">
-                    <div className="w-4 h-4 border border-[#BABABA] rounded-sm bg-white"></div>
-                  </div>
-                  <div className="col-span-2 flex items-center px-4">
-                    <span className="text-[#545454] text-xs font-medium">{provider.lastName}, {provider.firstName}</span>
-                  </div>
-                  <div className="col-span-1 flex items-center px-4">
-                    <span className="text-[#545454] text-xs">{provider.title}</span>
-                  </div>
-                  <div className="col-span-2 flex items-center px-4">
-                    <span className="text-[#545454] text-xs">{provider.primarySpecialty}</span>
-                  </div>
-                  <div className="col-span-1 flex items-center px-4">
-                    <span className="text-[#545454] text-xs">{provider.npiNumber}</span>
-                  </div>
-                  <div className="col-span-2 flex items-center px-4">
-                    <span className="text-[#545454] text-xs">{provider.workEmail}</span>
-                  </div>
-                  <div className="col-span-3 flex items-center justify-start gap-2 px-4 bg-white shadow-[-4px_0px_30px_0px_rgba(0,0,0,0.3)] w-[190px] ml-[52px]">
-                    <button className="p-1 hover:bg-gray-100 rounded">
-                      <FontAwesomeIcon icon={faCircleDown} className="w-4 h-4 text-[#BABABA]" />
-                    </button>
-                    <button className="p-1 hover:bg-gray-100 rounded">
-                      <FontAwesomeIcon icon={faUpRightFromSquare} className="w-4 h-4 text-[#545454]" />
-                    </button>
-                    <button className="p-1 hover:bg-gray-100 rounded">
-                      <FontAwesomeIcon icon={faEdit} className="w-4 h-4 text-[#545454]" />
-                    </button>
-                    <button className="p-1 hover:bg-gray-100 rounded">
-                      <FontAwesomeIcon icon={faFlag} className="w-4 h-4 text-[#545454]" />
-                    </button>
-                    <div className="w-6 h-3 bg-[#79AC48] rounded-full relative">
-                      <div className="w-2.5 h-2.5 bg-white rounded-full absolute right-0.5 top-0.25"></div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* AG Grid Section */}
-            <div className="bg-white mt-8">
-              {/* AG Grid Header */}
-              <div className="flex items-center justify-between px-2 py-[9px] bg-[#CFD8DC] border-b border-gray-300">
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2">
-                    <FontAwesomeIcon icon={faUsers} className="w-4 h-4 text-[#545454]" />
-                    <span className="text-[#545454] font-bold text-xs tracking-wider uppercase">
-                      Provider Data (AG Grid)
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#F48100] rounded-full">
-                      <span className="text-white font-bold text-xs">1</span>
-                      <span className="text-white font-bold text-xs">Expiring</span>
-                    </div>
-                    <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#DB0D00] rounded-full">
-                      <span className="text-white font-bold text-xs">1</span>
-                      <span className="text-white font-bold text-xs">Expired</span>
-                    </div>
-                    <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#545454] rounded-full">
-                      <span className="text-white font-bold text-xs">900+</span>
-                      <span className="text-white font-bold text-xs">Total</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-9 h-5 bg-[#79AC48] rounded-full relative">
-                    <div className="w-4 h-4 bg-white rounded-full absolute right-0.5 top-0.5"></div>
-                  </div>
-                </div>
-              </div>
-
-              {/* AG Grid Container */}
-              <div className="ag-theme-alpine ag-grid-custom" style={{ height: '400px', width: '100%', border: 'none', borderWidth: '0px' }}>
-                <AgGridReact
-                  rowData={sampleProviders}
-                  columnDefs={[
-                    {
-                      headerName: "",
-                      headerCheckboxSelection: true,
-                      checkboxSelection: true,
-                      width: 50,
-                      pinned: 'left',
-                      lockPosition: true,
-                      suppressMenu: true,
-                      sortable: false,
-                      filter: false,
-                      resizable: false,
-                      cellClass: 'ag-cell-no-border',
-                      headerClass: 'ag-header-no-border'
-                    },
-                    {
-                      headerName: "Provider Name",
-                      valueGetter: (params) =>
-                        `${params.data.lastName}, ${params.data.firstName}`,
-                      width: 200,
-                      cellStyle: {
-                        color: '#545454',
-                        fontSize: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        paddingLeft: '16px'
-                      }
-                    },
-                    {
-                      headerName: "Title",
-                      field: "title",
-                      width: 120,
-                      cellStyle: {
-                        color: '#545454',
-                        fontSize: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        paddingLeft: '16px'
-                      }
-                    },
-                    {
-                      headerName: "Specialty",
-                      field: "primarySpecialty",
-                      width: 200,
-                      cellStyle: {
-                        color: '#545454',
-                        fontSize: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        paddingLeft: '16px'
-                      }
-                    },
-                    {
-                      headerName: "NPI #",
-                      field: "npiNumber",
-                      width: 140,
-                      cellStyle: {
-                        color: '#545454',
-                        fontSize: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        paddingLeft: '16px'
-                      }
-                    },
-                    {
-                      headerName: "Work Email",
-                      field: "workEmail",
-                      width: 250,
-                      cellStyle: {
-                        color: '#545454',
-                        fontSize: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        paddingLeft: '16px'
-                      }
-                    },
-                    {
-                      headerName: "Personal Email",
-                      field: "personalEmail",
-                      width: 250,
-                      cellStyle: {
-                        color: '#545454',
-                        fontSize: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        paddingLeft: '16px'
-                      }
-                    },
-                    {
-                      headerName: "Mobile Phone",
-                      field: "mobilePhone",
-                      width: 145,
-                      cellStyle: {
-                        color: '#545454',
-                        fontSize: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        paddingLeft: '16px'
-                      }
-                    },
-                    {
-                      headerName: "Tags",
-                      field: "tags",
-                      width: 200,
-                      valueFormatter: (params) => {
-                        return params.value && Array.isArray(params.value)
-                          ? params.value.join(', ')
-                          : '';
-                      },
-                      cellStyle: {
-                        color: '#545454',
-                        fontSize: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        paddingLeft: '16px'
-                      }
-                    },
-                    {
-                      headerName: "Last Updated",
-                      field: "lastUpdated",
-                      width: 120,
-                      cellStyle: {
-                        color: '#545454',
-                        fontSize: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        paddingLeft: '16px'
-                      }
-                    },
-                    {
-                      headerName: "Actions",
-                      cellRenderer: ActionsCellRenderer,
-                      width: 190,
-                      sortable: false,
-                      filter: false,
-                      pinned: 'right',
-                      cellStyle: {
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'start',
-                        paddingLeft: '16px'
-                      }
-                    },
-                  ]}
-                  onSelectionChanged={handleSelectionChanged}
-                  rowSelection="multiple"
-                  headerHeight={40}
-                  rowHeight={42}
-                  suppressRowClickSelection={true}
-                  getRowStyle={(params) => ({
-                    borderBottom: '0.5px solid #D2D5DC',
-                    backgroundColor: 'white'
-                  })}
-                  defaultColDef={{
-                    resizable: true,
-                    sortable: true,
-                    filter: true,
-                    cellStyle: {
-                      borderRight: '1px solid #E2E2E2'
-                    }
-                  }}
-                  icons={{
-                    filter: () => (
-                      <FontAwesomeIcon
-                        icon={faBarsStaggered}
-                        className="w-3 h-3 text-[#545454]"
-                        style={{ fontSize: '12px' }}
-                      />
-                    )
-                  }}
-                />
-              </div>
-            </div>
           </div>
-
-          {/* Right Side Panel */}
-          {selectedProvider && (
-            <div className="w-[575px] border-l border-gray-300 bg-white flex flex-col">
-              {/* Expand/Collapse Button */}
-              <button
-                onClick={closeSidePanel}
-                className="absolute right-0 top-64 w-6 h-6 bg-[#545454] text-white rounded-full flex items-center justify-center hover:bg-[#3f3f3f] transition-colors z-10"
-                style={{ transform: "translateX(12px)" }}
-              >
-                <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" />
-              </button>
-
-              {/* Side Panel Header */}
-              <div className="flex items-center justify-between px-4 pt-[5px] pb-4 border-b border-gray-300">
-                <div className="flex-1 px-2">
-                  <h2 className="text-[#545454] font-bold text-xl">
-                    Provider Info for {selectedProvider.firstName}{" "}
-                    {selectedProvider.lastName}{" "}
-                    {selectedProvider.title.split(" - ")[0]}
-                  </h2>
-                </div>
-                <button className="text-[#545454] p-2">
-                  <div className="w-5 h-5">���</div>
-                </button>
-              </div>
-
-              {/* Tab Navigation */}
-              <div className="flex">
-                <div className="w-12 border-r border-gray-300">
-                  <Tabs
-                    value={activeTab}
-                    onValueChange={setActiveTab}
-                    orientation="vertical"
-                  >
-                    <TabsList className="flex-col h-auto bg-transparent p-0 space-y-0">
-                      <TabsTrigger
-                        value="details"
-                        className={cn(
-                          "w-full h-16 px-1 flex-col gap-2 border-b border-r border-gray-200 data-[state=active]:bg-gray-100 data-[state=active]:border-l-4 data-[state=active]:border-l-blue-500",
-                          activeTab === "details" ? "bg-gray-100" : "bg-white",
-                        )}
-                      >
-                        <FontAwesomeIcon
-                          icon={faChartBar}
-                          className={cn(
-                            "w-5 h-5",
-                            activeTab === "details"
-                              ? "text-[#008BC9]"
-                              : "text-[#545454]",
-                          )}
-                        />
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="notes"
-                        className={cn(
-                          "w-full h-20 px-1 flex-col gap-2 border-b border-r border-gray-200 data-[state=active]:bg-gray-100 relative",
-                          activeTab === "notes" ? "bg-gray-100" : "bg-white",
-                        )}
-                      >
-                        <FontAwesomeIcon
-                          icon={faMessage}
-                          className={cn(
-                            "w-5 h-5",
-                            activeTab === "notes"
-                              ? "text-[#008BC9]"
-                              : "text-[#545454]",
-                          )}
-                        />
-                        <div className="absolute bottom-1 right-1 w-5 h-4 bg-[#545454] text-white text-xs rounded-full flex items-center justify-center font-bold">
-                          0
-                        </div>
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="documents"
-                        className={cn(
-                          "w-full h-20 px-1 flex-col gap-2 border-b border-r border-gray-200 data-[state=active]:bg-gray-100 relative",
-                          activeTab === "documents"
-                            ? "bg-gray-100"
-                            : "bg-white",
-                        )}
-                      >
-                        <FontAwesomeIcon
-                          icon={faFileText}
-                          className={cn(
-                            "w-5 h-5",
-                            activeTab === "documents"
-                              ? "text-[#008BC9]"
-                              : "text-[#545454]",
-                          )}
-                        />
-                        <div className="absolute bottom-1 right-1 w-5 h-4 bg-[#545454] text-white text-xs rounded-full flex items-center justify-center font-bold">
-                          0
-                        </div>
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="teams"
-                        className={cn(
-                          "w-full h-20 px-1 flex-col gap-2 border-b border-r border-gray-200 data-[state=active]:bg-gray-100 relative",
-                          activeTab === "teams" ? "bg-gray-100" : "bg-white",
-                        )}
-                      >
-                        <FontAwesomeIcon
-                          icon={faUsers}
-                          className={cn(
-                            "w-5 h-5",
-                            activeTab === "teams"
-                              ? "text-[#008BC9]"
-                              : "text-[#545454]",
-                          )}
-                        />
-                        <div className="absolute bottom-1 right-1 w-5 h-4 bg-[#545454] text-white text-xs rounded-full flex items-center justify-center font-bold">
-                          0
-                        </div>
-                      </TabsTrigger>
-                    </TabsList>
-                  </Tabs>
-                </div>
-
-                {/* Tab Content */}
-                <div className="flex-1 p-4">
-                  <Tabs value={activeTab} className="w-full">
-                    <div className="border-b border-gray-200 mb-4">
-                      <h3 className="text-[#545454] font-bold text-base py-3 tracking-wide">
-                        {activeTab === "details" && "Details"}
-                        {activeTab === "notes" && "Notes"}
-                        {activeTab === "documents" && "Documents"}
-                        {activeTab === "teams" && "Teams"}
-                      </h3>
-                    </div>
-
-                    <TabsContent value="details" className="text-[#545454]">
-                      <p className="text-sm">
-                        Provider details will be implemented here.
-                      </p>
-                    </TabsContent>
-
-                    <TabsContent value="notes" className="text-[#545454]">
-                      <p className="text-sm">
-                        Provider notes will be implemented here.
-                      </p>
-                    </TabsContent>
-
-                    <TabsContent value="documents" className="text-[#545454]">
-                      <p className="text-sm">
-                        Provider documents will be implemented here.
-                      </p>
-                    </TabsContent>
-
-                    <TabsContent value="teams" className="text-[#545454]">
-                      <p className="text-sm">
-                        Provider teams will be implemented here.
-                      </p>
-                    </TabsContent>
-                  </Tabs>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
