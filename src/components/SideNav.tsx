@@ -81,13 +81,27 @@ const SideNav: React.FC<SideNavProps> = ({
       {!collapsed && (
         <>
           {/* All Sections Header */}
-          <div className="flex items-center justify-between p-2 rounded">
-            <span className="font-bold text-sm text-[#545454] tracking-wide">
+          <div
+            className={cn(
+              "flex items-center justify-between p-2 rounded cursor-pointer hover:bg-gray-50",
+              isItemActive("all-sections") && "bg-[#008BC9] text-white",
+            )}
+            onClick={() => handleItemClick("all-sections")}
+          >
+            <span
+              className={cn(
+                "font-bold text-sm tracking-wide",
+                isItemActive("all-sections") ? "text-white" : "text-[#545454]",
+              )}
+            >
               All Sections
             </span>
             <FontAwesomeIcon
               icon={faEllipsis}
-              className="w-4 h-4 text-[#545454]"
+              className={cn(
+                "w-4 h-4",
+                isItemActive("all-sections") ? "text-white" : "text-[#545454]",
+              )}
             />
           </div>
 
