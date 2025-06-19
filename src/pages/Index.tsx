@@ -35,6 +35,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import SideNav from "@/components/SideNav";
 import DataGrid from "@/components/DataGrid";
+import PageHeader from "@/components/PageHeader";
 
 // Import AG Grid styles
 import "ag-grid-community/styles/ag-grid.css";
