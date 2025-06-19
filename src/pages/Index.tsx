@@ -493,10 +493,7 @@ const Index = () => {
                 height="400px"
               />
             </div>
-                  <div className="flex items-center gap-2 p-1 bg-[#E6E7EB] border border-[#E6E6E6] rounded">
-                    <FontAwesomeIcon icon={faFilter} className="w-4 h-4 text-[#4E5872]" />
-                  </div>
-                </div>
+          </div>
 
                 {/* Provider Name */}
                 <div className="col-span-2 border-b border-[#E2E2E2]">
