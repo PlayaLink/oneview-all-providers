@@ -44,7 +44,7 @@
 /* Custom AG Grid styling to match existing design */
 .ag-grid-custom .ag-header {
   background-color: #cfd8dc;
-  border-bottom: 1px solid #d2d5dc;
+  border-bottom: 0.5px solid #d2d5dc;
 }
 
 .ag-grid-custom .ag-header-cell {
