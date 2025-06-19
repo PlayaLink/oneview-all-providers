@@ -109,37 +109,36 @@ const SideNav: React.FC<SideNavProps> = ({
 
           {/* Provider Info Section */}
           <div className="flex flex-col">
-            <div className="flex items-center">
-              <div
+            <div
+              className={cn(
+                "flex items-center justify-between p-2 rounded cursor-pointer",
+                isSectionActive("providerInfo")
+                  ? "bg-[#008BC9] text-white"
+                  : "hover:bg-gray-50",
+              )}
+            >
+              <span
                 className={cn(
-                  "flex-1 flex items-center justify-between p-2 rounded hover:bg-gray-50 cursor-pointer",
-                  isSectionActive("providerInfo") && "bg-[#008BC9] text-white",
+                  "text-xs uppercase font-medium tracking-wide flex-1",
+                  isSectionActive("providerInfo")
+                    ? "text-white"
+                    : "text-[#545454]",
                 )}
                 onClick={() => handleSectionClick("providerInfo")}
               >
-                <span
-                  className={cn(
-                    "text-xs uppercase font-medium tracking-wide",
-                    isSectionActive("providerInfo")
-                      ? "text-white"
-                      : "text-[#545454]",
-                  )}
-                >
-                  Provider Info
-                </span>
-              </div>
-              <button
-                className="p-2 hover:bg-gray-50 rounded cursor-pointer ml-1"
+                Provider Info
+              </span>
+              <FontAwesomeIcon
+                icon={faChevronDown}
+                className={cn(
+                  "w-4 h-4 transition-transform duration-200",
+                  !expandedSections.providerInfo && "rotate-180",
+                  isSectionActive("providerInfo")
+                    ? "text-white"
+                    : "text-[#545454]",
+                )}
                 onClick={() => toggleSection("providerInfo")}
-              >
-                <FontAwesomeIcon
-                  icon={faChevronDown}
-                  className={cn(
-                    "w-4 h-4 text-[#545454] transition-transform duration-200",
-                    !expandedSections.providerInfo && "rotate-180",
-                  )}
-                />
-              </button>
+              />
             </div>
             {expandedSections.providerInfo && (
               <div className="pl-3 flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
