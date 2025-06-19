@@ -349,7 +349,12 @@ const Index = () => {
 
         {/* Main Grid Area */}
         <div className="flex-1 flex">
-          <div className={cn("flex-1", sidebarCollapsed && "pl-8")}>
+          <div
+            className={cn(
+              "flex-1",
+              sidebarCollapsed && "pl-8 border-l border-gray-300",
+            )}
+          >
             {/* Provider Info Section Header */}
             <div className="flex items-center justify-between px-2 py-[9px] bg-[#CFD8DC] border-b border-gray-300">
               <div className="flex items-center gap-3">
