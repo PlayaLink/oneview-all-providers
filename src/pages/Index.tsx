@@ -911,7 +911,7 @@ const Index = () => {
             )}
           >
             {/* Provider Info Grid - Fills Available Space */}
-            <div className="flex-1 min-h-0 px-4">
+            <div className="flex-1 min-h-0 pt-4 px-4">
               <DataGrid
                 title="Provider Info"
                 icon={faUserDoctor}
