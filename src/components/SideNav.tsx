@@ -284,23 +284,29 @@ const SideNav: React.FC<SideNavProps> = ({ collapsed }) => {
             {expandedSections.workExperience && (
               <div className="flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
                 <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                  <FontAwesomeIcon icon={faBuilding} className="w-4 h-4" />
+                  <FontAwesomeIcon icon={faBuildingUser} className="w-4 h-4" />
                   <span className="text-xs font-semibold">
                     Practice/Employer
                   </span>
                 </div>
                 <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                  <FontAwesomeIcon icon={faHospital} className="w-4 h-4" />
+                  <FontAwesomeIcon
+                    icon={faHospitalSymbol}
+                    className="w-4 h-4"
+                  />
                   <span className="text-xs font-semibold">
                     Facility Affiliations
                   </span>
                 </div>
                 <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                  <FontAwesomeIcon icon={faBriefcase} className="w-4 h-4" />
+                  <FontAwesomeIcon
+                    icon={faBriefcaseMedical}
+                    className="w-4 h-4"
+                  />
                   <span className="text-xs font-semibold">Work History</span>
                 </div>
                 <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                  <FontAwesomeIcon icon={faUserGroup} className="w-4 h-4" />
+                  <FontAwesomeIcon icon={faPeopleArrows} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Peer References</span>
                 </div>
                 <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
