@@ -720,32 +720,68 @@ const Index = () => {
                       sortable: false,
                       filter: false,
                       resizable: false,
+                      cellStyle: { borderRight: "none" },
                     },
                     {
                       headerName: "Provider Name",
                       valueGetter: (params) =>
                         `${params.data.lastName}, ${params.data.firstName}`,
                       width: 200,
+                      cellStyle: {
+                        color: "#545454",
+                        fontSize: "12px",
+                        display: "flex",
+                        alignItems: "center",
+                        paddingLeft: "16px",
+                      },
                     },
                     {
                       headerName: "Title",
                       field: "title",
                       width: 120,
+                      cellStyle: {
+                        color: "#545454",
+                        fontSize: "12px",
+                        display: "flex",
+                        alignItems: "center",
+                        paddingLeft: "16px",
+                      },
                     },
                     {
                       headerName: "Specialty",
                       field: "primarySpecialty",
                       width: 200,
+                      cellStyle: {
+                        color: "#545454",
+                        fontSize: "12px",
+                        display: "flex",
+                        alignItems: "center",
+                        paddingLeft: "16px",
+                      },
                     },
                     {
                       headerName: "NPI #",
                       field: "npiNumber",
                       width: 140,
+                      cellStyle: {
+                        color: "#545454",
+                        fontSize: "12px",
+                        display: "flex",
+                        alignItems: "center",
+                        paddingLeft: "16px",
+                      },
                     },
                     {
                       headerName: "Work Email",
                       field: "workEmail",
                       width: 250,
+                      cellStyle: {
+                        color: "#545454",
+                        fontSize: "12px",
+                        display: "flex",
+                        alignItems: "center",
+                        paddingLeft: "16px",
+                      },
                     },
                   ]}
                   onSelectionChanged={handleSelectionChanged}
@@ -753,6 +789,18 @@ const Index = () => {
                   headerHeight={40}
                   rowHeight={42}
                   suppressRowClickSelection={true}
+                  getRowStyle={(params) => ({
+                    borderBottom: "0.5px solid #D2D5DC",
+                    backgroundColor: "white",
+                  })}
+                  defaultColDef={{
+                    resizable: true,
+                    sortable: true,
+                    filter: true,
+                    cellStyle: {
+                      borderRight: "1px solid #E2E2E2",
+                    },
+                  }}
                 />
               </div>
             </div>
