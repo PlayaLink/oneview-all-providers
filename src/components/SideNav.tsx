@@ -557,11 +557,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/malpractice-insurance")
+                    isItemActive("malpractice-insurance")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/malpractice-insurance")}
+                  onClick={() => handleItemClick("malpractice-insurance")}
                 >
                   <FontAwesomeIcon icon={faGavel} className="w-4 h-4" />
                   <span className="text-xs font-semibold">
