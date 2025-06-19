@@ -3,7 +3,7 @@ import { AgGridReact } from "ag-grid-react";
 import { ColDef, SelectionChangedEvent } from "ag-grid-community";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { faBarsFilter } from "@fortawesome/free-solid-svg-icons";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
 
 // Import AG Grid styles
 import "ag-grid-community/styles/ag-grid.css";
