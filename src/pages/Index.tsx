@@ -5,10 +5,6 @@ import {
   GridReadyEvent,
   SelectionChangedEvent,
 } from "ag-grid-community";
-
-// Try importing and registering modules differently
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronDown,
