@@ -7,6 +7,7 @@ import MainLayout from "./components/MainLayout";
 import ProviderInfo from "./pages/ProviderInfo";
 import BirthInfo from "./pages/BirthInfo";
 import Addresses from "./pages/Addresses";
+import AdditionalNames from "./pages/AdditionalNames";
 import StateLicenses from "./pages/StateLicenses";
 import NotFound from "./pages/NotFound";
 
