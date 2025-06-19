@@ -366,11 +366,11 @@ const SideNav: React.FC<SideNavProps> = ({ collapsed }) => {
             {expandedSections.documents && (
               <div className="flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
                 <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                  <FontAwesomeIcon icon={faFolder} className="w-4 h-4" />
+                  <FontAwesomeIcon icon={faFolderOpen} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Documents</span>
                 </div>
                 <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                  <FontAwesomeIcon icon={faFileArrowUp} className="w-4 h-4" />
+                  <FontAwesomeIcon icon={faFileExport} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Sent Forms</span>
                 </div>
               </div>
