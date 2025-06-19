@@ -98,7 +98,7 @@ const SideNav: React.FC<SideNavProps> = ({ collapsed }) => {
                   <span className="text-xs font-semibold">Birth Info</span>
                 </div>
                 <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                  <FontAwesomeIcon icon={faHouseChimney} className="w-4 h-4" />
+                  <FontAwesomeIcon icon={faHouse} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Addresses</span>
                 </div>
                 <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
@@ -108,11 +108,11 @@ const SideNav: React.FC<SideNavProps> = ({ collapsed }) => {
                   </span>
                 </div>
                 <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                  <FontAwesomeIcon icon={faTriangle} className="w-4 h-4" />
+                  <FontAwesomeIcon icon={faPlay} className="w-4 h-4" />
                   <span className="text-xs font-semibold">CAQH</span>
                 </div>
                 <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                  <FontAwesomeIcon icon={faFilesMedical} className="w-4 h-4" />
+                  <FontAwesomeIcon icon={faFileMedical} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Health Info</span>
                 </div>
               </div>
