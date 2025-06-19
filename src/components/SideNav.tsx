@@ -322,11 +322,13 @@ const SideNav: React.FC<SideNavProps> = ({ collapsed }) => {
               />
             </div>
             {expandedSections.malpracticeInsurance && (
-              <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer overflow-hidden transition-all duration-200">
-                <FontAwesomeIcon icon={faGavel} className="w-4 h-4" />
-                <span className="text-xs font-semibold">
-                  Malpractice Insurance
-                </span>
+              <div className="pl-3 flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
+                <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                  <FontAwesomeIcon icon={faGavel} className="w-4 h-4" />
+                  <span className="text-xs font-semibold">
+                    Malpractice Insurance
+                  </span>
+                </div>
               </div>
             )}
           </div>
