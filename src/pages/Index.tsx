@@ -891,9 +891,8 @@ const Index = () => {
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
               className="absolute w-6 h-6 bg-[#545454] text-white rounded-full flex items-center justify-center hover:bg-[#3f3f3f] transition-colors z-20"
               style={{
-                right: sidebarCollapsed ? "-12px" : "-12px",
+                right: sidebarCollapsed ? "7px" : "-12px",
                 top: "-12px",
-                left: "7px",
               }}
             >
               {sidebarCollapsed ? (
