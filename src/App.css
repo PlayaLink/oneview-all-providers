@@ -82,3 +82,9 @@
 .ag-grid-custom .ag-row-selected:hover {
   background-color: rgb(219, 234, 254) !important;
 }
+
+/* Remove right border from checkbox column */
+.ag-grid-custom .ag-header-cell:first-child,
+.ag-grid-custom .ag-cell:first-child {
+  border-right: none !important;
+}
