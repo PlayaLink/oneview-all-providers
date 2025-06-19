@@ -321,11 +321,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/event-log")
+                    isItemActive("event-log")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/event-log")}
+                  onClick={() => handleItemClick("event-log")}
                 >
                   <FontAwesomeIcon icon={faClipboardList} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Event log</span>
@@ -333,11 +333,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/oig")
+                    isItemActive("oig")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/oig")}
+                  onClick={() => handleItemClick("oig")}
                 >
                   <FontAwesomeIcon icon={faCheckCircle} className="w-4 h-4" />
                   <span className="text-xs font-semibold">OIG</span>
