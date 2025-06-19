@@ -493,9 +493,9 @@ const Index = () => {
                 height="400px"
               />
             </div>
-          </div>
+        </div>
 
-                {/* Provider Name */}
+        {/* Right Side Panel */}
                 <div className="col-span-2 border-b border-[#E2E2E2]">
                   <div className="h-12 flex items-center px-4 bg-white">
                     <span className="text-[#545454] font-bold text-xs tracking-wide">Provider Name</span>
