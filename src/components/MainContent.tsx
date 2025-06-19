@@ -64,40 +64,82 @@ const MainContent: React.FC<MainContentProps> = ({
   const currentGrid = gridsToShow[currentGridIndex];
 
   return (
-    <div className="flex-1 flex flex-col pt-4 px-4 relative">
-      {/* Current Grid */}
-      <div className="flex-1 min-h-0">
-        <DataGrid
-          title={currentGrid.title}
-          icon={currentGrid.icon}
-          data={sampleProviders}
-          columns={standardColumns}
-          height="100%"
-        />
-      </div>
-
-      {/* Scroll Navigation */}
-      {isMultipleGrids && (
-        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-2 z-10">
-          <button
-            onClick={handlePrevious}
-            className="w-8 h-8 bg-[#008BC9] text-white rounded-full flex items-center justify-center hover:bg-[#007399] transition-colors shadow-lg"
-          >
-            <FontAwesomeIcon icon={faChevronUp} className="w-4 h-4" />
-          </button>
-
-          <div className="text-xs text-center text-[#545454] bg-white rounded px-2 py-1 shadow-sm">
-            {currentGridIndex + 1} / {gridsToShow.length}
-          </div>
-
-          <button
-            onClick={handleNext}
-            className="w-8 h-8 bg-[#008BC9] text-white rounded-full flex items-center justify-center hover:bg-[#007399] transition-colors shadow-lg"
-          >
-            <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" />
-          </button>
+    <div className="flex-1 flex flex-col pt-4 px-4">
+      {/* Header with Scroll Controls */}
+      <div className="flex items-start gap-4 mb-4">
+        {/* Current Grid */}
+        <div className="flex-1 min-h-0">
+          <DataGrid
+            title={currentGrid.title}
+            icon={currentGrid.icon}
+            data={sampleProviders}
+            columns={standardColumns}
+            height="100%"
+          />
         </div>
-      )}
+
+        {/* Scroll Navigation - Next to Grid */}
+        {isMultipleGrids && (
+          <div className="flex flex-col items-center gap-2 pt-2">
+            {/* Scroll Arrows */}
+            <div
+              className="flex flex-col gap-0.5 rounded bg-black bg-opacity-75 p-0"
+              style={{ backgroundColor: "rgba(84, 84, 84, 0.75)" }}
+            >
+              <button
+                onClick={handlePrevious}
+                className="flex items-center justify-center w-6 h-6 text-white hover:bg-white hover:bg-opacity-20 transition-colors"
+              >
+                <FontAwesomeIcon
+                  icon={faChevronUp}
+                  className="w-4 h-4"
+                  style={{
+                    fontFamily:
+                      "Font Awesome 6 Pro, -apple-system, Roboto, Helvetica, sans-serif",
+                    fontSize: "16px",
+                    fontWeight: 900,
+                  }}
+                />
+              </button>
+              <button
+                onClick={handleNext}
+                className="flex items-center justify-center w-6 h-6 text-white hover:bg-white hover:bg-opacity-20 transition-colors"
+              >
+                <FontAwesomeIcon
+                  icon={faChevronDown}
+                  className="w-4 h-4"
+                  style={{
+                    fontFamily:
+                      "Font Awesome 6 Pro, -apple-system, Roboto, Helvetica, sans-serif",
+                    fontSize: "16px",
+                    fontWeight: 900,
+                  }}
+                />
+              </button>
+            </div>
+
+            {/* Scroll Indicator Track */}
+            <div
+              className="w-1 bg-gray-300 rounded-full relative"
+              style={{ height: "200px" }}
+            >
+              {/* Scroll Indicator */}
+              <div
+                className="w-full bg-[#545454] rounded-full transition-all duration-300 ease-out"
+                style={{
+                  height: `${Math.max(20, 200 / gridsToShow.length)}px`,
+                  transform: `translateY(${(currentGridIndex * (200 - Math.max(20, 200 / gridsToShow.length))) / (gridsToShow.length - 1)}px)`,
+                }}
+              />
+            </div>
+
+            {/* Grid Counter */}
+            <div className="text-xs text-center text-[#545454] bg-white rounded px-2 py-1 shadow-sm border">
+              {currentGridIndex + 1} / {gridsToShow.length}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
