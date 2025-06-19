@@ -222,37 +222,36 @@ const SideNav: React.FC<SideNavProps> = ({
 
           {/* Licensure Section */}
           <div className="flex flex-col">
-            <div className="flex items-center">
-              <div
+            <div
+              className={cn(
+                "flex items-center justify-between p-2 rounded cursor-pointer",
+                isSectionActive("licensure")
+                  ? "bg-[#008BC9] text-white"
+                  : "hover:bg-gray-50",
+              )}
+            >
+              <span
                 className={cn(
-                  "flex-1 flex items-center justify-between p-2 rounded hover:bg-gray-50 cursor-pointer",
-                  isSectionActive("licensure") && "bg-[#008BC9] text-white",
+                  "text-xs uppercase font-medium tracking-wide flex-1",
+                  isSectionActive("licensure")
+                    ? "text-white"
+                    : "text-[#545454]",
                 )}
                 onClick={() => handleSectionClick("licensure")}
               >
-                <span
-                  className={cn(
-                    "text-xs uppercase font-medium tracking-wide",
-                    isSectionActive("licensure")
-                      ? "text-white"
-                      : "text-[#545454]",
-                  )}
-                >
-                  Licensure
-                </span>
-              </div>
-              <button
-                className="p-2 hover:bg-gray-50 rounded cursor-pointer ml-1"
+                Licensure
+              </span>
+              <FontAwesomeIcon
+                icon={faChevronDown}
+                className={cn(
+                  "w-4 h-4 transition-transform duration-200",
+                  !expandedSections.licensure && "rotate-180",
+                  isSectionActive("licensure")
+                    ? "text-white"
+                    : "text-[#545454]",
+                )}
                 onClick={() => toggleSection("licensure")}
-              >
-                <FontAwesomeIcon
-                  icon={faChevronDown}
-                  className={cn(
-                    "w-4 h-4 text-[#545454] transition-transform duration-200",
-                    !expandedSections.licensure && "rotate-180",
-                  )}
-                />
-              </button>
+              />
             </div>
             {expandedSections.licensure && (
               <div className="pl-3 flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
