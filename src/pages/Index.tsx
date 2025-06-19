@@ -876,7 +876,7 @@ const Index = () => {
       {/* Main Content */}
       <div className="flex flex-1 border-t border-gray-300">
         {/* Wrapper to allow arrow overflow */}
-        <div className="flex flex-1 overflow-visible">
+        <div className="flex flex-1">
           {/* Left Sidebar */}
           <div
             className={cn(
