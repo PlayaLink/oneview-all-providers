@@ -166,6 +166,13 @@ const DataGrid: React.FC<DataGridProps> = ({
                 style={{ fontSize: "12px" }}
               />
             ),
+            menu: () => (
+              <FontAwesomeIcon
+                icon={faFilter}
+                className="w-3 h-3 text-[#545454]"
+                style={{ fontSize: "12px" }}
+              />
+            ),
           }}
         />
       </div>
