@@ -324,7 +324,7 @@ const Index = () => {
         {/* Left Sidebar */}
         <div
           className={cn(
-            "border-r border-gray-300 bg-white transition-all duration-300",
+            "relative border-r border-gray-300 bg-white transition-all duration-300",
             sidebarCollapsed ? "w-12" : "w-48",
           )}
         >
