@@ -55,6 +55,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import SideNav from "@/components/SideNav";
 
 // Import AG Grid styles
 import "ag-grid-community/styles/ag-grid.css";
