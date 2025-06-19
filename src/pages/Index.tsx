@@ -333,11 +333,10 @@ const Index = () => {
           {/* Collapse Toggle */}
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className="absolute w-6 h-6 bg-[#545454] text-white rounded-full flex items-center justify-center hover:bg-[#3f3f3f] transition-colors z-10"
+            className="absolute w-6 h-6 bg-[#545454] text-white rounded-full flex items-center justify-center hover:bg-[#3f3f3f] transition-colors z-20"
             style={{
-              right: sidebarCollapsed ? "6px" : "-12px",
-              top: "18px", // Vertically centered with "All Sections" title (accounting for padding)
-              transform: "translateX(50%)", // Center on the border
+              right: "-12px", // Position on the right edge of the sidebar
+              top: "18px", // Vertically aligned with "All Sections" title
             }}
           >
             {sidebarCollapsed ? (
