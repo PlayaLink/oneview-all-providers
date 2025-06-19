@@ -496,9 +496,9 @@ const Index = () => {
         </div>
 
         </div>
+      </div>
 
-        {/* Right Side Panel */}
-        {selectedProvider && (
+      {/* Footer */}
                 <div className="col-span-3 border-b border-[#E2E2E2] bg-white shadow-[-4px_0px_30px_0px_rgba(0,0,0,0.3)] w-[190px] ml-[52px]">
                   <div className="h-12 flex items-center justify-between px-4">
                     <div className="flex items-center gap-1">
