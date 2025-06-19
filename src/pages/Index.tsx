@@ -818,8 +818,14 @@ const Index = () => {
                       headerName: "Tags",
                       field: "tags",
                       width: 200,
-                      cellRenderer: TagsCellRenderer,
+                      valueFormatter: (params) => {
+                        return params.value && Array.isArray(params.value)
+                          ? params.value.join(", ")
+                          : "";
+                      },
                       cellStyle: {
+                        color: "#545454",
+                        fontSize: "12px",
                         display: "flex",
                         alignItems: "center",
                         paddingLeft: "16px",
