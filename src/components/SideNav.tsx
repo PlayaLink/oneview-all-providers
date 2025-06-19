@@ -221,31 +221,48 @@ const SideNav: React.FC<SideNavProps> = ({
 
           {/* Licensure Section */}
           <div className="flex flex-col">
-            <div
-              className="flex items-center justify-between p-2 rounded hover:bg-gray-50 cursor-pointer"
-              onClick={() => toggleSection("licensure")}
-            >
-              <span className="text-xs uppercase text-[#545454] font-medium tracking-wide">
-                Licensure
-              </span>
-              <FontAwesomeIcon
-                icon={faChevronDown}
+            <div className="flex items-center">
+              <div
                 className={cn(
-                  "w-4 h-4 text-[#545454] transition-transform duration-200",
-                  !expandedSections.licensure && "rotate-180",
+                  "flex-1 flex items-center justify-between p-2 rounded hover:bg-gray-50 cursor-pointer",
+                  isSectionActive("licensure") && "bg-[#008BC9] text-white",
                 )}
-              />
+                onClick={() => handleSectionClick("licensure")}
+              >
+                <span
+                  className={cn(
+                    "text-xs uppercase font-medium tracking-wide",
+                    isSectionActive("licensure")
+                      ? "text-white"
+                      : "text-[#545454]",
+                  )}
+                >
+                  Licensure
+                </span>
+              </div>
+              <button
+                className="p-2 hover:bg-gray-50 rounded cursor-pointer ml-1"
+                onClick={() => toggleSection("licensure")}
+              >
+                <FontAwesomeIcon
+                  icon={faChevronDown}
+                  className={cn(
+                    "w-4 h-4 text-[#545454] transition-transform duration-200",
+                    !expandedSections.licensure && "rotate-180",
+                  )}
+                />
+              </button>
             </div>
             {expandedSections.licensure && (
               <div className="pl-3 flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/state-licenses")
+                    isItemActive("state-licenses")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/state-licenses")}
+                  onClick={() => handleItemClick("state-licenses")}
                 >
                   <FontAwesomeIcon icon={faShieldAlt} className="w-4 h-4" />
                   <span className="text-xs font-semibold">State Licenses</span>
@@ -253,11 +270,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/dea-licenses")
+                    isItemActive("dea-licenses")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/dea-licenses")}
+                  onClick={() => handleItemClick("dea-licenses")}
                 >
                   <FontAwesomeIcon icon={faClipboard} className="w-4 h-4" />
                   <span className="text-xs font-semibold">DEA Licenses</span>
@@ -265,12 +282,12 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/controlled-substance-licenses")
+                    isItemActive("controlled-substance-licenses")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
                   onClick={() =>
-                    handleNavClick("/controlled-substance-licenses")
+                    handleItemClick("controlled-substance-licenses")
                   }
                 >
                   <FontAwesomeIcon icon={faPills} className="w-4 h-4" />
