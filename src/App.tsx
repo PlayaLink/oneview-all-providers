@@ -24,6 +24,7 @@ const App = () => (
             <Route index element={<ProviderInfo />} />
             <Route path="birth-info" element={<BirthInfo />} />
             <Route path="addresses" element={<Addresses />} />
+            <Route path="additional-names" element={<AdditionalNames />} />
             <Route path="state-licenses" element={<StateLicenses />} />
             {/* More routes can be added here */}
           </Route>
