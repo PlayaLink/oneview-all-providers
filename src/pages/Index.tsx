@@ -255,7 +255,8 @@ const Index = () => {
                 </div>
                 <div className="text-xs opacity-90">(Salt Lake City, Utah)</div>
               </div>
-              <FontAwesome
+              <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" />
+            </div>
 
             {/* Navigation Items */}
             <div className="flex items-center gap-6">
@@ -377,8 +378,8 @@ const Index = () => {
                   field: "tags",
                   width: 200,
                   valueFormatter: (params) => {
-                    return params.value && Array.isArray(params.value) 
-                      ? params.value.join(', ') 
+                    return params.value && Array.isArray(params.value)
+                      ? params.value.join(', ')
                       : '';
                   },
                 },
@@ -394,7 +395,7 @@ const Index = () => {
                   sortable: false,
                   filter: false,
                   pinned: 'right',
-                  cellStyle: { 
+                  cellStyle: {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'start',
