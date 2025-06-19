@@ -65,10 +65,10 @@ const MainContent: React.FC<MainContentProps> = ({
 
   return (
     <div className="flex-1 flex flex-col pt-4 px-4">
-      {/* Header with Scroll Controls */}
-      <div className="flex items-start gap-4 mb-4">
+      {/* Main Content Area */}
+      <div className="flex flex-1 gap-4 min-h-0">
         {/* Current Grid */}
-        <div className="flex-1 min-h-0">
+        <div className="flex-1 flex flex-col min-h-0">
           <DataGrid
             title={currentGrid.title}
             icon={currentGrid.icon}
