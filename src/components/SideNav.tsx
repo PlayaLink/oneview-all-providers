@@ -176,14 +176,11 @@ const SideNav: React.FC<SideNavProps> = ({ collapsed }) => {
             {expandedSections.actionsExclusions && (
               <div className="flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
                 <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                  <FontAwesomeIcon
-                    icon={faClipboardListCheck}
-                    className="w-4 h-4"
-                  />
+                  <FontAwesomeIcon icon={faClipboardList} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Event log</span>
                 </div>
                 <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
-                  <FontAwesomeIcon icon={faBadgeCheck} className="w-4 h-4" />
+                  <FontAwesomeIcon icon={faCheckCircle} className="w-4 h-4" />
                   <span className="text-xs font-semibold">OIG</span>
                 </div>
               </div>
