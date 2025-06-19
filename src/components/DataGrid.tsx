@@ -118,7 +118,7 @@ const DataGrid: React.FC<DataGridProps> = ({
       <div
         className="ag-theme-alpine ag-grid-custom flex-1"
         style={{
-          height: height === "100%" ? "auto" : height,
+          ...(height === "100%" ? { flexGrow: 1, height: "auto" } : { height }),
           width: "100%",
           border: "none",
           borderWidth: "0px",
