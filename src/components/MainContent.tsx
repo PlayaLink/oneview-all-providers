@@ -83,52 +83,41 @@ const MainContent: React.FC<MainContentProps> = ({
           <div className="flex flex-col items-center gap-2 pt-2">
             {/* Scroll Arrows */}
             <div
-              className="flex flex-col gap-0.5 rounded bg-black bg-opacity-75 p-0"
-              style={{ backgroundColor: "rgba(84, 84, 84, 0.75)" }}
+              className="flex flex-col gap-0.5 rounded p-1"
+              style={{
+                backgroundColor: "rgba(84, 84, 84, 0.75)",
+                borderRadius: "4px"
+              }}
             >
               <button
                 onClick={handlePrevious}
-                className="flex items-center justify-center w-6 h-6 text-white hover:bg-white hover:bg-opacity-20 transition-colors"
+                className="flex items-center justify-center w-6 h-6 text-white hover:bg-white hover:bg-opacity-10 transition-colors rounded"
               >
                 <FontAwesomeIcon
                   icon={faChevronUp}
-                  className="w-4 h-4"
-                  style={{
-                    fontFamily:
-                      "Font Awesome 6 Pro, -apple-system, Roboto, Helvetica, sans-serif",
-                    fontSize: "16px",
-                    fontWeight: 900,
-                  }}
+                  className="w-4 h-4 text-white"
                 />
               </button>
               <button
                 onClick={handleNext}
-                className="flex items-center justify-center w-6 h-6 text-white hover:bg-white hover:bg-opacity-20 transition-colors"
+                className="flex items-center justify-center w-6 h-6 text-white hover:bg-white hover:bg-opacity-10 transition-colors rounded"
               >
                 <FontAwesomeIcon
                   icon={faChevronDown}
-                  className="w-4 h-4"
-                  style={{
-                    fontFamily:
-                      "Font Awesome 6 Pro, -apple-system, Roboto, Helvetica, sans-serif",
-                    fontSize: "16px",
-                    fontWeight: 900,
-                  }}
+                  className="w-4 h-4 text-white"
                 />
               </button>
             </div>
+            </div>
 
             {/* Scroll Indicator Track */}
-            <div
-              className="w-1 bg-gray-300 rounded-full relative"
-              style={{ height: "200px" }}
-            >
+            <div className="w-1 bg-gray-300 rounded-full relative" style={{ height: "200px" }}>
               {/* Scroll Indicator */}
               <div
                 className="w-full bg-[#545454] rounded-full transition-all duration-300 ease-out"
                 style={{
                   height: `${Math.max(20, 200 / gridsToShow.length)}px`,
-                  transform: `translateY(${(currentGridIndex * (200 - Math.max(20, 200 / gridsToShow.length))) / (gridsToShow.length - 1)}px)`,
+                  transform: `translateY(${(currentGridIndex * (200 - Math.max(20, 200 / gridsToShow.length))) / (gridsToShow.length - 1)}px)`
                 }}
               />
             </div>
