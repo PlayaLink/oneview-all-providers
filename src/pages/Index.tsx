@@ -710,6 +710,18 @@ const Index = () => {
                   rowData={sampleProviders}
                   columnDefs={[
                     {
+                      headerName: "",
+                      headerCheckboxSelection: true,
+                      checkboxSelection: true,
+                      width: 50,
+                      pinned: "left",
+                      lockPosition: true,
+                      suppressMenu: true,
+                      sortable: false,
+                      filter: false,
+                      resizable: false,
+                    },
+                    {
                       headerName: "Provider Name",
                       valueGetter: (params) =>
                         `${params.data.lastName}, ${params.data.firstName}`,
@@ -737,9 +749,10 @@ const Index = () => {
                     },
                   ]}
                   onSelectionChanged={handleSelectionChanged}
-                  rowSelection="single"
+                  rowSelection="multiple"
                   headerHeight={40}
                   rowHeight={42}
+                  suppressRowClickSelection={true}
                 />
               </div>
             </div>
