@@ -134,7 +134,10 @@ const MainLayout: React.FC = () => {
               sidebarCollapsed && "ml-4 border-l border-gray-300",
             )}
           >
-            <Outlet />
+            <MainContent
+              selectedItem={selectedItem}
+              selectedSection={selectedSection}
+            />
           </div>
         </div>
       </div>
