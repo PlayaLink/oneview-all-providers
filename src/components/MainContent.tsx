@@ -86,7 +86,7 @@ const MainContent: React.FC<MainContentProps> = ({
               className="flex flex-col gap-0.5 rounded p-1"
               style={{
                 backgroundColor: "rgba(84, 84, 84, 0.75)",
-                borderRadius: "4px"
+                borderRadius: "4px",
               }}
             >
               <button
@@ -108,16 +108,18 @@ const MainContent: React.FC<MainContentProps> = ({
                 />
               </button>
             </div>
-            </div>
 
             {/* Scroll Indicator Track */}
-            <div className="w-1 bg-gray-300 rounded-full relative" style={{ height: "200px" }}>
+            <div
+              className="w-1 bg-gray-300 rounded-full relative"
+              style={{ height: "200px" }}
+            >
               {/* Scroll Indicator */}
               <div
                 className="w-full bg-[#545454] rounded-full transition-all duration-300 ease-out"
                 style={{
                   height: `${Math.max(20, 200 / gridsToShow.length)}px`,
-                  transform: `translateY(${(currentGridIndex * (200 - Math.max(20, 200 / gridsToShow.length))) / (gridsToShow.length - 1)}px)`
+                  transform: `translateY(${(currentGridIndex * (200 - Math.max(20, 200 / gridsToShow.length))) / (gridsToShow.length - 1)}px)`,
                 }}
               />
             </div>
