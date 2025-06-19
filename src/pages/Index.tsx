@@ -808,6 +808,15 @@ const Index = () => {
                       borderRight: "1px solid #E2E2E2",
                     },
                   }}
+                  icons={{
+                    filter: () => (
+                      <FontAwesomeIcon
+                        icon={faBarsStaggered}
+                        className="w-3 h-3 text-[#545454]"
+                        style={{ fontSize: "12px" }}
+                      />
+                    ),
+                  }}
                 />
               </div>
             </div>
