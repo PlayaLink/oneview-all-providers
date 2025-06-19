@@ -497,16 +497,7 @@ const Index = () => {
 
         {/* Right Side Panel */}
         {selectedProvider && (
-                      type="text"
-                      className="w-full h-8 px-4 border border-[#E2E2E2] rounded text-xs"
-                      placeholder=""
-                    />
-                  </div>
-                </div>
-
-                {/* Title */}
-                <div className="col-span-1 border-b border-[#E2E2E2]">
-                  <div className="h-12 flex items-center px-4 bg-white">
+          <div className="w-[575px] border-l border-gray-300 bg-white flex flex-col">
                     <span className="text-[#545454] font-bold text-xs tracking-wide">Title</span>
                   </div>
                   <div className="px-4 pb-4 bg-white">
