@@ -368,11 +368,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/board-certifications")
+                    isItemActive("board-certifications")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/board-certifications")}
+                  onClick={() => handleItemClick("board-certifications")}
                 >
                   <FontAwesomeIcon icon={faCertificate} className="w-4 h-4" />
                   <span className="text-xs font-semibold">
@@ -382,11 +382,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/other-certifications")
+                    isItemActive("other-certifications")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/other-certifications")}
+                  onClick={() => handleItemClick("other-certifications")}
                 >
                   <FontAwesomeIcon icon={faHeartbeat} className="w-4 h-4" />
                   <span className="text-xs font-semibold">
