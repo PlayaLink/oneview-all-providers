@@ -25,6 +25,7 @@ import {
   faPlus,
   faFilter,
   faCircleQuestion,
+  faBarsStaggered,
 } from "@fortawesome/free-solid-svg-icons";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { cn } from "@/lib/utils";
