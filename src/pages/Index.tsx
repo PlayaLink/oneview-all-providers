@@ -703,12 +703,52 @@ const Index = () => {
 
               {/* AG Grid Container */}
               <div
-                className="ag-theme-alpine"
+                className="ag-theme-alpine ag-grid-custom"
                 style={{ height: "400px", width: "100%" }}
               >
                 <AgGridReact
                   rowData={sampleProviders}
-                  columnDefs={columnDefs}
+                  columnDefs={[
+                    {
+                      headerName: "Provider Name",
+                      field: "providerName",
+                      valueGetter: (params) =>
+                        `${params.data.lastName}, ${params.data.firstName}`,
+                      width: 200,
+                    },
+                    {
+                      headerName: "Title",
+                      field: "title",
+                      width: 120,
+                    },
+                    {
+                      headerName: "Specialty",
+                      field: "primarySpecialty",
+                      width: 200,
+                    },
+                    {
+                      headerName: "NPI #",
+                      field: "npiNumber",
+                      width: 140,
+                    },
+                    {
+                      headerName: "Work Email",
+                      field: "workEmail",
+                      width: 250,
+                    },
+                    {
+                      headerName: "Mobile Phone",
+                      field: "mobilePhone",
+                      width: 145,
+                    },
+                    {
+                      headerName: "Actions",
+                      cellRenderer: ActionsCellRenderer,
+                      width: 190,
+                      sortable: false,
+                      filter: false,
+                    },
+                  ]}
                   onSelectionChanged={handleSelectionChanged}
                   rowSelection="single"
                   suppressRowClickSelection={false}
@@ -717,7 +757,11 @@ const Index = () => {
                   rowHeight={42}
                   suppressHorizontalScroll={false}
                   animateRows={true}
-                  className="ag-grid-custom"
+                  defaultColDef={{
+                    resizable: true,
+                    sortable: true,
+                    filter: true,
+                  }}
                 />
               </div>
             </div>
