@@ -406,27 +406,67 @@ const SideNav: React.FC<SideNavProps> = ({ collapsed }) => {
             </div>
             {expandedSections.workExperience && (
               <div className="pl-3 flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
-                <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded cursor-pointer",
+                    isActive("/practice-employer")
+                      ? "bg-[#008BC9] text-white"
+                      : "text-[#008BC9] hover:bg-gray-50",
+                  )}
+                  onClick={() => handleNavClick("/practice-employer")}
+                >
                   <FontAwesomeIcon icon={faBuilding} className="w-4 h-4" />
                   <span className="text-xs font-semibold">
                     Practice/Employer
                   </span>
                 </div>
-                <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded cursor-pointer",
+                    isActive("/facility-affiliations")
+                      ? "bg-[#008BC9] text-white"
+                      : "text-[#008BC9] hover:bg-gray-50",
+                  )}
+                  onClick={() => handleNavClick("/facility-affiliations")}
+                >
                   <FontAwesomeIcon icon={faHospital} className="w-4 h-4" />
                   <span className="text-xs font-semibold">
                     Facility Affiliations
                   </span>
                 </div>
-                <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded cursor-pointer",
+                    isActive("/work-history")
+                      ? "bg-[#008BC9] text-white"
+                      : "text-[#008BC9] hover:bg-gray-50",
+                  )}
+                  onClick={() => handleNavClick("/work-history")}
+                >
                   <FontAwesomeIcon icon={faBriefcase} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Work History</span>
                 </div>
-                <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded cursor-pointer",
+                    isActive("/peer-references")
+                      ? "bg-[#008BC9] text-white"
+                      : "text-[#008BC9] hover:bg-gray-50",
+                  )}
+                  onClick={() => handleNavClick("/peer-references")}
+                >
                   <FontAwesomeIcon icon={faUserGroup} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Peer References</span>
                 </div>
-                <div className="flex items-center gap-2 p-2 text-[#008BC9] hover:bg-gray-50 rounded cursor-pointer">
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded cursor-pointer",
+                    isActive("/military-experience")
+                      ? "bg-[#008BC9] text-white"
+                      : "text-[#008BC9] hover:bg-gray-50",
+                  )}
+                  onClick={() => handleNavClick("/military-experience")}
+                >
                   <FontAwesomeIcon icon={faMedal} className="w-4 h-4" />
                   <span className="text-xs font-semibold">
                     Military Experience
