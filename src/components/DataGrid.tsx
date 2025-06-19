@@ -81,14 +81,14 @@ const DataGrid: React.FC<DataGridProps> = ({
     <div className="bg-white flex flex-col h-full">
       {/* Grid Header */}
       <div className="flex items-center justify-between px-2 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 rounded overflow-hidden">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <FontAwesomeIcon icon={icon} className="w-4 h-4 text-[#545454]" />
-            <span className="text-[#545454] font-bold text-xs tracking-wider uppercase">
-              {title}
-            </span>
-          </div>
+        <div className="flex items-center gap-2">
+          <FontAwesomeIcon icon={icon} className="w-4 h-4 text-[#545454]" />
+          <span className="text-[#545454] font-bold text-xs tracking-wider uppercase">
+            {title}
+          </span>
+        </div>
 
+        <div className="flex items-center gap-3">
           {showStatusBadges && (
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#F48100] rounded-full">
@@ -105,11 +105,11 @@ const DataGrid: React.FC<DataGridProps> = ({
               </div>
             </div>
           )}
-        </div>
 
-        <div className="flex items-center">
-          <div className="w-9 h-5 bg-[#79AC48] rounded-full relative">
-            <div className="w-4 h-4 bg-white rounded-full absolute right-0.5 top-0.5"></div>
+          <div className="flex items-center">
+            <div className="w-9 h-5 bg-[#79AC48] rounded-full relative">
+              <div className="w-4 h-4 bg-white rounded-full absolute right-0.5 top-0.5"></div>
+            </div>
           </div>
         </div>
       </div>
