@@ -5,7 +5,7 @@ import {
   GridReadyEvent,
   SelectionChangedEvent,
 } from "ag-grid-community";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronDown,
   faSearch,
@@ -26,8 +26,8 @@ import {
   faFilter,
   faCircleQuestion,
   faBarsStaggered,
-} from '@fortawesome/free-solid-svg-icons';
-import { faEdit } from '@fortawesome/free-regular-svg-icons';
+} from "@fortawesome/free-solid-svg-icons";
+import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -157,10 +157,16 @@ const ActionsCellRenderer = () => {
   return (
     <div className="flex items-center justify-end gap-2 h-full">
       <button className="p-1 hover:bg-gray-100 rounded">
-        <FontAwesomeIcon icon={faCircleDown} className="w-4 h-4 text-[#BABABA]" />
+        <FontAwesomeIcon
+          icon={faCircleDown}
+          className="w-4 h-4 text-[#BABABA]"
+        />
       </button>
       <button className="p-1 hover:bg-gray-100 rounded">
-        <FontAwesomeIcon icon={faUpRightFromSquare} className="w-4 h-4 text-[#545454]" />
+        <FontAwesomeIcon
+          icon={faUpRightFromSquare}
+          className="w-4 h-4 text-[#545454]"
+        />
       </button>
       <button className="p-1 hover:bg-gray-100 rounded">
         <FontAwesomeIcon icon={faEdit} className="w-4 h-4 text-[#545454]" />
@@ -285,13 +291,19 @@ const Index = () => {
         <div className="bg-white text-[#545454] px-4 py-3 border-b border-gray-300">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <FontAwesomeIcon icon={faUsers} className="w-4 h-4 text-[#545454]" />
+              <FontAwesomeIcon
+                icon={faUsers}
+                className="w-4 h-4 text-[#545454]"
+              />
               <span className="font-bold text-xs tracking-wider uppercase">
                 All Providers
               </span>
             </div>
             <div className="flex items-center gap-4">
-              <Button size="sm" className="bg-[#79AC48] hover:bg-[#6B9A3F] text-white">
+              <Button
+                size="sm"
+                className="bg-[#79AC48] hover:bg-[#6B9A3F] text-white"
+              >
                 <FontAwesomeIcon icon={faUserPlus} className="w-4 h-4 mr-2" />
                 Add Provider
               </Button>
@@ -321,15 +333,20 @@ const Index = () => {
             }}
           >
             {sidebarCollapsed ? (
-              <FontAwesome
+              <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" />
             ) : (
-              <FontAwesome
+              <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />
             )}
           </button>
         </div>
 
         {/* Main Grid Area - Flexible */}
-        <div className={cn("flex-1 flex flex-col", sidebarCollapsed && "ml-4 border-l border-gray-300")}>
+        <div
+          className={cn(
+            "flex-1 flex flex-col",
+            sidebarCollapsed && "ml-4 border-l border-gray-300",
+          )}
+        >
           {/* Provider Info Grid - Fills Available Space */}
           <div className="flex-1 min-h-0">
             <DataGrid
@@ -379,8 +396,8 @@ const Index = () => {
                   width: 200,
                   valueFormatter: (params) => {
                     return params.value && Array.isArray(params.value)
-                      ? params.value.join(', ')
-                      : '';
+                      ? params.value.join(", ")
+                      : "";
                   },
                 },
                 {
@@ -394,13 +411,13 @@ const Index = () => {
                   width: 190,
                   sortable: false,
                   filter: false,
-                  pinned: 'right',
+                  pinned: "right",
                   cellStyle: {
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'start',
-                    paddingLeft: '16px'
-                  }
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "start",
+                    paddingLeft: "16px",
+                  },
                 },
               ]}
               onRowClicked={setSelectedProvider}
