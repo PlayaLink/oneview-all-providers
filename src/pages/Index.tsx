@@ -893,6 +893,7 @@ const Index = () => {
               style={{
                 right: sidebarCollapsed ? "-12px" : "-12px",
                 top: "-12px",
+                left: "7px",
               }}
             >
               {sidebarCollapsed ? (
