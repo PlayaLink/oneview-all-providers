@@ -58,7 +58,7 @@
 }
 
 .ag-grid-custom .ag-row {
-  border-bottom: 1px solid #d2d5dc !important;
+  border-bottom: 0.5px solid #d2d5dc !important;
   background-color: white !important;
 }
 
