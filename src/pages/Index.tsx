@@ -704,7 +704,7 @@ const Index = () => {
               {/* AG Grid Container */}
               <div
                 className="ag-theme-alpine ag-grid-custom"
-                style={{ height: "400px", width: "100%" }}
+                style={{ height: "400px", width: "100%", border: "none" }}
               >
                 <AgGridReact
                   rowData={sampleProviders}
