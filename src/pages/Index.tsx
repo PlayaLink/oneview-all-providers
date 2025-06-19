@@ -352,7 +352,7 @@ const Index = () => {
           <div
             className={cn(
               "flex-1",
-              sidebarCollapsed && "pl-8 border-l border-gray-300",
+              sidebarCollapsed && "ml-4 border-l border-gray-300",
             )}
           >
             {/* Provider Info Section Header */}
