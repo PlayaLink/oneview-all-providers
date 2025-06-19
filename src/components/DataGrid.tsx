@@ -117,13 +117,21 @@ const DataGrid: React.FC<DataGridProps> = ({
       {/* AG Grid Container */}
       <div
         className="ag-theme-alpine ag-grid-custom flex-1"
-        style={{
-          ...(height === "100%" ? { flexGrow: 1, height: "auto" } : { height }),
-          width: "100%",
-          border: "none",
-          borderWidth: "0px",
-          minHeight: 0,
-        }}
+        style={
+          {
+            ...(height === "100%"
+              ? { flexGrow: 1, height: "auto" }
+              : { height }),
+            width: "100%",
+            border: "none",
+            borderWidth: "0px",
+            minHeight: 0,
+            // Remove all vertical borders
+            "--ag-border-color": "transparent",
+            "--ag-cell-horizontal-border": "none",
+            "--ag-header-column-separator-color": "transparent",
+          } as React.CSSProperties
+        }
       >
         <AgGridReact
           rowData={data}
