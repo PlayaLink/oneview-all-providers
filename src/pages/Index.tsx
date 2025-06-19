@@ -4,7 +4,12 @@ import {
   ColDef,
   GridReadyEvent,
   SelectionChangedEvent,
+  ModuleRegistry,
+  AllCommunityModule,
 } from "ag-grid-community";
+
+// Register AG Grid modules
+ModuleRegistry.registerModules([AllCommunityModule]);
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronDown,
