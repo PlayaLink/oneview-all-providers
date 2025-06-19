@@ -5,7 +5,7 @@ import {
   GridReadyEvent,
   SelectionChangedEvent,
 } from "ag-grid-community";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChevronDown,
   faSearch,
@@ -26,8 +26,8 @@ import {
   faFilter,
   faCircleQuestion,
   faBarsStaggered,
-} from "@fortawesome/free-solid-svg-icons";
-import { faEdit } from "@fortawesome/free-regular-svg-icons";
+} from '@fortawesome/free-solid-svg-icons';
+import { faEdit } from '@fortawesome/free-regular-svg-icons';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -157,16 +157,10 @@ const ActionsCellRenderer = () => {
   return (
     <div className="flex items-center justify-end gap-2 h-full">
       <button className="p-1 hover:bg-gray-100 rounded">
-        <FontAwesomeIcon
-          icon={faCircleDown}
-          className="w-4 h-4 text-[#BABABA]"
-        />
+        <FontAwesomeIcon icon={faCircleDown} className="w-4 h-4 text-[#BABABA]" />
       </button>
       <button className="p-1 hover:bg-gray-100 rounded">
-        <FontAwesomeIcon
-          icon={faUpRightFromSquare}
-          className="w-4 h-4 text-[#545454]"
-        />
+        <FontAwesomeIcon icon={faUpRightFromSquare} className="w-4 h-4 text-[#545454]" />
       </button>
       <button className="p-1 hover:bg-gray-100 rounded">
         <FontAwesomeIcon icon={faEdit} className="w-4 h-4 text-[#545454]" />
@@ -298,18 +292,12 @@ const Index = () => {
 
             <div className="flex items-center justify-center flex-1">
               <div className="relative">
-                <FontAwesomeIcon
-                  icon={faSearch}
-                  className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#545454]"
-                />
+                <FontAwesomeIcon icon={faSearch} className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#545454]" />
                 <Input
                   placeholder="Search a Provider Name or NPI..."
                   className="pl-8 pr-10 py-1 text-xs border-gray-300 w-96"
                 />
-                <FontAwesomeIcon
-                  icon={faChevronDown}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#545454]"
-                />
+                <FontAwesomeIcon icon={faChevronDown} className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#545454]" />
               </div>
             </div>
 
@@ -351,12 +339,7 @@ const Index = () => {
 
         {/* Main Grid Area */}
         <div className="flex-1 flex">
-          <div
-            className={cn(
-              "flex-1",
-              sidebarCollapsed && "ml-4 border-l border-gray-300",
-            )}
-          >
+          <div className={cn("flex-1", sidebarCollapsed && "ml-4 border-l border-gray-300")}>
             {/* Provider Info Grid */}
             <DataGrid
               title="Provider Info"
@@ -405,8 +388,8 @@ const Index = () => {
                   width: 200,
                   valueFormatter: (params) => {
                     return params.value && Array.isArray(params.value)
-                      ? params.value.join(", ")
-                      : "";
+                      ? params.value.join(', ')
+                      : '';
                   },
                 },
                 {
@@ -420,47 +403,105 @@ const Index = () => {
                   width: 190,
                   sortable: false,
                   filter: false,
-                  pinned: "right",
+                  pinned: 'right',
                   cellStyle: {
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "start",
-                    paddingLeft: "16px",
-                  },
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'start',
+                    paddingLeft: '16px'
+                  }
                 },
               ]}
               onRowClicked={setSelectedProvider}
               height="400px"
             />
 
-            {/* AG Grid Section */}
-            <div className="bg-white mt-8">
-              {/* AG Grid Header */}
-              <div className="flex items-center justify-between px-2 py-[9px] bg-[#CFD8DC] border-b border-gray-300">
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2">
-                    <FontAwesomeIcon
-                      icon={faUsers}
-                      className="w-4 h-4 text-[#545454]"
-                    />
-                    <span className="text-[#545454] font-bold text-xs tracking-wider uppercase">
-                      Provider Data (AG Grid)
-                    </span>
-                  </div>
+            {/* Provider Data Grid (Example of how to use the new DataGrid component) */}
+            <div className="mt-8">
+              <DataGrid
+                title="Provider Data (AG Grid)"
+                icon={faUsers}
+                data={sampleProviders}
+                columns={[
+                  {
+                    headerName: "Provider Name",
+                    valueGetter: (params) =>
+                      `${params.data.lastName}, ${params.data.firstName}`,
+                    width: 200,
+                  },
+                  {
+                    headerName: "Title",
+                    field: "title",
+                    width: 120,
+                  },
+                  {
+                    headerName: "Specialty",
+                    field: "primarySpecialty",
+                    width: 200,
+                  },
+                  {
+                    headerName: "NPI #",
+                    field: "npiNumber",
+                    width: 140,
+                  },
+                  {
+                    headerName: "Work Email",
+                    field: "workEmail",
+                    width: 250,
+                  },
+                  {
+                    headerName: "Personal Email",
+                    field: "personalEmail",
+                    width: 250,
+                  },
+                  {
+                    headerName: "Mobile Phone",
+                    field: "mobilePhone",
+                    width: 145,
+                  },
+                  {
+                    headerName: "Tags",
+                    field: "tags",
+                    width: 200,
+                    valueFormatter: (params) => {
+                      return params.value && Array.isArray(params.value)
+                        ? params.value.join(', ')
+                        : '';
+                    },
+                  },
+                  {
+                    headerName: "Last Updated",
+                    field: "lastUpdated",
+                    width: 120,
+                  },
+                  {
+                    headerName: "Actions",
+                    cellRenderer: ActionsCellRenderer,
+                    width: 190,
+                    sortable: false,
+                    filter: false,
+                    pinned: 'right',
+                    cellStyle: {
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'start',
+                      paddingLeft: '16px'
+                    }
+                  },
+                ]}
+                onRowClicked={setSelectedProvider}
+                height="400px"
+              />
+            </div>
                   <div className="flex items-center gap-2 p-1 bg-[#E6E7EB] border border-[#E6E6E6] rounded">
-                    <FontAwesomeIcon
-                      icon={faFilter}
-                      className="w-4 h-4 text-[#4E5872]"
-                    />
+                    <FontAwesomeIcon icon={faFilter} className="w-4 h-4 text-[#4E5872]" />
                   </div>
                 </div>
 
                 {/* Provider Name */}
                 <div className="col-span-2 border-b border-[#E2E2E2]">
                   <div className="h-12 flex items-center px-4 bg-white">
-                    <span className="text-[#545454] font-bold text-xs tracking-wide">
-                      Provider Name
-                    </span>
+                    <span className="text-[#545454] font-bold text-xs tracking-wide">Provider Name</span>
                   </div>
                   <div className="px-4 pb-4 bg-white">
                     <input
@@ -474,9 +515,7 @@ const Index = () => {
                 {/* Title */}
                 <div className="col-span-1 border-b border-[#E2E2E2]">
                   <div className="h-12 flex items-center px-4 bg-white">
-                    <span className="text-[#545454] font-bold text-xs tracking-wide">
-                      Title
-                    </span>
+                    <span className="text-[#545454] font-bold text-xs tracking-wide">Title</span>
                   </div>
                   <div className="px-4 pb-4 bg-white">
                     <input
@@ -490,9 +529,7 @@ const Index = () => {
                 {/* Specialty */}
                 <div className="col-span-2 border-b border-[#E2E2E2]">
                   <div className="h-12 flex items-center px-4 bg-white">
-                    <span className="text-[#545454] font-bold text-xs tracking-wide">
-                      Specialty
-                    </span>
+                    <span className="text-[#545454] font-bold text-xs tracking-wide">Specialty</span>
                   </div>
                   <div className="px-4 pb-4 bg-white">
                     <input
@@ -506,9 +543,7 @@ const Index = () => {
                 {/* NPI # */}
                 <div className="col-span-1 border-b border-[#E2E2E2]">
                   <div className="h-12 flex items-center px-4 bg-white">
-                    <span className="text-[#545454] font-bold text-xs tracking-wide">
-                      NPI #
-                    </span>
+                    <span className="text-[#545454] font-bold text-xs tracking-wide">NPI #</span>
                   </div>
                   <div className="px-4 pb-4 bg-white">
                     <input
@@ -522,9 +557,7 @@ const Index = () => {
                 {/* Work Email */}
                 <div className="col-span-2 border-b border-[#E2E2E2]">
                   <div className="h-12 flex items-center px-4 bg-white">
-                    <span className="text-[#545454] font-bold text-xs tracking-wide">
-                      Work Email
-                    </span>
+                    <span className="text-[#545454] font-bold text-xs tracking-wide">Work Email</span>
                   </div>
                   <div className="px-4 pb-4 bg-white">
                     <input
@@ -539,35 +572,22 @@ const Index = () => {
                 <div className="col-span-3 border-b border-[#E2E2E2] bg-white shadow-[-4px_0px_30px_0px_rgba(0,0,0,0.3)] w-[190px] ml-[52px]">
                   <div className="h-12 flex items-center justify-between px-4">
                     <div className="flex items-center gap-1">
-                      <span className="text-[#545454] font-semibold text-xs tracking-wide">
-                        Actions
-                      </span>
-                      <FontAwesomeIcon
-                        icon={faCircleQuestion}
-                        className="w-3 h-3 text-[#BABABA]"
-                      />
+                      <span className="text-[#545454] font-semibold text-xs tracking-wide">Actions</span>
+                      <FontAwesomeIcon icon={faCircleQuestion} className="w-3 h-3 text-[#BABABA]" />
                     </div>
                     <div className="flex items-center gap-1">
                       <button className="w-6 h-6 bg-[#79AC48] rounded flex items-center justify-center">
-                        <FontAwesomeIcon
-                          icon={faPlus}
-                          className="w-2.5 h-2.5 text-white"
-                        />
+                        <FontAwesomeIcon icon={faPlus} className="w-2.5 h-2.5 text-white" />
                       </button>
-                      <FontAwesomeIcon
-                        icon={faEllipsisVertical}
-                        className="w-5 h-5 text-[#545454]"
-                      />
+                      <FontAwesomeIcon icon={faEllipsisVertical} className="w-5 h-5 text-[#545454]" />
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Grid Data Row */}
-              <div
-                className="grid grid-cols-12 h-[42px] border-b border-[#D2D5DC] bg-white hover:bg-gray-50 cursor-pointer"
-                onClick={() => setSelectedProvider(sampleProviders[0])}
-              >
+              <div className="grid grid-cols-12 h-[42px] border-b border-[#D2D5DC] bg-white hover:bg-gray-50 cursor-pointer"
+                   onClick={() => setSelectedProvider(sampleProviders[0])}>
                 {/* Checkbox */}
                 <div className="col-span-1 flex items-center justify-center">
                   <div className="w-4 h-4 border border-[#BABABA] rounded-sm bg-white"></div>
@@ -575,9 +595,7 @@ const Index = () => {
 
                 {/* Provider Name */}
                 <div className="col-span-2 flex items-center px-4">
-                  <span className="text-[#545454] text-xs font-medium">
-                    García, Sofia
-                  </span>
+                  <span className="text-[#545454] text-xs font-medium">García, Sofia</span>
                 </div>
 
                 {/* Title */}
@@ -597,36 +615,22 @@ const Index = () => {
 
                 {/* Work Email */}
                 <div className="col-span-2 flex items-center px-4">
-                  <span className="text-[#545454] text-xs">
-                    michelle.rivera@example.com
-                  </span>
+                  <span className="text-[#545454] text-xs">michelle.rivera@example.com</span>
                 </div>
 
                 {/* Actions */}
                 <div className="col-span-3 flex items-center justify-start gap-2 px-4 bg-white shadow-[-4px_0px_30px_0px_rgba(0,0,0,0.3)] w-[190px] ml-[52px]">
                   <button className="p-1 hover:bg-gray-100 rounded">
-                    <FontAwesomeIcon
-                      icon={faCircleDown}
-                      className="w-4 h-4 text-[#BABABA]"
-                    />
+                    <FontAwesomeIcon icon={faCircleDown} className="w-4 h-4 text-[#BABABA]" />
                   </button>
                   <button className="p-1 hover:bg-gray-100 rounded">
-                    <FontAwesomeIcon
-                      icon={faUpRightFromSquare}
-                      className="w-4 h-4 text-[#545454]"
-                    />
+                    <FontAwesomeIcon icon={faUpRightFromSquare} className="w-4 h-4 text-[#545454]" />
                   </button>
                   <button className="p-1 hover:bg-gray-100 rounded">
-                    <FontAwesomeIcon
-                      icon={faEdit}
-                      className="w-4 h-4 text-[#545454]"
-                    />
+                    <FontAwesomeIcon icon={faEdit} className="w-4 h-4 text-[#545454]" />
                   </button>
                   <button className="p-1 hover:bg-gray-100 rounded">
-                    <FontAwesomeIcon
-                      icon={faFlag}
-                      className="w-4 h-4 text-[#545454]"
-                    />
+                    <FontAwesomeIcon icon={faFlag} className="w-4 h-4 text-[#545454]" />
                   </button>
                   <div className="w-6 h-3 bg-[#79AC48] rounded-full relative">
                     <div className="w-2.5 h-2.5 bg-white rounded-full absolute right-0.5 top-0.25"></div>
@@ -636,63 +640,39 @@ const Index = () => {
 
               {/* Additional sample rows */}
               {sampleProviders.slice(1, 4).map((provider, index) => (
-                <div
-                  key={provider.id}
-                  className="grid grid-cols-12 h-[42px] border-b border-[#D2D5DC] bg-white hover:bg-gray-50 cursor-pointer"
-                  onClick={() => setSelectedProvider(provider)}
-                >
+                <div key={provider.id}
+                     className="grid grid-cols-12 h-[42px] border-b border-[#D2D5DC] bg-white hover:bg-gray-50 cursor-pointer"
+                     onClick={() => setSelectedProvider(provider)}>
                   <div className="col-span-1 flex items-center justify-center">
                     <div className="w-4 h-4 border border-[#BABABA] rounded-sm bg-white"></div>
                   </div>
                   <div className="col-span-2 flex items-center px-4">
-                    <span className="text-[#545454] text-xs font-medium">
-                      {provider.lastName}, {provider.firstName}
-                    </span>
+                    <span className="text-[#545454] text-xs font-medium">{provider.lastName}, {provider.firstName}</span>
                   </div>
                   <div className="col-span-1 flex items-center px-4">
-                    <span className="text-[#545454] text-xs">
-                      {provider.title}
-                    </span>
+                    <span className="text-[#545454] text-xs">{provider.title}</span>
                   </div>
                   <div className="col-span-2 flex items-center px-4">
-                    <span className="text-[#545454] text-xs">
-                      {provider.primarySpecialty}
-                    </span>
+                    <span className="text-[#545454] text-xs">{provider.primarySpecialty}</span>
                   </div>
                   <div className="col-span-1 flex items-center px-4">
-                    <span className="text-[#545454] text-xs">
-                      {provider.npiNumber}
-                    </span>
+                    <span className="text-[#545454] text-xs">{provider.npiNumber}</span>
                   </div>
                   <div className="col-span-2 flex items-center px-4">
-                    <span className="text-[#545454] text-xs">
-                      {provider.workEmail}
-                    </span>
+                    <span className="text-[#545454] text-xs">{provider.workEmail}</span>
                   </div>
                   <div className="col-span-3 flex items-center justify-start gap-2 px-4 bg-white shadow-[-4px_0px_30px_0px_rgba(0,0,0,0.3)] w-[190px] ml-[52px]">
                     <button className="p-1 hover:bg-gray-100 rounded">
-                      <FontAwesomeIcon
-                        icon={faCircleDown}
-                        className="w-4 h-4 text-[#BABABA]"
-                      />
+                      <FontAwesomeIcon icon={faCircleDown} className="w-4 h-4 text-[#BABABA]" />
                     </button>
                     <button className="p-1 hover:bg-gray-100 rounded">
-                      <FontAwesomeIcon
-                        icon={faUpRightFromSquare}
-                        className="w-4 h-4 text-[#545454]"
-                      />
+                      <FontAwesomeIcon icon={faUpRightFromSquare} className="w-4 h-4 text-[#545454]" />
                     </button>
                     <button className="p-1 hover:bg-gray-100 rounded">
-                      <FontAwesomeIcon
-                        icon={faEdit}
-                        className="w-4 h-4 text-[#545454]"
-                      />
+                      <FontAwesomeIcon icon={faEdit} className="w-4 h-4 text-[#545454]" />
                     </button>
                     <button className="p-1 hover:bg-gray-100 rounded">
-                      <FontAwesomeIcon
-                        icon={faFlag}
-                        className="w-4 h-4 text-[#545454]"
-                      />
+                      <FontAwesomeIcon icon={faFlag} className="w-4 h-4 text-[#545454]" />
                     </button>
                     <div className="w-6 h-3 bg-[#79AC48] rounded-full relative">
                       <div className="w-2.5 h-2.5 bg-white rounded-full absolute right-0.5 top-0.25"></div>
@@ -708,10 +688,7 @@ const Index = () => {
               <div className="flex items-center justify-between px-2 py-[9px] bg-[#CFD8DC] border-b border-gray-300">
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
-                    <FontAwesomeIcon
-                      icon={faUsers}
-                      className="w-4 h-4 text-[#545454]"
-                    />
+                    <FontAwesomeIcon icon={faUsers} className="w-4 h-4 text-[#545454]" />
                     <span className="text-[#545454] font-bold text-xs tracking-wider uppercase">
                       Provider Data (AG Grid)
                     </span>
@@ -719,21 +696,15 @@ const Index = () => {
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#F48100] rounded-full">
                       <span className="text-white font-bold text-xs">1</span>
-                      <span className="text-white font-bold text-xs">
-                        Expiring
-                      </span>
+                      <span className="text-white font-bold text-xs">Expiring</span>
                     </div>
                     <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#DB0D00] rounded-full">
                       <span className="text-white font-bold text-xs">1</span>
-                      <span className="text-white font-bold text-xs">
-                        Expired
-                      </span>
+                      <span className="text-white font-bold text-xs">Expired</span>
                     </div>
                     <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#545454] rounded-full">
                       <span className="text-white font-bold text-xs">900+</span>
-                      <span className="text-white font-bold text-xs">
-                        Total
-                      </span>
+                      <span className="text-white font-bold text-xs">Total</span>
                     </div>
                   </div>
                 </div>
@@ -745,15 +716,7 @@ const Index = () => {
               </div>
 
               {/* AG Grid Container */}
-              <div
-                className="ag-theme-alpine ag-grid-custom"
-                style={{
-                  height: "400px",
-                  width: "100%",
-                  border: "none",
-                  borderWidth: "0px",
-                }}
-              >
+              <div className="ag-theme-alpine ag-grid-custom" style={{ height: '400px', width: '100%', border: 'none', borderWidth: '0px' }}>
                 <AgGridReact
                   rowData={sampleProviders}
                   columnDefs={[
@@ -762,14 +725,14 @@ const Index = () => {
                       headerCheckboxSelection: true,
                       checkboxSelection: true,
                       width: 50,
-                      pinned: "left",
+                      pinned: 'left',
                       lockPosition: true,
                       suppressMenu: true,
                       sortable: false,
                       filter: false,
                       resizable: false,
-                      cellClass: "ag-cell-no-border",
-                      headerClass: "ag-header-no-border",
+                      cellClass: 'ag-cell-no-border',
+                      headerClass: 'ag-header-no-border'
                     },
                     {
                       headerName: "Provider Name",
@@ -777,84 +740,84 @@ const Index = () => {
                         `${params.data.lastName}, ${params.data.firstName}`,
                       width: 200,
                       cellStyle: {
-                        color: "#545454",
-                        fontSize: "12px",
-                        display: "flex",
-                        alignItems: "center",
-                        paddingLeft: "16px",
-                      },
+                        color: '#545454',
+                        fontSize: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        paddingLeft: '16px'
+                      }
                     },
                     {
                       headerName: "Title",
                       field: "title",
                       width: 120,
                       cellStyle: {
-                        color: "#545454",
-                        fontSize: "12px",
-                        display: "flex",
-                        alignItems: "center",
-                        paddingLeft: "16px",
-                      },
+                        color: '#545454',
+                        fontSize: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        paddingLeft: '16px'
+                      }
                     },
                     {
                       headerName: "Specialty",
                       field: "primarySpecialty",
                       width: 200,
                       cellStyle: {
-                        color: "#545454",
-                        fontSize: "12px",
-                        display: "flex",
-                        alignItems: "center",
-                        paddingLeft: "16px",
-                      },
+                        color: '#545454',
+                        fontSize: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        paddingLeft: '16px'
+                      }
                     },
                     {
                       headerName: "NPI #",
                       field: "npiNumber",
                       width: 140,
                       cellStyle: {
-                        color: "#545454",
-                        fontSize: "12px",
-                        display: "flex",
-                        alignItems: "center",
-                        paddingLeft: "16px",
-                      },
+                        color: '#545454',
+                        fontSize: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        paddingLeft: '16px'
+                      }
                     },
                     {
                       headerName: "Work Email",
                       field: "workEmail",
                       width: 250,
                       cellStyle: {
-                        color: "#545454",
-                        fontSize: "12px",
-                        display: "flex",
-                        alignItems: "center",
-                        paddingLeft: "16px",
-                      },
+                        color: '#545454',
+                        fontSize: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        paddingLeft: '16px'
+                      }
                     },
                     {
                       headerName: "Personal Email",
                       field: "personalEmail",
                       width: 250,
                       cellStyle: {
-                        color: "#545454",
-                        fontSize: "12px",
-                        display: "flex",
-                        alignItems: "center",
-                        paddingLeft: "16px",
-                      },
+                        color: '#545454',
+                        fontSize: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        paddingLeft: '16px'
+                      }
                     },
                     {
                       headerName: "Mobile Phone",
                       field: "mobilePhone",
                       width: 145,
                       cellStyle: {
-                        color: "#545454",
-                        fontSize: "12px",
-                        display: "flex",
-                        alignItems: "center",
-                        paddingLeft: "16px",
-                      },
+                        color: '#545454',
+                        fontSize: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        paddingLeft: '16px'
+                      }
                     },
                     {
                       headerName: "Tags",
@@ -862,28 +825,28 @@ const Index = () => {
                       width: 200,
                       valueFormatter: (params) => {
                         return params.value && Array.isArray(params.value)
-                          ? params.value.join(", ")
-                          : "";
+                          ? params.value.join(', ')
+                          : '';
                       },
                       cellStyle: {
-                        color: "#545454",
-                        fontSize: "12px",
-                        display: "flex",
-                        alignItems: "center",
-                        paddingLeft: "16px",
-                      },
+                        color: '#545454',
+                        fontSize: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        paddingLeft: '16px'
+                      }
                     },
                     {
                       headerName: "Last Updated",
                       field: "lastUpdated",
                       width: 120,
                       cellStyle: {
-                        color: "#545454",
-                        fontSize: "12px",
-                        display: "flex",
-                        alignItems: "center",
-                        paddingLeft: "16px",
-                      },
+                        color: '#545454',
+                        fontSize: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        paddingLeft: '16px'
+                      }
                     },
                     {
                       headerName: "Actions",
@@ -891,13 +854,13 @@ const Index = () => {
                       width: 190,
                       sortable: false,
                       filter: false,
-                      pinned: "right",
+                      pinned: 'right',
                       cellStyle: {
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "start",
-                        paddingLeft: "16px",
-                      },
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'start',
+                        paddingLeft: '16px'
+                      }
                     },
                   ]}
                   onSelectionChanged={handleSelectionChanged}
@@ -906,25 +869,25 @@ const Index = () => {
                   rowHeight={42}
                   suppressRowClickSelection={true}
                   getRowStyle={(params) => ({
-                    borderBottom: "0.5px solid #D2D5DC",
-                    backgroundColor: "white",
+                    borderBottom: '0.5px solid #D2D5DC',
+                    backgroundColor: 'white'
                   })}
                   defaultColDef={{
                     resizable: true,
                     sortable: true,
                     filter: true,
                     cellStyle: {
-                      borderRight: "1px solid #E2E2E2",
-                    },
+                      borderRight: '1px solid #E2E2E2'
+                    }
                   }}
                   icons={{
                     filter: () => (
                       <FontAwesomeIcon
                         icon={faBarsStaggered}
                         className="w-3 h-3 text-[#545454]"
-                        style={{ fontSize: "12px" }}
+                        style={{ fontSize: '12px' }}
                       />
-                    ),
+                    )
                   }}
                 />
               </div>
