@@ -468,11 +468,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/practice-employer")
+                    isItemActive("practice-employer")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/practice-employer")}
+                  onClick={() => handleItemClick("practice-employer")}
                 >
                   <FontAwesomeIcon icon={faBuilding} className="w-4 h-4" />
                   <span className="text-xs font-semibold">
@@ -482,11 +482,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/facility-affiliations")
+                    isItemActive("facility-affiliations")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/facility-affiliations")}
+                  onClick={() => handleItemClick("facility-affiliations")}
                 >
                   <FontAwesomeIcon icon={faHospital} className="w-4 h-4" />
                   <span className="text-xs font-semibold">
@@ -496,11 +496,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/work-history")
+                    isItemActive("work-history")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/work-history")}
+                  onClick={() => handleItemClick("work-history")}
                 >
                   <FontAwesomeIcon icon={faBriefcase} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Work History</span>
@@ -508,11 +508,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/peer-references")
+                    isItemActive("peer-references")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/peer-references")}
+                  onClick={() => handleItemClick("peer-references")}
                 >
                   <FontAwesomeIcon icon={faUserGroup} className="w-4 h-4" />
                   <span className="text-xs font-semibold">Peer References</span>
@@ -520,11 +520,11 @@ const SideNav: React.FC<SideNavProps> = ({
                 <div
                   className={cn(
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
-                    isActive("/military-experience")
+                    isItemActive("military-experience")
                       ? "bg-[#008BC9] text-white"
                       : "text-[#008BC9] hover:bg-gray-50",
                   )}
-                  onClick={() => handleNavClick("/military-experience")}
+                  onClick={() => handleItemClick("military-experience")}
                 >
                   <FontAwesomeIcon icon={faMedal} className="w-4 h-4" />
                   <span className="text-xs font-semibold">
