@@ -160,6 +160,13 @@ const MainContent: React.FC<MainContentProps> = ({
           </div>
         )}
       </div>
+
+      {/* Side Panel */}
+      <SidePanel
+        isOpen={sidePanelOpen}
+        provider={selectedProvider}
+        onClose={handleSidePanelClose}
+      />
     </div>
   );
 };
