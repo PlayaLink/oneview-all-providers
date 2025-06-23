@@ -2,20 +2,7 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
-
-interface Provider {
-  id: string;
-  firstName: string;
-  lastName: string;
-  title: string;
-  primarySpecialty: string;
-  npiNumber: string;
-  workEmail: string;
-  personalEmail: string;
-  mobilePhone: string;
-  tags: string[];
-  lastUpdated: string;
-}
+import { Provider } from "@/types";
 
 interface SidePanelProps {
   isOpen: boolean;
