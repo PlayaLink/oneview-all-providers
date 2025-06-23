@@ -103,6 +103,7 @@ const MainContent: React.FC<MainContentProps> = ({
             data={sampleProviders}
             columns={standardColumns}
             height="100%"
+            onRowClicked={handleProviderSelect}
           />
         </div>
 
