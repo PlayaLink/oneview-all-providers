@@ -137,6 +137,11 @@ const DataGrid: React.FC<DataGridProps> = ({
           rowData={data}
           columnDefs={columnDefs}
           onSelectionChanged={handleSelectionChanged}
+          onRowClicked={(event) => {
+            if (onRowClicked && event.data) {
+              onRowClicked(event.data);
+            }
+          }}
           rowSelection={showCheckboxes ? "multiple" : "single"}
           headerHeight={40}
           rowHeight={42}
