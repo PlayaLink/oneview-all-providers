@@ -5,24 +5,11 @@ import DataGrid from "@/components/DataGrid";
 import SidePanel from "@/components/SidePanel";
 import { sampleProviders, standardColumns } from "@/lib/gridConfig";
 import { GridConfig } from "@/lib/gridConfig";
+import { Provider } from "@/types";
 
 interface MainContentProps {
   selectedItem: string | null;
   selectedSection: string | null;
-}
-
-interface Provider {
-  id: string;
-  firstName: string;
-  lastName: string;
-  title: string;
-  primarySpecialty: string;
-  npiNumber: string;
-  workEmail: string;
-  personalEmail: string;
-  mobilePhone: string;
-  tags: string[];
-  lastUpdated: string;
 }
 
 const MainContent: React.FC<MainContentProps> = ({
