@@ -141,7 +141,7 @@ const DataGrid: React.FC<DataGridProps> = ({
           rowData={data}
           columnDefs={columnDefs}
           onSelectionChanged={handleSelectionChanged}
-          onRowClicked={(event) => {
+          onRowClicked={(event: RowClickedEvent) => {
             if (onRowClicked && event.data) {
               onRowClicked(event.data);
             }
