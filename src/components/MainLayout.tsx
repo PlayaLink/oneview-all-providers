@@ -15,9 +15,7 @@ import MainContent from "@/components/MainContent";
 
 const MainLayout: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<string | null>(
-    "provider-info",
-  );
+  const [selectedItem, setSelectedItem] = useState<string | null>("provider-info");
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
 
   const handleItemSelect = (item: string) => {
@@ -127,6 +125,7 @@ const MainLayout: React.FC = () => {
                 <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />
               )}
             </button>
+            </div>
           </div>
 
           {/* Main Grid Area - Flexible */}
