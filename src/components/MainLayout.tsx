@@ -92,9 +92,9 @@ const MainLayout: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-1 border-t border-gray-300">
+      <div className="flex flex-1 border-t border-gray-300 min-h-0">
         {/* Wrapper to allow arrow overflow */}
-        <div className="flex flex-1">
+        <div className="flex flex-1 min-h-0">
           {/* Left Sidebar */}
           <div
             className={cn(
