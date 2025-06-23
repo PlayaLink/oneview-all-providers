@@ -98,17 +98,19 @@ const MainLayout: React.FC = () => {
           {/* Left Sidebar */}
           <div
             className={cn(
-              "relative border-r border-gray-300 bg-white transition-all duration-300 flex flex-col",
+              "relative border-r border-gray-300 bg-white transition-all duration-300 flex flex-col min-h-0",
               sidebarCollapsed ? "w-0" : "w-48",
             )}
           >
-            <SideNav
-              collapsed={sidebarCollapsed}
-              selectedItem={selectedItem}
-              selectedSection={selectedSection}
-              onItemSelect={handleItemSelect}
-              onSectionSelect={handleSectionSelect}
-            />
+            <div className="flex-1 min-h-0 overflow-hidden">
+              <SideNav
+                collapsed={sidebarCollapsed}
+                selectedItem={selectedItem}
+                selectedSection={selectedSection}
+                onItemSelect={handleItemSelect}
+                onSectionSelect={handleSectionSelect}
+              />
+            </div>
 
             {/* Collapse Toggle */}
             <button
