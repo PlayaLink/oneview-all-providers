@@ -11,11 +11,38 @@ interface MainContentProps {
   selectedSection: string | null;
 }
 
+interface Provider {
+  id: string;
+  firstName: string;
+  lastName: string;
+  title: string;
+  primarySpecialty: string;
+  npiNumber: string;
+  workEmail: string;
+  personalEmail: string;
+  mobilePhone: string;
+  tags: string[];
+  lastUpdated: string;
+}
+
 const MainContent: React.FC<MainContentProps> = ({
   selectedItem,
   selectedSection,
 }) => {
   const [currentGridIndex, setCurrentGridIndex] = useState(0);
+  const [selectedProvider, setSelectedProvider] = useState<Provider | null>(
+    null,
+  );
+  const [sidePanelOpen, setSidePanelOpen] = useState(false);
+
+  const handleProviderSelect = (provider: Provider) => {
+    setSelectedProvider(provider);
+    setSidePanelOpen(true);
+  };
+
+  const handleSidePanelClose = () => {
+    setSidePanelOpen(false);
+  };
 
   // Function to get grids based on selection
   const getGridsToShow = () => {
