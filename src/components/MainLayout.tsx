@@ -132,7 +132,7 @@ const MainLayout: React.FC = () => {
           {/* Main Grid Area - Flexible */}
           <div
             className={cn(
-              "flex-1 flex flex-col",
+              "flex-1 flex flex-col min-h-0",
               sidebarCollapsed && "ml-4 border-l border-gray-300",
             )}
           >
