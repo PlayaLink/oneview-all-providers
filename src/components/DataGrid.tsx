@@ -1,6 +1,10 @@
 import React from "react";
 import { AgGridReact } from "ag-grid-react";
-import { ColDef, SelectionChangedEvent } from "ag-grid-community";
+import {
+  ColDef,
+  SelectionChangedEvent,
+  RowClickedEvent,
+} from "ag-grid-community";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
