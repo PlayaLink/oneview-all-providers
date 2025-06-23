@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import DataGrid from "@/components/DataGrid";
+import SidePanel from "@/components/SidePanel";
 import { sampleProviders, standardColumns } from "@/lib/gridConfig";
 import { GridConfig } from "@/lib/gridConfig";
 
