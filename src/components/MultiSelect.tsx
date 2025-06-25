@@ -1,6 +1,8 @@
 import * as React from "react";
 import { Plus } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
 import { cn } from "@/lib/utils";
 import { Tag } from "./Tag";
@@ -153,6 +155,9 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
   ) => {
     const [open, setOpen] = React.useState(false);
     const [searchValue, setSearchValue] = React.useState("");
+    const [showCopied, setShowCopied] = React.useState(false);
+    const [isHovered, setIsHovered] = React.useState(false);
+    const copiedTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
     const handleSelectionChange = React.useCallback(
       (item: MultiSelectItem, isSelected: boolean) => {
@@ -215,6 +220,72 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
       },
       [disabled],
     );
+
+    const handleCopy = async (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (!value || value.length === 0) return;
+
+      const textToCopy = value.map((item) => item.label).join(", ");
+
+      try {
+        // Try modern clipboard API first
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(textToCopy);
+        } else {
+          // Fallback for environments where clipboard API is blocked (like iframes)
+          const textArea = document.createElement("textarea");
+          textArea.value = textToCopy;
+          textArea.style.position = "fixed";
+          textArea.style.left = "-999999px";
+          textArea.style.top = "-999999px";
+          document.body.appendChild(textArea);
+          textArea.focus();
+          textArea.select();
+
+          const successful = document.execCommand("copy");
+          document.body.removeChild(textArea);
+
+          if (!successful) {
+            throw new Error("Failed to copy using fallback method");
+          }
+        }
+
+        setShowCopied(true);
+
+        // Clear any existing timeout
+        if (copiedTimeoutRef.current) {
+          clearTimeout(copiedTimeoutRef.current);
+        }
+
+        // Hide tooltip after 2 seconds
+        copiedTimeoutRef.current = setTimeout(() => {
+          setShowCopied(false);
+          copiedTimeoutRef.current = null;
+        }, 2000);
+      } catch (err) {
+        console.error("Failed to copy text: ", err);
+        // Still show the tooltip even if copy failed, for better UX
+        setShowCopied(true);
+
+        if (copiedTimeoutRef.current) {
+          clearTimeout(copiedTimeoutRef.current);
+        }
+
+        copiedTimeoutRef.current = setTimeout(() => {
+          setShowCopied(false);
+          copiedTimeoutRef.current = null;
+        }, 2000);
+      }
+    };
+
+    // Cleanup timeout on unmount
+    React.useEffect(() => {
+      return () => {
+        if (copiedTimeoutRef.current) {
+          clearTimeout(copiedTimeoutRef.current);
+        }
+      };
+    }, []);
 
     // Calculate available options (excluding already selected items)
     const availableOptions = React.useMemo(() => {
@@ -374,10 +445,48 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
         )}
         style={{ maxWidth }}
         ref={ref}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         {...props}
       >
         {LabelComponent}
-        {ValueContainer}
+        <div className="flex items-start gap-2 flex-1">
+          {ValueContainer}
+
+          {/* Copy button - outside input, only show when there are selected items */}
+          {value && value.length > 0 && (
+            <div className="relative flex items-center">
+              <button
+                type="button"
+                onClick={handleCopy}
+                disabled={disabled}
+                className={cn(
+                  "flex w-[20.5px] h-5 py-[1.667px] justify-center items-center gap-[6.667px] rounded-[3.333px] hover:bg-gray-50 transition-all disabled:opacity-50",
+                  isHovered ? "opacity-100" : "opacity-0",
+                )}
+              >
+                <FontAwesomeIcon
+                  icon={faCopy}
+                  className="text-[14px] text-[#3E88D5]"
+                />
+              </button>
+
+              {/* Tooltip */}
+              {showCopied && (
+                <div className="absolute -top-[35px] left-1/2 transform -translate-x-1/2 z-50">
+                  <div className="flex py-[6.667px] px-[13.333px] flex-col justify-end items-center gap-[13.333px] rounded-[3.333px] border border-[#E6E6E6] bg-white shadow-md">
+                    <div className="text-[#545454] text-center text-[10px] font-normal leading-normal tracking-[0.357px] font-['Poppins',sans-serif]">
+                      Copied
+                    </div>
+                    {/* Arrow pointing down */}
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[3.75px] border-r-[3.75px] border-t-[8.333px] border-l-transparent border-r-transparent border-t-[#E6E6E6]" />
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[3.75px] border-r-[3.75px] border-t-[7.5px] border-l-transparent border-r-transparent border-t-white translate-y-[-1px]" />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     );
   },
