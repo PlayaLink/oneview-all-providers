@@ -1,8 +1,93 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
 import { Provider } from "@/types";
+import CollapsibleSection from "./CollapsibleSection";
+import MultiSelect from "./MultiSelect";
+
+// TypeSpecialtyClassificationSection component
+const TypeSpecialtyClassificationSection: React.FC = () => {
+  const [specialtyList, setSpecialtyList] = useState<string[]>([
+    "General Surgery",
+  ]);
+  const [classifications, setClassifications] = useState<string[]>([
+    "Hospital-based",
+    "Specialist",
+    "Locum Tenens",
+  ]);
+  const [taxonomyCodes, setTaxonomyCodes] = useState<string[]>([
+    "Plastic Surgery - Surgery of the Hand (2082S0105X",
+  ]);
+  const [clinicalServices, setClinicalServices] = useState<string[]>([
+    "Outpatient Clinical Services",
+  ]);
+  const [fluentLanguages, setFluentLanguages] = useState<string[]>([
+    "English",
+    "Spanish",
+    "French",
+  ]);
+  const [cmsSpecialtyCodes, setCmsSpecialtyCodes] = useState<string[]>([]);
+
+  const handleRemoveItem =
+    (setState: React.Dispatch<React.SetStateAction<string[]>>) =>
+    (item: string) => {
+      setState((prev) => prev.filter((i) => i !== item));
+    };
+
+  const handleAddClick = (field: string) => () => {
+    console.log(`Add clicked for ${field}`);
+    // Here you would typically open a modal or dropdown to add new items
+  };
+
+  return (
+    <CollapsibleSection title="Type, Speciality & Classification">
+      <div className="flex flex-col gap-2 w-full">
+        <MultiSelect
+          label="Speciality List"
+          selectedItems={specialtyList}
+          onRemoveItem={handleRemoveItem(setSpecialtyList)}
+          onAddClick={handleAddClick("specialtyList")}
+        />
+
+        <MultiSelect
+          label="Classifications"
+          selectedItems={classifications}
+          onRemoveItem={handleRemoveItem(setClassifications)}
+          onAddClick={handleAddClick("classifications")}
+        />
+
+        <MultiSelect
+          label="Taxonomy Codes"
+          selectedItems={taxonomyCodes}
+          onRemoveItem={handleRemoveItem(setTaxonomyCodes)}
+          onAddClick={handleAddClick("taxonomyCodes")}
+        />
+
+        <MultiSelect
+          label="Clinical Services"
+          selectedItems={clinicalServices}
+          onRemoveItem={handleRemoveItem(setClinicalServices)}
+          onAddClick={handleAddClick("clinicalServices")}
+        />
+
+        <MultiSelect
+          label="Fluent Languages"
+          selectedItems={fluentLanguages}
+          onRemoveItem={handleRemoveItem(setFluentLanguages)}
+          onAddClick={handleAddClick("fluentLanguages")}
+        />
+
+        <MultiSelect
+          label="CMS Medicare Specialty Codes"
+          selectedItems={cmsSpecialtyCodes}
+          onRemoveItem={handleRemoveItem(setCmsSpecialtyCodes)}
+          onAddClick={handleAddClick("cmsSpecialtyCodes")}
+        />
+      </div>
+    </CollapsibleSection>
+  );
+};
 
 interface SidePanelProps {
   isOpen: boolean;
@@ -47,122 +132,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, provider, onClose }) => {
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4">
-          <div className="space-y-6">
-            {/* Basic Information */}
-            <div>
-              <h3 className="text-sm font-semibold text-[#545454] uppercase tracking-wide mb-3">
-                Basic Information
-              </h3>
-              <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-xs text-gray-500 uppercase tracking-wide">
-                      First Name
-                    </label>
-                    <p className="text-sm font-medium text-[#545454]">
-                      {provider.firstName}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="text-xs text-gray-500 uppercase tracking-wide">
-                      Last Name
-                    </label>
-                    <p className="text-sm font-medium text-[#545454]">
-                      {provider.lastName}
-                    </p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-xs text-gray-500 uppercase tracking-wide">
-                      Title
-                    </label>
-                    <p className="text-sm font-medium text-[#545454]">
-                      {provider.title}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="text-xs text-gray-500 uppercase tracking-wide">
-                      NPI Number
-                    </label>
-                    <p className="text-sm font-medium text-[#545454]">
-                      {provider.npiNumber}
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  <label className="text-xs text-gray-500 uppercase tracking-wide">
-                    Primary Specialty
-                  </label>
-                  <p className="text-sm font-medium text-[#545454]">
-                    {provider.primarySpecialty}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Contact Information */}
-            <div>
-              <h3 className="text-sm font-semibold text-[#545454] uppercase tracking-wide mb-3">
-                Contact Information
-              </h3>
-              <div className="space-y-3">
-                <div>
-                  <label className="text-xs text-gray-500 uppercase tracking-wide">
-                    Work Email
-                  </label>
-                  <p className="text-sm font-medium text-[#545454]">
-                    {provider.workEmail}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-xs text-gray-500 uppercase tracking-wide">
-                    Personal Email
-                  </label>
-                  <p className="text-sm font-medium text-[#545454]">
-                    {provider.personalEmail}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-xs text-gray-500 uppercase tracking-wide">
-                    Mobile Phone
-                  </label>
-                  <p className="text-sm font-medium text-[#545454]">
-                    {provider.mobilePhone}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Tags */}
-            {provider.tags && provider.tags.length > 0 && (
-              <div>
-                <h3 className="text-sm font-semibold text-[#545454] uppercase tracking-wide mb-3">
-                  Tags
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {provider.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="px-2 py-1 bg-blue-50 text-blue-800 border border-blue-200 rounded text-xs font-medium"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Last Updated */}
-            <div>
-              <h3 className="text-sm font-semibold text-[#545454] uppercase tracking-wide mb-3">
-                Last Updated
-              </h3>
-              <p className="text-sm font-medium text-[#545454]">
-                {provider.lastUpdated}
-              </p>
-            </div>
-          </div>
+          <TypeSpecialtyClassificationSection />
         </div>
 
         {/* Footer Actions */}
