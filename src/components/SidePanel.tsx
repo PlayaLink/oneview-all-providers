@@ -4,85 +4,128 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
 import { Provider } from "@/types";
 import CollapsibleSection from "./CollapsibleSection";
-import MultiSelect from "./MultiSelect";
+import { MultiSelect, MultiSelectItem } from "./MultiSelect";
 
 // TypeSpecialtyClassificationSection component
 const TypeSpecialtyClassificationSection: React.FC = () => {
-  const [specialtyList, setSpecialtyList] = useState<string[]>([
-    "General Surgery",
+  const [specialtyList, setSpecialtyList] = useState<MultiSelectItem[]>([
+    { id: 1, label: "General Surgery" },
   ]);
-  const [classifications, setClassifications] = useState<string[]>([
-    "Hospital-based",
-    "Specialist",
-    "Locum Tenens",
+  const [classifications, setClassifications] = useState<MultiSelectItem[]>([
+    { id: 1, label: "Hospital-based" },
+    { id: 2, label: "Specialist" },
+    { id: 3, label: "Locum Tenens" },
   ]);
-  const [taxonomyCodes, setTaxonomyCodes] = useState<string[]>([
-    "Plastic Surgery - Surgery of the Hand (2082S0105X",
+  const [taxonomyCodes, setTaxonomyCodes] = useState<MultiSelectItem[]>([
+    { id: 1, label: "Plastic Surgery - Surgery of the Hand (2082S0105X" },
   ]);
-  const [clinicalServices, setClinicalServices] = useState<string[]>([
-    "Outpatient Clinical Services",
+  const [clinicalServices, setClinicalServices] = useState<MultiSelectItem[]>([
+    { id: 1, label: "Outpatient Clinical Services" },
   ]);
-  const [fluentLanguages, setFluentLanguages] = useState<string[]>([
-    "English",
-    "Spanish",
-    "French",
+  const [fluentLanguages, setFluentLanguages] = useState<MultiSelectItem[]>([
+    { id: 1, label: "English" },
+    { id: 2, label: "Spanish" },
+    { id: 3, label: "French" },
   ]);
-  const [cmsSpecialtyCodes, setCmsSpecialtyCodes] = useState<string[]>([]);
+  const [cmsSpecialtyCodes, setCmsSpecialtyCodes] = useState<MultiSelectItem[]>(
+    [],
+  );
 
-  const handleRemoveItem =
-    (setState: React.Dispatch<React.SetStateAction<string[]>>) =>
-    (item: string) => {
-      setState((prev) => prev.filter((i) => i !== item));
-    };
+  // Sample options for each field
+  const specialtyOptions: MultiSelectItem[] = [
+    { id: 1, label: "General Surgery" },
+    { id: 2, label: "Cardiology" },
+    { id: 3, label: "Neurology" },
+    { id: 4, label: "Orthopedics" },
+    { id: 5, label: "Pediatrics" },
+  ];
 
-  const handleAddClick = (field: string) => () => {
-    console.log(`Add clicked for ${field}`);
-    // Here you would typically open a modal or dropdown to add new items
-  };
+  const classificationOptions: MultiSelectItem[] = [
+    { id: 1, label: "Hospital-based" },
+    { id: 2, label: "Specialist" },
+    { id: 3, label: "Locum Tenens" },
+    { id: 4, label: "Primary Care" },
+    { id: 5, label: "Emergency Medicine" },
+  ];
+
+  const taxonomyOptions: MultiSelectItem[] = [
+    { id: 1, label: "Plastic Surgery - Surgery of the Hand (2082S0105X" },
+    { id: 2, label: "Internal Medicine (207R00000X)" },
+    { id: 3, label: "Family Medicine (207Q00000X)" },
+  ];
+
+  const clinicalOptions: MultiSelectItem[] = [
+    { id: 1, label: "Outpatient Clinical Services" },
+    { id: 2, label: "Inpatient Services" },
+    { id: 3, label: "Emergency Services" },
+    { id: 4, label: "Diagnostic Services" },
+  ];
+
+  const languageOptions: MultiSelectItem[] = [
+    { id: 1, label: "English" },
+    { id: 2, label: "Spanish" },
+    { id: 3, label: "French" },
+    { id: 4, label: "German" },
+    { id: 5, label: "Mandarin" },
+    { id: 6, label: "Arabic" },
+  ];
+
+  const cmsOptions: MultiSelectItem[] = [
+    { id: 1, label: "01 - General Practice" },
+    { id: 2, label: "02 - General Surgery" },
+    { id: 3, label: "06 - Cardiology" },
+    { id: 4, label: "11 - Internal Medicine" },
+  ];
 
   return (
     <CollapsibleSection title="Type, Speciality & Classification">
       <div className="flex flex-col gap-2 w-full">
         <MultiSelect
           label="Speciality List"
-          selectedItems={specialtyList}
-          onRemoveItem={handleRemoveItem(setSpecialtyList)}
-          onAddClick={handleAddClick("specialtyList")}
+          value={specialtyList}
+          options={specialtyOptions}
+          onChange={setSpecialtyList}
+          addButtonText="Add"
         />
 
         <MultiSelect
           label="Classifications"
-          selectedItems={classifications}
-          onRemoveItem={handleRemoveItem(setClassifications)}
-          onAddClick={handleAddClick("classifications")}
+          value={classifications}
+          options={classificationOptions}
+          onChange={setClassifications}
+          addButtonText="Add"
         />
 
         <MultiSelect
           label="Taxonomy Codes"
-          selectedItems={taxonomyCodes}
-          onRemoveItem={handleRemoveItem(setTaxonomyCodes)}
-          onAddClick={handleAddClick("taxonomyCodes")}
+          value={taxonomyCodes}
+          options={taxonomyOptions}
+          onChange={setTaxonomyCodes}
+          addButtonText="Add"
         />
 
         <MultiSelect
           label="Clinical Services"
-          selectedItems={clinicalServices}
-          onRemoveItem={handleRemoveItem(setClinicalServices)}
-          onAddClick={handleAddClick("clinicalServices")}
+          value={clinicalServices}
+          options={clinicalOptions}
+          onChange={setClinicalServices}
+          addButtonText="Add"
         />
 
         <MultiSelect
           label="Fluent Languages"
-          selectedItems={fluentLanguages}
-          onRemoveItem={handleRemoveItem(setFluentLanguages)}
-          onAddClick={handleAddClick("fluentLanguages")}
+          value={fluentLanguages}
+          options={languageOptions}
+          onChange={setFluentLanguages}
+          addButtonText="Add"
         />
 
         <MultiSelect
           label="CMS Medicare Specialty Codes"
-          selectedItems={cmsSpecialtyCodes}
-          onRemoveItem={handleRemoveItem(setCmsSpecialtyCodes)}
-          onAddClick={handleAddClick("cmsSpecialtyCodes")}
+          value={cmsSpecialtyCodes}
+          options={cmsOptions}
+          onChange={setCmsSpecialtyCodes}
+          addButtonText="Add"
         />
       </div>
     </CollapsibleSection>
