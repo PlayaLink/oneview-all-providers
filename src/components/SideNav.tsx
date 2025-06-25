@@ -77,7 +77,7 @@ const SideNav: React.FC<SideNavProps> = ({
   const isSectionActive = (section: string) => selectedSection === section;
 
   return (
-    <div className="p-2 flex flex-col gap-2 h-full overflow-y-auto">
+    <div className="p-2 flex flex-col gap-2">
       {!collapsed && (
         <>
           {/* All Sections Header */}
@@ -197,7 +197,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
                     isItemActive("caqh")
                       ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                      : "text-[#008BC9] hover:bg-gray-50",
                   )}
                   onClick={() => handleItemClick("caqh")}
                 >
@@ -209,7 +209,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
                     isItemActive("health-info")
                       ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                      : "text-[#008BC9] hover:bg-gray-50",
                   )}
                   onClick={() => handleItemClick("health-info")}
                 >
@@ -260,7 +260,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
                     isItemActive("state-licenses")
                       ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                      : "text-[#008BC9] hover:bg-gray-50",
                   )}
                   onClick={() => handleItemClick("state-licenses")}
                 >
@@ -272,7 +272,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
                     isItemActive("dea-licenses")
                       ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                      : "text-[#008BC9] hover:bg-gray-50",
                   )}
                   onClick={() => handleItemClick("dea-licenses")}
                 >
@@ -284,7 +284,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
                     isItemActive("controlled-substance-licenses")
                       ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                      : "text-[#008BC9] hover:bg-gray-50",
                   )}
                   onClick={() =>
                     handleItemClick("controlled-substance-licenses")
@@ -339,7 +339,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
                     isItemActive("event-log")
                       ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                      : "text-[#008BC9] hover:bg-gray-50",
                   )}
                   onClick={() => handleItemClick("event-log")}
                 >
@@ -351,7 +351,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
                     isItemActive("oig")
                       ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                      : "text-[#008BC9] hover:bg-gray-50",
                   )}
                   onClick={() => handleItemClick("oig")}
                 >
@@ -402,7 +402,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
                     isItemActive("board-certifications")
                       ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                      : "text-[#008BC9] hover:bg-gray-50",
                   )}
                   onClick={() => handleItemClick("board-certifications")}
                 >
@@ -416,7 +416,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
                     isItemActive("other-certifications")
                       ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                      : "text-[#008BC9] hover:bg-gray-50",
                   )}
                   onClick={() => handleItemClick("other-certifications")}
                 >
@@ -469,7 +469,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
                     isItemActive("education-training")
                       ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                      : "text-[#008BC9] hover:bg-gray-50",
                   )}
                   onClick={() => handleItemClick("education-training")}
                 >
@@ -483,7 +483,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
                     isItemActive("exams")
                       ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                      : "text-[#008BC9] hover:bg-gray-50",
                   )}
                   onClick={() => handleItemClick("exams")}
                 >
@@ -534,7 +534,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
                     isItemActive("practice-employer")
                       ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                      : "text-[#008BC9] hover:bg-gray-50",
                   )}
                   onClick={() => handleItemClick("practice-employer")}
                 >
@@ -548,7 +548,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
                     isItemActive("facility-affiliations")
                       ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                      : "text-[#008BC9] hover:bg-gray-50",
                   )}
                   onClick={() => handleItemClick("facility-affiliations")}
                 >
@@ -562,7 +562,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
                     isItemActive("work-history")
                       ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                      : "text-[#008BC9] hover:bg-gray-50",
                   )}
                   onClick={() => handleItemClick("work-history")}
                 >
@@ -574,7 +574,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
                     isItemActive("peer-references")
                       ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                      : "text-[#008BC9] hover:bg-gray-50",
                   )}
                   onClick={() => handleItemClick("peer-references")}
                 >
@@ -586,7 +586,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
                     isItemActive("military-experience")
                       ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                      : "text-[#008BC9] hover:bg-gray-50",
                   )}
                   onClick={() => handleItemClick("military-experience")}
                 >
@@ -639,7 +639,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
                     isItemActive("malpractice-insurance")
                       ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                      : "text-[#008BC9] hover:bg-gray-50",
                   )}
                   onClick={() => handleItemClick("malpractice-insurance")}
                 >
@@ -692,7 +692,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
                     isItemActive("documents")
                       ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                      : "text-[#008BC9] hover:bg-gray-50",
                   )}
                   onClick={() => handleItemClick("documents")}
                 >
@@ -704,7 +704,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     "flex items-center gap-2 p-2 rounded cursor-pointer",
                     isItemActive("sent-forms")
                       ? "bg-[#008BC9] text-white"
-                      : "text-[#545454] hover:bg-gray-50",
+                      : "text-[#008BC9] hover:bg-gray-50",
                   )}
                   onClick={() => handleItemClick("sent-forms")}
                 >
