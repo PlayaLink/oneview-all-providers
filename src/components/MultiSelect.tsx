@@ -450,7 +450,7 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
         {...props}
       >
         {LabelComponent}
-        <div className="flex items-start gap-2 flex-1">
+        <div className="flex items-start gap-1 flex-1">
           {ValueContainer}
 
           {/* Copy button - outside input, only show when there are selected items */}

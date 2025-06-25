@@ -259,7 +259,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
               onClick={handleCopy}
               disabled={disabled}
               className={cn(
-                "flex w-[20.5px] h-5 py-[1.667px] justify-center items-center gap-[6.667px] rounded-[3.333px] hover:bg-gray-50 transition-all disabled:opacity-50 ml-2",
+                "flex w-[20.5px] h-5 py-[1.667px] justify-center items-center gap-[6.667px] rounded-[3.333px] hover:bg-gray-50 transition-all disabled:opacity-50 ml-1",
                 isHovered ? "opacity-100" : "opacity-0",
               )}
             >
