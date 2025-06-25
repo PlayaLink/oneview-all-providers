@@ -2,11 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Prevent page scrolling and ensure full height */
+/* Ensure full height */
 html,
 body {
   height: 100%;
-  overflow: hidden;
 }
 
 #root {
