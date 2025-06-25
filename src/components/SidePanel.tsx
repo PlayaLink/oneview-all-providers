@@ -5,9 +5,16 @@ import { cn } from "@/lib/utils";
 import { Provider } from "@/types";
 import CollapsibleSection from "./CollapsibleSection";
 import { MultiSelect, MultiSelectItem } from "./MultiSelect";
+import { SingleSelect, SingleSelectOption } from "./SingleSelect";
 
 // TypeSpecialtyClassificationSection component
 const TypeSpecialtyClassificationSection: React.FC = () => {
+  const [providerTitle, setProviderTitle] = useState<SingleSelectOption | null>(
+    {
+      id: 1,
+      label: "MD - Medical Doctor",
+    },
+  );
   const [specialtyList, setSpecialtyList] = useState<MultiSelectItem[]>([
     { id: 1, label: "General Surgery" },
   ]);
@@ -77,9 +84,28 @@ const TypeSpecialtyClassificationSection: React.FC = () => {
     { id: 4, label: "11 - Internal Medicine" },
   ];
 
+  const providerTitleOptions: SingleSelectOption[] = [
+    { id: 1, label: "MD - Medical Doctor" },
+    { id: 2, label: "DO - Doctor of Osteopathic Medicine" },
+    { id: 3, label: "NP - Nurse Practitioner" },
+    { id: 4, label: "PA - Physician Assistant" },
+    { id: 5, label: "RN - Registered Nurse" },
+    { id: 6, label: "LPN - Licensed Practical Nurse" },
+    { id: 7, label: "DDS - Doctor of Dental Surgery" },
+    { id: 8, label: "PharmD - Doctor of Pharmacy" },
+  ];
+
   return (
     <CollapsibleSection title="Type, Speciality & Classification">
       <div className="flex flex-col gap-2 w-full">
+        <SingleSelect
+          label="Provider Title"
+          value={providerTitle}
+          options={providerTitleOptions}
+          onChange={setProviderTitle}
+          placeholder="Start typing"
+        />
+
         <MultiSelect
           label="Speciality List"
           value={specialtyList}
