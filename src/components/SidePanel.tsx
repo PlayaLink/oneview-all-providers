@@ -18,9 +18,14 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, provider, onClose }) => {
       {/* Side Panel */}
       <div
         className={cn(
-          "fixed top-0 right-0 h-full w-96 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-50 flex flex-col",
+          "fixed top-0 right-0 h-full w-96 bg-white transform transition-transform duration-300 ease-in-out z-50 flex flex-col",
           isOpen ? "translate-x-0" : "translate-x-full",
         )}
+        style={{
+          boxShadow: isOpen
+            ? "-8px 0 24px -2px rgba(0, 0, 0, 0.12), -4px 0 8px -2px rgba(0, 0, 0, 0.08)"
+            : "none",
+        }}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-[#008BC9] text-white">
