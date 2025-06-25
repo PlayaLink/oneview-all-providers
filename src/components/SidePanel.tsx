@@ -15,14 +15,6 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, provider, onClose }) => {
 
   return (
     <>
-      {/* Backdrop */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-25 z-40"
-          onClick={onClose}
-        />
-      )}
-
       {/* Side Panel */}
       <div
         className={cn(
