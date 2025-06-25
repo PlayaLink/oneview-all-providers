@@ -15,14 +15,6 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, provider, onClose }) => {
 
   return (
     <>
-      {/* Subtle overlay on main content when panel is open */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-10 z-30 pointer-events-none"
-          style={{ right: "384px" }}
-        />
-      )}
-
       {/* Side Panel */}
       <div
         className={cn(
