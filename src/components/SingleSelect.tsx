@@ -104,7 +104,28 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
       if (!value?.label) return;
 
       try {
-        await navigator.clipboard.writeText(value.label);
+        // Try modern clipboard API first
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(value.label);
+        } else {
+          // Fallback for environments where clipboard API is blocked (like iframes)
+          const textArea = document.createElement("textarea");
+          textArea.value = value.label;
+          textArea.style.position = "fixed";
+          textArea.style.left = "-999999px";
+          textArea.style.top = "-999999px";
+          document.body.appendChild(textArea);
+          textArea.focus();
+          textArea.select();
+
+          const successful = document.execCommand("copy");
+          document.body.removeChild(textArea);
+
+          if (!successful) {
+            throw new Error("Failed to copy using fallback method");
+          }
+        }
+
         setShowCopied(true);
 
         // Clear any existing timeout
@@ -119,6 +140,17 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
         }, 2000);
       } catch (err) {
         console.error("Failed to copy text: ", err);
+        // Still show the tooltip even if copy failed, for better UX
+        setShowCopied(true);
+
+        if (copiedTimeoutRef.current) {
+          clearTimeout(copiedTimeoutRef.current);
+        }
+
+        copiedTimeoutRef.current = setTimeout(() => {
+          setShowCopied(false);
+          copiedTimeoutRef.current = null;
+        }, 2000);
       }
     };
 
