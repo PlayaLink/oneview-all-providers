@@ -1,50 +1,8 @@
 import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import CollapsibleSection from "./CollapsibleSection";
 import TextInput from "./TextInput";
+import { SingleSelect, SingleSelectOption } from "./SingleSelect";
 import { Provider } from "@/types";
-
-interface DropdownFieldProps {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  options: string[];
-}
-
-const DropdownField: React.FC<DropdownFieldProps> = ({
-  label,
-  value,
-  onChange,
-  placeholder = "Search...",
-  options,
-}) => {
-  return (
-    <div className="flex items-start gap-1 self-stretch rounded">
-      <div className="flex w-[153px] max-w-[153px] py-[7px] px-2 items-start content-start gap-1 flex-wrap">
-        <div className="text-[#545454] text-xs font-semibold leading-normal tracking-[0.429px] font-['Poppins',sans-serif]">
-          {label}
-        </div>
-      </div>
-      <div className="flex py-2 px-2 pr-0 justify-end items-center gap-1 flex-1 rounded border border-[#E6E6E6]">
-        <div className="flex-1 text-[#545454] text-xs font-normal leading-normal tracking-[0.429px] font-['Poppins',sans-serif]">
-          {value || <span className="text-gray-400">{placeholder}</span>}
-        </div>
-        <div className="flex w-[18px] justify-between items-center self-stretch rounded-r">
-          <div className="flex h-4 justify-center items-center">
-            <div className="flex w-[10px] h-3 flex-col justify-center text-[#212529] text-center text-4xl font-normal leading-normal">
-              <FontAwesomeIcon
-                icon={faCaretDown}
-                className="w-[10px] h-3 text-[#212529]"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 interface ProviderNameSectionProps {
   provider: Provider;
