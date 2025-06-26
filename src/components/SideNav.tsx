@@ -78,7 +78,7 @@ const SideNav: React.FC<SideNavProps> = ({
 
   return (
     <div className="h-full flex flex-col">
-      <div className="p-2 flex flex-col gap-2 flex-1 overflow-y-auto">
+      <div className="p-2 flex flex-col gap-2 flex-1 overflow-y-auto min-h-0">
         {!collapsed && (
           <>
             {/* All Sections Header */}
