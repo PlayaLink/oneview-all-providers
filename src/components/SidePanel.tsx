@@ -106,13 +106,19 @@ const TypeSpecialtyClassificationSection: React.FC = () => {
           placeholder="Start typing"
         />
 
-        <MultiSelect
-          label="Speciality List"
-          value={specialtyList}
-          options={specialtyOptions}
-          onChange={setSpecialtyList}
-          addButtonText="Add"
-        />
+        <div>
+          {/* Debugging: This should render the npm package MultiSelect */}
+          <MultiSelect
+            label="Speciality List"
+            value={specialtyList}
+            options={specialtyOptions}
+            onChange={setSpecialtyList}
+            addButtonText="Add"
+          />
+          <div style={{ fontSize: "10px", color: "red", marginTop: "2px" }}>
+            Debug: Using oneview-react-multiselect package
+          </div>
+        </div>
 
         <MultiSelect
           label="Classifications"
