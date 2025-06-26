@@ -1,48 +1,9 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown, faCopy } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import CollapsibleSection from "./CollapsibleSection";
-import { SingleSelect, SingleSelectOption } from "./SingleSelect";
+import TextInput from "./TextInput";
 import { Provider } from "@/types";
-
-interface FormFieldProps {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  showCopyButton?: boolean;
-}
-
-const FormField: React.FC<FormFieldProps> = ({
-  label,
-  value,
-  onChange,
-  placeholder = "Start typing",
-  showCopyButton = false,
-}) => {
-  return (
-    <div className="flex items-start gap-1 self-stretch">
-      <div className="flex w-[153px] py-[7px] px-2 items-start gap-1">
-        <div className="text-[#545454] text-xs font-semibold leading-normal tracking-[0.429px] font-['Poppins',sans-serif]">
-          {label}
-        </div>
-      </div>
-      <div className="flex py-[6px] px-2 items-start gap-2 flex-1 rounded border border-[#E6E6E6]">
-        <div className="flex-1 text-[#545454] text-xs font-normal leading-normal tracking-[0.429px] font-['Poppins',sans-serif]">
-          {value || <span className="text-gray-400">{placeholder}</span>}
-        </div>
-        {showCopyButton && value && (
-          <div className="flex w-[20.5px] h-5 py-[1.667px] px-[3.75px] justify-center items-center gap-[6.667px] rounded-[3.333px]">
-            <FontAwesomeIcon
-              icon={faCopy}
-              className="w-3 h-3 text-[#545454] hover:text-[#008BC9] cursor-pointer transition-colors"
-            />
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
 
 interface DropdownFieldProps {
   label: string;
