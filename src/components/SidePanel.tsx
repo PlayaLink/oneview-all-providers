@@ -115,10 +115,9 @@ const TypeSpecialtyClassificationSection: React.FC = () => {
 
         <MultiSelect
           label="Speciality List"
-          value={specialtyList}
+          selectedItems={specialtyList}
           options={specialtyOptions}
-          onChange={setSpecialtyList}
-          addButtonText="Add"
+          onSelectionChange={setSpecialtyList}
         />
 
         <MultiSelect
