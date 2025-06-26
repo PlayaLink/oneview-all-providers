@@ -944,22 +944,18 @@ const grids: Grid[] = [
 
   // Documents Section
   {
-    id: "3",
-    firstName: "Michael",
-    lastName: "Jordan",
-    title: "DO",
-    primarySpecialty: "Emergency Medicine",
-    npiNumber: "1699774089",
-    workEmail: "michael.jordan@healthspace.com",
-    personalEmail: "m.jordan@gmail.com",
-    mobilePhone: "(402) 555-0156",
-    dateOfBirth: "1963-02-17",
-    countryOfCitizenship: "United States",
-    citizenshipWorkAuth: "US Citizen",
-    usWorkAuth: "Authorized",
-    tags: ["Team C", "1099", "Blue", "Pending"],
-    lastUpdated: "2024-01-13",
+    key: "documents",
+    title: "Documents",
+    icon: faFolder,
+    section: "documents",
   },
+  {
+    key: "sent-forms",
+    title: "Sent Forms",
+    icon: faFileArrowUp,
+    section: "documents",
+  },
+];
 
 // Grid configuration utility class
 export class GridConfig {
