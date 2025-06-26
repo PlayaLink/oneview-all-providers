@@ -976,6 +976,12 @@ const grids: Grid[] = [
 
   // Education Section
   {
+    key: "education-training",
+    title: "Education & Training",
+    icon: faUniversity,
+    section: "educationTraining",
+  },
+  {
     key: "medical-school",
     title: "Medical School",
     icon: faUniversity,
