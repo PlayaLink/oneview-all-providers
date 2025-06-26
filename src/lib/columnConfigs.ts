@@ -198,6 +198,59 @@ export const gridColumnConfigs: Record<string, ColumnConfig[]> = {
     commonColumns.tags,
     commonColumns.lastUpdated,
   ],
+
+  "state-licenses": [
+    ...baseColumns,
+    {
+      field: "licenseType",
+      headerName: "License Type",
+      width: 155,
+      dataType: "string",
+    },
+    {
+      field: "license",
+      headerName: "License",
+      width: 170,
+      dataType: "string",
+    },
+    {
+      field: "additionalInfo",
+      headerName: "Add'l Info",
+      width: 170,
+      dataType: "string",
+    },
+    {
+      field: "state",
+      headerName: "State",
+      width: 120,
+      dataType: "string",
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      width: 170,
+      dataType: "string",
+    },
+    {
+      field: "issueDate",
+      headerName: "Issue Date",
+      width: 120,
+      dataType: "date",
+    },
+    {
+      field: "expirationDate",
+      headerName: "Exp. Date",
+      width: 120,
+      dataType: "date",
+    },
+    {
+      field: "expiresWithin",
+      headerName: "Expires Within",
+      width: 160,
+      dataType: "string",
+    },
+    commonColumns.lastUpdated,
+  ],
 };
 
 // Convert column configs to AG Grid column definitions
