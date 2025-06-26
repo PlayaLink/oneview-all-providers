@@ -59,6 +59,7 @@ const ProviderNameSection: React.FC<ProviderNameSectionProps> = ({
           value={middleName}
           onChange={setMiddleName}
           placeholder="Start typing"
+          showCopyButton={true}
         />
 
         <TextInput
@@ -74,6 +75,7 @@ const ProviderNameSection: React.FC<ProviderNameSectionProps> = ({
           value={suffix}
           onChange={setSuffix}
           placeholder="Start typing"
+          showCopyButton={true}
         />
 
         <SingleSelect
