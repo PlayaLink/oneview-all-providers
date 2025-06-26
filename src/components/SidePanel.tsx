@@ -209,6 +209,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, provider, onClose }) => {
           style={{ isolation: "isolate" }}
         >
           <div style={{ zIndex: "auto", position: "relative" }}>
+            <ProviderNameSection provider={provider} />
             <TypeSpecialtyClassificationSection />
           </div>
         </div>
