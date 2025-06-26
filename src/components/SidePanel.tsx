@@ -4,7 +4,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
 import { Provider } from "@/types";
 import CollapsibleSection from "./CollapsibleSection";
-import MultiSelect from "oneview-react-multiselect";
+import { MultiSelect } from "oneview-react-multiselect";
 import { SingleSelect, SingleSelectOption } from "./SingleSelect";
 
 // Temporary type definition - will adjust based on the actual package API
