@@ -6,6 +6,7 @@ import { Provider } from "@/types";
 import CollapsibleSection from "./CollapsibleSection";
 import { MultiSelect, MultiSelectItem } from "oneview-react-multiselect";
 import { SingleSelect, SingleSelectOption } from "./SingleSelect";
+import ProviderNameSection from "./ProviderNameSection";
 
 // TypeSpecialtyClassificationSection component
 const TypeSpecialtyClassificationSection: React.FC = () => {
