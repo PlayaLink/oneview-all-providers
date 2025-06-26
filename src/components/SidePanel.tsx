@@ -97,7 +97,10 @@ const TypeSpecialtyClassificationSection: React.FC = () => {
 
   return (
     <CollapsibleSection title="Type, Speciality & Classification">
-      <div className="flex flex-col gap-2 w-full">
+      <div
+        className="flex flex-col gap-2 w-full"
+        style={{ position: "relative", zIndex: "auto" }}
+      >
         <SingleSelect
           label="Provider Title"
           value={providerTitle}
