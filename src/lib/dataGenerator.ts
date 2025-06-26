@@ -133,9 +133,22 @@ export const dataGenerators = {
   },
 
   date: (field: string): string => {
-    const start =
-      field === "dateOfBirth" ? new Date(1970, 0, 1) : new Date(2020, 0, 1);
-    const end = field === "dateOfBirth" ? new Date(1995, 11, 31) : new Date();
+    let start: Date, end: Date;
+
+    if (field === "dateOfBirth") {
+      start = new Date(1970, 0, 1);
+      end = new Date(1995, 11, 31);
+    } else if (field === "startDate") {
+      start = new Date(2010, 0, 1);
+      end = new Date(2020, 11, 31);
+    } else if (field === "endDate") {
+      start = new Date(2015, 0, 1);
+      end = new Date(2024, 11, 31);
+    } else {
+      start = new Date(2020, 0, 1);
+      end = new Date();
+    }
+
     const randomDate = new Date(
       start.getTime() + Math.random() * (end.getTime() - start.getTime()),
     );
