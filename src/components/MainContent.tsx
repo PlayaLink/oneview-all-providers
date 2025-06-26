@@ -42,16 +42,17 @@ const MainContent: React.FC<MainContentProps> = ({
 
     if (selectedSection) {
       // Show all grids in section
-      return GridConfig.getGridsBySection(selectedSection);
+      return GridConfig.getGridsBySection(selectedSection).filter(Boolean);
     }
 
     if (selectedItem === "all-sections") {
       // Show all grids
-      return GridConfig.getAllGrids();
+      return GridConfig.getAllGrids().filter(Boolean);
     }
 
     // Default: show Provider Info
-    return [GridConfig.findGridByKey("provider-info")].filter(Boolean);
+    const defaultGrid = GridConfig.findGridByKey("provider-info");
+    return defaultGrid ? [defaultGrid] : [];
   };
 
   const gridsToShow = getGridsToShow();
