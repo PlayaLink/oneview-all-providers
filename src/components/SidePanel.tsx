@@ -4,7 +4,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
 import { Provider } from "@/types";
 import CollapsibleSection from "./CollapsibleSection";
-import { MultiSelect, MultiSelectItem } from "./MultiSelect";
+import { MultiSelect, MultiSelectItem } from "oneview-react-multiselect";
 import { SingleSelect, SingleSelectOption } from "./SingleSelect";
 
 // TypeSpecialtyClassificationSection component
