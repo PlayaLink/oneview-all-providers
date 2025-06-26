@@ -739,6 +739,61 @@ export const standardColumns: ColDef[] = [
   },
 ];
 
+// Birth Info specific columns
+export const birthInfoColumns: ColDef[] = [
+  {
+    headerName: "Provider Name",
+    valueGetter: (params) =>
+      `${params.data.lastName}, ${params.data.firstName}`,
+    width: 200,
+  },
+  {
+    headerName: "Title",
+    field: "title",
+    width: 120,
+  },
+  {
+    headerName: "Primary Specialty",
+    field: "primarySpecialty",
+    width: 200,
+  },
+  {
+    headerName: "Date of Birth",
+    field: "dateOfBirth",
+    width: 140,
+  },
+  {
+    headerName: "Country Of Citizenship",
+    field: "countryOfCitizenship",
+    width: 180,
+  },
+  {
+    headerName: "Citizenship/Work Auth",
+    field: "citizenshipWorkAuth",
+    width: 180,
+  },
+  {
+    headerName: "US Work Auth",
+    field: "usWorkAuth",
+    width: 140,
+  },
+  {
+    headerName: "Tags",
+    field: "tags",
+    width: 200,
+    valueFormatter: (params) => {
+      return params.value && Array.isArray(params.value)
+        ? params.value.join(", ")
+        : "";
+    },
+  },
+  {
+    headerName: "Last Updated",
+    field: "lastUpdated",
+    width: 120,
+  },
+];
+
 // Grid configuration interface
 export interface Grid {
   key: string;
