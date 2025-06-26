@@ -65,6 +65,53 @@ export const dataGenerators = {
           "Regional Medical",
           "Community Hospital",
         ][Math.floor(Math.random() * 4)],
+      educationType: () =>
+        [
+          "Medical School",
+          "Residency",
+          "Fellowship",
+          "Undergraduate",
+          "Graduate",
+          "Internship",
+        ][Math.floor(Math.random() * 6)],
+      schoolInstitution: () =>
+        [
+          "Harvard Medical School",
+          "Johns Hopkins University School of Medicine",
+          "Stanford University School of Medicine",
+          "University of California, San Francisco",
+          "Mayo Clinic College of Medicine",
+          "Yale School of Medicine",
+          "Columbia University Vagelos College of Physicians and Surgeons",
+          "University of Pennsylvania Perelman School of Medicine",
+          "Duke University School of Medicine",
+          "Northwestern University Feinberg School of Medicine",
+          "State University of New York Stony Brook School of Medicine",
+          "University of Michigan Medical School",
+        ][Math.floor(Math.random() * 12)],
+      degree: () =>
+        ["MD", "DO", "PhD", "MS", "BS", "BA", "MPH", "MBA"][
+          Math.floor(Math.random() * 8)
+        ],
+      specialtyMajor: () =>
+        [
+          "Internal Medicine",
+          "General Surgery",
+          "Pediatrics",
+          "Cardiology",
+          "Neurology",
+          "Orthopedics",
+          "Emergency Medicine",
+          "Family Medicine",
+          "Anesthesiology",
+          "Radiology",
+          "Pathology",
+          "Psychiatry",
+        ][Math.floor(Math.random() * 12)],
+      completed: () =>
+        ["Completed", "In Progress", "Transferred"][
+          Math.floor(Math.random() * 3)
+        ],
     };
     return generators[field] ? generators[field]() : `Sample ${field}`;
   },
