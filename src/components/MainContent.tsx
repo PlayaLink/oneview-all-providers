@@ -3,11 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import DataGrid from "@/components/DataGrid";
 import SidePanel from "@/components/SidePanel";
-import {
-  sampleProviders,
-  standardColumns,
-  birthInfoColumns,
-} from "@/lib/gridConfig";
+import { sampleProviders } from "@/lib/gridConfig";
+import { getColumnsForGrid } from "@/lib/columnConfigs";
 import { GridConfig } from "@/lib/gridConfig";
 import { Provider } from "@/types";
 
@@ -81,16 +78,6 @@ const MainContent: React.FC<MainContentProps> = ({
   }
 
   const currentGrid = gridsToShow[currentGridIndex];
-
-  // Get appropriate columns based on grid type
-  const getColumnsForGrid = (gridKey: string) => {
-    switch (gridKey) {
-      case "birth-info":
-        return birthInfoColumns;
-      default:
-        return standardColumns;
-    }
-  };
 
   return (
     <div className="flex-1 flex flex-col pt-4 px-4">
