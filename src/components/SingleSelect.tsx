@@ -104,26 +104,21 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
       if (!value?.label) return;
 
       try {
-        // Try modern clipboard API first
-        if (navigator.clipboard && window.isSecureContext) {
-          await navigator.clipboard.writeText(value.label);
-        } else {
-          // Fallback for environments where clipboard API is blocked (like iframes)
-          const textArea = document.createElement("textarea");
-          textArea.value = value.label;
-          textArea.style.position = "fixed";
-          textArea.style.left = "-999999px";
-          textArea.style.top = "-999999px";
-          document.body.appendChild(textArea);
-          textArea.focus();
-          textArea.select();
+        // Always use the fallback method in iframe environments to avoid permission issues
+        const textArea = document.createElement("textarea");
+        textArea.value = value.label;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
 
-          const successful = document.execCommand("copy");
-          document.body.removeChild(textArea);
+        const successful = document.execCommand("copy");
+        document.body.removeChild(textArea);
 
-          if (!successful) {
-            throw new Error("Failed to copy using fallback method");
-          }
+        if (!successful) {
+          throw new Error("Failed to copy using fallback method");
         }
 
         setShowCopied(true);
