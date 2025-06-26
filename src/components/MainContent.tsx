@@ -79,6 +79,14 @@ const MainContent: React.FC<MainContentProps> = ({
 
   const currentGrid = gridsToShow[currentGridIndex];
 
+  if (!currentGrid) {
+    return (
+      <div className="flex-1 flex items-center justify-center pt-4 px-4">
+        <div className="text-gray-500">Grid configuration not found</div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex-1 flex flex-col pt-4 px-4">
       {/* Main Content Area */}
