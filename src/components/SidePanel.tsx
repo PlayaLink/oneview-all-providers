@@ -7,6 +7,13 @@ import CollapsibleSection from "./CollapsibleSection";
 import MultiSelect from "oneview-react-multiselect";
 import { SingleSelect, SingleSelectOption } from "./SingleSelect";
 
+// Temporary type definition - will adjust based on the actual package API
+interface MultiSelectItem {
+  id: string | number;
+  label: string;
+  disabled?: boolean;
+}
+
 // TypeSpecialtyClassificationSection component
 const TypeSpecialtyClassificationSection: React.FC = () => {
   const [providerTitle, setProviderTitle] = useState<SingleSelectOption | null>(
