@@ -13,6 +13,26 @@ body {
   height: 100%;
 }
 
+/* Fix z-index for multiselect dropdowns */
+.multiselect-dropdown,
+[data-multiselect-dropdown],
+.oneview-multiselect-dropdown,
+[class*="multiselect"] [class*="dropdown"],
+[class*="multiselect"] [class*="menu"],
+[class*="select"] [class*="dropdown"],
+[class*="select"] [class*="menu"] {
+  z-index: 9999 !important;
+  position: relative;
+}
+
+/* Ensure dropdown containers have proper stacking */
+.multiselect-container,
+[data-multiselect-container],
+.oneview-multiselect-container {
+  position: relative;
+  z-index: auto;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
