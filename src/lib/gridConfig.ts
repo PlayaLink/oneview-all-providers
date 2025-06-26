@@ -26,7 +26,7 @@ import {
   faFileArrowUp,
 } from "@fortawesome/free-solid-svg-icons";
 
-// Sample data - 50 healthcare providers
+// Sample data - 50 healthcare providers with birth info
 export const sampleProviders = [
   {
     id: "1",
@@ -81,123 +81,6 @@ export const sampleProviders = [
   },
   {
     id: "4",
-    firstName: "Michael",
-    lastName: "Rodriguez",
-    title: "NP",
-    primarySpecialty: "Family Medicine",
-    npiNumber: "0987654321",
-    workEmail: "michael.rodriguez@healthspace.com",
-    personalEmail: "mike.r@gmail.com",
-    mobilePhone: "(555) 345-6789",
-    tags: ["Team A", "Florida"],
-    lastUpdated: "2024-01-12",
-  },
-  {
-    id: "5",
-    firstName: "Emily",
-    lastName: "Chen",
-    title: "MD",
-    primarySpecialty: "Pediatrics",
-    npiNumber: "1122334455",
-    workEmail: "emily.chen@healthspace.com",
-    personalEmail: "emily.chen@gmail.com",
-    mobilePhone: "(555) 456-7890",
-    tags: ["Team C", "New York"],
-    lastUpdated: "2024-01-11",
-  },
-  {
-    id: "6",
-    firstName: "David",
-    lastName: "Williams",
-    title: "PA",
-    primarySpecialty: "Emergency Medicine",
-    npiNumber: "2233445566",
-    workEmail: "david.williams@healthspace.com",
-    personalEmail: "david.w@gmail.com",
-    mobilePhone: "(555) 567-8901",
-    tags: ["Team B", "Illinois"],
-    lastUpdated: "2024-01-10",
-  },
-  {
-    id: "7",
-    firstName: "Jennifer",
-    lastName: "Martinez",
-    title: "MD",
-    primarySpecialty: "Dermatology",
-    npiNumber: "3344556677",
-    workEmail: "jennifer.martinez@healthspace.com",
-    personalEmail: "jen.martinez@gmail.com",
-    mobilePhone: "(555) 678-9012",
-    tags: ["Team A", "Dermatology", "Arizona"],
-    lastUpdated: "2024-01-09",
-  },
-  {
-    id: "8",
-    firstName: "Robert",
-    lastName: "Taylor",
-    title: "DO",
-    primarySpecialty: "Internal Medicine",
-    npiNumber: "4455667788",
-    workEmail: "robert.taylor@healthspace.com",
-    personalEmail: "bob.taylor@outlook.com",
-    mobilePhone: "(555) 789-0123",
-    tags: ["Team C", "Internal Medicine", "Colorado"],
-    lastUpdated: "2024-01-08",
-  },
-  {
-    id: "9",
-    firstName: "Lisa",
-    lastName: "Anderson",
-    title: "NP",
-    primarySpecialty: "Women's Health",
-    npiNumber: "5566778899",
-    workEmail: "lisa.anderson@healthspace.com",
-    personalEmail: "lisa.a@yahoo.com",
-    mobilePhone: "(555) 890-1234",
-    tags: ["Team B", "Women's Health", "Oregon"],
-    lastUpdated: "2024-01-07",
-  },
-  {
-    id: "10",
-    firstName: "James",
-    lastName: "Thompson",
-    title: "MD",
-    primarySpecialty: "Orthopedic Surgery",
-    npiNumber: "6677889900",
-    workEmail: "james.thompson@healthspace.com",
-    personalEmail: "james.t@gmail.com",
-    mobilePhone: "(555) 901-2345",
-    tags: ["Team A", "Surgery", "Washington"],
-    lastUpdated: "2024-01-06",
-  },
-  {
-    id: "11",
-    firstName: "Maria",
-    lastName: "Lopez",
-    title: "MD",
-    primarySpecialty: "Psychiatry",
-    npiNumber: "7788990011",
-    workEmail: "maria.lopez@healthspace.com",
-    personalEmail: "maria.lopez@hotmail.com",
-    mobilePhone: "(555) 012-3456",
-    tags: ["Team C", "Mental Health", "Nevada"],
-    lastUpdated: "2024-01-05",
-  },
-  {
-    id: "12",
-    firstName: "Christopher",
-    lastName: "Brown",
-    title: "MD",
-    primarySpecialty: "Radiology",
-    npiNumber: "8899001122",
-    workEmail: "christopher.brown@healthspace.com",
-    personalEmail: "chris.brown@gmail.com",
-    mobilePhone: "(555) 123-4567",
-    tags: ["Team B", "Radiology", "Utah"],
-    lastUpdated: "2024-01-04",
-  },
-  {
-    id: "4",
     firstName: "David",
     lastName: "Brown",
     title: "NP",
@@ -246,965 +129,6 @@ export const sampleProviders = [
     usWorkAuth: "Authorized",
     tags: ["Team B", "Florida"],
     lastUpdated: "2024-01-10",
-  },
-  {
-    id: "16",
-    firstName: "Daniel",
-    lastName: "Jackson",
-    title: "MD",
-    primarySpecialty: "Ophthalmology",
-    npiNumber: "1245566778",
-    workEmail: "daniel.jackson@healthspace.com",
-    personalEmail: "dan.jackson@gmail.com",
-    mobilePhone: "(555) 567-8901",
-    tags: ["Team A", "Ophthalmology", "Tennessee"],
-    lastUpdated: "2023-12-31",
-  },
-  {
-    id: "17",
-    firstName: "Nicole",
-    lastName: "White",
-    title: "NP",
-    primarySpecialty: "Endocrinology",
-    npiNumber: "1356677889",
-    workEmail: "nicole.white@healthspace.com",
-    personalEmail: "nicole.w@hotmail.com",
-    mobilePhone: "(555) 678-9012",
-    tags: ["Team C", "Endocrinology", "Missouri"],
-    lastUpdated: "2023-12-30",
-  },
-  {
-    id: "18",
-    firstName: "Ryan",
-    lastName: "Harris",
-    title: "MD",
-    primarySpecialty: "Anesthesiology",
-    npiNumber: "1467788990",
-    workEmail: "ryan.harris@healthspace.com",
-    personalEmail: "ryan.h@gmail.com",
-    mobilePhone: "(555) 789-0123",
-    tags: ["Team B", "Anesthesiology", "Louisiana"],
-    lastUpdated: "2023-12-29",
-  },
-  {
-    id: "19",
-    firstName: "Michelle",
-    lastName: "Clark",
-    title: "DO",
-    primarySpecialty: "Rheumatology",
-    npiNumber: "1578899001",
-    workEmail: "michelle.clark@healthspace.com",
-    personalEmail: "michelle.c@outlook.com",
-    mobilePhone: "(555) 890-1234",
-    tags: ["Team A", "Rheumatology", "Kentucky"],
-    lastUpdated: "2023-12-28",
-  },
-  {
-    id: "20",
-    firstName: "Brian",
-    lastName: "Lewis",
-    title: "MD",
-    primarySpecialty: "Gastroenterology",
-    npiNumber: "1689900112",
-    workEmail: "brian.lewis@healthspace.com",
-    personalEmail: "brian.l@yahoo.com",
-    mobilePhone: "(555) 901-2345",
-    tags: ["Team C", "Gastroenterology", "Alabama"],
-    lastUpdated: "2023-12-27",
-  },
-  {
-    id: "21",
-    firstName: "Angela",
-    lastName: "Lee",
-    title: "NP",
-    primarySpecialty: "Pulmonology",
-    npiNumber: "1790011223",
-    workEmail: "angela.lee@healthspace.com",
-    personalEmail: "angela.l@gmail.com",
-    mobilePhone: "(555) 012-3456",
-    tags: ["Team B", "Pulmonology", "South Carolina"],
-    lastUpdated: "2023-12-26",
-  },
-  {
-    id: "22",
-    firstName: "Mark",
-    lastName: "Walker",
-    title: "MD",
-    primarySpecialty: "Infectious Disease",
-    npiNumber: "1801122334",
-    workEmail: "mark.walker@healthspace.com",
-    personalEmail: "mark.w@hotmail.com",
-    mobilePhone: "(555) 123-4567",
-    tags: ["Team A", "Infectious Disease", "Mississippi"],
-    lastUpdated: "2023-12-25",
-  },
-  {
-    id: "23",
-    firstName: "Stephanie",
-    lastName: "Hall",
-    title: "PA",
-    primarySpecialty: "Sports Medicine",
-    npiNumber: "1912233445",
-    workEmail: "stephanie.hall@healthspace.com",
-    personalEmail: "stephanie.h@gmail.com",
-    mobilePhone: "(555) 234-5678",
-    tags: ["Team C", "Sports Medicine", "Arkansas"],
-    lastUpdated: "2023-12-24",
-  },
-  {
-    id: "24",
-    firstName: "Gregory",
-    lastName: "Allen",
-    title: "MD",
-    primarySpecialty: "Nephrology",
-    npiNumber: "2023344556",
-    workEmail: "gregory.allen@healthspace.com",
-    personalEmail: "greg.allen@outlook.com",
-    mobilePhone: "(555) 345-6789",
-    tags: ["Team B", "Nephrology", "Oklahoma"],
-    lastUpdated: "2023-12-23",
-  },
-  {
-    id: "25",
-    firstName: "Melissa",
-    lastName: "Young",
-    title: "NP",
-    primarySpecialty: "Hematology",
-    npiNumber: "2134455667",
-    workEmail: "melissa.young@healthspace.com",
-    personalEmail: "melissa.y@yahoo.com",
-    mobilePhone: "(555) 456-7890",
-    tags: ["Team A", "Hematology", "Iowa"],
-    lastUpdated: "2023-12-22",
-  },
-  {
-    id: "26",
-    firstName: "Jonathan",
-    lastName: "King",
-    title: "MD",
-    primarySpecialty: "Urology",
-    npiNumber: "2245566778",
-    workEmail: "jonathan.king@healthspace.com",
-    personalEmail: "jon.king@gmail.com",
-    mobilePhone: "(555) 567-8901",
-    tags: ["Team C", "Urology", "Kansas"],
-    lastUpdated: "2023-12-21",
-  },
-  {
-    id: "27",
-    firstName: "Kimberly",
-    lastName: "Wright",
-    title: "DO",
-    primarySpecialty: "Plastic Surgery",
-    npiNumber: "2356677889",
-    workEmail: "kimberly.wright@healthspace.com",
-    personalEmail: "kim.wright@hotmail.com",
-    mobilePhone: "(555) 678-9012",
-    tags: ["Team B", "Plastic Surgery", "Nebraska"],
-    lastUpdated: "2023-12-20",
-  },
-  {
-    id: "28",
-    firstName: "Andrew",
-    lastName: "Lopez",
-    title: "MD",
-    primarySpecialty: "Pathology",
-    npiNumber: "2467788990",
-    workEmail: "andrew.lopez@healthspace.com",
-    personalEmail: "andrew.l@gmail.com",
-    mobilePhone: "(555) 789-0123",
-    tags: ["Team A", "Pathology", "West Virginia"],
-    lastUpdated: "2023-12-19",
-  },
-  {
-    id: "29",
-    firstName: "Jessica",
-    lastName: "Hill",
-    title: "NP",
-    primarySpecialty: "Geriatrics",
-    npiNumber: "2578899001",
-    workEmail: "jessica.hill@healthspace.com",
-    personalEmail: "jessica.h@outlook.com",
-    mobilePhone: "(555) 890-1234",
-    tags: ["Team C", "Geriatrics", "Idaho"],
-    lastUpdated: "2023-12-18",
-  },
-  {
-    id: "30",
-    firstName: "Matthew",
-    lastName: "Scott",
-    title: "MD",
-    primarySpecialty: "Otolaryngology",
-    npiNumber: "2689900112",
-    workEmail: "matthew.scott@healthspace.com",
-    personalEmail: "matt.scott@yahoo.com",
-    mobilePhone: "(555) 901-2345",
-    tags: ["Team B", "Otolaryngology", "Maine"],
-    lastUpdated: "2023-12-17",
-  },
-  {
-    id: "31",
-    firstName: "Lauren",
-    lastName: "Green",
-    title: "PA",
-    primarySpecialty: "Allergy & Immunology",
-    npiNumber: "2790011223",
-    workEmail: "lauren.green@healthspace.com",
-    personalEmail: "lauren.g@gmail.com",
-    mobilePhone: "(555) 012-3456",
-    tags: ["Team A", "Allergy", "New Hampshire"],
-    lastUpdated: "2023-12-16",
-  },
-  {
-    id: "32",
-    firstName: "Timothy",
-    lastName: "Adams",
-    title: "MD",
-    primarySpecialty: "Emergency Medicine",
-    npiNumber: "2801122334",
-    workEmail: "timothy.adams@healthspace.com",
-    personalEmail: "tim.adams@hotmail.com",
-    mobilePhone: "(555) 123-4567",
-    tags: ["Team C", "Emergency", "Vermont"],
-    lastUpdated: "2023-12-15",
-  },
-  {
-    id: "33",
-    firstName: "Heather",
-    lastName: "Baker",
-    title: "NP",
-    primarySpecialty: "Pain Management",
-    npiNumber: "2912233445",
-    workEmail: "heather.baker@healthspace.com",
-    personalEmail: "heather.b@gmail.com",
-    mobilePhone: "(555) 234-5678",
-    tags: ["Team B", "Pain Management", "Rhode Island"],
-    lastUpdated: "2023-12-14",
-  },
-  {
-    id: "34",
-    firstName: "Joseph",
-    lastName: "Gonzalez",
-    title: "MD",
-    primarySpecialty: "Radiation Oncology",
-    npiNumber: "3023344556",
-    workEmail: "joseph.gonzalez@healthspace.com",
-    personalEmail: "joe.gonzalez@outlook.com",
-    mobilePhone: "(555) 345-6789",
-    tags: ["Team A", "Radiation Oncology", "Connecticut"],
-    lastUpdated: "2023-12-13",
-  },
-  {
-    id: "35",
-    firstName: "Amber",
-    lastName: "Nelson",
-    title: "DO",
-    primarySpecialty: "Preventive Medicine",
-    npiNumber: "3134455667",
-    workEmail: "amber.nelson@healthspace.com",
-    personalEmail: "amber.n@yahoo.com",
-    mobilePhone: "(555) 456-7890",
-    tags: ["Team C", "Preventive Medicine", "Delaware"],
-    lastUpdated: "2023-12-12",
-  },
-  {
-    id: "36",
-    firstName: "Steven",
-    lastName: "Carter",
-    title: "MD",
-    primarySpecialty: "Interventional Cardiology",
-    npiNumber: "3245566778",
-    workEmail: "steven.carter@healthspace.com",
-    personalEmail: "steve.carter@gmail.com",
-    mobilePhone: "(555) 567-8901",
-    tags: ["Team B", "Interventional Cardiology", "Maryland"],
-    lastUpdated: "2023-12-11",
-  },
-  {
-    id: "37",
-    firstName: "Crystal",
-    lastName: "Mitchell",
-    title: "NP",
-    primarySpecialty: "Wound Care",
-    npiNumber: "3356677889",
-    workEmail: "crystal.mitchell@healthspace.com",
-    personalEmail: "crystal.m@hotmail.com",
-    mobilePhone: "(555) 678-9012",
-    tags: ["Team A", "Wound Care", "Hawaii"],
-    lastUpdated: "2023-12-10",
-  },
-  {
-    id: "38",
-    firstName: "Eric",
-    lastName: "Perez",
-    title: "MD",
-    primarySpecialty: "Vascular Surgery",
-    npiNumber: "3467788990",
-    workEmail: "eric.perez@healthspace.com",
-    personalEmail: "eric.p@gmail.com",
-    mobilePhone: "(555) 789-0123",
-    tags: ["Team C", "Vascular Surgery", "Alaska"],
-    lastUpdated: "2023-12-09",
-  },
-  {
-    id: "39",
-    firstName: "Danielle",
-    lastName: "Roberts",
-    title: "PA",
-    primarySpecialty: "Sleep Medicine",
-    npiNumber: "3578899001",
-    workEmail: "danielle.roberts@healthspace.com",
-    personalEmail: "danielle.r@outlook.com",
-    mobilePhone: "(555) 890-1234",
-    tags: ["Team B", "Sleep Medicine", "Montana"],
-    lastUpdated: "2023-12-08",
-  },
-  {
-    id: "40",
-    firstName: "Carl",
-    lastName: "Turner",
-    title: "MD",
-    primarySpecialty: "Nuclear Medicine",
-    npiNumber: "3689900112",
-    workEmail: "carl.turner@healthspace.com",
-    personalEmail: "carl.t@yahoo.com",
-    mobilePhone: "(555) 901-2345",
-    tags: ["Team A", "Nuclear Medicine", "Wyoming"],
-    lastUpdated: "2023-12-07",
-  },
-  {
-    id: "41",
-    firstName: "Samantha",
-    lastName: "Phillips",
-    title: "NP",
-    primarySpecialty: "Hospice Care",
-    npiNumber: "3790011223",
-    workEmail: "samantha.phillips@healthspace.com",
-    personalEmail: "sam.phillips@gmail.com",
-    mobilePhone: "(555) 012-3456",
-    tags: ["Team C", "Hospice Care", "North Dakota"],
-    lastUpdated: "2023-12-06",
-  },
-  {
-    id: "42",
-    firstName: "Aaron",
-    lastName: "Campbell",
-    title: "MD",
-    primarySpecialty: "Thoracic Surgery",
-    npiNumber: "3801122334",
-    workEmail: "aaron.campbell@healthspace.com",
-    personalEmail: "aaron.c@hotmail.com",
-    mobilePhone: "(555) 123-4567",
-    tags: ["Team B", "Thoracic Surgery", "South Dakota"],
-    lastUpdated: "2023-12-05",
-  },
-  {
-    id: "43",
-    firstName: "Tiffany",
-    lastName: "Parker",
-    title: "DO",
-    primarySpecialty: "Occupational Medicine",
-    npiNumber: "3912233445",
-    workEmail: "tiffany.parker@healthspace.com",
-    personalEmail: "tiffany.p@gmail.com",
-    mobilePhone: "(555) 234-5678",
-    tags: ["Team A", "Occupational Medicine", "Minnesota"],
-    lastUpdated: "2023-12-04",
-  },
-  {
-    id: "44",
-    firstName: "Jordan",
-    lastName: "Evans",
-    title: "MD",
-    primarySpecialty: "Hand Surgery",
-    npiNumber: "4023344556",
-    workEmail: "jordan.evans@healthspace.com",
-    personalEmail: "jordan.e@outlook.com",
-    mobilePhone: "(555) 345-6789",
-    tags: ["Team C", "Hand Surgery", "Wisconsin"],
-    lastUpdated: "2023-12-03",
-  },
-  {
-    id: "45",
-    firstName: "Patricia",
-    lastName: "Edwards",
-    title: "NP",
-    primarySpecialty: "Dialysis",
-    npiNumber: "4134455667",
-    workEmail: "patricia.edwards@healthspace.com",
-    personalEmail: "patricia.e@yahoo.com",
-    mobilePhone: "(555) 456-7890",
-    tags: ["Team B", "Dialysis", "Michigan"],
-    lastUpdated: "2023-12-02",
-  },
-  {
-    id: "46",
-    firstName: "Nathan",
-    lastName: "Collins",
-    title: "MD",
-    primarySpecialty: "Transplant Surgery",
-    npiNumber: "4245566778",
-    workEmail: "nathan.collins@healthspace.com",
-    personalEmail: "nathan.c@gmail.com",
-    mobilePhone: "(555) 567-8901",
-    tags: ["Team A", "Transplant Surgery", "Indiana"],
-    lastUpdated: "2023-12-01",
-  },
-  {
-    id: "47",
-    firstName: "Kelly",
-    lastName: "Stewart",
-    title: "PA",
-    primarySpecialty: "Rehabilitation",
-    npiNumber: "4356677889",
-    workEmail: "kelly.stewart@healthspace.com",
-    personalEmail: "kelly.s@hotmail.com",
-    mobilePhone: "(555) 678-9012",
-    tags: ["Team C", "Rehabilitation", "Ohio"],
-    lastUpdated: "2023-11-30",
-  },
-  {
-    id: "48",
-    firstName: "Benjamin",
-    lastName: "Sanchez",
-    title: "MD",
-    primarySpecialty: "Pediatric Surgery",
-    npiNumber: "4467788990",
-    workEmail: "benjamin.sanchez@healthspace.com",
-    personalEmail: "ben.sanchez@gmail.com",
-    mobilePhone: "(555) 789-0123",
-    tags: ["Team B", "Pediatric Surgery", "Pennsylvania"],
-    lastUpdated: "2023-11-29",
-  },
-  {
-    id: "49",
-    firstName: "Cynthia",
-    lastName: "Morris",
-    title: "NP",
-    primarySpecialty: "Telehealth",
-    npiNumber: "4578899001",
-    workEmail: "cynthia.morris@healthspace.com",
-    personalEmail: "cynthia.m@outlook.com",
-    mobilePhone: "(555) 890-1234",
-    tags: ["Team A", "Telehealth", "New Jersey"],
-    lastUpdated: "2023-11-28",
-  },
-  {
-    id: "50",
-    firstName: "Kenneth",
-    lastName: "Torres",
-    title: "MD",
-    primarySpecialty: "Telemedicine",
-    npiNumber: "4689900112",
-    workEmail: "kenneth.torres@healthspace.com",
-    personalEmail: "kenneth.t@yahoo.com",
-    mobilePhone: "(555) 901-2345",
-    tags: ["Team C", "Telehealth", "New Mexico"],
-    lastUpdated: "2023-11-27",
-  },
-];
-
-// Standard column definitions that can be reused
-export const standardColumns: ColDef[] = [
-  {
-    headerName: "Provider Name",
-    valueGetter: (params) =>
-      `${params.data.lastName}, ${params.data.firstName}`,
-    width: 200,
-  },
-  {
-    headerName: "Title",
-    field: "title",
-    width: 120,
-  },
-  {
-    headerName: "Specialty",
-    field: "primarySpecialty",
-    width: 200,
-  },
-  {
-    headerName: "NPI #",
-    field: "npiNumber",
-    width: 140,
-  },
-  {
-    headerName: "Work Email",
-    field: "workEmail",
-    width: 250,
-  },
-  {
-    headerName: "Personal Email",
-    field: "personalEmail",
-    width: 250,
-  },
-  {
-    headerName: "Mobile Phone",
-    field: "mobilePhone",
-    width: 145,
-  },
-  {
-    headerName: "Tags",
-    field: "tags",
-    width: 200,
-    valueFormatter: (params) => {
-      return params.value && Array.isArray(params.value)
-        ? params.value.join(", ")
-        : "";
-    },
-  },
-  {
-    headerName: "Last Updated",
-    field: "lastUpdated",
-    width: 120,
-  },
-];
-
-// Birth Info specific columns
-export const birthInfoColumns: ColDef[] = [
-  {
-    headerName: "Provider Name",
-    valueGetter: (params) =>
-      `${params.data.lastName}, ${params.data.firstName}`,
-    width: 200,
-  },
-  {
-    headerName: "Title",
-    field: "title",
-    width: 120,
-  },
-  {
-    headerName: "Primary Specialty",
-    field: "primarySpecialty",
-    width: 200,
-  },
-  {
-    headerName: "Date of Birth",
-    field: "dateOfBirth",
-    width: 140,
-  },
-  {
-    headerName: "Country Of Citizenship",
-    field: "countryOfCitizenship",
-    width: 180,
-  },
-  {
-    headerName: "Citizenship/Work Auth",
-    field: "citizenshipWorkAuth",
-    width: 180,
-  },
-  {
-    headerName: "US Work Auth",
-    field: "usWorkAuth",
-    width: 140,
-  },
-  {
-    headerName: "Tags",
-    field: "tags",
-    width: 200,
-    valueFormatter: (params) => {
-      return params.value && Array.isArray(params.value)
-        ? params.value.join(", ")
-        : "";
-    },
-  },
-  {
-    headerName: "Last Updated",
-    field: "lastUpdated",
-    width: 120,
-  },
-];
-
-// Grid configuration interface
-export interface Grid {
-  key: string;
-  title: string;
-  icon: IconDefinition;
-  section: string;
-}
-
-// All grid definitions
-const grids: Grid[] = [
-  // Provider Info Section
-  {
-    key: "provider-info",
-    title: "Provider Info",
-    icon: faUserDoctor,
-    section: "providerInfo",
-  },
-  {
-    key: "birth-info",
-    title: "Birth Info",
-    icon: faWeight,
-    section: "providerInfo",
-  },
-  {
-    key: "addresses",
-    title: "Addresses",
-    icon: faHouse,
-    section: "providerInfo",
-  },
-  {
-    key: "additional-names",
-    title: "Additional Names",
-    icon: faAddressBook,
-    section: "providerInfo",
-  },
-  { key: "caqh", title: "CAQH", icon: faPlay, section: "providerInfo" },
-  {
-    key: "health-info",
-    title: "Health Info",
-    icon: faFileMedical,
-    section: "providerInfo",
-  },
-
-  // Licensure Section
-  {
-    key: "state-licenses",
-    title: "State Licenses",
-    icon: faShieldAlt,
-    section: "licensure",
-  },
-  {
-    key: "dea-licenses",
-    title: "DEA Licenses",
-    icon: faClipboard,
-    section: "licensure",
-  },
-  {
-    key: "controlled-substance-licenses",
-    title: "State Controlled Substance Licenses",
-    icon: faPills,
-    section: "licensure",
-  },
-
-  // Certifications Section
-  {
-    key: "board-certifications",
-    title: "Board Certifications",
-    icon: faClipboardList,
-    section: "certifications",
-  },
-  {
-    key: "cpr-certifications",
-    title: "CPR Certifications",
-    icon: faCheckCircle,
-    section: "certifications",
-  },
-
-  // Training Section
-  {
-    key: "malpractice-training",
-    title: "Malpractice Training",
-    icon: faCertificate,
-    section: "training",
-  },
-  {
-    key: "cme-training",
-    title: "CME Training",
-    icon: faHeartbeat,
-    section: "training",
-  },
-
-  // Education Section
-  {
-    key: "medical-school",
-    title: "Medical School",
-    icon: faUniversity,
-    section: "education",
-  },
-  {
-    key: "undergraduate",
-    title: "Undergraduate",
-    icon: faBook,
-    section: "education",
-  },
-
-  // Work Experience Section
-  {
-    key: "hospital-affiliations",
-    title: "Hospital Affiliations",
-    icon: faBuilding,
-    section: "workExperience",
-  },
-  {
-    key: "clinic-affiliations",
-    title: "Clinic Affiliations",
-    icon: faHospital,
-    section: "workExperience",
-  },
-  {
-    key: "work-history",
-    title: "Work History",
-    icon: faBriefcase,
-    section: "workExperience",
-  },
-  {
-    key: "peer-references",
-    title: "Peer References",
-    icon: faUserGroup,
-    section: "workExperience",
-  },
-  {
-    key: "military-experience",
-    title: "Military Experience",
-    icon: faMedal,
-    section: "workExperience",
-  },
-
-  // Malpractice Insurance Section
-  {
-    key: "malpractice-insurance",
-    title: "Malpractice Insurance",
-    icon: faGavel,
-    section: "malpracticeInsurance",
-  },
-
-  // Documents Section
-  {
-    key: "documents",
-    title: "Documents",
-    icon: faFolder,
-    section: "documents",
-  },
-  {
-    key: "sent-forms",
-    title: "Sent Forms",
-    icon: faFileArrowUp,
-    section: "documents",
-  },
-];
-
-// Grid configuration utility class
-export class GridConfig {
-  static findGridByKey(key: string): Grid | undefined {
-    return grids.find((grid) => grid.key === key);
-  }
-
-  static getGridsBySection(section: string): Grid[] {
-    return grids.filter((grid) => grid.section === section);
-  }
-
-  static getAllGrids(): Grid[] {
-    return grids;
-  }
-}
-
-// Standard column definitions that can be reused
-export const standardColumns: ColDef[] = [
-  {
-    headerName: "Provider Name",
-    valueGetter: (params) =>
-      `${params.data.lastName}, ${params.data.firstName}`,
-    width: 200,
-  },
-  {
-    headerName: "Title",
-    field: "title",
-    width: 120,
-  },
-  {
-    headerName: "Specialty",
-    field: "primarySpecialty",
-    width: 200,
-  },
-  {
-    headerName: "NPI #",
-    field: "npiNumber",
-    width: 140,
-  },
-  {
-    headerName: "Work Email",
-    field: "workEmail",
-    width: 250,
-  },
-  {
-    headerName: "Personal Email",
-    field: "personalEmail",
-    width: 250,
-  },
-  {
-    headerName: "Mobile Phone",
-    field: "mobilePhone",
-    width: 145,
-  },
-  {
-    headerName: "Tags",
-    field: "tags",
-    width: 200,
-    valueFormatter: (params) => {
-      return params.value && Array.isArray(params.value)
-        ? params.value.join(", ")
-        : "";
-    },
-  },
-  {
-    headerName: "Last Updated",
-    field: "lastUpdated",
-    width: 120,
-  },
-];
-
-// Birth Info specific columns
-export const birthInfoColumns: ColDef[] = [
-  {
-    headerName: "Provider Name",
-    valueGetter: (params) =>
-      `${params.data.lastName}, ${params.data.firstName}`,
-    width: 200,
-  },
-  {
-    headerName: "Title",
-    field: "title",
-    width: 120,
-  },
-  {
-    headerName: "Primary Specialty",
-    field: "primarySpecialty",
-    width: 200,
-  },
-  {
-    headerName: "Date of Birth",
-    field: "dateOfBirth",
-    width: 140,
-  },
-  {
-    headerName: "Country Of Citizenship",
-    field: "countryOfCitizenship",
-    width: 180,
-  },
-  {
-    headerName: "Citizenship/Work Auth",
-    field: "citizenshipWorkAuth",
-    width: 180,
-  },
-  {
-    headerName: "US Work Auth",
-    field: "usWorkAuth",
-    width: 140,
-  },
-  {
-    headerName: "Tags",
-    field: "tags",
-    width: 200,
-    valueFormatter: (params) => {
-      return params.value && Array.isArray(params.value)
-        ? params.value.join(", ")
-        : "";
-    },
-  },
-  {
-    headerName: "Last Updated",
-    field: "lastUpdated",
-    width: 120,
-  },
-];
-
-// Grid configuration interface
-export interface Grid {
-  key: string;
-  title: string;
-  icon: IconDefinition;
-  section: string;
-}
-
-// All grid definitions
-const grids: Grid[] = [
-  // Provider Info Section
-  {
-    key: "provider-info",
-    title: "Provider Info",
-    icon: faUserDoctor,
-    section: "providerInfo",
-  },
-  {
-    key: "birth-info",
-    title: "Birth Info",
-    icon: faWeight,
-    section: "providerInfo",
-  },
-  {
-    key: "addresses",
-    title: "Addresses",
-    icon: faHouse,
-    section: "providerInfo",
-  },
-  {
-    key: "additional-names",
-    title: "Additional Names",
-    icon: faAddressBook,
-    section: "providerInfo",
-  },
-  { key: "caqh", title: "CAQH", icon: faPlay, section: "providerInfo" },
-  {
-    key: "health-info",
-    title: "Health Info",
-    icon: faFileMedical,
-    section: "providerInfo",
-  },
-
-  // Licensure Section
-  {
-    key: "state-licenses",
-    title: "State Licenses",
-    icon: faShieldAlt,
-    section: "licensure",
-  },
-  {
-    key: "dea-licenses",
-    title: "DEA Licenses",
-    icon: faClipboard,
-    section: "licensure",
-  },
-  {
-    key: "controlled-substance-licenses",
-    title: "State Controlled Substance Licenses",
-    icon: faPills,
-    section: "licensure",
-  },
-
-  // Actions & Exclusions Section
-  {
-    key: "event-log",
-    title: "Event log",
-    icon: faClipboardList,
-    section: "actionsExclusions",
-  },
-  {
-    key: "oig",
-    title: "OIG",
-    icon: faCheckCircle,
-    section: "actionsExclusions",
-  },
-
-  // Certifications Section
-  {
-    key: "board-certifications",
-    title: "Board Certifications",
-    icon: faCertificate,
-    section: "certifications",
-  },
-  {
-    key: "other-certifications",
-    title: "Other Certifications",
-    icon: faHeartbeat,
-    section: "certifications",
-  },
-
-  // Education & Training Section
-  {
-    key: "education-training",
-    title: "Education & Training",
-    icon: faUniversity,
-    section: "educationTraining",
-  },
-  { key: "exams", title: "Exams", icon: faBook, section: "educationTraining" },
-
-  // Work Experience Section
-  {
-    key: "practice-employer",
-    title: "Practice/Employer",
-    icon: faBuilding,
-    section: "workExperience",
   },
   {
     id: "7",
@@ -1308,7 +232,6 @@ const grids: Grid[] = [
     tags: ["Team B", "Colorado"],
     lastUpdated: "2024-01-04",
   },
-  // Continue with remaining 38 providers with birth info
   {
     id: "13",
     firstName: "Jennifer",
@@ -1956,3 +879,288 @@ const grids: Grid[] = [
     lastUpdated: "2023-11-27",
   },
 ];
+
+// Standard column definitions that can be reused
+export const standardColumns: ColDef[] = [
+  {
+    headerName: "Provider Name",
+    valueGetter: (params) =>
+      `${params.data.lastName}, ${params.data.firstName}`,
+    width: 200,
+  },
+  {
+    headerName: "Title",
+    field: "title",
+    width: 120,
+  },
+  {
+    headerName: "Specialty",
+    field: "primarySpecialty",
+    width: 200,
+  },
+  {
+    headerName: "NPI #",
+    field: "npiNumber",
+    width: 140,
+  },
+  {
+    headerName: "Work Email",
+    field: "workEmail",
+    width: 250,
+  },
+  {
+    headerName: "Personal Email",
+    field: "personalEmail",
+    width: 250,
+  },
+  {
+    headerName: "Mobile Phone",
+    field: "mobilePhone",
+    width: 145,
+  },
+  {
+    headerName: "Tags",
+    field: "tags",
+    width: 200,
+    valueFormatter: (params) => {
+      return params.value && Array.isArray(params.value)
+        ? params.value.join(", ")
+        : "";
+    },
+  },
+  {
+    headerName: "Last Updated",
+    field: "lastUpdated",
+    width: 120,
+  },
+];
+
+// Birth Info specific columns
+export const birthInfoColumns: ColDef[] = [
+  {
+    headerName: "Provider Name",
+    valueGetter: (params) =>
+      `${params.data.lastName}, ${params.data.firstName}`,
+    width: 200,
+  },
+  {
+    headerName: "Title",
+    field: "title",
+    width: 120,
+  },
+  {
+    headerName: "Primary Specialty",
+    field: "primarySpecialty",
+    width: 200,
+  },
+  {
+    headerName: "Date of Birth",
+    field: "dateOfBirth",
+    width: 140,
+  },
+  {
+    headerName: "Country Of Citizenship",
+    field: "countryOfCitizenship",
+    width: 180,
+  },
+  {
+    headerName: "Citizenship/Work Auth",
+    field: "citizenshipWorkAuth",
+    width: 180,
+  },
+  {
+    headerName: "US Work Auth",
+    field: "usWorkAuth",
+    width: 140,
+  },
+  {
+    headerName: "Tags",
+    field: "tags",
+    width: 200,
+    valueFormatter: (params) => {
+      return params.value && Array.isArray(params.value)
+        ? params.value.join(", ")
+        : "";
+    },
+  },
+  {
+    headerName: "Last Updated",
+    field: "lastUpdated",
+    width: 120,
+  },
+];
+
+// Grid configuration interface
+export interface Grid {
+  key: string;
+  title: string;
+  icon: IconDefinition;
+  section: string;
+}
+
+// All grid definitions
+const grids: Grid[] = [
+  // Provider Info Section
+  {
+    key: "provider-info",
+    title: "Provider Info",
+    icon: faUserDoctor,
+    section: "providerInfo",
+  },
+  {
+    key: "birth-info",
+    title: "Birth Info",
+    icon: faWeight,
+    section: "providerInfo",
+  },
+  {
+    key: "addresses",
+    title: "Addresses",
+    icon: faHouse,
+    section: "providerInfo",
+  },
+  {
+    key: "additional-names",
+    title: "Additional Names",
+    icon: faAddressBook,
+    section: "providerInfo",
+  },
+  { key: "caqh", title: "CAQH", icon: faPlay, section: "providerInfo" },
+  {
+    key: "health-info",
+    title: "Health Info",
+    icon: faFileMedical,
+    section: "providerInfo",
+  },
+
+  // Licensure Section
+  {
+    key: "state-licenses",
+    title: "State Licenses",
+    icon: faShieldAlt,
+    section: "licensure",
+  },
+  {
+    key: "dea-licenses",
+    title: "DEA Licenses",
+    icon: faClipboard,
+    section: "licensure",
+  },
+  {
+    key: "controlled-substance-licenses",
+    title: "State Controlled Substance Licenses",
+    icon: faPills,
+    section: "licensure",
+  },
+
+  // Certifications Section
+  {
+    key: "board-certifications",
+    title: "Board Certifications",
+    icon: faClipboardList,
+    section: "certifications",
+  },
+  {
+    key: "cpr-certifications",
+    title: "CPR Certifications",
+    icon: faCheckCircle,
+    section: "certifications",
+  },
+
+  // Training Section
+  {
+    key: "malpractice-training",
+    title: "Malpractice Training",
+    icon: faCertificate,
+    section: "training",
+  },
+  {
+    key: "cme-training",
+    title: "CME Training",
+    icon: faHeartbeat,
+    section: "training",
+  },
+
+  // Education Section
+  {
+    key: "medical-school",
+    title: "Medical School",
+    icon: faUniversity,
+    section: "education",
+  },
+  {
+    key: "undergraduate",
+    title: "Undergraduate",
+    icon: faBook,
+    section: "education",
+  },
+
+  // Work Experience Section
+  {
+    key: "hospital-affiliations",
+    title: "Hospital Affiliations",
+    icon: faBuilding,
+    section: "workExperience",
+  },
+  {
+    key: "clinic-affiliations",
+    title: "Clinic Affiliations",
+    icon: faHospital,
+    section: "workExperience",
+  },
+  {
+    key: "work-history",
+    title: "Work History",
+    icon: faBriefcase,
+    section: "workExperience",
+  },
+  {
+    key: "peer-references",
+    title: "Peer References",
+    icon: faUserGroup,
+    section: "workExperience",
+  },
+  {
+    key: "military-experience",
+    title: "Military Experience",
+    icon: faMedal,
+    section: "workExperience",
+  },
+
+  // Malpractice Insurance Section
+  {
+    key: "malpractice-insurance",
+    title: "Malpractice Insurance",
+    icon: faGavel,
+    section: "malpracticeInsurance",
+  },
+
+  // Documents Section
+  {
+    key: "documents",
+    title: "Documents",
+    icon: faFolder,
+    section: "documents",
+  },
+  {
+    key: "sent-forms",
+    title: "Sent Forms",
+    icon: faFileArrowUp,
+    section: "documents",
+  },
+];
+
+// Grid configuration utility class
+export class GridConfig {
+  static findGridByKey(key: string): Grid | undefined {
+    return grids.find((grid) => grid.key === key);
+  }
+
+  static getGridsBySection(section: string): Grid[] {
+    return grids.filter((grid) => grid.section === section);
+  }
+
+  static getAllGrids(): Grid[] {
+    return grids;
+  }
+}
