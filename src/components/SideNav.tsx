@@ -77,8 +77,9 @@ const SideNav: React.FC<SideNavProps> = ({
   const isSectionActive = (section: string) => selectedSection === section;
 
   return (
-    <div className="p-2 flex flex-col gap-2">
-      {!collapsed && (
+    <div className="h-full flex flex-col">
+      <div className="p-2 flex flex-col gap-2 flex-1 overflow-y-auto">
+        {!collapsed && (
         <>
           {/* All Sections Header */}
           <div
