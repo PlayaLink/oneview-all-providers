@@ -120,7 +120,7 @@ const TextInput: React.FC<TextInputProps> = ({
             disabled={disabled || !value}
             className={cn(
               "flex w-[20.5px] h-5 py-[1.667px] justify-center items-center gap-[6.667px] rounded-[3.333px] hover:bg-gray-50 transition-all disabled:opacity-50 ml-1",
-              !value ? "opacity-0" : isHovered ? "opacity-100" : "opacity-0",
+              value && isHovered ? "opacity-100" : "opacity-0",
             )}
           >
             <FontAwesomeIcon
