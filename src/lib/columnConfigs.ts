@@ -168,6 +168,36 @@ export const gridColumnConfigs: Record<string, ColumnConfig[]> = {
     },
     commonColumns.lastUpdated,
   ],
+
+  caqh: [
+    ...baseColumns,
+    {
+      field: "caqhProviderId",
+      headerName: "CAQH Provider ID",
+      width: 180,
+      dataType: "string",
+    },
+    {
+      field: "accountStatus",
+      headerName: "Account Status",
+      width: 150,
+      dataType: "string",
+    },
+    {
+      field: "reattestationDate",
+      headerName: "Reattestation Date",
+      width: 160,
+      dataType: "date",
+    },
+    {
+      field: "reattestationStatus",
+      headerName: "Reattestation Status",
+      width: 180,
+      dataType: "string",
+    },
+    commonColumns.tags,
+    commonColumns.lastUpdated,
+  ],
 };
 
 // Convert column configs to AG Grid column definitions
