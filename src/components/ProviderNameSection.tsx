@@ -38,7 +38,7 @@ const ProviderNameSection: React.FC<ProviderNameSectionProps> = ({
   return (
     <CollapsibleSection title="Provider Name">
       <div className="flex flex-col items-start gap-2 self-stretch">
-        <DropdownField
+        <SingleSelect
           label="Prefix"
           value={prefix}
           onChange={setPrefix}
@@ -76,7 +76,7 @@ const ProviderNameSection: React.FC<ProviderNameSectionProps> = ({
           placeholder="Start typing"
         />
 
-        <DropdownField
+        <SingleSelect
           label="Pronouns"
           value={pronouns}
           onChange={setPronouns}
