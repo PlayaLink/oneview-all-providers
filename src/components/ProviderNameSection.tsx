@@ -74,7 +74,7 @@ const ProviderNameSection: React.FC<ProviderNameSectionProps> = ({
           options={prefixOptions}
         />
 
-        <FormField
+        <TextInput
           label="First Name"
           value={firstName}
           onChange={setFirstName}
@@ -82,14 +82,14 @@ const ProviderNameSection: React.FC<ProviderNameSectionProps> = ({
           showCopyButton={true}
         />
 
-        <FormField
+        <TextInput
           label="Middle Name"
           value={middleName}
           onChange={setMiddleName}
           placeholder="Start typing"
         />
 
-        <FormField
+        <TextInput
           label="Last Name"
           value={lastName}
           onChange={setLastName}
@@ -97,7 +97,7 @@ const ProviderNameSection: React.FC<ProviderNameSectionProps> = ({
           showCopyButton={true}
         />
 
-        <FormField
+        <TextInput
           label="Suffix"
           value={suffix}
           onChange={setSuffix}
