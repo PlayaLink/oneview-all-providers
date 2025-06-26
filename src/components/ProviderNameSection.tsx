@@ -11,15 +11,29 @@ interface ProviderNameSectionProps {
 const ProviderNameSection: React.FC<ProviderNameSectionProps> = ({
   provider,
 }) => {
-  const [prefix, setPrefix] = useState("Dr.");
+  const [prefix, setPrefix] = useState<SingleSelectOption | null>({
+    id: 1,
+    label: "Dr.",
+  });
   const [firstName, setFirstName] = useState(provider.firstName);
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState(provider.lastName);
   const [suffix, setSuffix] = useState("");
-  const [pronouns, setPronouns] = useState("");
+  const [pronouns, setPronouns] = useState<SingleSelectOption | null>(null);
 
-  const prefixOptions = ["Dr.", "Mr.", "Ms.", "Mrs.", "Prof."];
-  const pronounOptions = ["He/him/his", "She/her/hers", "They/them/theirs"];
+  const prefixOptions: SingleSelectOption[] = [
+    { id: 1, label: "Dr." },
+    { id: 2, label: "Mr." },
+    { id: 3, label: "Ms." },
+    { id: 4, label: "Mrs." },
+    { id: 5, label: "Prof." },
+  ];
+
+  const pronounOptions: SingleSelectOption[] = [
+    { id: 1, label: "He/him/his" },
+    { id: 2, label: "She/her/hers" },
+    { id: 3, label: "They/them/theirs" },
+  ];
 
   return (
     <CollapsibleSection title="Provider Name">
