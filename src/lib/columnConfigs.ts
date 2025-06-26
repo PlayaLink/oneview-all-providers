@@ -347,6 +347,54 @@ export const gridColumnConfigs: Record<string, ColumnConfig[]> = {
     commonColumns.tags,
     commonColumns.lastUpdated,
   ],
+
+  "education-training": [
+    ...baseColumns,
+    {
+      field: "educationType",
+      headerName: "Education Type",
+      width: 175,
+      dataType: "string",
+    },
+    {
+      field: "schoolInstitution",
+      headerName: "School/Institution",
+      width: 280,
+      dataType: "string",
+    },
+    {
+      field: "degree",
+      headerName: "Degree",
+      width: 120,
+      dataType: "string",
+    },
+    {
+      field: "specialtyMajor",
+      headerName: "Specialty/Major",
+      width: 220,
+      dataType: "string",
+    },
+    {
+      field: "startDate",
+      headerName: "Start Date",
+      width: 120,
+      dataType: "date",
+    },
+    {
+      field: "endDate",
+      headerName: "End Date",
+      width: 120,
+      dataType: "date",
+    },
+    {
+      field: "completed",
+      headerName: "Completed?",
+      width: 140,
+      dataType: "string",
+    },
+    commonColumns.tags,
+    commonColumns.lastUpdated,
+  ],
 };
 
 // Convert column configs to AG Grid column definitions
