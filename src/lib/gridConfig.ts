@@ -877,6 +877,291 @@ const grids: Grid[] = [
     section: "licensure",
   },
 
+  // Certifications Section
+  {
+    key: "board-certifications",
+    title: "Board Certifications",
+    icon: faClipboardList,
+    section: "certifications",
+  },
+  {
+    key: "cpr-certifications",
+    title: "CPR Certifications",
+    icon: faCheckCircle,
+    section: "certifications",
+  },
+
+  // Training Section
+  {
+    key: "malpractice-training",
+    title: "Malpractice Training",
+    icon: faCertificate,
+    section: "training",
+  },
+  {
+    key: "cme-training",
+    title: "CME Training",
+    icon: faHeartbeat,
+    section: "training",
+  },
+
+  // Education Section
+  {
+    key: "medical-school",
+    title: "Medical School",
+    icon: faUniversity,
+    section: "education",
+  },
+  {
+    key: "undergraduate",
+    title: "Undergraduate",
+    icon: faBook,
+    section: "education",
+  },
+
+  // Work Experience Section
+  {
+    key: "hospital-affiliations",
+    title: "Hospital Affiliations",
+    icon: faBuilding,
+    section: "workExperience",
+  },
+  {
+    key: "clinic-affiliations",
+    title: "Clinic Affiliations",
+    icon: faHospital,
+    section: "workExperience",
+  },
+  {
+    key: "work-history",
+    title: "Work History",
+    icon: faBriefcase,
+    section: "workExperience",
+  },
+  {
+    key: "peer-references",
+    title: "Peer References",
+    icon: faUserGroup,
+    section: "workExperience",
+  },
+  {
+    key: "military-experience",
+    title: "Military Experience",
+    icon: faMedal,
+    section: "workExperience",
+  },
+
+  // Malpractice Insurance Section
+  {
+    key: "malpractice-insurance",
+    title: "Malpractice Insurance",
+    icon: faGavel,
+    section: "malpracticeInsurance",
+  },
+
+  // Documents Section
+  {
+    key: "documents",
+    title: "Documents",
+    icon: faFolder,
+    section: "documents",
+  },
+  {
+    key: "sent-forms",
+    title: "Sent Forms",
+    icon: faFileArrowUp,
+    section: "documents",
+  },
+];
+
+// Grid configuration utility class
+export class GridConfig {
+  static findGridByKey(key: string): Grid | undefined {
+    return grids.find((grid) => grid.key === key);
+  }
+
+  static getGridsBySection(section: string): Grid[] {
+    return grids.filter((grid) => grid.section === section);
+  }
+
+  static getAllGrids(): Grid[] {
+    return grids;
+  }
+}
+
+// Standard column definitions that can be reused
+export const standardColumns: ColDef[] = [
+  {
+    headerName: "Provider Name",
+    valueGetter: (params) =>
+      `${params.data.lastName}, ${params.data.firstName}`,
+    width: 200,
+  },
+  {
+    headerName: "Title",
+    field: "title",
+    width: 120,
+  },
+  {
+    headerName: "Specialty",
+    field: "primarySpecialty",
+    width: 200,
+  },
+  {
+    headerName: "NPI #",
+    field: "npiNumber",
+    width: 140,
+  },
+  {
+    headerName: "Work Email",
+    field: "workEmail",
+    width: 250,
+  },
+  {
+    headerName: "Personal Email",
+    field: "personalEmail",
+    width: 250,
+  },
+  {
+    headerName: "Mobile Phone",
+    field: "mobilePhone",
+    width: 145,
+  },
+  {
+    headerName: "Tags",
+    field: "tags",
+    width: 200,
+    valueFormatter: (params) => {
+      return params.value && Array.isArray(params.value)
+        ? params.value.join(", ")
+        : "";
+    },
+  },
+  {
+    headerName: "Last Updated",
+    field: "lastUpdated",
+    width: 120,
+  },
+];
+
+// Birth Info specific columns
+export const birthInfoColumns: ColDef[] = [
+  {
+    headerName: "Provider Name",
+    valueGetter: (params) =>
+      `${params.data.lastName}, ${params.data.firstName}`,
+    width: 200,
+  },
+  {
+    headerName: "Title",
+    field: "title",
+    width: 120,
+  },
+  {
+    headerName: "Primary Specialty",
+    field: "primarySpecialty",
+    width: 200,
+  },
+  {
+    headerName: "Date of Birth",
+    field: "dateOfBirth",
+    width: 140,
+  },
+  {
+    headerName: "Country Of Citizenship",
+    field: "countryOfCitizenship",
+    width: 180,
+  },
+  {
+    headerName: "Citizenship/Work Auth",
+    field: "citizenshipWorkAuth",
+    width: 180,
+  },
+  {
+    headerName: "US Work Auth",
+    field: "usWorkAuth",
+    width: 140,
+  },
+  {
+    headerName: "Tags",
+    field: "tags",
+    width: 200,
+    valueFormatter: (params) => {
+      return params.value && Array.isArray(params.value)
+        ? params.value.join(", ")
+        : "";
+    },
+  },
+  {
+    headerName: "Last Updated",
+    field: "lastUpdated",
+    width: 120,
+  },
+];
+
+// Grid configuration interface
+export interface Grid {
+  key: string;
+  title: string;
+  icon: IconDefinition;
+  section: string;
+}
+
+// All grid definitions
+const grids: Grid[] = [
+  // Provider Info Section
+  {
+    key: "provider-info",
+    title: "Provider Info",
+    icon: faUserDoctor,
+    section: "providerInfo",
+  },
+  {
+    key: "birth-info",
+    title: "Birth Info",
+    icon: faWeight,
+    section: "providerInfo",
+  },
+  {
+    key: "addresses",
+    title: "Addresses",
+    icon: faHouse,
+    section: "providerInfo",
+  },
+  {
+    key: "additional-names",
+    title: "Additional Names",
+    icon: faAddressBook,
+    section: "providerInfo",
+  },
+  { key: "caqh", title: "CAQH", icon: faPlay, section: "providerInfo" },
+  {
+    key: "health-info",
+    title: "Health Info",
+    icon: faFileMedical,
+    section: "providerInfo",
+  },
+
+  // Licensure Section
+  {
+    key: "state-licenses",
+    title: "State Licenses",
+    icon: faShieldAlt,
+    section: "licensure",
+  },
+  {
+    key: "dea-licenses",
+    title: "DEA Licenses",
+    icon: faClipboard,
+    section: "licensure",
+  },
+  {
+    key: "controlled-substance-licenses",
+    title: "State Controlled Substance Licenses",
+    icon: faPills,
+    section: "licensure",
+  },
+
   // Actions & Exclusions Section
   {
     key: "event-log",
