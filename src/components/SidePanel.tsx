@@ -169,12 +169,20 @@ const TypeSpecialtyClassificationSection: React.FC = () => {
 // Testing NPM package section component
 const TestingNpmPackageSection: React.FC = () => {
   const [colors, setColors] = useState<NewMultiSelectItem[]>([]);
+  const [cars, setCars] = useState<NewMultiSelectItem[]>([]);
 
   // Color options
   const colorOptions: NewMultiSelectItem[] = [
     { id: 1, label: "Red" },
     { id: 2, label: "Yellow" },
     { id: 3, label: "Blue" },
+  ];
+
+  // Car options
+  const carOptions: NewMultiSelectItem[] = [
+    { id: 1, label: "Porsche" },
+    { id: 2, label: "Ferrari" },
+    { id: 3, label: "BMW" },
   ];
 
   return (
@@ -190,6 +198,15 @@ const TestingNpmPackageSection: React.FC = () => {
           onChange={setColors}
           addButtonText="Add"
           searchPlaceholder="Search colors..."
+        />
+
+        <NewMultiSelect
+          label="Cars"
+          value={cars}
+          options={carOptions}
+          onChange={setCars}
+          addButtonText="Add"
+          searchPlaceholder="Search cars..."
         />
       </div>
     </CollapsibleSection>
