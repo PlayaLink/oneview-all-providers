@@ -10,8 +10,10 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import SideNav from "@/components/SideNav";
+import HorizontalNav from "@/components/HorizontalNav";
 import PageHeader from "@/components/PageHeader";
 import MainContent from "@/components/MainContent";
+import SettingsDropdown from "@/components/SettingsDropdown";
 
 const MainLayout: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -19,6 +21,9 @@ const MainLayout: React.FC = () => {
     "provider-info",
   );
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
+  const [gridSectionMode, setGridSectionMode] = useState<
+    "left-nav" | "horizontal"
+  >("left-nav");
 
   const handleItemSelect = (item: string) => {
     setSelectedItem(item);
@@ -43,6 +48,10 @@ const MainLayout: React.FC = () => {
               <span className="text-white font-bold text-sm tracking-wide">
                 Modio
               </span>
+              <SettingsDropdown
+                gridSectionMode={gridSectionMode}
+                onGridSectionModeChange={setGridSectionMode}
+              />
             </div>
 
             {/* Company Info */}
@@ -93,53 +102,69 @@ const MainLayout: React.FC = () => {
 
       {/* Main Content */}
       <div className="flex flex-1 border-t border-gray-300">
-        {/* Wrapper to allow arrow overflow */}
-        <div className="flex flex-1">
-          {/* Left Sidebar */}
-          <div
-            className={cn(
-              "relative border-r border-gray-300 bg-white transition-all duration-300 flex flex-col",
-              sidebarCollapsed ? "w-0" : "w-48",
-            )}
-          >
-            <SideNav
-              collapsed={sidebarCollapsed}
-              selectedItem={selectedItem}
+        {gridSectionMode === "left-nav" ? (
+          /* Left Navigation Layout */
+          <div className="flex flex-1">
+            {/* Left Sidebar */}
+            <div
+              className={cn(
+                "relative border-r border-gray-300 bg-white transition-all duration-300 flex flex-col",
+                sidebarCollapsed ? "w-0" : "w-48",
+              )}
+            >
+              <SideNav
+                collapsed={sidebarCollapsed}
+                selectedItem={selectedItem}
+                selectedSection={selectedSection}
+                onItemSelect={handleItemSelect}
+                onSectionSelect={handleSectionSelect}
+              />
+
+              {/* Collapse Toggle */}
+              <button
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                className="absolute w-6 h-6 bg-[#545454] text-white rounded-full flex items-center justify-center hover:bg-[#3f3f3f] transition-colors z-20"
+                style={{
+                  right: sidebarCollapsed ? "-28px" : "-12px",
+                  top: "-12px",
+                }}
+              >
+                {sidebarCollapsed ? (
+                  <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" />
+                ) : (
+                  <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />
+                )}
+              </button>
+            </div>
+
+            {/* Main Grid Area - Flexible */}
+            <div
+              className={cn(
+                "flex-1 flex flex-col",
+                sidebarCollapsed && "ml-4 border-l border-gray-300",
+              )}
+            >
+              <MainContent
+                selectedItem={selectedItem}
+                selectedSection={selectedSection}
+              />
+            </div>
+          </div>
+        ) : (
+          /* Horizontal Navigation Layout */
+          <div className="flex-1 flex flex-col">
+            <HorizontalNav
               selectedSection={selectedSection}
-              onItemSelect={handleItemSelect}
               onSectionSelect={handleSectionSelect}
             />
-
-            {/* Collapse Toggle */}
-            <button
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="absolute w-6 h-6 bg-[#545454] text-white rounded-full flex items-center justify-center hover:bg-[#3f3f3f] transition-colors z-20"
-              style={{
-                right: sidebarCollapsed ? "-28px" : "-12px",
-                top: "-12px",
-              }}
-            >
-              {sidebarCollapsed ? (
-                <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" />
-              ) : (
-                <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />
-              )}
-            </button>
+            <div className="flex-1">
+              <MainContent
+                selectedItem={selectedItem}
+                selectedSection={selectedSection}
+              />
+            </div>
           </div>
-
-          {/* Main Grid Area - Flexible */}
-          <div
-            className={cn(
-              "flex-1 flex flex-col",
-              sidebarCollapsed && "ml-4 border-l border-gray-300",
-            )}
-          >
-            <MainContent
-              selectedItem={selectedItem}
-              selectedSection={selectedSection}
-            />
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Footer */}
