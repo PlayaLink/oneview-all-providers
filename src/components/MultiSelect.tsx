@@ -384,7 +384,7 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
       ) : (
         <div
           className={cn(
-            "flex flex-1 min-h-[32px] pl-2",
+            "flex flex-1 min-h-[32px] pl-2 py-[6px] border border-[#E6E6E6] rounded",
             fullWidthButton ? "flex-col gap-2" : "flex-wrap items-center gap-2",
           )}
         >
