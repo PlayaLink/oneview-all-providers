@@ -94,8 +94,11 @@ const TextInput: React.FC<TextInputProps> = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="flex w-[153px] py-[7px] px-2 items-start gap-1">
-        <div className="text-[#545454] text-xs font-semibold leading-normal tracking-[0.429px] font-['Poppins',sans-serif]">
+      <div
+        className="flex w-[153px] py-[7px] px-2 items-start gap-1"
+        style={{ width: "var(--Label-width, 153px)" }}
+      >
+        <div className="text-[#545454] text-xs font-semibold leading-normal tracking-[0.429px] font-['Poppins',sans-serif] break-words">
           {label}
         </div>
       </div>
