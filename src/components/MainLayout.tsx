@@ -35,6 +35,43 @@ const MainLayout: React.FC = () => {
     setSelectedItem(null);
   };
 
+  const handleGridSectionModeChange = (mode: "left-nav" | "horizontal") => {
+    setGridSectionMode(mode);
+    // When switching to horizontal mode, ensure we select a section instead of an item
+    if (mode === "horizontal" && selectedItem && !selectedSection) {
+      // Map current item to its section for better UX
+      const itemToSectionMap: Record<string, string> = {
+        "provider-info": "providerInfo",
+        "birth-info": "providerInfo",
+        addresses: "providerInfo",
+        "additional-names": "providerInfo",
+        caqh: "providerInfo",
+        "health-info": "providerInfo",
+        "state-licenses": "licensure",
+        "dea-licenses": "licensure",
+        "controlled-substance-licenses": "licensure",
+        "event-log": "actionsExclusions",
+        oig: "actionsExclusions",
+        "board-certifications": "certifications",
+        "other-certifications": "certifications",
+        "education-training": "educationTraining",
+        exams: "educationTraining",
+        "practice-employer": "workExperience",
+        "facility-affiliations": "workExperience",
+        "work-history": "workExperience",
+        "peer-references": "workExperience",
+        "military-experience": "workExperience",
+        "malpractice-insurance": "malpracticeInsurance",
+        documents: "documents",
+        "sent-forms": "documents",
+      };
+
+      const section = itemToSectionMap[selectedItem] || "providerInfo";
+      setSelectedSection(section);
+      setSelectedItem(null);
+    }
+  };
+
   return (
     <div className="h-screen flex flex-col bg-white">
       {/* Top Navigation */}
@@ -50,7 +87,7 @@ const MainLayout: React.FC = () => {
               </span>
               <SettingsDropdown
                 gridSectionMode={gridSectionMode}
-                onGridSectionModeChange={setGridSectionMode}
+                onGridSectionModeChange={handleGridSectionModeChange}
               />
             </div>
 
