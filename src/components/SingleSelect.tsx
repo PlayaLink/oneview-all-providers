@@ -171,7 +171,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
           className="flex w-[153px] py-[7px] px-2 items-start gap-1"
           style={{ width: "var(--Label-width, 153px)" }}
         >
-          <div className="text-[#545454] text-xs font-semibold leading-normal tracking-[0.429px] font-['Poppins',sans-serif]">
+          <div className="text-[#545454] text-xs font-semibold leading-normal tracking-[0.429px] font-['Poppins',sans-serif] break-words">
             {label}
           </div>
         </div>
@@ -220,6 +220,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
             align="start"
             side="bottom"
             sideOffset={4}
+            alignOffset={0}
           >
             <div className="w-64 max-h-48 overflow-y-auto p-2">
               {filteredOptions.length > 0 ? (
