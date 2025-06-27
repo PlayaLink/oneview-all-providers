@@ -290,10 +290,10 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
     // Label component
     const LabelComponent = label ? (
       <div
-        className="flex min-w-[153px] items-start"
-        style={{ padding: "7px 8px" }}
+        className="flex w-[153px] items-start"
+        style={{ padding: "7px 8px", width: "var(--Label-width, 153px)" }}
       >
-        <span className="text-xs font-semibold text-[#545454] font-poppins tracking-[0.429px]">
+        <span className="text-xs font-semibold text-[#545454] font-poppins tracking-[0.429px] break-words">
           {label}
         </span>
       </div>
@@ -303,17 +303,16 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
     const ValueContainer =
       showAddButton && availableOptions.length > 0 ? (
         <div className="relative">
-          {/* Fixed positioning anchor - invisible element at top-left of input area */}
           <Popover open={open} onOpenChange={handleOpenChange}>
             <PopoverTrigger asChild>
-              <div className="absolute top-0 left-2 w-1 h-1 opacity-0 pointer-events-none" />
+              <div className="absolute top-0 left-0 w-1 h-1 opacity-0 pointer-events-none" />
             </PopoverTrigger>
             <PopoverContent
               className="w-auto p-0 border-0 bg-transparent shadow-none"
               align="start"
               side="bottom"
-              sideOffset={-8}
-              alignOffset={0}
+              sideOffset={6}
+              alignOffset={8}
             >
               <MultiSelectDropdown
                 options={availableOptions}
@@ -330,7 +329,7 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
           {/* Content container */}
           <div
             className={cn(
-              "flex flex-1 min-h-[32px] pl-2",
+              "flex flex-1 min-h-[32px] pl-2 py-[6px] border border-[#E6E6E6] rounded",
               fullWidthButton
                 ? "flex-col gap-2"
                 : "flex-wrap items-center gap-2",
