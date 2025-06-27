@@ -89,7 +89,7 @@ const MainContent: React.FC<MainContentProps> = ({
   }
 
   return (
-    <div className="flex-1 flex flex-col pt-4 px-4">
+    <div className="flex-1 flex flex-col pt-4 px-4 min-h-0">
       {/* Main Content Area */}
       <div className="flex flex-1 gap-4 min-h-0">
         {/* Current Grid */}
