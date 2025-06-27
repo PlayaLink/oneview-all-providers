@@ -166,6 +166,166 @@ const TypeSpecialtyClassificationSection: React.FC = () => {
   );
 };
 
+// Testing NPM package section component
+const TestingNpmPackageSection: React.FC = () => {
+  const [providerTitle, setProviderTitle] = useState<SingleSelectOption | null>(
+    {
+      id: 1,
+      label: "MD - Medical Doctor",
+    },
+  );
+  const [specialtyList, setSpecialtyList] = useState<NewMultiSelectItem[]>([
+    { id: 1, label: "General Surgery" },
+  ]);
+  const [classifications, setClassifications] = useState<NewMultiSelectItem[]>([
+    { id: 1, label: "Hospital-based" },
+    { id: 2, label: "Specialist" },
+    { id: 3, label: "Locum Tenens" },
+  ]);
+  const [taxonomyCodes, setTaxonomyCodes] = useState<NewMultiSelectItem[]>([
+    { id: 1, label: "Plastic Surgery - Surgery of the Hand (2082S0105X" },
+  ]);
+  const [clinicalServices, setClinicalServices] = useState<
+    NewMultiSelectItem[]
+  >([{ id: 1, label: "Outpatient Clinical Services" }]);
+  const [fluentLanguages, setFluentLanguages] = useState<NewMultiSelectItem[]>([
+    { id: 1, label: "English" },
+    { id: 2, label: "Spanish" },
+    { id: 3, label: "French" },
+  ]);
+  const [cmsSpecialtyCodes, setCmsSpecialtyCodes] = useState<
+    NewMultiSelectItem[]
+  >([]);
+
+  // Sample options for each field
+  const specialtyOptions: NewMultiSelectItem[] = [
+    { id: 1, label: "General Surgery" },
+    { id: 2, label: "Cardiology" },
+    { id: 3, label: "Neurology" },
+    { id: 4, label: "Orthopedics" },
+    { id: 5, label: "Pediatrics" },
+  ];
+
+  const classificationOptions: NewMultiSelectItem[] = [
+    { id: 1, label: "Hospital-based" },
+    { id: 2, label: "Specialist" },
+    { id: 3, label: "Locum Tenens" },
+    { id: 4, label: "Primary Care" },
+    { id: 5, label: "Emergency Medicine" },
+  ];
+
+  const taxonomyOptions: NewMultiSelectItem[] = [
+    { id: 1, label: "Plastic Surgery - Surgery of the Hand (2082S0105X" },
+    { id: 2, label: "Internal Medicine (207R00000X)" },
+    { id: 3, label: "Family Medicine (207Q00000X)" },
+  ];
+
+  const clinicalOptions: NewMultiSelectItem[] = [
+    { id: 1, label: "Outpatient Clinical Services" },
+    { id: 2, label: "Inpatient Services" },
+    { id: 3, label: "Emergency Services" },
+    { id: 4, label: "Diagnostic Services" },
+  ];
+
+  const languageOptions: NewMultiSelectItem[] = [
+    { id: 1, label: "English" },
+    { id: 2, label: "Spanish" },
+    { id: 3, label: "French" },
+    { id: 4, label: "German" },
+    { id: 5, label: "Mandarin" },
+    { id: 6, label: "Arabic" },
+  ];
+
+  const cmsOptions: NewMultiSelectItem[] = [
+    { id: 1, label: "01 - General Practice" },
+    { id: 2, label: "02 - General Surgery" },
+    { id: 3, label: "06 - Cardiology" },
+    { id: 4, label: "11 - Internal Medicine" },
+  ];
+
+  const providerTitleOptions: SingleSelectOption[] = [
+    { id: 1, label: "MD - Medical Doctor" },
+    { id: 2, label: "DO - Doctor of Osteopathic Medicine" },
+    { id: 3, label: "NP - Nurse Practitioner" },
+    { id: 4, label: "PA - Physician Assistant" },
+    { id: 5, label: "RN - Registered Nurse" },
+    { id: 6, label: "LPN - Licensed Practical Nurse" },
+    { id: 7, label: "DDS - Doctor of Dental Surgery" },
+    { id: 8, label: "PharmD - Doctor of Pharmacy" },
+  ];
+
+  return (
+    <CollapsibleSection title="Testing NPM package">
+      <div
+        className="flex flex-col gap-2 w-full"
+        style={{ position: "relative", zIndex: "auto" }}
+      >
+        <SingleSelect
+          label="Provider Title"
+          value={providerTitle}
+          options={providerTitleOptions}
+          onChange={setProviderTitle}
+          placeholder="Start typing"
+        />
+
+        <NewMultiSelect
+          label="Speciality List"
+          value={specialtyList}
+          options={specialtyOptions}
+          onChange={setSpecialtyList}
+          addButtonText="Add"
+          searchPlaceholder="Search specialties..."
+        />
+
+        <NewMultiSelect
+          label="Classifications"
+          value={classifications}
+          options={classificationOptions}
+          onChange={setClassifications}
+          addButtonText="Add"
+          searchPlaceholder="Search classifications..."
+        />
+
+        <NewMultiSelect
+          label="Taxonomy Codes"
+          value={taxonomyCodes}
+          options={taxonomyOptions}
+          onChange={setTaxonomyCodes}
+          addButtonText="Add"
+          searchPlaceholder="Search taxonomy codes..."
+        />
+
+        <NewMultiSelect
+          label="Clinical Services"
+          value={clinicalServices}
+          options={clinicalOptions}
+          onChange={setClinicalServices}
+          addButtonText="Add"
+          searchPlaceholder="Search clinical services..."
+        />
+
+        <NewMultiSelect
+          label="Fluent Languages"
+          value={fluentLanguages}
+          options={languageOptions}
+          onChange={setFluentLanguages}
+          addButtonText="Add"
+          searchPlaceholder="Search languages..."
+        />
+
+        <NewMultiSelect
+          label="CMS Medicare Specialty Codes"
+          value={cmsSpecialtyCodes}
+          options={cmsOptions}
+          onChange={setCmsSpecialtyCodes}
+          addButtonText="Add"
+          searchPlaceholder="Search CMS codes..."
+        />
+      </div>
+    </CollapsibleSection>
+  );
+};
+
 interface SidePanelProps {
   isOpen: boolean;
   provider: Provider | null;
