@@ -101,10 +101,7 @@ const TypeSpecialtyClassificationSection: React.FC = () => {
 
   return (
     <CollapsibleSection title="Type, Speciality & Classification">
-      <div
-        className="flex flex-col gap-2 w-full"
-        style={{ position: "relative", zIndex: "auto" }}
-      >
+      <div className="flex flex-col gap-2 w-full relative">
         <SingleSelect
           label="Provider Title"
           value={providerTitle}
@@ -186,10 +183,7 @@ const TestingNpmPackageSection: React.FC = () => {
 
   return (
     <CollapsibleSection title="Testing NPM package">
-      <div
-        className="flex flex-col gap-2 w-full"
-        style={{ position: "relative", zIndex: "auto" }}
-      >
+      <div className="flex flex-col gap-2 w-full relative">
         <MultiSelect
           label="Colors"
           value={colors}
@@ -254,11 +248,8 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, provider, onClose }) => {
         </div>
 
         {/* Content */}
-        <div
-          className="flex-1 overflow-y-auto p-4"
-          style={{ isolation: "isolate" }}
-        >
-          <div style={{ zIndex: "auto", position: "relative" }}>
+        <div className="flex-1 overflow-y-auto p-4">
+          <div className="relative">
             <ProviderNameSection provider={provider} />
             <TypeSpecialtyClassificationSection />
             <TestingNpmPackageSection />
