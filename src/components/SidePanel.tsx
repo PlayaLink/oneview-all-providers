@@ -375,6 +375,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, provider, onClose }) => {
           <div style={{ zIndex: "auto", position: "relative" }}>
             <ProviderNameSection provider={provider} />
             <TypeSpecialtyClassificationSection />
+            <TestingNpmPackageSection />
           </div>
         </div>
 
