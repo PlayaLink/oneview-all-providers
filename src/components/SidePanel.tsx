@@ -7,6 +7,10 @@ import CollapsibleSection from "./CollapsibleSection";
 import { MultiSelect, MultiSelectItem } from "oneview-react-multiselect";
 import { SingleSelect, SingleSelectOption } from "./SingleSelect";
 import ProviderNameSection from "./ProviderNameSection";
+import {
+  MultiSelect as NewMultiSelect,
+  MultiSelectItem as NewMultiSelectItem,
+} from "oneview-react-multiselect-component";
 
 // TypeSpecialtyClassificationSection component
 const TypeSpecialtyClassificationSection: React.FC = () => {
