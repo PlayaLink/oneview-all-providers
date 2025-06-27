@@ -4,12 +4,11 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
 import { Provider } from "@/types";
 import CollapsibleSection from "./CollapsibleSection";
-import { MultiSelect, MultiSelectItem } from "oneview-react-multiselect";
 import { SingleSelect, SingleSelectOption } from "./SingleSelect";
 import ProviderNameSection from "./ProviderNameSection";
 import {
-  MultiSelect as NewMultiSelect,
-  MultiSelectItem as NewMultiSelectItem,
+  MultiSelect,
+  MultiSelectItem,
 } from "oneview-react-multiselect-component";
 
 // TypeSpecialtyClassificationSection component
@@ -168,18 +167,18 @@ const TypeSpecialtyClassificationSection: React.FC = () => {
 
 // Testing NPM package section component
 const TestingNpmPackageSection: React.FC = () => {
-  const [colors, setColors] = useState<NewMultiSelectItem[]>([]);
-  const [cars, setCars] = useState<NewMultiSelectItem[]>([]);
+  const [colors, setColors] = useState<MultiSelectItem[]>([]);
+  const [cars, setCars] = useState<MultiSelectItem[]>([]);
 
   // Color options
-  const colorOptions: NewMultiSelectItem[] = [
+  const colorOptions: MultiSelectItem[] = [
     { id: 1, label: "Red" },
     { id: 2, label: "Yellow" },
     { id: 3, label: "Blue" },
   ];
 
   // Car options
-  const carOptions: NewMultiSelectItem[] = [
+  const carOptions: MultiSelectItem[] = [
     { id: 1, label: "Porsche" },
     { id: 2, label: "Ferrari" },
     { id: 3, label: "BMW" },
@@ -191,7 +190,7 @@ const TestingNpmPackageSection: React.FC = () => {
         className="flex flex-col gap-2 w-full"
         style={{ position: "relative", zIndex: "auto" }}
       >
-        <NewMultiSelect
+        <MultiSelect
           label="Colors"
           value={colors}
           options={colorOptions}
@@ -200,7 +199,7 @@ const TestingNpmPackageSection: React.FC = () => {
           searchPlaceholder="Search colors..."
         />
 
-        <NewMultiSelect
+        <MultiSelect
           label="Cars"
           value={cars}
           options={carOptions}
