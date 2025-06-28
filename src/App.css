@@ -42,6 +42,12 @@
 }
 
 /* Custom AG Grid styling to match existing design */
+.ag-grid-custom {
+  --ag-border-color: transparent;
+  --ag-cell-horizontal-border: none;
+  --ag-header-column-separator-color: transparent;
+}
+
 .ag-grid-custom .ag-header {
   background-color: #cfd8dc;
   border-bottom: 0.5px solid #d2d5dc !important;
@@ -116,4 +122,15 @@
 .ag-grid-custom .ag-header-no-border {
   border-right: none !important;
   border-left: none !important;
+}
+
+/* Ensure full height for AG Grid */
+.ag-grid-custom.ag-theme-alpine {
+  height: 100% !important;
+  min-height: 0;
+}
+
+.ag-grid-custom .ag-root-wrapper {
+  height: 100% !important;
+  min-height: 0;
 }

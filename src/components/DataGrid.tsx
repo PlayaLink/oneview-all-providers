@@ -82,7 +82,7 @@ const DataGrid: React.FC<DataGridProps> = ({
   };
 
   return (
-    <div className="bg-white flex flex-col h-full">
+    <div className="bg-white flex flex-col h-full min-h-0">
       {/* Grid Header */}
       <div className="flex items-center justify-between px-2 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 rounded overflow-hidden">
         <div className="flex items-center gap-2">
@@ -120,20 +120,15 @@ const DataGrid: React.FC<DataGridProps> = ({
 
       {/* AG Grid Container */}
       <div
-        className="ag-theme-alpine ag-grid-custom flex-1"
+        className="ag-theme-alpine ag-grid-custom flex-1 min-h-0"
         style={
           {
             ...(height === "100%"
-              ? { flexGrow: 1, height: "auto" }
+              ? { flexGrow: 1, height: "auto", minHeight: 0 }
               : { height }),
             width: "100%",
             border: "none",
             borderWidth: "0px",
-            minHeight: 0,
-            // Remove all vertical borders
-            "--ag-border-color": "transparent",
-            "--ag-cell-horizontal-border": "none",
-            "--ag-header-column-separator-color": "transparent",
           } as React.CSSProperties
         }
       >
@@ -164,10 +159,6 @@ const DataGrid: React.FC<DataGridProps> = ({
             },
           }}
           suppressColumnVirtualisation={false}
-          gridOptions={{
-            suppressBorderLeft: true,
-            suppressBorderRight: true,
-          }}
           icons={{
             filter: () => (
               <FontAwesomeIcon

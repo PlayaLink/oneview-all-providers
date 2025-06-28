@@ -89,9 +89,9 @@ const MainContent: React.FC<MainContentProps> = ({
   }
 
   return (
-    <div className="flex-1 flex flex-col pt-4 px-4 min-h-0">
+    <div className="flex-1 flex flex-col min-h-0 h-full">
       {/* Main Content Area */}
-      <div className="flex flex-1 gap-4 min-h-0">
+      <div className="flex flex-1 gap-4 min-h-0 pt-4 px-4">
         {/* Current Grid */}
         <div className="flex-1 flex flex-col min-h-0">
           <DataGrid
@@ -106,7 +106,7 @@ const MainContent: React.FC<MainContentProps> = ({
 
         {/* Scroll Navigation - Next to Grid */}
         {isMultipleGrids && (
-          <div className="flex flex-col items-center gap-2 pt-2">
+          <div className="flex flex-col items-center gap-2 pt-2 flex-shrink-0">
             {/* Scroll Arrows */}
             <div
               className="flex flex-col gap-0.5 rounded p-1"
