@@ -1,21 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faChevronUp, faChevronDown, faTable } from "@fortawesome/free-solid-svg-icons";
 import DataGrid from "@/components/DataGrid";
 import SidePanel from "@/components/SidePanel";
-import { sampleProviders } from "@/lib/gridConfig";
+import { generateSampleData } from "@/lib/dataGenerator";
 import { getColumnsForGrid } from "@/lib/columnConfigs";
-import { GridConfig } from "@/lib/gridConfig";
+import { gridDefinitions, getGridsByGroup } from "@/lib/gridDefinitions";
+import { getIconByName } from "@/lib/iconMapping";
 import { Provider } from "@/types";
 
 interface MainContentProps {
   selectedItem: string | null;
   selectedSection: string | null;
+  visibleSections?: Set<string>;
 }
 
 const MainContent: React.FC<MainContentProps> = ({
   selectedItem,
   selectedSection,
+  visibleSections = new Set(),
 }) => {
   const [currentGridIndex, setCurrentGridIndex] = useState(0);
   const [selectedProvider, setSelectedProvider] = useState<Provider | null>(
@@ -23,40 +26,67 @@ const MainContent: React.FC<MainContentProps> = ({
   );
   const [sidePanelOpen, setSidePanelOpen] = useState(false);
 
-  const handleProviderSelect = (provider: Provider) => {
-    setSelectedProvider(provider);
-    setSidePanelOpen(true);
-  };
-
-  const handleSidePanelClose = () => {
-    setSidePanelOpen(false);
-  };
-
-  // Function to get grids based on selection
+  // Function to get grids based on selection and filtered sections
   const getGridsToShow = () => {
     if (selectedItem && selectedItem !== "all-sections") {
-      // Show single grid
-      const grid = GridConfig.findGridByKey(selectedItem);
-      return grid ? [grid] : [];
+      // Show single grid - only if it's in visible sections or no filtering
+      const grid = gridDefinitions.find((g) => g.tableName === selectedItem);
+      if (
+        grid &&
+        (visibleSections.size === 0 || visibleSections.has(selectedItem))
+      ) {
+        return [grid];
+      }
+      return [];
     }
 
     if (selectedSection) {
-      // Show all grids in section
-      return GridConfig.getGridsBySection(selectedSection).filter(Boolean);
+      // Show grids in section, filtered by visible sections
+      const sectionGrids = getGridsByGroup(selectedSection);
+      if (visibleSections.size === 0) {
+        return sectionGrids; // No filtering, show all grids in section
+      }
+      // Filter grids based on visible sections
+      return sectionGrids.filter((grid) => visibleSections.has(grid.tableName));
     }
 
     if (selectedItem === "all-sections") {
-      // Show all grids
-      return GridConfig.getAllGrids().filter(Boolean);
+      // Show all grids, filtered by visible sections
+      if (visibleSections.size === 0) {
+        return gridDefinitions; // No filtering, show all grids
+      }
+      return gridDefinitions.filter((grid) =>
+        visibleSections.has(grid.tableName),
+      );
     }
 
-    // Default: show Provider Info
-    const defaultGrid = GridConfig.findGridByKey("provider-info");
-    return defaultGrid ? [defaultGrid] : [];
+    // Default: show Provider Info if no filtering or provider info is visible
+    if (visibleSections.size === 0 || visibleSections.has("Provider_Info")) {
+      const defaultGrid = gridDefinitions.find(
+        (g) => g.tableName === "Provider_Info",
+      );
+      return defaultGrid ? [defaultGrid] : [];
+    }
+
+    return [];
   };
 
   const gridsToShow = getGridsToShow();
   const isMultipleGrids = gridsToShow.length > 1;
+
+  // Memoize data generation to prevent regeneration on every render
+  const gridData = useMemo(() => {
+    const data: Record<string, any[]> = {};
+    gridsToShow.forEach(grid => {
+      data[grid.tableName] = generateSampleData(grid.tableName, 15);
+    });
+    return data;
+  }, [gridsToShow]);
+
+  // Function to get appropriate data based on grid type
+  const getDataForGrid = (gridKey: string) => {
+    return gridData[gridKey] || [];
+  };
 
   const handlePrevious = () => {
     setCurrentGridIndex((prev) =>
@@ -68,6 +98,29 @@ const MainContent: React.FC<MainContentProps> = ({
     setCurrentGridIndex((prev) =>
       prev < gridsToShow.length - 1 ? prev + 1 : 0,
     );
+  };
+
+  const handleProviderSelect = (data: any) => {
+    // Convert grid data to Provider format for SidePanel
+    const provider: Provider = {
+      id: data.id,
+      firstName: data.provider_name?.split(', ')[1] || data.first_name || 'Unknown',
+      lastName: data.provider_name?.split(', ')[0] || data.last_name || 'Unknown',
+      title: data.title || 'Unknown',
+      primarySpecialty: data.primary_specialty || 'Unknown',
+      npiNumber: data.npi_number || 'Unknown',
+      workEmail: data.work_email || 'Unknown',
+      personalEmail: data.personal_email || 'Unknown',
+      mobilePhone: data.mobile_phone_number || 'Unknown',
+      tags: data.tags ? [data.tags] : [],
+      lastUpdated: data.last_updated || 'Unknown',
+    };
+    setSelectedProvider(provider);
+    setSidePanelOpen(true);
+  };
+
+  const handleSidePanelClose = () => {
+    setSidePanelOpen(false);
   };
 
   if (gridsToShow.length === 0) {
@@ -95,10 +148,10 @@ const MainContent: React.FC<MainContentProps> = ({
         {/* Current Grid */}
         <div className="flex-1 flex flex-col min-h-0">
           <DataGrid
-            title={currentGrid.title}
-            icon={currentGrid.icon}
-            data={sampleProviders}
-            columns={getColumnsForGrid(currentGrid.key)}
+            title={currentGrid.tableName.replace(/_/g, " ")}
+            icon={getIconByName(currentGrid.icon)}
+            data={getDataForGrid(currentGrid.tableName)}
+            columns={getColumnsForGrid(currentGrid.tableName)}
             height="100%"
             onRowClicked={handleProviderSelect}
           />

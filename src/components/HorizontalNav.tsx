@@ -1,45 +1,61 @@
 import React from "react";
 import { cn } from "@/lib/utils";
+import SectionsDropdown from "./SectionsDropdown";
+import { getGroups, getVisibleGroups } from "@/lib/gridDefinitions";
 
 interface HorizontalNavProps {
   selectedSection: string | null;
   onSectionSelect: (section: string) => void;
+  visibleSections?: Set<string>;
+  onSectionVisibilityChange?: (sectionKey: string, visible: boolean) => void;
 }
 
 const HorizontalNav: React.FC<HorizontalNavProps> = ({
   selectedSection,
   onSectionSelect,
+  visibleSections = new Set(),
+  onSectionVisibilityChange = () => {},
 }) => {
-  const sections = [
-    { key: "all-sections", label: "ALL SECTIONS" },
-    { key: "providerInfo", label: "PROVIDER INFO" },
-    { key: "licensure", label: "LICENSURE" },
-    { key: "actionsExclusions", label: "ACTIONS & EXCLUSIONS" },
-    { key: "certifications", label: "CERTIFICATIONS" },
-    { key: "educationTraining", label: "EDUCATION & TRAINING" },
-    { key: "workExperience", label: "WORK EXPERIENCE" },
-    { key: "malpracticeInsurance", label: "MALPRACTICE INSURANCE" },
-    { key: "documents", label: "DOCUMENTS" },
-  ];
+  // Get all groups from the grid configuration
+  const allGroups = getGroups();
+  
+  // Get visible groups (groups that have at least one visible grid)
+  const visibleGroups = getVisibleGroups(visibleSections);
+
+  // Filter sections based on visibility
+  // If no sections are selected, show all groups
+  // If sections are selected, only show groups that have visible grids
+  const visibleSectionList =
+    visibleSections.size === 0
+      ? allGroups
+      : visibleGroups;
 
   return (
     <div className="bg-white border-b border-gray-300">
       <div className="px-4 py-3">
-        <div className="flex items-center gap-1 overflow-x-auto">
-          {sections.map((section) => (
-            <button
-              key={section.key}
-              onClick={() => onSectionSelect(section.key)}
-              className={cn(
-                "px-4 py-2 text-xs font-medium tracking-wide whitespace-nowrap rounded transition-colors",
-                selectedSection === section.key
-                  ? "bg-[#008BC9] text-white"
-                  : "text-[#545454] hover:bg-gray-50",
-              )}
-            >
-              {section.label}
-            </button>
-          ))}
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-1 overflow-x-auto flex-1">
+            {visibleSectionList.map((section) => (
+              <button
+                key={section}
+                onClick={() => onSectionSelect(section)}
+                className={cn(
+                  "px-4 py-2 text-xs font-medium tracking-wide whitespace-nowrap rounded transition-colors",
+                  selectedSection === section
+                    ? "bg-[#008BC9] text-white"
+                    : "text-[#545454] hover:bg-gray-50",
+                )}
+              >
+                {section.toUpperCase()}
+              </button>
+            ))}
+          </div>
+          <div className="flex-shrink-0">
+            <SectionsDropdown
+              visibleSections={visibleSections}
+              onSectionVisibilityChange={onSectionVisibilityChange}
+            />
+          </div>
         </div>
       </div>
     </div>
