@@ -1,434 +1,226 @@
 import { ColDef } from "ag-grid-community";
+import { gridDefinitions } from "./gridDefinitions";
 
-// Column configuration type
-export interface ColumnConfig {
-  field: string;
-  headerName: string;
-  width?: number;
-  valueGetter?: (params: any) => string;
-  valueFormatter?: (params: any) => string;
-  dataType?:
-    | "string"
-    | "number"
-    | "date"
-    | "email"
-    | "phone"
-    | "array"
-    | "boolean";
-  sampleDataGenerator?: () => any;
-}
+// Helper function to format column names for display
+const formatColumnName = (columnName: string): string => {
+  return columnName
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+};
 
-// Base columns that appear in most grids
-const baseColumns: ColumnConfig[] = [
+// Helper function to check if a column is a date field
+const isDateColumn = (columnName: string): boolean => {
+  return (
+    columnName.toLowerCase().includes('date') ||
+    columnName.toLowerCase().includes('expiration') ||
+    columnName.toLowerCase().includes('issue')
+  );
+};
+
+// AG Grid valueFormatter for MM/DD/YYYY
+const dateValueFormatter = (params: any) => {
+  if (!params.value) return '';
+  const date = new Date(params.value);
+  if (isNaN(date.getTime())) return params.value; // fallback if not a valid date
+  return (
+    (date.getMonth() + 1).toString().padStart(2, '0') +
+    '/' +
+    date.getDate().toString().padStart(2, '0') +
+    '/' +
+    date.getFullYear()
+  );
+};
+
+// Generate column definitions for any grid based on its column names
+export const getColumnsForGrid = (gridKey: string): ColDef[] => {
+  const grid = gridDefinitions.find(g => g.tableName === gridKey);
+  if (!grid) {
+    return [];
+  }
+
+  return grid.columns.map(columnName => {
+    const colDef: ColDef = {
+      field: columnName,
+      headerName: formatColumnName(columnName),
+      sortable: true,
+      filter: true,
+      resizable: true,
+      minWidth: 120,
+      flex: 1,
+    };
+    if (isDateColumn(columnName)) {
+      colDef.valueFormatter = dateValueFormatter;
+    }
+    return colDef;
+  });
+};
+
+// Legacy exports for backward compatibility
+export const standardColumns: ColDef[] = [
   {
-    field: "providerName",
+    field: "provider_name",
     headerName: "Provider Name",
-    width: 200,
-    valueGetter: (params) =>
-      `${params.data.lastName}, ${params.data.firstName}`,
-    dataType: "string",
+    sortable: true,
+    filter: true,
+    resizable: true,
+    minWidth: 150,
+    flex: 1,
   },
   {
     field: "title",
     headerName: "Title",
-    width: 120,
-    dataType: "string",
+    sortable: true,
+    filter: true,
+    resizable: true,
+    minWidth: 100,
+    flex: 1,
   },
   {
-    field: "primarySpecialty",
+    field: "primary_specialty",
     headerName: "Primary Specialty",
-    width: 200,
-    dataType: "string",
+    sortable: true,
+    filter: true,
+    resizable: true,
+    minWidth: 150,
+    flex: 1,
+  },
+  {
+    field: "npi_number",
+    headerName: "NPI Number",
+    sortable: true,
+    filter: true,
+    resizable: true,
+    minWidth: 120,
+    flex: 1,
+  },
+  {
+    field: "work_email",
+    headerName: "Work Email",
+    sortable: true,
+    filter: true,
+    resizable: true,
+    minWidth: 200,
+    flex: 1,
+  },
+  {
+    field: "personal_email",
+    headerName: "Personal Email",
+    sortable: true,
+    filter: true,
+    resizable: true,
+    minWidth: 200,
+    flex: 1,
+  },
+  {
+    field: "mobile_phone_number",
+    headerName: "Mobile Phone",
+    sortable: true,
+    filter: true,
+    resizable: true,
+    minWidth: 130,
+    flex: 1,
+  },
+  {
+    field: "tags",
+    headerName: "Tags",
+    sortable: true,
+    filter: true,
+    resizable: true,
+    minWidth: 120,
+    flex: 1,
+  },
+  {
+    field: "last_updated",
+    headerName: "Last Updated",
+    sortable: true,
+    filter: true,
+    resizable: true,
+    minWidth: 120,
+    flex: 1,
   },
 ];
 
-// Common columns that can be reused
-const commonColumns: Record<string, ColumnConfig> = {
-  npiNumber: {
-    field: "npiNumber",
-    headerName: "NPI #",
-    width: 140,
-    dataType: "string",
+export const birthInfoColumns: ColDef[] = [
+  {
+    field: "provider_name",
+    headerName: "Provider Name",
+    sortable: true,
+    filter: true,
+    resizable: true,
+    minWidth: 150,
+    flex: 1,
   },
-  workEmail: {
-    field: "workEmail",
-    headerName: "Work Email",
-    width: 250,
-    dataType: "email",
+  {
+    field: "title",
+    headerName: "Title",
+    sortable: true,
+    filter: true,
+    resizable: true,
+    minWidth: 100,
+    flex: 1,
   },
-  personalEmail: {
-    field: "personalEmail",
-    headerName: "Personal Email",
-    width: 250,
-    dataType: "email",
+  {
+    field: "primary_specialty",
+    headerName: "Primary Specialty",
+    sortable: true,
+    filter: true,
+    resizable: true,
+    minWidth: 150,
+    flex: 1,
   },
-  mobilePhone: {
-    field: "mobilePhone",
-    headerName: "Mobile Phone",
-    width: 145,
-    dataType: "phone",
+  {
+    field: "date_of_birth",
+    headerName: "Date of Birth",
+    sortable: true,
+    filter: true,
+    resizable: true,
+    minWidth: 120,
+    flex: 1,
   },
-  tags: {
+  {
+    field: "country_of_citizenship",
+    headerName: "Country of Citizenship",
+    sortable: true,
+    filter: true,
+    resizable: true,
+    minWidth: 180,
+    flex: 1,
+  },
+  {
+    field: "citizenship/work_auth",
+    headerName: "Citizenship/Work Auth",
+    sortable: true,
+    filter: true,
+    resizable: true,
+    minWidth: 180,
+    flex: 1,
+  },
+  {
+    field: "us_work_auth",
+    headerName: "US Work Auth",
+    sortable: true,
+    filter: true,
+    resizable: true,
+    minWidth: 120,
+    flex: 1,
+  },
+  {
     field: "tags",
     headerName: "Tags",
-    width: 200,
-    valueFormatter: (params) => {
-      return params.value && Array.isArray(params.value)
-        ? params.value.join(", ")
-        : "";
-    },
-    dataType: "array",
+    sortable: true,
+    filter: true,
+    resizable: true,
+    minWidth: 120,
+    flex: 1,
   },
-  lastUpdated: {
-    field: "lastUpdated",
+  {
+    field: "last_updated",
     headerName: "Last Updated",
-    width: 120,
-    dataType: "date",
+    sortable: true,
+    filter: true,
+    resizable: true,
+    minWidth: 120,
+    flex: 1,
   },
-  dateOfBirth: {
-    field: "dateOfBirth",
-    headerName: "Date of Birth",
-    width: 140,
-    dataType: "date",
-  },
-  countryOfCitizenship: {
-    field: "countryOfCitizenship",
-    headerName: "Country Of Citizenship",
-    width: 180,
-    dataType: "string",
-  },
-  citizenshipWorkAuth: {
-    field: "citizenshipWorkAuth",
-    headerName: "Citizenship/Work Auth",
-    width: 180,
-    dataType: "string",
-  },
-  usWorkAuth: {
-    field: "usWorkAuth",
-    headerName: "US Work Auth",
-    width: 140,
-    dataType: "string",
-  },
-};
-
-// Grid-specific column configurations
-export const gridColumnConfigs: Record<string, ColumnConfig[]> = {
-  "provider-info": [
-    ...baseColumns,
-    commonColumns.npiNumber,
-    commonColumns.workEmail,
-    commonColumns.personalEmail,
-    commonColumns.mobilePhone,
-    commonColumns.tags,
-    commonColumns.lastUpdated,
-  ],
-
-  "birth-info": [
-    ...baseColumns,
-    commonColumns.dateOfBirth,
-    commonColumns.countryOfCitizenship,
-    commonColumns.citizenshipWorkAuth,
-    commonColumns.usWorkAuth,
-    commonColumns.tags,
-    commonColumns.lastUpdated,
-  ],
-
-  // Add more grid configurations here as needed
-  addresses: [
-    ...baseColumns,
-    {
-      field: "homeAddress",
-      headerName: "Home Address",
-      width: 250,
-      dataType: "string",
-    },
-    {
-      field: "workAddress",
-      headerName: "Work Address",
-      width: 250,
-      dataType: "string",
-    },
-    {
-      field: "city",
-      headerName: "City",
-      width: 150,
-      dataType: "string",
-    },
-    {
-      field: "state",
-      headerName: "State",
-      width: 120,
-      dataType: "string",
-    },
-    {
-      field: "zipCode",
-      headerName: "Zip Code",
-      width: 120,
-      dataType: "string",
-    },
-    commonColumns.lastUpdated,
-  ],
-
-  caqh: [
-    ...baseColumns,
-    {
-      field: "caqhProviderId",
-      headerName: "CAQH Provider ID",
-      width: 180,
-      dataType: "string",
-    },
-    {
-      field: "accountStatus",
-      headerName: "Account Status",
-      width: 150,
-      dataType: "string",
-    },
-    {
-      field: "reattestationDate",
-      headerName: "Reattestation Date",
-      width: 160,
-      dataType: "date",
-    },
-    {
-      field: "reattestationStatus",
-      headerName: "Reattestation Status",
-      width: 180,
-      dataType: "string",
-    },
-    commonColumns.tags,
-    commonColumns.lastUpdated,
-  ],
-
-  "state-licenses": [
-    ...baseColumns,
-    {
-      field: "licenseType",
-      headerName: "License Type",
-      width: 155,
-      dataType: "string",
-    },
-    {
-      field: "license",
-      headerName: "License",
-      width: 170,
-      dataType: "string",
-    },
-    {
-      field: "additionalInfo",
-      headerName: "Add'l Info",
-      width: 170,
-      dataType: "string",
-    },
-    {
-      field: "state",
-      headerName: "State",
-      width: 120,
-      dataType: "string",
-    },
-    {
-      field: "status",
-      headerName: "Status",
-      width: 170,
-      dataType: "string",
-    },
-    {
-      field: "issueDate",
-      headerName: "Issue Date",
-      width: 120,
-      dataType: "date",
-    },
-    {
-      field: "expirationDate",
-      headerName: "Exp. Date",
-      width: 120,
-      dataType: "date",
-    },
-    {
-      field: "expiresWithin",
-      headerName: "Expires Within",
-      width: 160,
-      dataType: "string",
-    },
-    commonColumns.lastUpdated,
-  ],
-
-  "dea-licenses": [
-    ...baseColumns,
-    {
-      field: "license",
-      headerName: "License",
-      width: 170,
-      dataType: "string",
-    },
-    {
-      field: "state",
-      headerName: "State",
-      width: 120,
-      dataType: "string",
-    },
-    {
-      field: "status",
-      headerName: "Status",
-      width: 170,
-      dataType: "string",
-    },
-    {
-      field: "paymentIndicator",
-      headerName: "Payment Indicator",
-      width: 170,
-      dataType: "string",
-    },
-    {
-      field: "issueDate",
-      headerName: "Issue Date",
-      width: 120,
-      dataType: "date",
-    },
-    {
-      field: "expirationDate",
-      headerName: "Exp. Date",
-      width: 120,
-      dataType: "date",
-    },
-    {
-      field: "expiresWithin",
-      headerName: "Expires Within",
-      width: 160,
-      dataType: "string",
-    },
-    commonColumns.tags,
-    commonColumns.lastUpdated,
-  ],
-
-  "state-controlled-substance-licenses": [
-    ...baseColumns,
-    {
-      field: "licenseType",
-      headerName: "License Type",
-      width: 155,
-      dataType: "string",
-    },
-    {
-      field: "license",
-      headerName: "License",
-      width: 170,
-      dataType: "string",
-    },
-    {
-      field: "state",
-      headerName: "State",
-      width: 120,
-      dataType: "string",
-    },
-    {
-      field: "status",
-      headerName: "Status",
-      width: 170,
-      dataType: "string",
-    },
-    {
-      field: "issueDate",
-      headerName: "Issue Date",
-      width: 120,
-      dataType: "date",
-    },
-    {
-      field: "expirationDate",
-      headerName: "Exp. Date",
-      width: 120,
-      dataType: "date",
-    },
-    {
-      field: "expiresWithin",
-      headerName: "Expires Within",
-      width: 160,
-      dataType: "string",
-    },
-    commonColumns.tags,
-    commonColumns.lastUpdated,
-  ],
-
-  "education-training": [
-    ...baseColumns,
-    {
-      field: "educationType",
-      headerName: "Education Type",
-      width: 175,
-      dataType: "string",
-    },
-    {
-      field: "schoolInstitution",
-      headerName: "School/Institution",
-      width: 280,
-      dataType: "string",
-    },
-    {
-      field: "degree",
-      headerName: "Degree",
-      width: 120,
-      dataType: "string",
-    },
-    {
-      field: "specialtyMajor",
-      headerName: "Specialty/Major",
-      width: 220,
-      dataType: "string",
-    },
-    {
-      field: "startDate",
-      headerName: "Start Date",
-      width: 120,
-      dataType: "date",
-    },
-    {
-      field: "endDate",
-      headerName: "End Date",
-      width: 120,
-      dataType: "date",
-    },
-    {
-      field: "completed",
-      headerName: "Completed?",
-      width: 140,
-      dataType: "string",
-    },
-    commonColumns.tags,
-    commonColumns.lastUpdated,
-  ],
-};
-
-// Convert column configs to AG Grid column definitions
-export function convertToAgGridColumns(configs: ColumnConfig[]): ColDef[] {
-  return configs.map((config) => {
-    const colDef: ColDef = {
-      headerName: config.headerName,
-      width: config.width || 150,
-    };
-
-    if (config.valueGetter) {
-      colDef.valueGetter = config.valueGetter;
-    } else {
-      colDef.field = config.field;
-    }
-
-    if (config.valueFormatter) {
-      colDef.valueFormatter = config.valueFormatter;
-    }
-
-    return colDef;
-  });
-}
-
-// Get columns for a specific grid
-export function getColumnsForGrid(gridKey: string): ColDef[] {
-  const configs = gridColumnConfigs[gridKey];
-  if (!configs) {
-    // Fallback to provider-info if grid not found
-    return convertToAgGridColumns(gridColumnConfigs["provider-info"]);
-  }
-  return convertToAgGridColumns(configs);
-}
-
-// Export for backward compatibility
-export const standardColumns = getColumnsForGrid("provider-info");
-export const birthInfoColumns = getColumnsForGrid("birth-info");
+];

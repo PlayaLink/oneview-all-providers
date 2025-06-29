@@ -4,6 +4,7 @@ import {
   ColDef,
   SelectionChangedEvent,
   RowClickedEvent,
+  RowDoubleClickedEvent,
 } from "ag-grid-community";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
@@ -36,6 +37,8 @@ const DataGrid: React.FC<DataGridProps> = ({
   showCheckboxes = true,
   showStatusBadges = true,
 }) => {
+  const [selectedRowId, setSelectedRowId] = React.useState<string | null>(null);
+
   // Prepare column definitions with optional checkbox column
   const columnDefs: ColDef[] = [
     ...(showCheckboxes
@@ -58,27 +61,100 @@ const DataGrid: React.FC<DataGridProps> = ({
       : []),
     ...columns.map((col) => ({
       ...col,
-      cellStyle: {
-        color: "#545454",
-        fontSize: "12px",
-        display: "flex",
-        alignItems: "center",
-        paddingLeft: "16px",
-        ...col.cellStyle,
+      cellStyle: (params: any) => {
+        const baseCellStyle = {
+          color: "#545454",
+          fontSize: "12px",
+          display: "flex",
+          alignItems: "center",
+          paddingLeft: "16px",
+          borderRight: "none",
+          ...col.cellStyle,
+        };
+
+        // Check if this is row selection (not checkbox selection)
+        const isRowSelected = selectedRowId === params.data.id;
+        
+        if (isRowSelected) {
+          // White text for row selection
+          return {
+            ...baseCellStyle,
+            color: "white",
+          };
+        }
+
+        return baseCellStyle;
       },
     })),
   ];
+
+  const handleRowClicked = (event: RowClickedEvent) => {
+    // Prevent cell focus on single click
+    event.api.setFocusedCell(null, null);
+    
+    // Always set row selection on row click
+    setSelectedRowId(event.data.id);
+    
+    // Call onRowClicked callback
+    if (onRowClicked && event.data) {
+      onRowClicked(event.data);
+    }
+  };
 
   const handleSelectionChanged = (event: SelectionChangedEvent) => {
     if (onSelectionChanged) {
       onSelectionChanged(event);
     }
-    if (onRowClicked) {
-      const selectedRows = event.api.getSelectedRows();
-      if (selectedRows.length > 0) {
-        onRowClicked(selectedRows[0]);
-      }
+    // When checkbox selection changes, clear row selection
+    setSelectedRowId(null);
+  };
+
+  const handleRowDoubleClicked = (event: RowDoubleClickedEvent) => {
+    // Allow cell focus only on double click
+    // This will let AG Grid handle cell focus naturally
+  };
+
+  const getRowStyle = (params: any) => {
+    const baseStyle = {
+      borderBottom: "0.5px solid #D2D5DC",
+      backgroundColor: "white",
+    };
+
+    // Check if this is row selection (not checkbox selection)
+    const isRowSelected = selectedRowId === params.data.id;
+    
+    if (isRowSelected) {
+      // Dark blue background for row selection (same as horizontal nav)
+      return {
+        ...baseStyle,
+        backgroundColor: "#008BC9",
+      };
     }
+
+    // Check if this is checkbox selection
+    if (params.node.isSelected()) {
+      // Light blue background for checkbox selection
+      return {
+        ...baseStyle,
+        backgroundColor: "#E3F2FD",
+      };
+    }
+
+    return baseStyle;
+  };
+
+  const getRowClass = (params: any) => {
+    // Check if this is checkbox selection
+    if (params.node.isSelected()) {
+      return 'checkbox-selected';
+    }
+    
+    // Check if this is row selection
+    if (selectedRowId === params.data.id) {
+      return 'row-selected';
+    }
+    
+    return '';
   };
 
   return (
@@ -136,27 +212,20 @@ const DataGrid: React.FC<DataGridProps> = ({
           rowData={data}
           columnDefs={columnDefs}
           onSelectionChanged={handleSelectionChanged}
-          onRowClicked={(event: RowClickedEvent) => {
-            if (onRowClicked && event.data) {
-              onRowClicked(event.data);
-            }
-          }}
+          onRowClicked={handleRowClicked}
+          onRowDoubleClicked={handleRowDoubleClicked}
           rowSelection={showCheckboxes ? "multiple" : "single"}
           headerHeight={40}
           rowHeight={42}
-          suppressRowClickSelection={showCheckboxes}
+          suppressRowClickSelection={true}
+          suppressCellFocus={true}
           domLayout="normal"
-          getRowStyle={() => ({
-            borderBottom: "0.5px solid #D2D5DC",
-            backgroundColor: "white",
-          })}
+          getRowStyle={getRowStyle}
+          getRowClass={getRowClass}
           defaultColDef={{
             resizable: true,
             sortable: true,
             filter: true,
-            cellStyle: {
-              borderRight: "none",
-            },
           }}
           suppressColumnVirtualisation={false}
           icons={{

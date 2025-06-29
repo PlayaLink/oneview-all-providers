@@ -90,12 +90,43 @@
   padding: 0 16px !important;
 }
 
+/* Custom row selection styling */
 .ag-grid-custom .ag-row-selected {
-  background-color: rgb(229, 246, 253) !important;
+  background-color: #008BC9 !important;
 }
 
 .ag-grid-custom .ag-row-selected:hover {
-  background-color: rgb(219, 234, 254) !important;
+  background-color: #0077B3 !important;
+}
+
+/* Checkbox selection styling (light blue) */
+.ag-grid-custom .ag-row-selected.checkbox-selected {
+  background-color: #E3F2FD !important;
+}
+
+.ag-grid-custom .ag-row-selected.checkbox-selected:hover {
+  background-color: #BBDEFB !important;
+}
+
+/* Row selection styling (dark blue) */
+.ag-grid-custom .ag-row-selected.row-selected {
+  background-color: #008BC9 !important;
+}
+
+.ag-grid-custom .ag-row-selected.row-selected:hover {
+  background-color: #0077B3 !important;
+}
+
+/* White text for row selection (not checkbox selection) */
+.ag-grid-custom .ag-row-selected .ag-cell {
+  color: white !important;
+  /* Uncomment the line below if you need better accessibility with font-weight */
+  /* font-weight: 600 !important; */
+}
+
+/* Keep original text color for checkbox selection */
+.ag-grid-custom .ag-row-selected.checkbox-selected .ag-cell {
+  color: #545454 !important;
 }
 
 /* Remove right border from checkbox column */
