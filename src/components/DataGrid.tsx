@@ -24,6 +24,7 @@ interface DataGridProps {
   height?: string;
   showCheckboxes?: boolean;
   showStatusBadges?: boolean;
+  selectedRowId?: string | null;
 }
 
 const DataGrid: React.FC<DataGridProps> = ({
@@ -36,8 +37,10 @@ const DataGrid: React.FC<DataGridProps> = ({
   height = "400px",
   showCheckboxes = true,
   showStatusBadges = true,
+  selectedRowId: controlledSelectedRowId,
 }) => {
-  const [selectedRowId, setSelectedRowId] = React.useState<string | null>(null);
+  const [internalSelectedRowId, setInternalSelectedRowId] = React.useState<string | null>(null);
+  const selectedRowId = controlledSelectedRowId !== undefined ? controlledSelectedRowId : internalSelectedRowId;
 
   // Prepare column definitions with optional checkbox column
   const columnDefs: ColDef[] = [
@@ -93,7 +96,9 @@ const DataGrid: React.FC<DataGridProps> = ({
     event.api.setFocusedCell(null, null);
     
     // Always set row selection on row click
-    setSelectedRowId(event.data.id);
+    if (controlledSelectedRowId === undefined) {
+      setInternalSelectedRowId(event.data.id);
+    }
     
     // Call onRowClicked callback
     if (onRowClicked && event.data) {
@@ -106,7 +111,9 @@ const DataGrid: React.FC<DataGridProps> = ({
       onSelectionChanged(event);
     }
     // When checkbox selection changes, clear row selection
-    setSelectedRowId(null);
+    if (controlledSelectedRowId === undefined) {
+      setInternalSelectedRowId(null);
+    }
   };
 
   const handleRowDoubleClicked = (event: RowDoubleClickedEvent) => {
@@ -158,7 +165,7 @@ const DataGrid: React.FC<DataGridProps> = ({
   };
 
   return (
-    <div className="bg-white flex flex-col h-full min-h-0">
+    <div className="bg-white flex flex-col flex-1 min-h-0">
       {/* Grid Header */}
       <div className="flex items-center justify-between px-2 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 rounded overflow-hidden">
         <div className="flex items-center gap-2">
@@ -197,16 +204,7 @@ const DataGrid: React.FC<DataGridProps> = ({
       {/* AG Grid Container */}
       <div
         className="ag-theme-alpine ag-grid-custom flex-1 min-h-0"
-        style={
-          {
-            ...(height === "100%"
-              ? { flexGrow: 1, height: "auto", minHeight: 0 }
-              : { height }),
-            width: "100%",
-            border: "none",
-            borderWidth: "0px",
-          } as React.CSSProperties
-        }
+        style={{ width: "100%", border: "none", borderWidth: "0px", ...(height !== "100%" ? { height } : {}) } as React.CSSProperties}
       >
         <AgGridReact
           rowData={data}

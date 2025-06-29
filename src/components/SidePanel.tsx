@@ -210,9 +210,10 @@ interface SidePanelProps {
   isOpen: boolean;
   provider: Provider | null;
   onClose: () => void;
+  title?: string;
 }
 
-const SidePanel: React.FC<SidePanelProps> = ({ isOpen, provider, onClose }) => {
+const SidePanel: React.FC<SidePanelProps> = ({ isOpen, provider, onClose, title }) => {
   if (!provider) return null;
 
   return (
@@ -233,11 +234,13 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, provider, onClose }) => {
         <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-[#008BC9] text-white">
           <div className="flex-1">
             <h2 className="text-lg font-semibold">
-              {provider.lastName}, {provider.firstName}
+              {title ? title : `${provider.firstName} ${provider.lastName}`}
             </h2>
-            <p className="text-sm opacity-90">
-              {provider.title} - {provider.primarySpecialty}
-            </p>
+            {!title && (
+              <p className="text-sm opacity-90">
+                {provider.title} - {provider.primarySpecialty}
+              </p>
+            )}
           </div>
           <button
             onClick={onClose}

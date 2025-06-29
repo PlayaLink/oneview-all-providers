@@ -49,6 +49,15 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Initialize search value when on provider detail route
+  React.useEffect(() => {
+    if (npi && providerInfo) {
+      setSearch(providerInfo.fullName);
+    } else {
+      setSearch("");
+    }
+  }, [npi, providerInfo]);
+
   // Filter providers by name or NPI
   const filteredProviders = search.trim()
     ? providerSearchList.filter((p) =>
@@ -58,14 +67,12 @@ const PageHeader: React.FC<PageHeaderProps> = ({
     : [];
 
   const handleSelect = (provider: ProviderSearchItem) => {
-    console.log('PageHeader: handleSelect called with NPI', provider.npi);
     setSearch(provider.fullName);
     setDropdownOpen(false);
     if (onProviderSelect) onProviderSelect(provider.npi);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('PageHeader: handleInputChange', e.target.value);
     setSearch(e.target.value);
     setDropdownOpen(true);
   };
@@ -152,7 +159,6 @@ const PageHeader: React.FC<PageHeaderProps> = ({
             {dropdownOpen && filteredProviders.length > 0 && (
               <div className="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded shadow-lg z-50 max-h-60 overflow-y-auto">
                 {filteredProviders.map((provider) => {
-                  console.log('PageHeader: rendering provider in dropdown', provider);
                   return (
                     <div
                       key={provider.npi}

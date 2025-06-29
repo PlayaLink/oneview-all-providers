@@ -38,10 +38,30 @@ const MainLayout: React.FC = () => {
     new Set(),
   );
 
-  // Generate provider search list from the Provider Info grid
-  const providerInfoGrid = gridDefinitions.find(g => g.tableName === "Provider_Info");
-  const providerRows = providerInfoGrid ? generateSampleData(providerInfoGrid.tableName, 15) : [];
-  const providerSearchList = providerRows.map(row => ({
+  // --- Per-grid row selection state ---
+  const [selectedRowsByGrid, setSelectedRowsByGrid] = useState<{ [gridName: string]: string | null }>({});
+  const [selectedProviderByGrid, setSelectedProviderByGrid] = useState<{ [gridName: string]: any | null }>({});
+  
+  // --- Side panel state ---
+  const [sidePanelOpen, setSidePanelOpen] = useState(false);
+  const [activePanelGridName, setActivePanelGridName] = useState<string | null>(null);
+
+  // Generate provider search list from all grids
+  const allProviderRows: any[] = [];
+  
+  // Collect providers from all grids
+  gridDefinitions.forEach(grid => {
+    const gridRows = generateSampleData(grid.tableName, 15);
+    gridRows.forEach(row => {
+      // Only add if this provider isn't already in the list (by NPI)
+      const existingProvider = allProviderRows.find(p => p.npi_number === row.npi_number);
+      if (!existingProvider && row.npi_number) {
+        allProviderRows.push(row);
+      }
+    });
+  });
+  
+  const providerSearchList = allProviderRows.map(row => ({
     fullName: row.provider_name || `${row.first_name || ""} ${row.last_name || ""}`.trim(),
     title: row.title || "",
     npi: row.npi_number || "",
@@ -132,8 +152,34 @@ const MainLayout: React.FC = () => {
 
   // Handler for provider search selection (to be used in PageHeader)
   const handleProviderSelect = (providerNpi: string) => {
-    console.log('MainLayout: handleProviderSelect called with NPI', providerNpi);
     navigate(`/${providerNpi}`);
+  };
+
+  // Handler to update selected row for a grid
+  const handleGridRowSelect = (gridName: string, rowId: string | null, provider: any | null) => {
+    setSelectedRowsByGrid(prev => ({ ...prev, [gridName]: rowId }));
+    setSelectedProviderByGrid(prev => ({ ...prev, [gridName]: provider }));
+    
+    // Set the active panel grid and open the side panel
+    if (rowId && provider) {
+      setActivePanelGridName(gridName);
+      setSidePanelOpen(true);
+    } else {
+      setActivePanelGridName(null);
+      setSidePanelOpen(false);
+    }
+  };
+
+  // Handler to clear selected row for a grid
+  const handleClearGridRowSelect = (gridName: string) => {
+    setSelectedRowsByGrid(prev => ({ ...prev, [gridName]: null }));
+    setSelectedProviderByGrid(prev => ({ ...prev, [gridName]: null }));
+  };
+
+  // Handler to close the side panel
+  const handleCloseSidePanel = () => {
+    setSidePanelOpen(false);
+    setActivePanelGridName(null);
   };
 
   return (
@@ -353,7 +399,7 @@ const MainLayout: React.FC = () => {
           buttonText="Add Provider"
           buttonIcon={faUserPlus}
           onButtonClick={() => {
-            console.log("Add Provider clicked");
+            // Add Provider functionality
           }}
         />
       </div>
@@ -366,6 +412,14 @@ const MainLayout: React.FC = () => {
             <MainContent
               singleProviderNpi={npi}
               // ...pass other props as needed...
+              selectedRowsByGrid={selectedRowsByGrid}
+              selectedProviderByGrid={selectedProviderByGrid}
+              onGridRowSelect={handleGridRowSelect}
+              onClearGridRowSelect={handleClearGridRowSelect}
+              sidePanelOpen={sidePanelOpen}
+              setSidePanelOpen={setSidePanelOpen}
+              activePanelGridName={activePanelGridName}
+              onCloseSidePanel={handleCloseSidePanel}
             />
           </div>
         ) : gridSectionMode === "left-nav" ? (
@@ -414,6 +468,14 @@ const MainLayout: React.FC = () => {
                 selectedItem={selectedItem}
                 selectedSection={selectedSection}
                 visibleSections={visibleSections}
+                selectedRowsByGrid={selectedRowsByGrid}
+                selectedProviderByGrid={selectedProviderByGrid}
+                onGridRowSelect={handleGridRowSelect}
+                onClearGridRowSelect={handleClearGridRowSelect}
+                sidePanelOpen={sidePanelOpen}
+                setSidePanelOpen={setSidePanelOpen}
+                activePanelGridName={activePanelGridName}
+                onCloseSidePanel={handleCloseSidePanel}
               />
             </div>
           </div>
@@ -431,6 +493,14 @@ const MainLayout: React.FC = () => {
                 selectedItem={selectedItem}
                 selectedSection={selectedSection}
                 visibleSections={visibleSections}
+                selectedRowsByGrid={selectedRowsByGrid}
+                selectedProviderByGrid={selectedProviderByGrid}
+                onGridRowSelect={handleGridRowSelect}
+                onClearGridRowSelect={handleClearGridRowSelect}
+                sidePanelOpen={sidePanelOpen}
+                setSidePanelOpen={setSidePanelOpen}
+                activePanelGridName={activePanelGridName}
+                onCloseSidePanel={handleCloseSidePanel}
               />
             </div>
           </div>

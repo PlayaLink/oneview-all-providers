@@ -14,6 +14,14 @@ interface MainContentProps {
   selectedSection?: string | null;
   visibleSections?: Set<string>;
   singleProviderNpi?: string;
+  selectedRowsByGrid?: { [gridName: string]: string | null };
+  selectedProviderByGrid?: { [gridName: string]: any | null };
+  onGridRowSelect?: (gridName: string, rowId: string | null, provider: any | null) => void;
+  onClearGridRowSelect?: (gridName: string) => void;
+  sidePanelOpen?: boolean;
+  setSidePanelOpen?: (open: boolean) => void;
+  activePanelGridName?: string | null;
+  onCloseSidePanel?: () => void;
 }
 
 const MainContent: React.FC<MainContentProps> = ({
@@ -21,12 +29,17 @@ const MainContent: React.FC<MainContentProps> = ({
   selectedSection,
   visibleSections = new Set(),
   singleProviderNpi,
+  selectedRowsByGrid = {},
+  selectedProviderByGrid = {},
+  onGridRowSelect,
+  onClearGridRowSelect,
+  sidePanelOpen = false,
+  setSidePanelOpen,
+  activePanelGridName,
+  onCloseSidePanel,
 }) => {
   const [currentGridIndex, setCurrentGridIndex] = useState(0);
-  const [selectedProvider, setSelectedProvider] = useState<Provider | null>(
-    null,
-  );
-  const [sidePanelOpen, setSidePanelOpen] = useState(false);
+  const [selectedGridName, setSelectedGridName] = useState<string | null>(null);
 
   // Function to get grids based on selection and filtered sections
   const getGridsToShow = () => {
@@ -106,27 +119,41 @@ const MainContent: React.FC<MainContentProps> = ({
     );
   };
 
-  const handleProviderSelect = (data: any) => {
-    // Convert grid data to Provider format for SidePanel
-    const provider: Provider = {
-      id: data.id,
-      firstName: data.provider_name?.split(', ')[1] || data.first_name || 'Unknown',
-      lastName: data.provider_name?.split(', ')[0] || data.last_name || 'Unknown',
-      title: data.title || 'Unknown',
-      primarySpecialty: data.primary_specialty || 'Unknown',
-      npiNumber: data.npi_number || 'Unknown',
-      workEmail: data.work_email || 'Unknown',
-      personalEmail: data.personal_email || 'Unknown',
-      mobilePhone: data.mobile_phone_number || 'Unknown',
-      tags: data.tags ? [data.tags] : [],
-      lastUpdated: data.last_updated || 'Unknown',
-    };
-    setSelectedProvider(provider);
-    setSidePanelOpen(true);
+  // Handler for row click in main (All Providers) view
+  const handleProviderSelect = (row: any) => {
+    if (!currentGrid || !onGridRowSelect) return;
+    const gridName = currentGrid.tableName;
+    // If clicking the already selected row, unselect and close side panel
+    if (selectedRowsByGrid[gridName] === row.id) {
+      onGridRowSelect(gridName, null, null);
+      setSidePanelOpen(false);
+      setSelectedGridName(null);
+    } else {
+      // Clear any previous selections from other grids first
+      Object.keys(selectedRowsByGrid).forEach(existingGridName => {
+        if (existingGridName !== gridName && selectedRowsByGrid[existingGridName]) {
+          onGridRowSelect(existingGridName, null, null);
+        }
+      });
+      
+      onGridRowSelect(gridName, row.id, row);
+      setSelectedGridName(gridName.replace(/_/g, " "));
+      setSidePanelOpen(true);
+    }
   };
 
+  // Handler to close side panel
   const handleSidePanelClose = () => {
-    setSidePanelOpen(false);
+    if (onCloseSidePanel) {
+      onCloseSidePanel();
+    } else {
+      setSidePanelOpen(false);
+      setSelectedGridName(null);
+      // Clear selection for the current grid only
+      if (currentGrid && onClearGridRowSelect) {
+        onClearGridRowSelect(currentGrid.tableName);
+      }
+    }
   };
 
   if (singleProviderNpi) {
@@ -155,17 +182,40 @@ const MainContent: React.FC<MainContentProps> = ({
       return row;
     }
 
+    // Handler for row click in single-provider view
+    const handleSingleProviderRowClick = (row: any) => {
+      if (!onGridRowSelect) return;
+      
+      const gridName = row._gridTableName;
+      const currentSelectedRowId = selectedRowsByGrid[gridName];
+      
+      if (currentSelectedRowId === row.id) {
+        // Unselect and close side panel if clicking the already selected row
+        onGridRowSelect(gridName, null, null);
+        if (onCloseSidePanel) {
+          onCloseSidePanel();
+        }
+      } else {
+        // Clear any previous selections from other grids first
+        Object.keys(selectedRowsByGrid).forEach(existingGridName => {
+          if (existingGridName !== gridName && selectedRowsByGrid[existingGridName]) {
+            onGridRowSelect(existingGridName, null, null);
+          }
+        });
+        
+        // Select the new row and open side panel
+        onGridRowSelect(gridName, row.id, row);
+      }
+    };
+
     return (
-      <div className="w-full px-4 pt-4 pb-8" style={{ overflowY: 'auto', maxHeight: '100vh' }}>
+      <div className="flex flex-col flex-1 min-h-0 w-full px-4 pt-4 pb-8">
         {gridsToShow.map((grid) => {
           const row = synthesizeRowForGrid(grid);
+          // Attach grid name to row for side panel title
+          row._gridName = grid.tableName.replace(/_/g, " ");
+          row._gridTableName = grid.tableName;
           const columns = getColumnsForGrid(grid.tableName);
-          
-          // Debug logging to help identify issues
-          console.log('MainContent: rendering grid', grid.tableName);
-          console.log('  - Columns:', columns.map(col => col.field));
-          console.log('  - Row data:', row);
-          console.log('  - Row keys:', Object.keys(row));
           
           // Check for missing columns in row data
           const missingColumns = columns
@@ -175,18 +225,36 @@ const MainContent: React.FC<MainContentProps> = ({
             console.warn('  - Missing columns in row data:', missingColumns);
           }
           
+          // Get the selected row ID for this grid
+          const gridSelectedRowId = selectedRowsByGrid[grid.tableName];
+          
           return (
-            <div key={grid.tableName} className="mb-8 bg-white rounded shadow border border-gray-100">
+            <div key={grid.tableName} className="flex flex-col mb-8 bg-white rounded shadow" style={{ height: 122 }}>
               <DataGrid
                 title={grid.tableName.replace(/_/g, " ")}
                 icon={getIconByName(grid.icon)}
                 data={[row]}
                 columns={columns}
-                onRowClicked={handleProviderSelect}
+                onRowClicked={handleSingleProviderRowClick}
+                showCheckboxes={false}
+                selectedRowId={gridSelectedRowId}
               />
             </div>
           );
         })}
+        {/* Side Panel for single-provider view */}
+        {sidePanelOpen && activePanelGridName && selectedProviderByGrid[activePanelGridName] && (
+          <SidePanel
+            isOpen={sidePanelOpen}
+            provider={selectedProviderByGrid[activePanelGridName]}
+            onClose={handleSidePanelClose}
+            title={
+              activePanelGridName && selectedProviderByGrid[activePanelGridName]?.provider_name
+                ? `${activePanelGridName.replace(/_/g, " ")} for ${selectedProviderByGrid[activePanelGridName].provider_name}${selectedProviderByGrid[activePanelGridName].title ? ", " + selectedProviderByGrid[activePanelGridName].title : ""}`
+                : undefined
+            }
+          />
+        )}
       </div>
     );
   }
@@ -200,6 +268,12 @@ const MainContent: React.FC<MainContentProps> = ({
   }
 
   const currentGrid = gridsToShow[currentGridIndex];
+  const currentGridName = currentGrid ? currentGrid.tableName : null;
+  
+  // Use active panel grid for side panel data, fallback to current grid
+  const activeGridName = activePanelGridName || currentGridName;
+  const selectedRowId = activeGridName ? selectedRowsByGrid[activeGridName] : null;
+  const selectedProvider = activeGridName ? selectedProviderByGrid[activeGridName] : null;
 
   if (!currentGrid) {
     return (
@@ -222,6 +296,7 @@ const MainContent: React.FC<MainContentProps> = ({
             columns={getColumnsForGrid(currentGrid.tableName)}
             height="100%"
             onRowClicked={handleProviderSelect}
+            selectedRowId={selectedRowId}
           />
         </div>
 
@@ -284,6 +359,11 @@ const MainContent: React.FC<MainContentProps> = ({
         isOpen={sidePanelOpen}
         provider={selectedProvider}
         onClose={handleSidePanelClose}
+        title={
+          selectedProvider && activeGridName && selectedProvider.provider_name
+            ? `${activeGridName.replace(/_/g, " ")} for ${selectedProvider.provider_name}${selectedProvider.title ? ", " + selectedProvider.title : ""}`
+            : undefined
+        }
       />
     </div>
   );

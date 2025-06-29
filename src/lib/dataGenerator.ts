@@ -74,7 +74,7 @@ export const generateSampleData = (gridKey: string, count: number = 10): any[] =
     const baseSeed = gridKey.length + i * 1000;
     const provider = getDeterministicItem(sampleData.providers, baseSeed);
     const row: any = {
-      id: (i + 1).toString(),
+      id: `${gridKey}-${i + 1}`,
     };
 
     // Generate data for each column based on the column name
@@ -82,7 +82,7 @@ export const generateSampleData = (gridKey: string, count: number = 10): any[] =
       const columnSeed = baseSeed + colIndex * 100;
       switch (columnName) {
         case "provider_name":
-          row[columnName] = `${provider.lastName}, ${provider.firstName}`;
+          row[columnName] = `${provider.firstName} ${provider.lastName}`;
           break;
         case "title":
           row[columnName] = provider.title;
