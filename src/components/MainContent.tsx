@@ -10,15 +10,17 @@ import { getIconByName } from "@/lib/iconMapping";
 import { Provider } from "@/types";
 
 interface MainContentProps {
-  selectedItem: string | null;
-  selectedSection: string | null;
+  selectedItem?: string | null;
+  selectedSection?: string | null;
   visibleSections?: Set<string>;
+  singleProviderNpi?: string;
 }
 
 const MainContent: React.FC<MainContentProps> = ({
   selectedItem,
   selectedSection,
   visibleSections = new Set(),
+  singleProviderNpi,
 }) => {
   const [currentGridIndex, setCurrentGridIndex] = useState(0);
   const [selectedProvider, setSelectedProvider] = useState<Provider | null>(
@@ -28,6 +30,10 @@ const MainContent: React.FC<MainContentProps> = ({
 
   // Function to get grids based on selection and filtered sections
   const getGridsToShow = () => {
+    if (singleProviderNpi) {
+      // Show all grids in single-provider view
+      return gridDefinitions;
+    }
     if (selectedItem && selectedItem !== "all-sections") {
       // Show single grid - only if it's in visible sections or no filtering
       const grid = gridDefinitions.find((g) => g.tableName === selectedItem);
@@ -39,7 +45,6 @@ const MainContent: React.FC<MainContentProps> = ({
       }
       return [];
     }
-
     if (selectedSection) {
       // Show grids in section, filtered by visible sections
       const sectionGrids = getGridsByGroup(selectedSection);
@@ -49,7 +54,6 @@ const MainContent: React.FC<MainContentProps> = ({
       // Filter grids based on visible sections
       return sectionGrids.filter((grid) => visibleSections.has(grid.tableName));
     }
-
     if (selectedItem === "all-sections") {
       // Show all grids, filtered by visible sections
       if (visibleSections.size === 0) {
@@ -59,7 +63,6 @@ const MainContent: React.FC<MainContentProps> = ({
         visibleSections.has(grid.tableName),
       );
     }
-
     // Default: show Provider Info if no filtering or provider info is visible
     if (visibleSections.size === 0 || visibleSections.has("Provider_Info")) {
       const defaultGrid = gridDefinitions.find(
@@ -67,7 +70,6 @@ const MainContent: React.FC<MainContentProps> = ({
       );
       return defaultGrid ? [defaultGrid] : [];
     }
-
     return [];
   };
 
@@ -78,10 +80,14 @@ const MainContent: React.FC<MainContentProps> = ({
   const gridData = useMemo(() => {
     const data: Record<string, any[]> = {};
     gridsToShow.forEach(grid => {
-      data[grid.tableName] = generateSampleData(grid.tableName, 15);
+      let rows = generateSampleData(grid.tableName, 15);
+      if (singleProviderNpi) {
+        rows = rows.filter(row => String(row.npi_number) === String(singleProviderNpi));
+      }
+      data[grid.tableName] = rows;
     });
     return data;
-  }, [gridsToShow]);
+  }, [gridsToShow, singleProviderNpi]);
 
   // Function to get appropriate data based on grid type
   const getDataForGrid = (gridKey: string) => {
@@ -122,6 +128,68 @@ const MainContent: React.FC<MainContentProps> = ({
   const handleSidePanelClose = () => {
     setSidePanelOpen(false);
   };
+
+  if (singleProviderNpi) {
+    // Find the selected provider's info from Provider Info grid
+    const providerInfoGrid = gridDefinitions.find(g => g.tableName === "Provider_Info");
+    const providerRows = providerInfoGrid ? generateSampleData(providerInfoGrid.tableName, 15) : [];
+    const selectedProvider = providerRows.find(row => String(row.npi_number) === String(singleProviderNpi));
+
+    // Helper to synthesize a row for any grid, matching the selected provider's info
+    function synthesizeRowForGrid(grid: typeof gridDefinitions[number]) {
+      const row = generateSampleData(grid.tableName, 1)[0] || {};
+      if (selectedProvider) {
+        // Copy over key provider fields
+        row.provider_name = selectedProvider.provider_name;
+        row.npi_number = selectedProvider.npi_number;
+        row.primary_specialty = selectedProvider.primary_specialty;
+        row.title = selectedProvider.title;
+        row.first_name = selectedProvider.first_name;
+        row.last_name = selectedProvider.last_name;
+        row.work_email = selectedProvider.work_email;
+        row.personal_email = selectedProvider.personal_email;
+        row.mobile_phone_number = selectedProvider.mobile_phone_number;
+      }
+      // Ensure unique ID for each grid to prevent AG Grid issues
+      row.id = `${grid.tableName}-1`;
+      return row;
+    }
+
+    return (
+      <div className="w-full px-4 pt-4 pb-8" style={{ overflowY: 'auto', maxHeight: '100vh' }}>
+        {gridsToShow.map((grid) => {
+          const row = synthesizeRowForGrid(grid);
+          const columns = getColumnsForGrid(grid.tableName);
+          
+          // Debug logging to help identify issues
+          console.log('MainContent: rendering grid', grid.tableName);
+          console.log('  - Columns:', columns.map(col => col.field));
+          console.log('  - Row data:', row);
+          console.log('  - Row keys:', Object.keys(row));
+          
+          // Check for missing columns in row data
+          const missingColumns = columns
+            .map(col => col.field)
+            .filter(field => !(field in row));
+          if (missingColumns.length > 0) {
+            console.warn('  - Missing columns in row data:', missingColumns);
+          }
+          
+          return (
+            <div key={grid.tableName} className="mb-8 bg-white rounded shadow border border-gray-100">
+              <DataGrid
+                title={grid.tableName.replace(/_/g, " ")}
+                icon={getIconByName(grid.icon)}
+                data={[row]}
+                columns={columns}
+                onRowClicked={handleProviderSelect}
+              />
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
 
   if (gridsToShow.length === 0) {
     return (

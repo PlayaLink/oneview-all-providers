@@ -15,8 +15,13 @@ import PageHeader from "@/components/PageHeader";
 import MainContent from "@/components/MainContent";
 import SettingsDropdown from "@/components/SettingsDropdown";
 import { getGroups } from "@/lib/gridDefinitions";
+import { useParams, useNavigate } from "react-router-dom";
+import { generateSampleData } from "@/lib/dataGenerator";
+import { gridDefinitions } from "@/lib/gridDefinitions";
 
 const MainLayout: React.FC = () => {
+  const { npi } = useParams<{ npi?: string }>();
+  const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string | null>(
     null,
@@ -32,6 +37,22 @@ const MainLayout: React.FC = () => {
   const [visibleSections, setVisibleSections] = useState<Set<string>>(
     new Set(),
   );
+
+  // Generate provider search list from the Provider Info grid
+  const providerInfoGrid = gridDefinitions.find(g => g.tableName === "Provider_Info");
+  const providerRows = providerInfoGrid ? generateSampleData(providerInfoGrid.tableName, 15) : [];
+  const providerSearchList = providerRows.map(row => ({
+    fullName: row.provider_name || `${row.first_name || ""} ${row.last_name || ""}`.trim(),
+    title: row.title || "",
+    npi: row.npi_number || "",
+    specialty: row.primary_specialty || "",
+    email: row.work_email || row.personal_email || "",
+  }));
+
+  // Find selected provider info for single-provider view
+  const selectedProviderInfo = npi
+    ? providerSearchList.find(p => String(p.npi) === String(npi))
+    : undefined;
 
   // Ensure a section is always selected, defaulting to "Provider Info"
   useEffect(() => {
@@ -107,6 +128,12 @@ const MainLayout: React.FC = () => {
       setSelectedSection(section);
       setSelectedItem(null);
     }
+  };
+
+  // Handler for provider search selection (to be used in PageHeader)
+  const handleProviderSelect = (providerNpi: string) => {
+    console.log('MainLayout: handleProviderSelect called with NPI', providerNpi);
+    navigate(`/${providerNpi}`);
   };
 
   return (
@@ -317,7 +344,11 @@ const MainLayout: React.FC = () => {
 
         {/* Page Header */}
         <PageHeader
-          title="All Providers"
+          title={npi ? undefined : "All Providers"}
+          npi={npi}
+          providerInfo={selectedProviderInfo}
+          onProviderSelect={handleProviderSelect}
+          providerSearchList={providerSearchList}
           icon={faUsers}
           buttonText="Add Provider"
           buttonIcon={faUserPlus}
@@ -329,7 +360,15 @@ const MainLayout: React.FC = () => {
 
       {/* Main Content */}
       <div className="flex flex-1 border-t border-gray-300">
-        {gridSectionMode === "left-nav" ? (
+        {npi ? (
+          // Single-provider view: no nav, all grids, filter by NPI
+          <div className="flex-1 flex flex-col min-h-0">
+            <MainContent
+              singleProviderNpi={npi}
+              // ...pass other props as needed...
+            />
+          </div>
+        ) : gridSectionMode === "left-nav" ? (
           /* Left Navigation Layout */
           <div className="flex flex-1">
             {/* Left Sidebar */}
