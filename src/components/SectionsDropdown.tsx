@@ -89,6 +89,11 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
     filteredGroups.slice(i * groupsPerCol, (i + 1) * groupsPerCol)
   );
 
+  // Compute checked grids for pills
+  const checkedGrids = useMemo(() => {
+    return gridDefinitions.filter(grid => visibleSections.has(grid.tableName));
+  }, [visibleSections]);
+
   // Popper.js positioning
   useEffect(() => {
     if (isOpen && buttonRef.current && menuRef.current) {
@@ -134,12 +139,35 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
     >
       {/* Search and Clear */}
       <div className="flex items-center mb-4">
-        <input
-          className="flex-1 rounded bg-gray-100 px-4 py-2 text-sm outline-none border-none"
-          placeholder="Search..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
+        {/* Pills and input in a flex container to mimic multi-select */}
+        <div className="flex flex-1 flex-wrap items-center rounded bg-gray-100 px-2 py-1 min-h-[40px] border border-transparent focus-within:border-blue-400">
+          {checkedGrids.map(grid => (
+            <span
+              key={grid.tableName}
+              className="flex items-center bg-[#545454] text-white font-bold rounded px-3 py-1 mr-2 mb-1 text-sm"
+              style={{ lineHeight: '1.2' }}
+            >
+              {grid.tableName.replace(/_/g, " ")}
+              <button
+                type="button"
+                className="ml-2 text-white hover:text-gray-200 focus:outline-none"
+                style={{ fontWeight: 'bold', fontSize: '1rem', lineHeight: '1' }}
+                onClick={() => onSectionVisibilityChange(grid.tableName, false)}
+                aria-label={`Remove ${grid.tableName.replace(/_/g, ' ')}`}
+              >
+                ×
+              </button>
+            </span>
+          ))}
+          {/* The actual search input, flex-1 so it fills remaining space */}
+          <input
+            className="flex-1 min-w-[120px] bg-transparent outline-none border-none text-sm py-2 px-2"
+            placeholder="Search..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{ minWidth: '80px' }}
+          />
+        </div>
         <button
           className="ml-2 text-blue-600 text-sm font-medium hover:underline"
           onClick={handleClear}
