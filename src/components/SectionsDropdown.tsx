@@ -226,14 +226,11 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
       <button
         ref={buttonRef}
         className="flex items-center gap-2 text-xs font-medium tracking-wide border border-gray-300 rounded px-3 py-1 bg-white"
-        onClick={() => setIsOpen((v) => !v)}
+        onClick={() => setIsOpen((open) => !open)}
         type="button"
       >
-        Sections
-        <FontAwesomeIcon
-          icon={faChevronDown}
-          className={`transition-transform duration-200 w-3 h-3 ml-1 ${isOpen ? "rotate-180" : ""}`}
-        />
+        Sections{visibleSections.size > 0 ? ` (${visibleSections.size})` : ""}
+        <FontAwesomeIcon icon={faChevronDown} className="w-3 h-3 ml-1" />
       </button>
       {isOpen && typeof window !== "undefined"
         ? createPortal(menu, document.body)
