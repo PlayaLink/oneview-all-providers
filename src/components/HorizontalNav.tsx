@@ -2,6 +2,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import SectionsDropdown from "./SectionsDropdown";
 import { getGroups, getVisibleGroups } from "@/lib/gridDefinitions";
+import NavItem from "@/components/NavItem";
 
 interface HorizontalNavProps {
   selectedSection: string | null;
@@ -34,20 +35,17 @@ const HorizontalNav: React.FC<HorizontalNavProps> = ({
     <div className="bg-white border-b border-gray-300">
       <div className="px-4 py-3">
         <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-1 overflow-x-auto flex-1">
+          <div className="flex items-center gap-2 overflow-x-auto flex-1">
             {visibleSectionList.map((section) => (
-              <button
+              <NavItem
                 key={section}
+                variant="horizontal"
+                size="sm"
+                active={selectedSection === section}
                 onClick={() => onSectionSelect(section)}
-                className={cn(
-                  "px-4 py-2 text-xs font-medium tracking-wide whitespace-nowrap rounded transition-colors",
-                  selectedSection === section
-                    ? "bg-[#008BC9] text-white"
-                    : "text-[#545454] hover:bg-gray-50",
-                )}
               >
                 {section.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())}
-              </button>
+              </NavItem>
             ))}
           </div>
           <div className="flex-shrink-0">

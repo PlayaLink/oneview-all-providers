@@ -167,10 +167,10 @@ const DataGrid: React.FC<DataGridProps> = ({
   return (
     <div className="bg-white flex flex-col flex-1 min-h-0">
       {/* Grid Header */}
-      <div className="flex items-center justify-between px-2 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 rounded overflow-hidden">
-        <div className="flex items-center gap-2">
-          <FontAwesomeIcon icon={icon} className="w-4 h-4 text-[#545454]" />
-          <span className="text-[#545454] font-bold text-xs tracking-wider uppercase">
+      <div className="flex items-center justify-between pl-1 pr-3 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 rounded overflow-hidden">
+        <div className="flex items-center gap-2 pl-4">
+          <FontAwesomeIcon icon={icon} className="pr-1 w-4 h-4 text-[#545454]" />
+          <span className="text-[#545454] font-semibold text-xs tracking-wider">
             {title}
           </span>
         </div>

@@ -110,13 +110,12 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   }, [dropdownOpen]);
 
   return (
-    <div className="bg-white text-[#545454] px-4 py-3 relative z-10">
+    <div className="bg-white text-[#545454] px-4 py-4 relative z-10">
       <div className="flex items-center justify-between">
         {/* Left: Icon and Title or Provider Info */}
         <div className="flex items-center gap-2 min-w-0">
-          {icon && !npi && <FontAwesomeIcon icon={icon} className="w-4 h-4 text-[#545454]" />}
           {!npi && title && (
-            <span className="font-bold text-xs tracking-wider capitalize">
+            <span className="font-bold text-base tracking-wider capitalize">
               {title.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())}
             </span>
           )}

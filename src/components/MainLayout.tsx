@@ -18,6 +18,7 @@ import { getGroups } from "@/lib/gridDefinitions";
 import { useParams, useNavigate } from "react-router-dom";
 import { generateSampleData } from "@/lib/dataGenerator";
 import { gridDefinitions } from "@/lib/gridDefinitions";
+import NavItem from "@/components/NavItem";
 
 const MainLayout: React.FC = () => {
   const { npi } = useParams<{ npi?: string }>();
@@ -222,16 +223,16 @@ const MainLayout: React.FC = () => {
             />
 
             {/* CompHealth Dropdown */}
-            <div className="flex items-center gap-2 px-2 py-1 rounded-lg border border-white">
-              <div className="flex items-center w-[29px] h-7 rounded-lg">
+            <div className="flex items-center gap-2 px-2 rounded-lg">
+              <div className="flex items-center w-7 h-7 rounded-full overflow-hidden">
                 <img
                   src="https://cdn.builder.io/api/v1/image/assets/TEMP/47f216dffab8a61501f2184cb57a9b37a11a21ed?width=58"
                   alt=""
-                  className="flex-1 self-stretch"
+                  className="w-7 h-7 object-cover rounded-full"
                 />
               </div>
               <div
-                className="text-white font-bold text-xl leading-7"
+                className="text-white font-bold text-base leading-7"
                 style={{
                   fontFamily:
                     "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -325,84 +326,17 @@ const MainLayout: React.FC = () => {
           <div className="flex items-center gap-5 flex-1 self-stretch">
             <div className="flex items-center gap-2 self-stretch">
               {/* Team Link */}
-              <div className="flex flex-col justify-center items-center self-stretch px-2">
-                <span
-                  className="text-white font-bold text-xs leading-normal tracking-[0.429px]"
-                  style={{
-                    fontFamily:
-                      "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
-                  }}
-                >
-                  Team
-                </span>
-              </div>
-
+              <NavItem variant="main">Team</NavItem>
               {/* Provider Records Link - Active */}
-              <div className="flex flex-col justify-center items-center self-stretch">
-                <div className="flex justify-center items-center gap-[10px] px-2 py-1 rounded bg-white">
-                  <span
-                    className="text-[#3BA8D1] font-bold text-xs leading-normal tracking-[0.429px]"
-                    style={{
-                      fontFamily:
-                        "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
-                    }}
-                  >
-                    Provider Records
-                  </span>
-                </div>
-              </div>
-
+              <NavItem variant="main" active>Provider Records</NavItem>
               {/* Forms Link */}
-              <div className="flex flex-col justify-center items-center self-stretch px-2">
-                <span
-                  className="text-white font-bold text-xs leading-normal tracking-[0.429px]"
-                  style={{
-                    fontFamily:
-                      "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
-                  }}
-                >
-                  Forms
-                </span>
-              </div>
-
+              <NavItem variant="main">Forms</NavItem>
               {/* Tracking Link */}
-              <div className="flex flex-col justify-center items-center self-stretch px-2">
-                <span
-                  className="text-white font-bold text-xs leading-normal tracking-[0.429px]"
-                  style={{
-                    fontFamily:
-                      "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
-                  }}
-                >
-                  Tracking
-                </span>
-              </div>
-
+              <NavItem variant="main">Tracking</NavItem>
               {/* Logins Link */}
-              <div className="flex flex-col justify-center items-center self-stretch px-2">
-                <span
-                  className="text-white font-bold text-xs leading-normal tracking-[0.429px]"
-                  style={{
-                    fontFamily:
-                      "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
-                  }}
-                >
-                  Logins
-                </span>
-              </div>
-
+              <NavItem variant="main">Logins</NavItem>
               {/* Tasks Link */}
-              <div className="flex flex-col justify-center items-center self-stretch px-2">
-                <span
-                  className="text-white font-bold text-xs leading-normal tracking-[0.429px]"
-                  style={{
-                    fontFamily:
-                      "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
-                  }}
-                >
-                  Tasks
-                </span>
-              </div>
+              <NavItem variant="main">Tasks</NavItem>
             </div>
           </div>
 
