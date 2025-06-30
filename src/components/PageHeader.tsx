@@ -116,8 +116,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
         <div className="flex items-center gap-2 min-w-0">
           {icon && !npi && <FontAwesomeIcon icon={icon} className="w-4 h-4 text-[#545454]" />}
           {!npi && title && (
-            <span className="font-bold text-xs tracking-wider uppercase">
-              {title}
+            <span className="font-bold text-xs tracking-wider capitalize">
+              {title.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())}
             </span>
           )}
           {/* Single-provider view header */}

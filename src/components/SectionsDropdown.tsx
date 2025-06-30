@@ -225,7 +225,7 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
     <div className="relative" style={{ display: "inline-block" }}>
       <button
         ref={buttonRef}
-        className="flex items-center gap-2 text-xs font-medium tracking-wide border border-gray-300 rounded px-3 py-1 bg-white"
+        className="flex items-center gap-2 text-xs font-medium tracking-wide border border-gray-300 rounded px-3 py-1 bg-white focus:outline-none focus:ring-0"
         onClick={() => setIsOpen((open) => !open)}
         type="button"
       >

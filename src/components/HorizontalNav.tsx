@@ -46,7 +46,7 @@ const HorizontalNav: React.FC<HorizontalNavProps> = ({
                     : "text-[#545454] hover:bg-gray-50",
                 )}
               >
-                {section.toUpperCase()}
+                {section.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())}
               </button>
             ))}
           </div>
