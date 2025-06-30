@@ -88,6 +88,23 @@ const MainLayout: React.FC = () => {
     }
   }, [gridSectionMode, selectedSection]);
 
+  // Initialize visibleSections with all grids when on single-provider route
+  useEffect(() => {
+    console.log('=== INITIALIZATION DEBUG ===');
+    console.log('npi:', npi);
+    console.log('visibleSections.size:', visibleSections.size);
+    console.log('current visibleSections:', Array.from(visibleSections));
+    
+    if (npi) {
+      // On single-provider route, initialize with empty set to enable "no filtering when nothing checked" behavior
+      // This allows the SectionsDropdown to control filtering properly
+      if (visibleSections.size === 0) {
+        console.log('Initializing with empty set for single-provider view');
+        setVisibleSections(new Set());
+      }
+    }
+  }, [npi]); // Only depend on npi, not visibleSections.size
+
   const handleItemSelect = (item: string) => {
     setSelectedItem(item);
     setSelectedSection(null);
@@ -102,13 +119,21 @@ const MainLayout: React.FC = () => {
     sectionKey: string,
     visible: boolean,
   ) => {
+    console.log('=== MAINLAYOUT SECTION VISIBILITY CHANGE ===');
+    console.log('sectionKey:', sectionKey);
+    console.log('visible:', visible);
+    console.log('current visibleSections before:', Array.from(visibleSections));
+    
     setVisibleSections((prev) => {
       const newSet = new Set(prev);
       if (visible) {
         newSet.add(sectionKey);
+        console.log('Added section:', sectionKey);
       } else {
         newSet.delete(sectionKey);
+        console.log('Removed section:', sectionKey);
       }
+      console.log('new visibleSections after:', Array.from(newSet));
       return newSet;
     });
   };
@@ -401,6 +426,8 @@ const MainLayout: React.FC = () => {
           onButtonClick={() => {
             // Add Provider functionality
           }}
+          visibleSections={npi ? visibleSections : undefined}
+          onSectionVisibilityChange={npi ? handleSectionVisibilityChange : undefined}
         />
       </div>
 
@@ -411,6 +438,7 @@ const MainLayout: React.FC = () => {
           <div className="flex-1 flex flex-col min-h-0">
             <MainContent
               singleProviderNpi={npi}
+              visibleSections={visibleSections}
               // ...pass other props as needed...
               selectedRowsByGrid={selectedRowsByGrid}
               selectedProviderByGrid={selectedProviderByGrid}

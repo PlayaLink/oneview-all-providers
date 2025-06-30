@@ -44,8 +44,21 @@ const MainContent: React.FC<MainContentProps> = ({
   // Function to get grids based on selection and filtered sections
   const getGridsToShow = () => {
     if (singleProviderNpi) {
-      // Show all grids in single-provider view
-      return gridDefinitions;
+      // Show grids in single-provider view, filtered by visible sections
+      console.log('=== SINGLE PROVIDER VIEW DEBUG ===');
+      console.log('visibleSections:', Array.from(visibleSections));
+      console.log('visibleSections.size:', visibleSections.size);
+      console.log('all gridDefinitions:', gridDefinitions.map(g => g.tableName));
+      
+      if (visibleSections.size === 0) {
+        console.log('No filtering, showing all grids');
+        return gridDefinitions; // No filtering, show all grids (same as main view)
+      }
+      
+      const filteredGrids = gridDefinitions.filter((grid) => visibleSections.has(grid.tableName));
+      console.log('Filtered grids:', filteredGrids.map(g => g.tableName));
+      console.log('Grids that should be hidden:', gridDefinitions.filter(grid => !visibleSections.has(grid.tableName)).map(g => g.tableName));
+      return filteredGrids;
     }
     if (selectedItem && selectedItem !== "all-sections") {
       // Show single grid - only if it's in visible sections or no filtering

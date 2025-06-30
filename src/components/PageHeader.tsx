@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faSearch, faTimes, faUser } from "@fortawesome/free-solid-svg-icons";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { Button } from "@/components/ui/button";
+import SectionsDropdown from "@/components/SectionsDropdown";
 
 interface ProviderInfo {
   fullName: string;
@@ -31,6 +32,9 @@ interface PageHeaderProps {
   providerInfo?: ProviderInfo;
   onProviderSelect?: (npi: string) => void;
   providerSearchList?: ProviderSearchItem[];
+  // SectionsDropdown props
+  visibleSections?: Set<string>;
+  onSectionVisibilityChange?: (sectionKey: string, visible: boolean) => void;
 }
 
 const PageHeader: React.FC<PageHeaderProps> = ({
@@ -44,6 +48,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   providerInfo,
   onProviderSelect,
   providerSearchList = [],
+  visibleSections,
+  onSectionVisibilityChange,
 }) => {
   const [search, setSearch] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -186,21 +192,32 @@ const PageHeader: React.FC<PageHeaderProps> = ({
             )}
           </div>
         </div>
-        {/* Right: Add Provider Button */}
-        {buttonText && (
-          <div className="flex items-center gap-4">
-            <Button
-              size="sm"
-              className={buttonClassName}
-              onClick={onButtonClick}
-            >
-              {buttonIcon && (
-                <FontAwesomeIcon icon={buttonIcon} className="w-4 h-4 mr-2" />
-              )}
-              {buttonText}
-            </Button>
-          </div>
-        )}
+        {/* Right: Add Provider Button or SectionsDropdown */}
+        <div className="flex items-center gap-4">
+          {npi ? (
+            // Single-provider view: show SectionsDropdown
+            visibleSections && onSectionVisibilityChange && (
+              <SectionsDropdown
+                visibleSections={visibleSections}
+                onSectionVisibilityChange={onSectionVisibilityChange}
+              />
+            )
+          ) : (
+            // Main view: show Add Provider button
+            buttonText && (
+              <Button
+                size="sm"
+                className={buttonClassName}
+                onClick={onButtonClick}
+              >
+                {buttonIcon && (
+                  <FontAwesomeIcon icon={buttonIcon} className="w-4 h-4 mr-2" />
+                )}
+                {buttonText}
+              </Button>
+            )
+          )}
+        </div>
       </div>
     </div>
   );
