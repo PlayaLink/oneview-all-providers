@@ -14,7 +14,7 @@ import HorizontalNav from "@/components/HorizontalNav";
 import PageHeader from "@/components/PageHeader";
 import MainContent from "@/components/MainContent";
 import SettingsDropdown from "@/components/SettingsDropdown";
-import { getGroups } from "@/lib/gridDefinitions";
+import { getGroups, getGridsByGroup } from "@/lib/gridDefinitions";
 import { useParams, useNavigate } from "react-router-dom";
 import { generateSampleData } from "@/lib/dataGenerator";
 import { gridDefinitions } from "@/lib/gridDefinitions";
@@ -105,6 +105,24 @@ const MainLayout: React.FC = () => {
       }
     }
   }, [npi]); // Only depend on npi, not visibleSections.size
+
+  // Auto-select the only visible group when filtering
+  useEffect(() => {
+    // Only run in horizontal mode
+    if (gridSectionMode !== "horizontal") return;
+    // If there are visible sections, find their groups
+    if (visibleSections.size > 0) {
+      const allGroups = getGroups();
+      // Find groups that have at least one visible grid
+      const visibleGroups = allGroups.filter(group => {
+        const grids = getGridsByGroup(group);
+        return grids.some(grid => visibleSections.has(grid.tableName));
+      });
+      if (visibleGroups.length === 1 && selectedSection !== visibleGroups[0]) {
+        setSelectedSection(visibleGroups[0]);
+      }
+    }
+  }, [visibleSections, gridSectionMode, selectedSection]);
 
   const handleItemSelect = (item: string) => {
     setSelectedItem(item);
@@ -328,7 +346,7 @@ const MainLayout: React.FC = () => {
               {/* Team Link */}
               <NavItem variant="main">Team</NavItem>
               {/* Provider Records Link - Active */}
-              <NavItem variant="main" active>Provider Records</NavItem>
+              <NavItem variant="main" active>OneView V2</NavItem>
               {/* Forms Link */}
               <NavItem variant="main">Forms</NavItem>
               {/* Tracking Link */}
