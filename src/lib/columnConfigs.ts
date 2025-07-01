@@ -49,6 +49,23 @@ export const getColumnsForGrid = (gridKey: string): ColDef[] => {
       minWidth: 120,
       flex: 1,
     };
+    if (columnName === "provider_name") {
+      colDef.valueGetter = (params: any) => {
+        if (!params.data) return '';
+        const { first_name, last_name, provider_name } = params.data;
+        if (first_name && last_name) {
+          return `${last_name}, ${first_name}`;
+        }
+        // fallback: try to split provider_name
+        const name = provider_name || '';
+        const [first, ...rest] = name.split(' ');
+        const last = rest.join(' ');
+        if (first && last) {
+          return `${last}, ${first}`;
+        }
+        return name;
+      };
+    }
     if (isDateColumn(columnName)) {
       colDef.valueFormatter = dateValueFormatter;
     }
@@ -66,6 +83,21 @@ export const standardColumns: ColDef[] = [
     resizable: true,
     minWidth: 150,
     flex: 1,
+    valueGetter: (params: any) => {
+      if (!params.data) return '';
+      const { first_name, last_name, provider_name } = params.data;
+      if (first_name && last_name) {
+        return `${last_name}, ${first_name}`;
+      }
+      // fallback: try to split provider_name
+      const name = provider_name || '';
+      const [first, ...rest] = name.split(' ');
+      const last = rest.join(' ');
+      if (first && last) {
+        return `${last}, ${first}`;
+      }
+      return name;
+    },
   },
   {
     field: "title",
@@ -150,6 +182,21 @@ export const birthInfoColumns: ColDef[] = [
     resizable: true,
     minWidth: 150,
     flex: 1,
+    valueGetter: (params: any) => {
+      if (!params.data) return '';
+      const { first_name, last_name, provider_name } = params.data;
+      if (first_name && last_name) {
+        return `${last_name}, ${first_name}`;
+      }
+      // fallback: try to split provider_name
+      const name = provider_name || '';
+      const [first, ...rest] = name.split(' ');
+      const last = rest.join(' ');
+      if (first && last) {
+        return `${last}, ${first}`;
+      }
+      return name;
+    },
   },
   {
     field: "title",
