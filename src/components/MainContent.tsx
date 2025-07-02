@@ -158,13 +158,14 @@ const MainContent: React.FC<MainContentProps> = ({
   const handleSidePanelClose = () => {
     if (onCloseSidePanel) {
       onCloseSidePanel();
-    } else {
-      setSidePanelOpen(false);
-      setSelectedGridName(null);
-      // Clear selection for the current grid only
-      if (currentGrid && onClearGridRowSelect) {
-        onClearGridRowSelect(currentGrid.tableName);
-      }
+    }
+    setSidePanelOpen(false);
+    setSelectedGridName(null);
+    // Always clear selection for the active panel grid
+    if (activePanelGridName && onClearGridRowSelect) {
+      onClearGridRowSelect(activePanelGridName);
+    } else if (currentGrid && onClearGridRowSelect) {
+      onClearGridRowSelect(currentGrid.tableName);
     }
   };
 
