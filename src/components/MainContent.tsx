@@ -8,6 +8,7 @@ import { getColumnsForGrid } from "@/lib/columnConfigs";
 import { gridDefinitions, getGridsByGroup } from "@/lib/gridDefinitions";
 import { getIconByName } from "@/lib/iconMapping";
 import { Provider } from "@/types";
+import providerInfoConfig from "@/data/provider_info_details.json";
 
 interface MainContentProps {
   selectedItem?: string | null;
@@ -40,6 +41,14 @@ const MainContent: React.FC<MainContentProps> = ({
 }) => {
   const [currentGridIndex, setCurrentGridIndex] = useState(0);
   const [selectedGridName, setSelectedGridName] = useState<string | null>(null);
+
+  // Memoize sample data for all grids only once
+  const sampleDataRef = React.useRef<{ [gridName: string]: any[] }>({});
+  if (Object.keys(sampleDataRef.current).length === 0) {
+    gridDefinitions.forEach(grid => {
+      sampleDataRef.current[grid.tableName] = generateSampleData(grid.tableName, 15);
+    });
+  }
 
   // Function to get grids based on selection and filtered sections
   const getGridsToShow = () => {
@@ -102,22 +111,8 @@ const MainContent: React.FC<MainContentProps> = ({
   const gridsToShow = getGridsToShow();
   const isMultipleGrids = gridsToShow.length > 1;
 
-  // Memoize data generation to prevent regeneration on every render
-  const gridData = useMemo(() => {
-    const data: Record<string, any[]> = {};
-    gridsToShow.forEach(grid => {
-      let rows = generateSampleData(grid.tableName, 15);
-      if (singleProviderNpi) {
-        rows = rows.filter(row => String(row.npi_number) === String(singleProviderNpi));
-      }
-      data[grid.tableName] = rows;
-    });
-    return data;
-  }, [gridsToShow, singleProviderNpi]);
-
-  // Function to get appropriate data based on grid type
   const getDataForGrid = (gridKey: string) => {
-    return gridData[gridKey] || [];
+    return sampleDataRef.current[gridKey] || [];
   };
 
   const handlePrevious = () => {
@@ -259,7 +254,8 @@ const MainContent: React.FC<MainContentProps> = ({
         {sidePanelOpen && activePanelGridName && selectedProviderByGrid[activePanelGridName] && (
           <SidePanel
             isOpen={sidePanelOpen}
-            provider={selectedProviderByGrid[activePanelGridName]}
+            selectedRow={selectedProviderByGrid[activePanelGridName]}
+            inputConfig={providerInfoConfig}
             onClose={handleSidePanelClose}
             title={
               activePanelGridName && selectedProviderByGrid[activePanelGridName]?.provider_name
@@ -370,7 +366,8 @@ const MainContent: React.FC<MainContentProps> = ({
       {/* Side Panel */}
       <SidePanel
         isOpen={sidePanelOpen}
-        provider={selectedProvider}
+        selectedRow={selectedProvider}
+        inputConfig={providerInfoConfig}
         onClose={handleSidePanelClose}
         title={
           selectedProvider && activeGridName && selectedProvider.provider_name

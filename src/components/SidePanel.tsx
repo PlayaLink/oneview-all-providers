@@ -5,7 +5,6 @@ import CollapsibleSection from "./CollapsibleSection";
 import { MultiSelectInput } from "./inputs/MultiSelectInput";
 import SingleSelectInput from "./inputs/SingleSelectInput";
 import TextInputField from "./inputs/TextInputField";
-import providerInfoConfig from "@/data/provider_info_details.json";
 import { Provider } from "@/types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
@@ -16,6 +15,7 @@ export interface InputField {
   placeholder?: string;
   options?: string[];
   multi?: boolean;
+  rowKey?: string;
   [key: string]: any;
 }
 
@@ -28,17 +28,39 @@ function getInputType(field: InputField) {
 
 interface SidePanelProps {
   isOpen: boolean;
-  provider: Provider | null;
+  selectedRow: any | null;
+  inputConfig: InputField[];
   onClose: () => void;
   title?: string;
 }
 
-const SidePanel: React.FC<SidePanelProps> = ({ isOpen, provider, onClose, title }) => {
-  const inputConfig: InputField[] = providerInfoConfig;
-  const [formValues, setFormValues] = useState<Record<string, any>>({});
+const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig, onClose, title }) => {
+  const [formValues, setFormValues] = React.useState<Record<string, any>>({});
   const [tab, setTab] = useState("details");
 
-  if (!provider) return null;
+  // Initialize form values from selectedRow when it changes
+  React.useEffect(() => {
+    if (selectedRow) {
+      const initialValues: Record<string, any> = {};
+      inputConfig.forEach(field => {
+        if (field.rowKey) {
+          initialValues[field.label] = selectedRow[field.rowKey] ?? (field.type === 'multi-select' ? [] : '');
+        } else {
+          // fallback: try to match by label as before, or use default
+          const labelKey = field.label.replace(/\s|_/g, '').toLowerCase();
+          const foundKey = Object.keys(selectedRow).find(
+            k => k.replace(/\s|_/g, '').toLowerCase() === labelKey
+          );
+          initialValues[field.label] = foundKey ? selectedRow[foundKey] : (field.type === 'multi-select' ? [] : '');
+        }
+      });
+      setFormValues(initialValues);
+    } else {
+      setFormValues({});
+    }
+  }, [selectedRow, inputConfig]);
+
+  if (!selectedRow) return null;
 
   // Group fields by group property
   const groupedFields = inputConfig.reduce((acc: any, field: InputField) => {
@@ -64,7 +86,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, provider, onClose, title 
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-[#008BC9] text-white">
         <div className="flex-1">
-          <h2 className="text-lg font-semibold">{title ? title : `${provider.firstName} ${provider.lastName}`}</h2>
+          <h2 className="text-lg font-semibold">{title ? title : selectedRow.provider_name || selectedRow.firstName || selectedRow.lastName || ''}</h2>
         </div>
         <button
           onClick={onClose}
