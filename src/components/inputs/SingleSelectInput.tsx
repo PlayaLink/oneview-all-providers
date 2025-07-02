@@ -50,7 +50,7 @@ export const SingleSelectInput: React.FC<SingleSelectInputProps> = ({
 
   return (
     <div className={cn(
-      labelPosition === "left" ? "flex items-center gap-2" : "flex flex-col gap-1",
+      labelPosition === "left" ? "flex items-center gap-2 min-w-0" : "flex flex-col gap-1",
       className
     )}>
       {label && (
@@ -60,7 +60,7 @@ export const SingleSelectInput: React.FC<SingleSelectInputProps> = ({
         <PopoverTrigger asChild>
           <div
             className={cn(
-              "flex items-center border border-gray-300 rounded px-2 py-[10px] min-h-[40px] bg-white cursor-pointer",
+              "flex flex-1 items-center border border-gray-300 rounded px-2 py-[10px] min-h-[40px] bg-white cursor-pointer",
               disabled && "opacity-50 cursor-not-allowed"
             )}
             tabIndex={0}

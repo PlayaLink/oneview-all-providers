@@ -134,7 +134,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
             {/* Render grouped fields as CollapsibleSections */}
             {Object.entries(groupedFields).map(([group, fields]: [string, any[]]) => (
               <CollapsibleSection key={group} title={group}>
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4 self-stretch">
                   {fields.map((field: InputField) => {
                     const inputType = getInputType(field);
                     if (inputType === "multi-select") {
@@ -147,6 +147,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
                           options={field.options?.map((opt: string) => ({ id: opt, label: opt })) || []}
                           onChange={(val) => handleChange(field.label, val)}
                           placeholder={field.placeholder}
+                          className="flex-1 min-w-0"
                         />
                       );
                     } else if (inputType === "single-select") {
@@ -159,6 +160,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
                           options={field.options?.map((opt: string) => ({ id: opt, label: opt })) || []}
                           onChange={(val) => handleChange(field.label, val)}
                           placeholder={field.placeholder}
+                          className="flex-1 min-w-0"
                         />
                       );
                     } else {
@@ -170,6 +172,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
                           value={formValues[field.label] || ""}
                           onChange={(val) => handleChange(field.label, val)}
                           placeholder={field.placeholder}
+                          className="flex-1 min-w-0"
                         />
                       );
                     }

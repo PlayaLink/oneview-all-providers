@@ -47,7 +47,7 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
 
   return (
     <div className={cn(
-      labelPosition === "left" ? "flex items-center gap-2" : "flex flex-col gap-1",
+      labelPosition === "left" ? "flex items-center gap-2 min-w-0" : "flex flex-col gap-1",
       className
     )}>
       {label && (

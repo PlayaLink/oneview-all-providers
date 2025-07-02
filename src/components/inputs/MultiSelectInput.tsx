@@ -109,7 +109,7 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
 
     return (
       <div className={cn(
-        (labelPosition === "left" ? "flex items-center gap-2" : "flex flex-col gap-1"),
+        (labelPosition === "left" ? "flex items-center gap-2 min-w-0" : "flex flex-col gap-1"),
         className
       )} ref={ref} {...props}>
         {label && <label className="text-xs font-semibold mb-1">{label}</label>}
