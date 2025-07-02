@@ -9,6 +9,7 @@ import { gridDefinitions, getGridsByGroup } from "@/lib/gridDefinitions";
 import { getIconByName } from "@/lib/iconMapping";
 import { Provider } from "@/types";
 import providerInfoConfig from "@/data/provider_info_details.json";
+import providerInfoData from "@/data/providers.json";
 
 interface MainContentProps {
   selectedItem?: string | null;
@@ -112,6 +113,9 @@ const MainContent: React.FC<MainContentProps> = ({
   const isMultipleGrids = gridsToShow.length > 1;
 
   const getDataForGrid = (gridKey: string) => {
+    if (gridKey === "Provider_Info") {
+      return providerInfoData;
+    }
     return sampleDataRef.current[gridKey] || [];
   };
 

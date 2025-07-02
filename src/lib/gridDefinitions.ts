@@ -1,44 +1,24 @@
 import gridDefinitionsJson from "./gridDefinitions.json";
 
 export interface GridDefinition {
-  group: string;
   tableName: string;
-  icon: string;
-  columns: string[];
-  actions?: string[];
+  displayName: string;
+  group: string;
+  description?: string;
+  icon?: string;
+  color?: string;
+  defaultVisible?: boolean;
 }
 
-// Import the complete grid definitions from JSON
-export const gridDefinitions: GridDefinition[] = gridDefinitionsJson.map(
-  (grid) => ({
-    group: grid.group,
-    tableName: grid.tableName,
-    icon: grid.icon,
-    columns: grid.columns,
-    actions: [],
-  }),
-);
+export const gridDefinitions: GridDefinition[] = gridDefinitionsJson as GridDefinition[];
 
-// Utility functions for working with grid definitions
-export const getGroups = (): string[] => {
-  const groups: string[] = [];
-  const seenGroups = new Set<string>();
-  
-  // Preserve order as they appear in the JSON
-  gridDefinitions.forEach((grid) => {
-    if (!seenGroups.has(grid.group)) {
-      groups.push(grid.group);
-      seenGroups.add(grid.group);
-    }
-  });
-  
-  return groups;
-};
+export function getGroups(): string[] {
+  return Array.from(new Set(gridDefinitions.map((g) => g.group)));
+}
 
-export const getGridsByGroup = (group: string): GridDefinition[] => {
-  // Preserve order as they appear in the JSON
-  return gridDefinitions.filter((grid) => grid.group === group);
-};
+export function getGridsByGroup(group: string): GridDefinition[] {
+  return gridDefinitions.filter((g) => g.group === group);
+}
 
 export const getVisibleGroups = (visibleSections: Set<string>): string[] => {
   if (visibleSections.size === 0) {
