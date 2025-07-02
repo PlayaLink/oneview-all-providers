@@ -1,210 +1,30 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { cn } from "@/lib/utils";
-import { Provider } from "@/types";
+import { faXmark, faUserDoctor, faFileMedical, faFolder } from "@fortawesome/free-solid-svg-icons";
 import CollapsibleSection from "./CollapsibleSection";
-import { SingleSelect, SingleSelectOption } from "./SingleSelect";
-import ProviderNameSection from "./ProviderNameSection";
-import {
-  MultiSelect,
-  MultiSelectItem,
-} from "oneview-react-multiselect-component";
+import { MultiSelectInput } from "./inputs/MultiSelectInput";
+import SingleSelectInput from "./inputs/SingleSelectInput";
+import TextInputField from "./inputs/TextInputField";
+import providerInfoConfig from "@/data/provider_info_details.json";
+import { Provider } from "@/types";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-// TypeSpecialtyClassificationSection component
-const TypeSpecialtyClassificationSection: React.FC = () => {
-  const [providerTitle, setProviderTitle] = useState<SingleSelectOption | null>(
-    {
-      id: 1,
-      label: "MD - Medical Doctor",
-    },
-  );
-  const [specialtyList, setSpecialtyList] = useState<MultiSelectItem[]>([
-    { id: 1, label: "General Surgery" },
-  ]);
-  const [classifications, setClassifications] = useState<MultiSelectItem[]>([
-    { id: 1, label: "Hospital-based" },
-    { id: 2, label: "Specialist" },
-    { id: 3, label: "Locum Tenens" },
-  ]);
-  const [taxonomyCodes, setTaxonomyCodes] = useState<MultiSelectItem[]>([
-    { id: 1, label: "Plastic Surgery - Surgery of the Hand (2082S0105X" },
-  ]);
-  const [clinicalServices, setClinicalServices] = useState<MultiSelectItem[]>([
-    { id: 1, label: "Outpatient Clinical Services" },
-  ]);
-  const [fluentLanguages, setFluentLanguages] = useState<MultiSelectItem[]>([
-    { id: 1, label: "English" },
-    { id: 2, label: "Spanish" },
-    { id: 3, label: "French" },
-  ]);
-  const [cmsSpecialtyCodes, setCmsSpecialtyCodes] = useState<MultiSelectItem[]>(
-    [],
-  );
+// Types for input fields
+export interface InputField {
+  label: string;
+  group: string;
+  placeholder?: string;
+  options?: string[];
+  multi?: boolean;
+  [key: string]: any;
+}
 
-  // Sample options for each field
-  const specialtyOptions: MultiSelectItem[] = [
-    { id: 1, label: "General Surgery" },
-    { id: 2, label: "Cardiology" },
-    { id: 3, label: "Neurology" },
-    { id: 4, label: "Orthopedics" },
-    { id: 5, label: "Pediatrics" },
-  ];
-
-  const classificationOptions: MultiSelectItem[] = [
-    { id: 1, label: "Hospital-based" },
-    { id: 2, label: "Specialist" },
-    { id: 3, label: "Locum Tenens" },
-    { id: 4, label: "Primary Care" },
-    { id: 5, label: "Emergency Medicine" },
-  ];
-
-  const taxonomyOptions: MultiSelectItem[] = [
-    { id: 1, label: "Plastic Surgery - Surgery of the Hand (2082S0105X" },
-    { id: 2, label: "Internal Medicine (207R00000X)" },
-    { id: 3, label: "Family Medicine (207Q00000X)" },
-  ];
-
-  const clinicalOptions: MultiSelectItem[] = [
-    { id: 1, label: "Outpatient Clinical Services" },
-    { id: 2, label: "Inpatient Services" },
-    { id: 3, label: "Emergency Services" },
-    { id: 4, label: "Diagnostic Services" },
-  ];
-
-  const languageOptions: MultiSelectItem[] = [
-    { id: 1, label: "English" },
-    { id: 2, label: "Spanish" },
-    { id: 3, label: "French" },
-    { id: 4, label: "German" },
-    { id: 5, label: "Mandarin" },
-    { id: 6, label: "Arabic" },
-  ];
-
-  const cmsOptions: MultiSelectItem[] = [
-    { id: 1, label: "01 - General Practice" },
-    { id: 2, label: "02 - General Surgery" },
-    { id: 3, label: "06 - Cardiology" },
-    { id: 4, label: "11 - Internal Medicine" },
-  ];
-
-  const providerTitleOptions: SingleSelectOption[] = [
-    { id: 1, label: "MD - Medical Doctor" },
-    { id: 2, label: "DO - Doctor of Osteopathic Medicine" },
-    { id: 3, label: "NP - Nurse Practitioner" },
-    { id: 4, label: "PA - Physician Assistant" },
-    { id: 5, label: "RN - Registered Nurse" },
-    { id: 6, label: "LPN - Licensed Practical Nurse" },
-    { id: 7, label: "DDS - Doctor of Dental Surgery" },
-    { id: 8, label: "PharmD - Doctor of Pharmacy" },
-  ];
-
-  return (
-    <CollapsibleSection title="Type, Speciality & Classification">
-      <div className="flex flex-col gap-2 w-full relative">
-        <SingleSelect
-          label="Provider Title"
-          value={providerTitle}
-          options={providerTitleOptions}
-          onChange={setProviderTitle}
-          placeholder="Start typing"
-        />
-
-        <MultiSelect
-          label="Speciality List"
-          value={specialtyList}
-          options={specialtyOptions}
-          onChange={setSpecialtyList}
-          addButtonText="Add"
-        />
-
-        <MultiSelect
-          label="Classifications"
-          value={classifications}
-          options={classificationOptions}
-          onChange={setClassifications}
-          addButtonText="Add"
-        />
-
-        <MultiSelect
-          label="Taxonomy Codes"
-          value={taxonomyCodes}
-          options={taxonomyOptions}
-          onChange={setTaxonomyCodes}
-          addButtonText="Add"
-        />
-
-        <MultiSelect
-          label="Clinical Services"
-          value={clinicalServices}
-          options={clinicalOptions}
-          onChange={setClinicalServices}
-          addButtonText="Add"
-        />
-
-        <MultiSelect
-          label="Fluent Languages"
-          value={fluentLanguages}
-          options={languageOptions}
-          onChange={setFluentLanguages}
-          addButtonText="Add"
-        />
-
-        <MultiSelect
-          label="CMS Medicare Specialty Codes"
-          value={cmsSpecialtyCodes}
-          options={cmsOptions}
-          onChange={setCmsSpecialtyCodes}
-          addButtonText="Add"
-        />
-      </div>
-    </CollapsibleSection>
-  );
-};
-
-// Testing NPM package section component
-const TestingNpmPackageSection: React.FC = () => {
-  const [colors, setColors] = useState<MultiSelectItem[]>([]);
-  const [cars, setCars] = useState<MultiSelectItem[]>([]);
-
-  // Color options
-  const colorOptions: MultiSelectItem[] = [
-    { id: 1, label: "Red" },
-    { id: 2, label: "Yellow" },
-    { id: 3, label: "Blue" },
-  ];
-
-  // Car options
-  const carOptions: MultiSelectItem[] = [
-    { id: 1, label: "Porsche" },
-    { id: 2, label: "Ferrari" },
-    { id: 3, label: "BMW" },
-  ];
-
-  return (
-    <CollapsibleSection title="Testing NPM package">
-      <div className="flex flex-col gap-2 w-full relative">
-        <MultiSelect
-          label="Colors"
-          value={colors}
-          options={colorOptions}
-          onChange={setColors}
-          addButtonText="Add"
-          searchPlaceholder="Search colors..."
-        />
-
-        <MultiSelect
-          label="Cars"
-          value={cars}
-          options={carOptions}
-          onChange={setCars}
-          addButtonText="Add"
-          searchPlaceholder="Search cars..."
-        />
-      </div>
-    </CollapsibleSection>
-  );
-};
+function getInputType(field: InputField) {
+  if (Array.isArray(field.options) && field.options.length > 0) {
+    return field.multi ? "multi-select" : "single-select";
+  }
+  return "text";
+}
 
 interface SidePanelProps {
   isOpen: boolean;
@@ -214,64 +34,148 @@ interface SidePanelProps {
 }
 
 const SidePanel: React.FC<SidePanelProps> = ({ isOpen, provider, onClose, title }) => {
+  const inputConfig: InputField[] = providerInfoConfig;
+  const [formValues, setFormValues] = useState<Record<string, any>>({});
+  const [tab, setTab] = useState("details");
+
   if (!provider) return null;
 
+  // Group fields by group property
+  const groupedFields = inputConfig.reduce((acc: any, field: InputField) => {
+    if (!acc[field.group]) acc[field.group] = [];
+    acc[field.group].push(field);
+    return acc;
+  }, {});
+
+  // Handle input change
+  const handleChange = (label: string, value: any) => {
+    setFormValues((prev) => ({ ...prev, [label]: value }));
+  };
+
   return (
-    <>
-      {/* Side Panel */}
-      <div
-        className={cn(
-          "fixed top-0 right-0 h-full w-[484px] bg-white transform transition-transform duration-300 ease-in-out z-50 flex flex-col",
-          isOpen ? "translate-x-0" : "translate-x-full",
-        )}
-        style={{
-          boxShadow: isOpen
-            ? "-8px 0 24px -2px rgba(0, 0, 0, 0.12), -4px 0 8px -2px rgba(0, 0, 0, 0.08)"
-            : "none",
-        }}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-[#008BC9] text-white">
-          <div className="flex-1">
-            <h2 className="text-lg font-semibold">
-              {title ? title : `${provider.firstName} ${provider.lastName}`}
-            </h2>
-            {!title && (
-              <p className="text-sm opacity-90">
-                {provider.title} - {provider.primarySpecialty}
-              </p>
-            )}
-          </div>
-          <button
-            onClick={onClose}
-            className="ml-4 p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors"
+    <div
+      className={`fixed top-0 right-0 h-full w-[484px] bg-white transform transition-transform duration-300 ease-in-out z-50 flex flex-col ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+      style={{
+        boxShadow: isOpen
+          ? "-8px 0 24px -2px rgba(0, 0, 0, 0.12), -4px 0 8px -2px rgba(0, 0, 0, 0.08)"
+          : "none",
+      }}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-[#008BC9] text-white">
+        <div className="flex-1">
+          <h2 className="text-lg font-semibold">{title ? title : `${provider.firstName} ${provider.lastName}`}</h2>
+        </div>
+        <button
+          onClick={onClose}
+          className="ml-4 p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors"
+        >
+          <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
+        </button>
+      </div>
+      {/* Tabs */}
+      <Tabs value={tab} onValueChange={setTab} orientation="vertical" className="flex h-full">
+        <TabsList className="flex flex-col w-16 bg-gray-50 rounded-l-lg pt-4 pb-2 px-2 p-1 gap-1 border-r border-gray-200 items-center justify-start">
+          <TabsTrigger
+            value="details"
+            className={`flex flex-col items-center py-6 px-0 w-full transition-colors
+              data-[state=active]:bg-[#008BC9] data-[state=active]:text-white
+              data-[state=active]:hover:bg-[#0077B3]
+              text-[#545454] hover:bg-gray-100`}
           >
-            <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
+            <FontAwesomeIcon icon={faUserDoctor} className="w-6 h-6 mb-1" />
+            <span className="text-xs">Details</span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="notes"
+            className={`flex flex-col items-center py-6 px-0 w-full transition-colors
+              data-[state=active]:bg-[#008BC9] data-[state=active]:text-white
+              data-[state=active]:hover:bg-[#0077B3]
+              text-[#545454] hover:bg-gray-100`}
+          >
+            <FontAwesomeIcon icon={faFileMedical} className="w-6 h-6 mb-1" />
+            <span className="text-xs">Notes</span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="documents"
+            className={`flex flex-col items-center py-6 px-0 w-full transition-colors
+              data-[state=active]:bg-[#008BC9] data-[state=active]:text-white
+              data-[state=active]:hover:bg-[#0077B3]
+              text-[#545454] hover:bg-gray-100`}
+          >
+            <FontAwesomeIcon icon={faFolder} className="w-6 h-6 mb-1" />
+            <span className="text-xs">Docs</span>
+          </TabsTrigger>
+        </TabsList>
+        <div className="flex-1 p-4 overflow-y-auto">
+          <TabsContent value="details">
+            {/* Render grouped fields as CollapsibleSections */}
+            {Object.entries(groupedFields).map(([group, fields]: [string, any[]]) => (
+              <CollapsibleSection key={group} title={group}>
+                <div className="flex flex-col gap-4">
+                  {fields.map((field: InputField) => {
+                    const inputType = getInputType(field);
+                    if (inputType === "multi-select") {
+                      return (
+                        <MultiSelectInput
+                          key={field.label}
+                          label={field.label}
+                          labelPosition="left"
+                          value={formValues[field.label] || []}
+                          options={field.options?.map((opt: string) => ({ id: opt, label: opt })) || []}
+                          onChange={(val) => handleChange(field.label, val)}
+                          placeholder={field.placeholder}
+                        />
+                      );
+                    } else if (inputType === "single-select") {
+                      return (
+                        <SingleSelectInput
+                          key={field.label}
+                          label={field.label}
+                          labelPosition="left"
+                          value={formValues[field.label] || null}
+                          options={field.options?.map((opt: string) => ({ id: opt, label: opt })) || []}
+                          onChange={(val) => handleChange(field.label, val)}
+                          placeholder={field.placeholder}
+                        />
+                      );
+                    } else {
+                      return (
+                        <TextInputField
+                          key={field.label}
+                          label={field.label}
+                          labelPosition="left"
+                          value={formValues[field.label] || ""}
+                          onChange={(val) => handleChange(field.label, val)}
+                          placeholder={field.placeholder}
+                        />
+                      );
+                    }
+                  })}
+                </div>
+              </CollapsibleSection>
+            ))}
+          </TabsContent>
+          <TabsContent value="notes">
+            <div className="text-gray-500">Notes tab content goes here.</div>
+          </TabsContent>
+          <TabsContent value="documents">
+            <div className="text-gray-500">Documents tab content goes here.</div>
+          </TabsContent>
+        </div>
+      </Tabs>
+      {/* Footer Actions */}
+      <div className="border-t border-gray-200 p-4">
+        <div className="flex gap-3">
+          <button className="flex-1 bg-[#008BC9] text-white py-2 px-4 rounded text-sm font-medium hover:bg-[#007399] transition-colors">
+            Edit
+          </button>
+          <button className="flex-1 bg-gray-100 text-[#545454] py-2 px-4 rounded text-sm font-medium hover:bg-gray-200 transition-colors">
+            View Full Profile
           </button>
         </div>
-
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto p-4">
-          <div className="relative">
-            <ProviderNameSection provider={provider} />
-            <TypeSpecialtyClassificationSection />
-            <TestingNpmPackageSection />
-          </div>
-        </div>
-
-        {/* Footer Actions */}
-        <div className="border-t border-gray-200 p-4">
-          <div className="flex gap-3">
-            <button className="flex-1 bg-[#008BC9] text-white py-2 px-4 rounded text-sm font-medium hover:bg-[#007399] transition-colors">
-              Edit Provider
-            </button>
-            <button className="flex-1 bg-gray-100 text-[#545454] py-2 px-4 rounded text-sm font-medium hover:bg-gray-200 transition-colors">
-              View Full Profile
-            </button>
-          </div>
-        </div>
       </div>
-    </>
+    </div>
   );
 };
 
