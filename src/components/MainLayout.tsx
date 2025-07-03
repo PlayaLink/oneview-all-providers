@@ -64,6 +64,8 @@ const MainLayout: React.FC = () => {
   
   const providerSearchList = allProviderRows.map(row => ({
     fullName: row.provider_name || `${row.first_name || ""} ${row.last_name || ""}`.trim(),
+    firstName: row.first_name || "",
+    lastName: row.last_name || "",
     title: row.title || "",
     npi: row.npi_number || "",
     specialty: row.primary_specialty || "",
@@ -91,16 +93,10 @@ const MainLayout: React.FC = () => {
 
   // Initialize visibleSections with all grids when on single-provider route
   useEffect(() => {
-    console.log('=== INITIALIZATION DEBUG ===');
-    console.log('npi:', npi);
-    console.log('visibleSections.size:', visibleSections.size);
-    console.log('current visibleSections:', Array.from(visibleSections));
-    
     if (npi) {
       // On single-provider route, initialize with empty set to enable "no filtering when nothing checked" behavior
       // This allows the SectionsDropdown to control filtering properly
       if (visibleSections.size === 0) {
-        console.log('Initializing with empty set for single-provider view');
         setVisibleSections(new Set());
       }
     }
@@ -138,21 +134,13 @@ const MainLayout: React.FC = () => {
     sectionKey: string,
     visible: boolean,
   ) => {
-    console.log('=== MAINLAYOUT SECTION VISIBILITY CHANGE ===');
-    console.log('sectionKey:', sectionKey);
-    console.log('visible:', visible);
-    console.log('current visibleSections before:', Array.from(visibleSections));
-    
     setVisibleSections((prev) => {
       const newSet = new Set(prev);
       if (visible) {
         newSet.add(sectionKey);
-        console.log('Added section:', sectionKey);
       } else {
         newSet.delete(sectionKey);
-        console.log('Removed section:', sectionKey);
       }
-      console.log('new visibleSections after:', Array.from(newSet));
       return newSet;
     });
   };
