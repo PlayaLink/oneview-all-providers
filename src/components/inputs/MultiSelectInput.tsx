@@ -19,7 +19,7 @@ export interface SelectedItemUIProps {
 }
 
 export interface MultiSelectInputProps {
-  label?: string;
+  label: string;
   labelPosition?: "left" | "top";
   value: MultiSelectItem[];
   options: MultiSelectItem[];
@@ -40,18 +40,45 @@ const DefaultSelectedItemUI: React.FC<SelectedItemUIProps> = ({ item, onRemove, 
   <Tag label={item.label} onRemove={onRemove} removable={removable} variant="default" />
 );
 
+// Utility to extract the main noun from a label and generate add/search text
+function getNounFromLabel(label: string): { nounSingular: string; nounPlural: string } {
+  // Remove common suffixes like 'List', 'Type', etc.
+  let base = label.trim();
+  base = base.replace(/list$/i, '').replace(/type$/i, '').replace(/types$/i, '').replace(/list$/i, '').replace(/info$/i, '').replace(/group$/i, '').replace(/status$/i, '').replace(/codes?$/i, '').replace(/services?$/i, '').replace(/classifications?$/i, '').replace(/specialties$/i, 'specialty').replace(/languages$/i, 'language').replace(/\s+$/, '');
+  // Take the last word as the noun, unless it's a stopword
+  let words = base.split(/\s+/).filter(Boolean);
+  let noun = words[words.length - 1] || base;
+  // Special cases
+  if (/services?/i.test(label)) noun = 'service';
+  if (/specialties?/i.test(label)) noun = 'specialty';
+  if (/languages?/i.test(label)) noun = 'language';
+  if (/codes?/i.test(label)) noun = 'code';
+  if (/classifications?/i.test(label)) noun = 'classification';
+  // Pluralize (very basic)
+  let nounPlural = noun;
+  if (noun.endsWith('y')) {
+    nounPlural = noun.slice(0, -1) + 'ies';
+  } else if (!noun.endsWith('s')) {
+    nounPlural = noun + 's';
+  }
+  // Capitalize
+  noun = noun.charAt(0).toUpperCase() + noun.slice(1);
+  nounPlural = nounPlural.charAt(0).toLowerCase() + nounPlural.slice(1);
+  return { nounSingular: noun, nounPlural };
+}
+
 export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInputProps>(
   (
     {
       className,
-      label = "Tags",
+      label,
       labelPosition,
       value = [],
       options = [],
       onChange,
       selectedItemUI: SelectedItemComponent = DefaultSelectedItemUI,
-      addButtonText = "Add Tags",
-      searchPlaceholder = "Search tags",
+      addButtonText,
+      searchPlaceholder,
       maxWidth = "568px",
       disabled = false,
       showAddButton = true,
@@ -62,6 +89,10 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
     },
     ref,
   ) => {
+    // Generate add/search text if not provided
+    const { nounSingular, nounPlural } = getNounFromLabel(label);
+    const computedAddButtonText = addButtonText || `Add ${nounSingular}`;
+    const computedSearchPlaceholder = searchPlaceholder || `Search ${nounPlural}`;
     const [open, setOpen] = React.useState(false);
     const [searchValue, setSearchValue] = React.useState("");
 
@@ -122,10 +153,8 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
               )}
               onClick={() => !disabled && setOpen(true)}
             >
-              {value.length === 0 && (
-                <span className="text-gray-400 text-xs">{addButtonText}</span>
-              )}
-              {value.map((item) => (
+              {/* Only show selected items and their remove buttons if there are selected values */}
+              {value.length > 0 && value.map((item) => (
                 <SelectedItemComponent
                   key={item.id}
                   item={item}
@@ -133,6 +162,9 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
                   removable={allowRemove}
                 />
               ))}
+              {value.length === 0 && (
+                <span className="text-gray-400 text-xs">{computedAddButtonText}</span>
+              )}
               <Button
                 type="button"
                 variant="ghost"
@@ -143,6 +175,19 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
               >
                 <Plus className="h-4 w-4 text-gray-400" />
               </Button>
+              {/* Show global clear X only if there are selected values */}
+              {value.length > 0 && (
+                <button
+                  type="button"
+                  className="flex items-center justify-center px-1 text-[#BABABA] hover:text-gray-600 focus:outline-none"
+                  onClick={e => { e.stopPropagation(); if (!disabled) onChange([]); }}
+                  tabIndex={-1}
+                  disabled={disabled}
+                  aria-label="Clear all selections"
+                >
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              )}
             </div>
           </PopoverTrigger>
           <PopoverContent className="p-0 w-[411px]" align="start">
@@ -152,7 +197,7 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
               onSelectionChange={handleSelectionChange}
               searchValue={searchValue}
               onSearchChange={setSearchValue}
-              searchPlaceholder={placeholder || searchPlaceholder}
+              searchPlaceholder={placeholder || computedSearchPlaceholder}
               onCreateNew={handleCreateNew}
             />
           </PopoverContent>
