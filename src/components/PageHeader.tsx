@@ -15,6 +15,8 @@ interface ProviderInfo {
 
 interface ProviderSearchItem {
   fullName: string;
+  firstName: string;
+  lastName: string;
   title: string;
   npi: string;
   specialty: string;
@@ -65,9 +67,11 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   }, [npi, providerInfo]);
 
   // Filter providers by name or NPI
-  const filteredProviders = search.trim()
+  const filteredProviders = search.trim().length > 0
     ? providerSearchList.filter((p) =>
         p.fullName.toLowerCase().includes(search.toLowerCase()) ||
+        (p.firstName && p.firstName.toLowerCase().includes(search.toLowerCase())) ||
+        (p.lastName && p.lastName.toLowerCase().includes(search.toLowerCase())) ||
         p.npi.includes(search)
       )
     : [];
@@ -84,7 +88,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   };
 
   const handleInputFocus = () => {
-    if (search.trim()) setDropdownOpen(true);
+    setDropdownOpen(true);
   };
 
   const handleClear = () => {

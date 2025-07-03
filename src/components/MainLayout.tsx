@@ -19,6 +19,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { generateSampleData } from "@/lib/dataGenerator";
 import { gridDefinitions } from "@/lib/gridDefinitions";
 import NavItem from "@/components/NavItem";
+import providerInfoData from "@/data/providers.json";
 
 const MainLayout: React.FC = () => {
   const { npi } = useParams<{ npi?: string }>();
@@ -47,23 +48,9 @@ const MainLayout: React.FC = () => {
   const [sidePanelOpen, setSidePanelOpen] = useState(false);
   const [activePanelGridName, setActivePanelGridName] = useState<string | null>(null);
 
-  // Generate provider search list from all grids
-  const allProviderRows: any[] = [];
-  
-  // Collect providers from all grids
-  gridDefinitions.forEach(grid => {
-    const gridRows = generateSampleData(grid.tableName, 15);
-    gridRows.forEach(row => {
-      // Only add if this provider isn't already in the list (by NPI)
-      const existingProvider = allProviderRows.find(p => p.npi_number === row.npi_number);
-      if (!existingProvider && row.npi_number) {
-        allProviderRows.push(row);
-      }
-    });
-  });
-  
-  const providerSearchList = allProviderRows.map(row => ({
-    fullName: row.provider_name || `${row.first_name || ""} ${row.last_name || ""}`.trim(),
+  // Use real provider data for search list
+  const providerSearchList = providerInfoData.map(row => ({
+    fullName: `${row.first_name || ""} ${row.last_name || ""}`.trim(),
     firstName: row.first_name || "",
     lastName: row.last_name || "",
     title: row.title || "",
