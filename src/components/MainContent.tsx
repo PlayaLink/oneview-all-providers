@@ -9,7 +9,6 @@ import { gridDefinitions, getGridsByGroup } from "@/lib/gridDefinitions";
 import { getIconByName } from "@/lib/iconMapping";
 import { Provider } from "@/types";
 import providerInfoConfig from "@/data/provider_info_details.json";
-import providerInfoData from "@/data/providers.json";
 
 interface MainContentProps {
   selectedItem?: string | null;
@@ -24,6 +23,7 @@ interface MainContentProps {
   setSidePanelOpen?: (open: boolean) => void;
   activePanelGridName?: string | null;
   onCloseSidePanel?: () => void;
+  providerInfoData?: any[];
 }
 
 const MainContent: React.FC<MainContentProps> = ({
@@ -39,6 +39,7 @@ const MainContent: React.FC<MainContentProps> = ({
   setSidePanelOpen,
   activePanelGridName,
   onCloseSidePanel,
+  providerInfoData = [],
 }) => {
   const [currentGridIndex, setCurrentGridIndex] = useState(0);
   const [selectedGridName, setSelectedGridName] = useState<string | null>(null);
@@ -114,7 +115,7 @@ const MainContent: React.FC<MainContentProps> = ({
 
   const getDataForGrid = (gridKey: string) => {
     if (gridKey === "Provider_Info") {
-      return providerInfoData;
+      return providerInfoData || [];
     }
     return sampleDataRef.current[gridKey] || [];
   };
@@ -170,38 +171,16 @@ const MainContent: React.FC<MainContentProps> = ({
   };
 
   if (singleProviderNpi) {
-    // Find the selected provider's info from Provider Info grid
+    // Find the selected provider's info from live providerInfoData (Supabase)
     const providerInfoGrid = gridDefinitions.find(g => g.tableName === "Provider_Info");
-    const providerRows = providerInfoGrid ? generateSampleData(providerInfoGrid.tableName, 15) : [];
+    const providerRows = Array.isArray(providerInfoData) ? providerInfoData : [];
     const selectedProvider = providerRows.find(row => String(row.npi_number) === String(singleProviderNpi));
-
-    // Helper to synthesize a row for any grid, matching the selected provider's info
-    function synthesizeRowForGrid(grid: typeof gridDefinitions[number]) {
-      const row = generateSampleData(grid.tableName, 1)[0] || {};
-      if (selectedProvider) {
-        // Copy over key provider fields
-        row.provider_name = selectedProvider.provider_name;
-        row.npi_number = selectedProvider.npi_number;
-        row.primary_specialty = selectedProvider.primary_specialty;
-        row.title = selectedProvider.title;
-        row.first_name = selectedProvider.first_name;
-        row.last_name = selectedProvider.last_name;
-        row.work_email = selectedProvider.work_email;
-        row.personal_email = selectedProvider.personal_email;
-        row.mobile_phone_number = selectedProvider.mobile_phone_number;
-      }
-      // Ensure unique ID for each grid to prevent AG Grid issues
-      row.id = `${grid.tableName}-1`;
-      return row;
-    }
 
     // Handler for row click in single-provider view
     const handleSingleProviderRowClick = (row: any) => {
       if (!onGridRowSelect) return;
-      
-      const gridName = row._gridTableName;
+      const gridName = providerInfoGrid?.tableName || "Provider_Info";
       const currentSelectedRowId = selectedRowsByGrid[gridName];
-      
       if (currentSelectedRowId === row.id) {
         // Unselect and close side panel if clicking the already selected row
         onGridRowSelect(gridName, null, null);
@@ -215,7 +194,6 @@ const MainContent: React.FC<MainContentProps> = ({
             onGridRowSelect(existingGridName, null, null);
           }
         });
-        
         // Select the new row and open side panel
         onGridRowSelect(gridName, row.id, row);
       }
@@ -223,38 +201,19 @@ const MainContent: React.FC<MainContentProps> = ({
 
     return (
       <div className="flex flex-col flex-1 min-h-0 w-full px-4 pt-4 pb-8">
-        {gridsToShow.map((grid) => {
-          const row = synthesizeRowForGrid(grid);
-          // Attach grid name to row for side panel title
-          row._gridName = grid.tableName.replace(/_/g, " ");
-          row._gridTableName = grid.tableName;
-          const columns = getColumnsForGrid(grid.tableName);
-          
-          // Check for missing columns in row data
-          const missingColumns = columns
-            .map(col => col.field)
-            .filter(field => !(field in row));
-          if (missingColumns.length > 0) {
-            console.warn('  - Missing columns in row data:', missingColumns);
-          }
-          
-          // Get the selected row ID for this grid
-          const gridSelectedRowId = selectedRowsByGrid[grid.tableName];
-          
-          return (
-            <div key={grid.tableName} className="flex flex-col mb-8 bg-white rounded shadow" style={{ height: 122 }}>
-              <DataGrid
-                title={grid.tableName.replace(/_/g, " ")}
-                icon={getIconByName(grid.icon)}
-                data={[row]}
-                columns={columns}
-                onRowClicked={handleSingleProviderRowClick}
-                showCheckboxes={false}
-                selectedRowId={gridSelectedRowId}
-              />
-            </div>
-          );
-        })}
+        {providerInfoGrid && (
+          <div key={providerInfoGrid.tableName} className="flex flex-col mb-8 bg-white rounded shadow" style={{ height: 122 }}>
+            <DataGrid
+              title={providerInfoGrid.tableName.replace(/_/g, " ")}
+              icon={getIconByName(providerInfoGrid.icon)}
+              data={providerRows}
+              columns={getColumnsForGrid(providerInfoGrid.tableName)}
+              onRowClicked={handleSingleProviderRowClick}
+              showCheckboxes={false}
+              selectedRowId={selectedRowsByGrid[providerInfoGrid.tableName]}
+            />
+          </div>
+        )}
         {/* Side Panel for single-provider view */}
         {sidePanelOpen && activePanelGridName && selectedProviderByGrid[activePanelGridName] && (
           <SidePanel

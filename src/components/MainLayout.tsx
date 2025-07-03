@@ -19,7 +19,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import { generateSampleData } from "@/lib/dataGenerator";
 import { gridDefinitions } from "@/lib/gridDefinitions";
 import NavItem from "@/components/NavItem";
-import providerInfoData from "@/data/providers.json";
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/lib/supabaseClient';
+
+const fetchProviders = async () => {
+  const { data, error } = await supabase.from('provider_info').select('*');
+  if (error) throw error;
+  return data;
+};
 
 const MainLayout: React.FC = () => {
   const { npi } = useParams<{ npi?: string }>();
@@ -48,16 +55,26 @@ const MainLayout: React.FC = () => {
   const [sidePanelOpen, setSidePanelOpen] = useState(false);
   const [activePanelGridName, setActivePanelGridName] = useState<string | null>(null);
 
-  // Use real provider data for search list
-  const providerSearchList = providerInfoData.map(row => ({
-    fullName: `${row.first_name || ""} ${row.last_name || ""}`.trim(),
-    firstName: row.first_name || "",
-    lastName: row.last_name || "",
-    title: row.title || "",
-    npi: row.npi_number || "",
-    specialty: row.primary_specialty || "",
-    email: row.work_email || row.personal_email || "",
-  }));
+  // Fetch provider data from Supabase
+  const { data: providerInfoData, isLoading, error } = useQuery<any[], Error>({
+    queryKey: ['providers'],
+    queryFn: fetchProviders,
+  });
+
+  // Build the search list from live data
+  const providerSearchList = React.useMemo(() => (
+    Array.isArray(providerInfoData)
+      ? providerInfoData.map(row => ({
+          fullName: `${row.first_name || ""} ${row.last_name || ""}`.trim(),
+          firstName: row.first_name || "",
+          lastName: row.last_name || "",
+          title: row.title || "",
+          npi: row.npi_number || "",
+          specialty: row.primary_specialty || "",
+          email: row.work_email || row.personal_email || "",
+        }))
+      : []
+  ), [providerInfoData]);
 
   // Find selected provider info for single-provider view
   const selectedProviderInfo = npi
@@ -200,6 +217,13 @@ const MainLayout: React.FC = () => {
     setSidePanelOpen(false);
     setActivePanelGridName(null);
   };
+
+  React.useEffect(() => {
+    console.log('Fetched providerInfoData:', providerInfoData);
+    if (error) {
+      console.error('Supabase fetch error:', error);
+    }
+  }, [providerInfoData, error]);
 
   return (
     <div className="h-screen flex flex-col bg-white">
@@ -375,6 +399,7 @@ const MainLayout: React.FC = () => {
               setSidePanelOpen={setSidePanelOpen}
               activePanelGridName={activePanelGridName}
               onCloseSidePanel={handleCloseSidePanel}
+              providerInfoData={providerInfoData}
             />
           </div>
         ) : gridSectionMode === "left-nav" ? (
@@ -431,6 +456,7 @@ const MainLayout: React.FC = () => {
                 setSidePanelOpen={setSidePanelOpen}
                 activePanelGridName={activePanelGridName}
                 onCloseSidePanel={handleCloseSidePanel}
+                providerInfoData={providerInfoData}
               />
             </div>
           </div>
@@ -456,6 +482,7 @@ const MainLayout: React.FC = () => {
                 setSidePanelOpen={setSidePanelOpen}
                 activePanelGridName={activePanelGridName}
                 onCloseSidePanel={handleCloseSidePanel}
+                providerInfoData={providerInfoData}
               />
             </div>
           </div>

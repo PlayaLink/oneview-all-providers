@@ -7,6 +7,8 @@ import SingleSelectInput from "./inputs/SingleSelectInput";
 import TextInputField from "./inputs/TextInputField";
 import { Provider } from "@/types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { updateProvider } from '@/lib/supabaseClient';
+import { useQueryClient } from '@tanstack/react-query';
 
 // Types for input fields
 export interface InputField {
@@ -37,6 +39,7 @@ interface SidePanelProps {
 const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig, onClose, title }) => {
   const [formValues, setFormValues] = React.useState<Record<string, any>>({});
   const [tab, setTab] = useState("details");
+  const queryClient = useQueryClient();
 
   // Initialize form values from selectedRow when it changes
   React.useEffect(() => {
@@ -70,8 +73,20 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
   }, {});
 
   // Handle input change
-  const handleChange = (label: string, value: any) => {
+  const handleChange = async (label: string, value: any) => {
     setFormValues((prev) => ({ ...prev, [label]: value }));
+
+    // Find the rowKey for this label
+    const field = inputConfig.find(f => f.label === label);
+    if (field && field.rowKey && selectedRow && selectedRow.id) {
+      try {
+        await updateProvider(selectedRow.id, { [field.rowKey]: value });
+        // Refetch providers from Supabase
+        queryClient.invalidateQueries({ queryKey: ['providers'] });
+      } catch (err) {
+        console.error('Failed to update provider:', err);
+      }
+    }
   };
 
   return (
@@ -94,7 +109,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
               selectedRow.last_name ||
               ''
             )}
-            {selectedRow.title ? `, ${selectedRow.title}` : ''}
+            {selectedRow.title ? `, ${typeof selectedRow.title === 'object' ? (selectedRow.title.label || selectedRow.title.id || '') : selectedRow.title}` : ''}
           </h2>
         </div>
         <button
@@ -154,7 +169,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
                           labelPosition="left"
                           value={formValues[field.label] || []}
                           options={field.options?.map((opt: string) => ({ id: opt, label: opt })) || []}
-                          onChange={(val) => handleChange(field.label, val)}
+                          onChange={(val) => handleChange(field.label, Array.isArray(val) ? val.map(v => v.id) : [])}
                           placeholder={field.placeholder}
                           className="flex-1 min-w-0"
                         />
@@ -167,7 +182,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
                           labelPosition="left"
                           value={formValues[field.label] || null}
                           options={field.options?.map((opt: string) => ({ id: opt, label: opt })) || []}
-                          onChange={(val) => handleChange(field.label, val)}
+                          onChange={(val) => handleChange(field.label, val?.id ?? val)}
                           placeholder={field.placeholder}
                           className="flex-1 min-w-0"
                         />
