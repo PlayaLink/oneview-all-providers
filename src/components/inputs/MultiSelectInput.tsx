@@ -89,12 +89,19 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
     },
     ref,
   ) => {
+    // Extra safety: ensure value and options are never undefined
+    value = value ?? [];
+    options = options ?? [];
+
     // Generate add/search text if not provided
     const { nounSingular, nounPlural } = getNounFromLabel(label);
     const computedAddButtonText = addButtonText || `Add ${nounSingular}`;
     const computedSearchPlaceholder = searchPlaceholder || `Search ${nounPlural}`;
     const [open, setOpen] = React.useState(false);
     const [searchValue, setSearchValue] = React.useState("");
+    const containerRef = React.useRef<HTMLDivElement>(null);
+    const anchorRef = React.useRef<HTMLButtonElement>(null);
+    const [contentWidth, setContentWidth] = React.useState<number | undefined>(undefined);
 
     const handleSelectionChange = React.useCallback(
       (item: MultiSelectItem, isSelected: boolean) => {
@@ -138,70 +145,88 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
       [value, onChange, disabled],
     );
 
+    React.useEffect(() => {
+      if (open && containerRef.current) {
+        setContentWidth(containerRef.current.offsetWidth);
+      }
+    }, [open]);
+
     return (
-      <div className={cn(
-        (labelPosition === "left" ? "flex items-center gap-2 min-w-0" : "flex flex-col gap-1"),
-        className
-      )} ref={ref} {...props}>
-        {label && <label className="text-xs font-semibold mb-1">{label}</label>}
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <div
-              className={cn(
-                "flex flex-wrap items-center gap-1 border border-gray-300 rounded px-2 py-1 min-h-[40px] bg-white cursor-pointer",
-                disabled && "opacity-50 cursor-not-allowed"
-              )}
-              onClick={() => !disabled && setOpen(true)}
-            >
-              {/* Only show selected items and their remove buttons if there are selected values */}
-              {value.length > 0 && value.map((item) => (
-                <SelectedItemComponent
-                  key={item.id}
-                  item={item}
-                  onRemove={allowRemove ? () => handleRemove(item) : undefined}
-                  removable={allowRemove}
-                />
-              ))}
-              {value.length === 0 && (
-                <span className="text-gray-400 text-xs">{computedAddButtonText}</span>
-              )}
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="ml-auto"
-                tabIndex={-1}
-                disabled={disabled}
+      <div
+        ref={containerRef}
+        className={cn(
+          (labelPosition === "left" ? "flex items-start gap-2 min-w-0" : "flex flex-col gap-1"),
+          className
+        )}
+        {...props}
+      >
+        {label && (
+          <label className={cn(
+            "text-xs font-semibold mb-1",
+            labelPosition === "left" && "min-w-[120px] min-h-[38px] flex items-start pt-2"
+          )}>{label}</label>
+        )}
+        <div className={cn("flex-1")}> {/* Value UI container */}
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <div
+                ref={containerRef}
+                className={cn(
+                  "flex flex-wrap items-center gap-1 rounded px-2 min-h-[40px] bg-white cursor-pointer relative z-10",
+                  disabled && "opacity-50 cursor-not-allowed",
+                  labelPosition === "left" && "min-h-[38px]"
+                )}
+                tabIndex={0}
+                role="button"
+                aria-haspopup="listbox"
+                aria-expanded={open}
+                style={{ width: '100%' }}
+                onClick={() => { if (!disabled) setOpen((prev) => !prev); }}
               >
-                <Plus className="h-4 w-4 text-gray-400" />
-              </Button>
-              {/* Show global clear X only if there are selected values */}
-              {value.length > 0 && (
-                <button
+                {/* Only show selected items and their remove buttons if there are selected values */}
+                {value.length > 0 && value.map((item) => (
+                  <SelectedItemComponent
+                    key={item.id}
+                    item={item}
+                    onRemove={allowRemove ? () => handleRemove(item) : undefined}
+                    removable={allowRemove}
+                  />
+                ))}
+                {value.length === 0 && (
+                  <span className="text-gray-400 text-xs mr-1">{computedAddButtonText}</span>
+                )}
+                <Button
                   type="button"
-                  className="flex items-center justify-center px-1 text-[#BABABA] hover:text-gray-600 focus:outline-none"
-                  onClick={e => { e.stopPropagation(); if (!disabled) onChange([]); }}
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 p-0 flex items-center justify-center"
                   tabIndex={-1}
                   disabled={disabled}
-                  aria-label="Clear all selections"
+                  aria-label={computedAddButtonText}
                 >
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                </button>
-              )}
-            </div>
-          </PopoverTrigger>
-          <PopoverContent className="p-0 w-[411px]" align="start">
-            <MultiSelectDropdown
-              options={options}
-              selectedItems={value}
-              onSelectionChange={handleSelectionChange}
-              searchValue={searchValue}
-              onSearchChange={setSearchValue}
-              searchPlaceholder={placeholder || computedSearchPlaceholder}
-              onCreateNew={handleCreateNew}
-            />
-          </PopoverContent>
-        </Popover>
+                  <Plus className="h-4 w-4 text-gray-600 group-hover:text-[#008BC9] transition-colors duration-150" />
+                </Button>
+              </div>
+            </PopoverTrigger>
+            <PopoverContent
+              className="p-0 z-[9999]"
+              align="start"
+              sideOffset={0}
+              style={{ width: containerRef.current ? containerRef.current.offsetWidth : undefined }}
+            >
+              <MultiSelectDropdown
+                options={options}
+                selectedItems={value}
+                onSelectionChange={handleSelectionChange}
+                searchValue={searchValue}
+                onSearchChange={setSearchValue}
+                searchPlaceholder={placeholder || computedSearchPlaceholder}
+                onCreateNew={handleCreateNew}
+                className="w-full"
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
     );
   },
