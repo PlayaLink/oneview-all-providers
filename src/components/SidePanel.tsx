@@ -86,7 +86,16 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-[#008BC9] text-white">
         <div className="flex-1">
-          <h2 className="text-lg font-semibold">{title ? title : selectedRow.provider_name || selectedRow.firstName || selectedRow.lastName || ''}</h2>
+          <h2 className="text-lg font-semibold">
+            {title ? title : (
+              selectedRow.provider_name ||
+              ((selectedRow.first_name || '') + (selectedRow.last_name ? ' ' + selectedRow.last_name : '')) ||
+              selectedRow.first_name ||
+              selectedRow.last_name ||
+              ''
+            )}
+            {selectedRow.title ? `, ${selectedRow.title}` : ''}
+          </h2>
         </div>
         <button
           onClick={onClose}
