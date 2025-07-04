@@ -33,7 +33,7 @@ export const SingleSelectInput: React.FC<SingleSelectInputProps> = ({
   const filteredOptions = React.useMemo(() => {
     if (!searchValue) return options;
     return options.filter((option) =>
-      option.label.toLowerCase().includes(searchValue.toLowerCase()),
+      option.label.toLowerCase().includes(searchValue.toLowerCase())
     );
   }, [options, searchValue]);
 
@@ -45,7 +45,7 @@ export const SingleSelectInput: React.FC<SingleSelectInputProps> = ({
         !containerRef.current.contains(event.target as Node)
       ) {
         setDropdownOpen(false);
-        setSearchValue(value?.label || "");
+        setSearchValue(value ? value.label : "");
       }
     }
     if (dropdownOpen) {
@@ -61,7 +61,7 @@ export const SingleSelectInput: React.FC<SingleSelectInputProps> = ({
   // When value changes, update searchValue
   React.useEffect(() => {
     if (!dropdownOpen) {
-      setSearchValue(value?.label || "");
+      setSearchValue(value ? value.label : "");
     }
   }, [value, dropdownOpen]);
 
@@ -71,7 +71,7 @@ export const SingleSelectInput: React.FC<SingleSelectInputProps> = ({
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value || "");
+    setSearchValue(e.target.value);
     setDropdownOpen(true);
   };
 
@@ -93,23 +93,19 @@ export const SingleSelectInput: React.FC<SingleSelectInputProps> = ({
     <div
       ref={containerRef}
       className={cn(
-        labelPosition === "left"
-          ? "flex items-center gap-2 min-w-0"
-          : "flex flex-col gap-1",
-        className,
+        labelPosition === "left" ? "flex items-center gap-2 min-w-0" : "flex flex-col gap-1",
+        className
       )}
       style={{ position: "relative" }}
     >
       {label && (
-        <label className="text-xs font-semibold mb-1 min-w-[120px]">
-          {label}
-        </label>
+        <label className="text-xs font-semibold mb-1 min-w-[120px]">{label}</label>
       )}
       <div className="relative w-full">
         <input
           ref={inputRef}
           type="text"
-          value={dropdownOpen ? searchValue || "" : value?.label || ""}
+          value={dropdownOpen ? searchValue : value ? value.label : ""}
           onFocus={handleInputFocus}
           onChange={handleInputChange}
           placeholder={dropdownOpen ? placeholder : ""}
@@ -117,7 +113,7 @@ export const SingleSelectInput: React.FC<SingleSelectInputProps> = ({
           className={cn(
             "w-full px-2 py-[10px] text-xs font-poppins text-[#4C5564] border border-gray-300 rounded bg-white outline-none transition-colors",
             "focus:ring-2 focus:ring-blue-200",
-            disabled && "opacity-50 cursor-not-allowed bg-gray-100",
+            disabled && "opacity-50 cursor-not-allowed bg-gray-100"
           )}
         />
         {/* Only show clear X if a value is set and not searching */}
@@ -140,16 +136,11 @@ export const SingleSelectInput: React.FC<SingleSelectInputProps> = ({
         {dropdownOpen && (
           <div
             className="absolute left-0 z-50 w-full bg-white border border-gray-300 rounded-b shadow-lg max-h-60 overflow-y-auto"
-            style={{
-              minWidth: inputRef.current?.offsetWidth || undefined,
-              top: "calc(100% + 1px)",
-            }}
+            style={{ minWidth: inputRef.current?.offsetWidth || undefined, top: 'calc(100% + 1px)' }}
           >
             {filteredOptions.length === 0 ? (
               <div className="px-2 py-2 text-xs text-[#BABABA] font-poppins">
-                {searchValue
-                  ? "No matching options found"
-                  : "No options available"}
+                {searchValue ? "No matching options found" : "No options available"}
               </div>
             ) : (
               filteredOptions.map((option) => {
@@ -160,10 +151,8 @@ export const SingleSelectInput: React.FC<SingleSelectInputProps> = ({
                     key={option.id}
                     className={cn(
                       "flex items-center gap-2 px-2 py-2 cursor-pointer transition-colors",
-                      isSelected
-                        ? "bg-blue-50 text-blue-700"
-                        : "hover:bg-gray-50",
-                      isDisabled && "opacity-50 cursor-not-allowed",
+                      isSelected ? "bg-blue-50 text-blue-700" : "hover:bg-gray-50",
+                      isDisabled && "opacity-50 cursor-not-allowed"
                     )}
                     onClick={() => {
                       if (!isDisabled) handleSelect(option);
@@ -183,4 +172,4 @@ export const SingleSelectInput: React.FC<SingleSelectInputProps> = ({
   );
 };
 
-export default SingleSelectInput;
+export default SingleSelectInput; 
