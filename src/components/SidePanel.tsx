@@ -122,7 +122,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
       </div>
       {/* Tabs */}
       <Tabs value={tab} onValueChange={setTab} orientation="vertical" className="flex h-full">
-        <TabsList className="flex flex-col w-16 bg-gray-50 rounded-l-lg pt-4 pb-2 px-2 p-1 gap-1 border-r border-gray-200 items-center justify-start">
+        <TabsList className="flex flex-col w-16 pt-4 pb-2 px-2 p-1 gap-1 border-r border-gray-200 items-center justify-start">
           <TabsTrigger
             value="details"
             className={`flex flex-col items-center py-6 px-0 w-full transition-colors
@@ -154,7 +154,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
             <span className="text-xs">Docs</span>
           </TabsTrigger>
         </TabsList>
-        <div className="flex-1 min-h-0 flex flex-col p-4">
+        <div className="flex-1 min-h-0 flex flex-col p-2">
           <TabsContent value="details">
             {/* Render grouped fields as CollapsibleSections */}
             {Object.entries(groupedFields).map(([group, fields]: [string, any[]]) => (
