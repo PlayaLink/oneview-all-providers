@@ -9,6 +9,7 @@ import { Provider } from "@/types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { updateProvider } from '@/lib/supabaseClient';
 import { useQueryClient } from '@tanstack/react-query';
+import Notes from "./Notes";
 
 // Types for input fields
 export interface InputField {
@@ -153,7 +154,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
             <span className="text-xs">Docs</span>
           </TabsTrigger>
         </TabsList>
-        <div className="flex-1 p-4 overflow-y-auto">
+        <div className="flex-1 min-h-0 flex flex-col p-4">
           <TabsContent value="details">
             {/* Render grouped fields as CollapsibleSections */}
             {Object.entries(groupedFields).map(([group, fields]: [string, any[]]) => (
@@ -205,8 +206,8 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
               </CollapsibleSection>
             ))}
           </TabsContent>
-          <TabsContent value="notes">
-            <div className="text-gray-500">Notes tab content goes here.</div>
+          <TabsContent value="notes" className="flex-1 min-h-0 flex flex-col p-0 m-0">
+            <Notes className="flex-1 min-h-0" />
           </TabsContent>
           <TabsContent value="documents">
             <div className="text-gray-500">Documents tab content goes here.</div>
