@@ -109,7 +109,7 @@ export const SingleSelectInput: React.FC<SingleSelectInputProps> = ({
         <input
           ref={inputRef}
           type="text"
-          value={dropdownOpen ? searchValue : value ? value.label : ""}
+          value={dropdownOpen ? searchValue || "" : value?.label || ""}
           onFocus={handleInputFocus}
           onChange={handleInputChange}
           placeholder={dropdownOpen ? placeholder : ""}
