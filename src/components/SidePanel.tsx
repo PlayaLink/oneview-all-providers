@@ -163,7 +163,7 @@ const SidePanel: React.FC<SidePanelProps> = ({
           </TabsTrigger>
         </TabsList>
         <div className="flex-1 overflow-y-auto">
-          <TabsContent value="details">
+          <TabsContent value="details" className="p-4">
             {/* Render grouped fields as CollapsibleSections */}
             {Object.entries(groupedFields).map(
               ([group, fields]: [string, any[]]) => (
