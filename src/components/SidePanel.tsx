@@ -226,8 +226,8 @@ const SidePanel: React.FC<SidePanelProps> = ({
               ),
             )}
           </TabsContent>
-          <TabsContent value="notes">
-            <div className="text-gray-500">Notes tab content goes here.</div>
+          <TabsContent value="notes" className="h-full p-0 m-0">
+            <Notes className="h-full" />
           </TabsContent>
           <TabsContent value="documents">
             <div className="text-gray-500">
