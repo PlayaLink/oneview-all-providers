@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { MoreHorizontal } from "lucide-react";
 
 interface Note {
   id: number;
@@ -28,6 +29,9 @@ const Notes: React.FC<{ className?: string }> = ({ className }) => {
   const [notes, setNotes] = useState<Note[]>(initialNotes);
   const [input, setInput] = useState("");
   const [focused, setFocused] = useState(false);
+  const [menuOpenId, setMenuOpenId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editValue, setEditValue] = useState("");
   const inputRef = useRef<HTMLTextAreaElement | HTMLInputElement>(null);
 
   // When focused, scroll input into view
@@ -55,7 +59,41 @@ const Notes: React.FC<{ className?: string }> = ({ className }) => {
 
   const handleDeleteNote = (id: number) => {
     setNotes(notes.filter((note) => note.id !== id));
+    setMenuOpenId(null);
   };
+
+  const handleEditNote = (id: number) => {
+    setMenuOpenId(null);
+    const note = notes.find(n => n.id === id);
+    if (note) {
+      setEditingId(id);
+      setEditValue(note.text);
+    }
+  };
+
+  const handleSaveEdit = () => {
+    setNotes(notes.map(n => n.id === editingId ? { ...n, text: editValue } : n));
+    setEditingId(null);
+    setEditValue("");
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditValue("");
+  };
+
+  // Close menu on click outside
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (!(e.target as HTMLElement).closest('.note-menu')) {
+        setMenuOpenId(null);
+      }
+    };
+    if (menuOpenId !== null) {
+      document.addEventListener('mousedown', handleClick);
+      return () => document.removeEventListener('mousedown', handleClick);
+    }
+  }, [menuOpenId]);
 
   return (
     <div className={`relative flex-1 min-h-0 ${className || ""}`}>  
@@ -74,18 +112,66 @@ const Notes: React.FC<{ className?: string }> = ({ className }) => {
                     : "bg-blue-50 border-blue-200"
                 }`}
               >
-                <button
-                  className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 text-lg font-bold focus:outline-none"
-                  onClick={() => handleDeleteNote(note.id)}
-                  aria-label="Delete note"
-                  tabIndex={0}
-                >
-                  ×
-                </button>
+                {/* Ellipsis menu */}
+                <div className="absolute top-2 right-2 note-menu">
+                  <button
+                    className="text-gray-400 hover:text-gray-600 text-lg font-bold focus:outline-none"
+                    onClick={() => setMenuOpenId(note.id)}
+                    aria-label="Open note menu"
+                    tabIndex={0}
+                  >
+                    <MoreHorizontal className="w-5 h-5" />
+                  </button>
+                  {menuOpenId === note.id && (
+                    <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow-lg z-30">
+                      <button
+                        className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                        onClick={() => handleEditNote(note.id)}
+                      >
+                        Edit Note
+                      </button>
+                      <button
+                        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                        onClick={() => handleDeleteNote(note.id)}
+                      >
+                        Delete Note
+                      </button>
+                    </div>
+                  )}
+                </div>
                 <div className="text-sm font-bold mb-1 text-gray-700">
                   {note.author} - <span className="font-normal text-xs">{note.createdAt}</span>
                 </div>
-                <div className="text-sm text-gray-800 whitespace-pre-line">{note.text}</div>
+                {editingId === note.id ? (
+                  <div className="flex flex-col gap-2 mt-1">
+                    <textarea
+                      className="w-full border-2 border-blue-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 min-h-[80px] resize-none placeholder-gray-400"
+                      value={editValue}
+                      onChange={e => setEditValue(e.target.value)}
+                      maxLength={MAX_LENGTH}
+                      autoFocus
+                    />
+                    <div className="flex gap-2 justify-end">
+                      <button
+                        className="text-gray-500 text-base font-medium hover:text-gray-700"
+                        onClick={handleCancelEdit}
+                        type="button"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        className="bg-[#79AC48] hover:bg-[#6B9A3F] text-white px-4 py-2 rounded text-base font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+                        onClick={handleSaveEdit}
+                        disabled={!editValue.trim()}
+                        type="button"
+                      >
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-sm text-gray-800 whitespace-pre-line">{note.text}</div>
+                )}
               </li>
             ))}
           </ul>
@@ -93,16 +179,16 @@ const Notes: React.FC<{ className?: string }> = ({ className }) => {
       </div>
       {/* Add Note Input - absolutely positioned at bottom */}
       <div
-        className={`absolute left-0 right-0 bottom-0 bg-white border-t border-gray-200 pt-4 z-20 transition-all duration-200`}
+        className={`absolute left-0 right-0 bottom-0 bg-white border-t border-gray-200 p-4 z-20 transition-all duration-200`}
         style={{ minHeight: focused ? 170 : 40 }}
       >
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-2">
           {focused ? (
             <>
               <div className="relative">
                 <textarea
                   ref={inputRef as React.RefObject<HTMLTextAreaElement>}
-                  className="w-full h-full border-2 border-blue-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 min-h-[100px] resize-none placeholder-gray-400"
+                  className="w-full border-2 border-blue-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 min-h-[100px] resize-none placeholder-gray-400"
                   placeholder="Add a note"
                   value={input}
                   onChange={e => {
@@ -117,7 +203,7 @@ const Notes: React.FC<{ className?: string }> = ({ className }) => {
                 <span className="text-xs text-gray-600 select-none ml-1">{input.length} of {MAX_LENGTH}</span>
                 <div className="flex gap-4">
                   <button
-                    className="text-blue-600 text-base font-medium hover:underline"
+                    className="text-gray-500 text-base font-medium hover:text-gray-700"
                     onClick={() => { setInput(""); setFocused(false); }}
                     type="button"
                   >
