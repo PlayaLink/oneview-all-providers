@@ -45,7 +45,7 @@ export const SingleSelectInput: React.FC<SingleSelectInputProps> = ({
         !containerRef.current.contains(event.target as Node)
       ) {
         setDropdownOpen(false);
-        setSearchValue(value ? value.label : "");
+        setSearchValue(value?.label || "");
       }
     }
     if (dropdownOpen) {
