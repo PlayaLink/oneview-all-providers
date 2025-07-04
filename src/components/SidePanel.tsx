@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark, faUserDoctor, faFileMedical, faFolder } from "@fortawesome/free-solid-svg-icons";
+import {
+  faXmark,
+  faUserDoctor,
+  faFileMedical,
+  faFolder,
+} from "@fortawesome/free-solid-svg-icons";
 import CollapsibleSection from "./CollapsibleSection";
 import { MultiSelectInput } from "./inputs/MultiSelectInput";
 import SingleSelectInput from "./inputs/SingleSelectInput";
 import TextInputField from "./inputs/TextInputField";
+import Notes from "./Notes";
 import { Provider } from "@/types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
@@ -34,7 +40,13 @@ interface SidePanelProps {
   title?: string;
 }
 
-const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig, onClose, title }) => {
+const SidePanel: React.FC<SidePanelProps> = ({
+  isOpen,
+  selectedRow,
+  inputConfig,
+  onClose,
+  title,
+}) => {
   const [formValues, setFormValues] = React.useState<Record<string, any>>({});
   const [tab, setTab] = useState("details");
 
@@ -42,16 +54,22 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
   React.useEffect(() => {
     if (selectedRow) {
       const initialValues: Record<string, any> = {};
-      inputConfig.forEach(field => {
+      inputConfig.forEach((field) => {
         if (field.rowKey) {
-          initialValues[field.label] = selectedRow[field.rowKey] ?? (field.type === 'multi-select' ? [] : '');
+          initialValues[field.label] =
+            selectedRow[field.rowKey] ??
+            (field.type === "multi-select" ? [] : "");
         } else {
           // fallback: try to match by label as before, or use default
-          const labelKey = field.label.replace(/\s|_/g, '').toLowerCase();
+          const labelKey = field.label.replace(/\s|_/g, "").toLowerCase();
           const foundKey = Object.keys(selectedRow).find(
-            k => k.replace(/\s|_/g, '').toLowerCase() === labelKey
+            (k) => k.replace(/\s|_/g, "").toLowerCase() === labelKey,
           );
-          initialValues[field.label] = foundKey ? selectedRow[foundKey] : (field.type === 'multi-select' ? [] : '');
+          initialValues[field.label] = foundKey
+            ? selectedRow[foundKey]
+            : field.type === "multi-select"
+              ? []
+              : "";
         }
       });
       setFormValues(initialValues);
@@ -87,14 +105,15 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
       <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-[#008BC9] text-white">
         <div className="flex-1">
           <h2 className="text-lg font-semibold">
-            {title ? title : (
-              selectedRow.provider_name ||
-              ((selectedRow.first_name || '') + (selectedRow.last_name ? ' ' + selectedRow.last_name : '')) ||
-              selectedRow.first_name ||
-              selectedRow.last_name ||
-              ''
-            )}
-            {selectedRow.title ? `, ${selectedRow.title}` : ''}
+            {title
+              ? title
+              : selectedRow.provider_name ||
+                (selectedRow.first_name || "") +
+                  (selectedRow.last_name ? " " + selectedRow.last_name : "") ||
+                selectedRow.first_name ||
+                selectedRow.last_name ||
+                ""}
+            {selectedRow.title ? `, ${selectedRow.title}` : ""}
           </h2>
         </div>
         <button
@@ -105,7 +124,12 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
         </button>
       </div>
       {/* Tabs */}
-      <Tabs value={tab} onValueChange={setTab} orientation="vertical" className="flex h-full">
+      <Tabs
+        value={tab}
+        onValueChange={setTab}
+        orientation="vertical"
+        className="flex h-full"
+      >
         <TabsList className="flex flex-col w-16 bg-gray-50 rounded-l-lg pt-4 pb-2 px-2 p-1 gap-1 border-r border-gray-200 items-center justify-start">
           <TabsTrigger
             value="details"
@@ -138,63 +162,77 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
             <span className="text-xs">Docs</span>
           </TabsTrigger>
         </TabsList>
-        <div className="flex-1 p-4 overflow-y-auto">
-          <TabsContent value="details">
+        <div className="flex-1 overflow-y-auto">
+          <TabsContent value="details" className="p-4">
             {/* Render grouped fields as CollapsibleSections */}
-            {Object.entries(groupedFields).map(([group, fields]: [string, any[]]) => (
-              <CollapsibleSection key={group} title={group}>
-                <div className="flex flex-col gap-4 self-stretch">
-                  {fields.map((field: InputField) => {
-                    const inputType = getInputType(field);
-                    if (inputType === "multi-select") {
-                      return (
-                        <MultiSelectInput
-                          key={field.label}
-                          label={field.label}
-                          labelPosition="left"
-                          value={formValues[field.label] || []}
-                          options={field.options?.map((opt: string) => ({ id: opt, label: opt })) || []}
-                          onChange={(val) => handleChange(field.label, val)}
-                          placeholder={field.placeholder}
-                          className="flex-1 min-w-0"
-                        />
-                      );
-                    } else if (inputType === "single-select") {
-                      return (
-                        <SingleSelectInput
-                          key={field.label}
-                          label={field.label}
-                          labelPosition="left"
-                          value={formValues[field.label] || null}
-                          options={field.options?.map((opt: string) => ({ id: opt, label: opt })) || []}
-                          onChange={(val) => handleChange(field.label, val)}
-                          placeholder={field.placeholder}
-                          className="flex-1 min-w-0"
-                        />
-                      );
-                    } else {
-                      return (
-                        <TextInputField
-                          key={field.label}
-                          label={field.label}
-                          labelPosition="left"
-                          value={formValues[field.label] || ""}
-                          onChange={(val) => handleChange(field.label, val)}
-                          placeholder={field.placeholder}
-                          className="flex-1 min-w-0"
-                        />
-                      );
-                    }
-                  })}
-                </div>
-              </CollapsibleSection>
-            ))}
+            {Object.entries(groupedFields).map(
+              ([group, fields]: [string, any[]]) => (
+                <CollapsibleSection key={group} title={group}>
+                  <div className="flex flex-col gap-4 self-stretch">
+                    {fields.map((field: InputField) => {
+                      const inputType = getInputType(field);
+                      if (inputType === "multi-select") {
+                        return (
+                          <MultiSelectInput
+                            key={field.label}
+                            label={field.label}
+                            labelPosition="left"
+                            value={formValues[field.label] || []}
+                            options={
+                              field.options?.map((opt: string) => ({
+                                id: opt,
+                                label: opt,
+                              })) || []
+                            }
+                            onChange={(val) => handleChange(field.label, val)}
+                            placeholder={field.placeholder}
+                            className="flex-1 min-w-0"
+                          />
+                        );
+                      } else if (inputType === "single-select") {
+                        return (
+                          <SingleSelectInput
+                            key={field.label}
+                            label={field.label}
+                            labelPosition="left"
+                            value={formValues[field.label] || null}
+                            options={
+                              field.options?.map((opt: string) => ({
+                                id: opt,
+                                label: opt,
+                              })) || []
+                            }
+                            onChange={(val) => handleChange(field.label, val)}
+                            placeholder={field.placeholder}
+                            className="flex-1 min-w-0"
+                          />
+                        );
+                      } else {
+                        return (
+                          <TextInputField
+                            key={field.label}
+                            label={field.label}
+                            labelPosition="left"
+                            value={formValues[field.label] || ""}
+                            onChange={(val) => handleChange(field.label, val)}
+                            placeholder={field.placeholder}
+                            className="flex-1 min-w-0"
+                          />
+                        );
+                      }
+                    })}
+                  </div>
+                </CollapsibleSection>
+              ),
+            )}
           </TabsContent>
-          <TabsContent value="notes">
-            <div className="text-gray-500">Notes tab content goes here.</div>
+          <TabsContent value="notes" className="h-full p-0 m-0">
+            <Notes className="h-full" />
           </TabsContent>
           <TabsContent value="documents">
-            <div className="text-gray-500">Documents tab content goes here.</div>
+            <div className="text-gray-500">
+              Documents tab content goes here.
+            </div>
           </TabsContent>
         </div>
       </Tabs>
