@@ -61,7 +61,7 @@ export const SingleSelectInput: React.FC<SingleSelectInputProps> = ({
   // When value changes, update searchValue
   React.useEffect(() => {
     if (!dropdownOpen) {
-      setSearchValue(value ? value.label : "");
+      setSearchValue(value?.label || "");
     }
   }, [value, dropdownOpen]);
 
