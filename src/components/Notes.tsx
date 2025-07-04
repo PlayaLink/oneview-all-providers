@@ -94,7 +94,7 @@ const Notes: React.FC<{ className?: string }> = ({ className }) => {
       {/* Add Note Input - absolutely positioned at bottom */}
       <div
         className={`absolute left-0 right-0 bottom-0 bg-white border-t border-gray-200 pt-4 z-20 transition-all duration-200`}
-        style={{ minHeight: focused ? 200 : 40 }}
+        style={{ minHeight: focused ? 170 : 40 }}
       >
         <div className="flex flex-col">
           {focused ? (
