@@ -71,7 +71,7 @@ export const SingleSelectInput: React.FC<SingleSelectInputProps> = ({
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
+    setSearchValue(e.target.value || "");
     setDropdownOpen(true);
   };
 
