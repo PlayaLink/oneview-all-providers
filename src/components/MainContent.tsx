@@ -24,6 +24,7 @@ interface MainContentProps {
   activePanelGridName?: string | null;
   onCloseSidePanel?: () => void;
   providerInfoData?: any[];
+  user: any;
 }
 
 const MainContent: React.FC<MainContentProps> = ({
@@ -40,6 +41,7 @@ const MainContent: React.FC<MainContentProps> = ({
   activePanelGridName,
   onCloseSidePanel,
   providerInfoData = [],
+  user,
 }) => {
   const [currentGridIndex, setCurrentGridIndex] = useState(0);
   const [selectedGridName, setSelectedGridName] = useState<string | null>(null);
@@ -226,6 +228,7 @@ const MainContent: React.FC<MainContentProps> = ({
                 ? `${activePanelGridName.replace(/_/g, " ")} for ${selectedProviderByGrid[activePanelGridName].provider_name}${selectedProviderByGrid[activePanelGridName].title ? ", " + selectedProviderByGrid[activePanelGridName].title : ""}`
                 : undefined
             }
+            user={user}
           />
         )}
       </div>
@@ -338,6 +341,7 @@ const MainContent: React.FC<MainContentProps> = ({
             ? `${activeGridName.replace(/_/g, " ")} for ${selectedProvider.provider_name}${selectedProvider.title ? ", " + selectedProvider.title : ""}`
             : undefined
         }
+        user={user}
       />
     </div>
   );

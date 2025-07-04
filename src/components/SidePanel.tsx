@@ -35,9 +35,10 @@ interface SidePanelProps {
   inputConfig: InputField[];
   onClose: () => void;
   title?: string;
+  user: any;
 }
 
-const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig, onClose, title }) => {
+const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig, onClose, title, user }) => {
   const [formValues, setFormValues] = React.useState<Record<string, any>>({});
   const [tab, setTab] = useState("details");
   const queryClient = useQueryClient();
@@ -120,7 +121,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
           <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
         </button>
       </div>
-      {/* Tabs */}
+      {/* Tabs */}``
       <Tabs value={tab} onValueChange={setTab} orientation="vertical" className="flex h-full">
         <TabsList className="flex flex-col w-16 pt-4 pb-2 px-2 p-1 gap-1 border-r border-gray-200 items-center justify-start">
           <TabsTrigger
@@ -207,7 +208,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
             ))}
           </TabsContent>
           <TabsContent value="notes" className="flex-1 min-h-0 flex flex-col p-0 m-0">
-            <Notes className="flex-1 min-h-0" />
+            <Notes className="flex-1 min-h-0" user={user} />
           </TabsContent>
           <TabsContent value="documents">
             <div className="text-gray-500">Documents tab content goes here.</div>

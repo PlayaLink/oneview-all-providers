@@ -28,7 +28,7 @@ const fetchProviders = async () => {
   return data;
 };
 
-const MainLayout: React.FC = () => {
+const MainLayout: React.FC<{ user: any }> = ({ user }) => {
   const { npi } = useParams<{ npi?: string }>();
   const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -400,6 +400,7 @@ const MainLayout: React.FC = () => {
               activePanelGridName={activePanelGridName}
               onCloseSidePanel={handleCloseSidePanel}
               providerInfoData={providerInfoData}
+              user={user}
             />
           </div>
         ) : gridSectionMode === "left-nav" ? (
@@ -457,6 +458,7 @@ const MainLayout: React.FC = () => {
                 activePanelGridName={activePanelGridName}
                 onCloseSidePanel={handleCloseSidePanel}
                 providerInfoData={providerInfoData}
+                user={user}
               />
             </div>
           </div>
@@ -483,6 +485,7 @@ const MainLayout: React.FC = () => {
                 activePanelGridName={activePanelGridName}
                 onCloseSidePanel={handleCloseSidePanel}
                 providerInfoData={providerInfoData}
+                user={user}
               />
             </div>
           </div>
