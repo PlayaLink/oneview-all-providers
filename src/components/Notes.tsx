@@ -91,10 +91,14 @@ export const Notes: React.FC<NotesProps> = ({ className }) => {
           Notes
         </h3>
         <div className="flex items-center">
-          <button className="flex items-center justify-center w-6 h-6">
+          <button className="flex flex-col items-center justify-center w-6 h-6 relative">
             <FontAwesomeIcon
-              icon={faArrowDownArrowUp}
-              className="w-4 h-4 text-[#212529] opacity-40"
+              icon={faChevronUp}
+              className="w-3 h-3 text-[#212529] -mb-1"
+            />
+            <FontAwesomeIcon
+              icon={faChevronDown}
+              className="w-3 h-3 text-[#212529] opacity-40"
             />
           </button>
         </div>
