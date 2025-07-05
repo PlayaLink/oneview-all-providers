@@ -5,9 +5,9 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-export async function updateProvider(id: number, updates: Record<string, any>) {
+export async function updateProvider(id: string, updates: Record<string, any>) {
   const { data, error } = await supabase
-    .from('provider_info')
+    .from('providers')
     .update(updates)
     .eq('id', id)
     .select();

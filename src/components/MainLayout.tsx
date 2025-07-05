@@ -23,7 +23,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabaseClient';
 
 const fetchProviders = async () => {
-  const { data, error } = await supabase.from('provider_info').select('*');
+  const { data, error } = await supabase.from('providers').select('*');
   if (error) throw error;
   return data;
 };
