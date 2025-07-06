@@ -30,4 +30,22 @@ export async function fetchStateLicenses() {
     `);
   if (error) throw error;
   return data;
+}
+
+export async function fetchStateLicensesByProvider(providerId: string) {
+  const { data, error } = await supabase
+    .from('state_licenses')
+    .select(`
+      *,
+      provider:providers(
+        id,
+        first_name,
+        last_name,
+        title,
+        primary_specialty
+      )
+    `)
+    .eq('provider_id', providerId);
+  if (error) throw error;
+  return data;
 } 

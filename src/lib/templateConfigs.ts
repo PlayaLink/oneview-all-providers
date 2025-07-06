@@ -198,13 +198,6 @@ export const templateConfigs: TemplateConfig[] = [
             type: "text",
             placeholder: "Enter mobile phone",
             rowKey: "mobile_phone_number"
-          },
-          {
-            label: "Work Phone",
-            group: "Contact Information",
-            type: "text",
-            placeholder: "Enter work phone",
-            rowKey: "work_phone"
           }
         ]
       }
@@ -234,65 +227,74 @@ export const templateConfigs: TemplateConfig[] = [
         enabled: true
       },
       {
-        id: "renewal",
-        label: "Renewal",
-        icon: "calendar",
+        id: "history",
+        label: "History",
+        icon: "clock",
         enabled: true
       }
     ],
     fieldGroups: [
       {
-        id: "license_info",
-        title: "License Information",
+        id: "license_details",
+        title: "License Details",
         fields: [
           {
             label: "License Type",
-            group: "License Information",
+            group: "License Details",
             type: "single-select",
             placeholder: "Select license type",
+            required: true,
             options: [
-              "Medical License",
-              "Nursing License",
-              "Pharmacy License",
-              "Dental License",
-              "Psychology License",
-              "Social Work License",
-              "Physical Therapy License",
-              "Occupational Therapy License"
+              "MD - Medical Doctor",
+              "DO - Doctor of Osteopathic Medicine",
+              "NP - Nurse Practitioner",
+              "PA - Physician Assistant",
+              "RN - Registered Nurse",
+              "LPN - Licensed Practical Nurse",
+              "CRNA - Certified Registered Nurse Anesthetist",
+              "DPM - Doctor of Podiatric Medicine",
+              "DDS - Doctor of Dental Surgery",
+              "DMD - Doctor of Dental Medicine"
             ],
             rowKey: "license_type"
           },
           {
             label: "License Number",
-            group: "License Information",
+            group: "License Details",
             type: "text",
             placeholder: "Enter license number",
             required: true,
-            rowKey: "license_number"
+            rowKey: "license"
+          },
+          {
+            label: "Additional Info",
+            group: "License Details",
+            type: "text",
+            placeholder: "Enter additional information",
+            rowKey: "license_additional_info"
           },
           {
             label: "State",
-            group: "License Information",
+            group: "License Details",
             type: "single-select",
             placeholder: "Select state",
+            required: true,
             options: [
-              "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut",
-              "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa",
-              "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan",
-              "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
-              "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio",
-              "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
-              "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia",
-              "Wisconsin", "Wyoming"
+              "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
+              "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
+              "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
+              "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
+              "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"
             ],
             rowKey: "state"
           },
           {
             label: "Status",
-            group: "License Information",
+            group: "License Details",
             type: "single-select",
             placeholder: "Select status",
-            options: ["Active", "Inactive", "Suspended", "Revoked", "Pending", "Expired"],
+            required: true,
+            options: ["Active", "Expired", "Pending", "Suspended", "Revoked"],
             rowKey: "status"
           }
         ]
@@ -316,32 +318,32 @@ export const templateConfigs: TemplateConfig[] = [
             rowKey: "expiration_date"
           },
           {
-            label: "Renewal Date",
+            label: "Expires Within",
             group: "Important Dates",
-            type: "date",
-            placeholder: "Select renewal date",
-            rowKey: "renewal_date"
+            type: "text",
+            placeholder: "Days until expiration",
+            rowKey: "expires_within"
           }
         ]
       },
       {
-        id: "additional_info",
-        title: "Additional Information",
+        id: "metadata",
+        title: "Metadata",
         fields: [
           {
-            label: "License Additional Info",
-            group: "Additional Information",
-            type: "text",
-            placeholder: "Enter additional license information",
-            rowKey: "license_additional_info"
-          },
-          {
             label: "Tags",
-            group: "Additional Information",
+            group: "Metadata",
             type: "multi-select",
             placeholder: "Select tags",
-            options: ["Urgent", "Expiring Soon", "New License", "Renewal Required", "Verification Needed"],
+            options: ["urgent", "expiring", "renewal", "compliance", "audit", "pending", "primary", "secondary"],
             rowKey: "tags"
+          },
+          {
+            label: "Last Updated",
+            group: "Metadata",
+            type: "date",
+            placeholder: "Last updated date",
+            rowKey: "last_updated"
           }
         ]
       }

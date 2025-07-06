@@ -10,7 +10,8 @@ import { getIconByName } from "@/lib/iconMapping";
 import { Provider } from "@/types";
 import providerInfoConfig from "@/data/provider_info_details.json";
 import { useQuery } from '@tanstack/react-query';
-import { fetchStateLicenses } from '@/lib/supabaseClient';
+import { fetchStateLicenses, fetchStateLicensesByProvider } from '@/lib/supabaseClient';
+import { getTemplateConfigByGrid } from '@/lib/templateConfigs';
 
 interface MainContentProps {
   selectedItem?: string | null;
@@ -52,6 +53,18 @@ const MainContent: React.FC<MainContentProps> = ({
   const { data: stateLicensesData, isLoading: stateLicensesLoading, error: stateLicensesError } = useQuery<any[], Error>({
     queryKey: ['stateLicenses'],
     queryFn: fetchStateLicenses,
+  });
+
+  // Fetch state licenses for specific provider in single provider view
+  const { data: providerStateLicenses, isLoading: providerStateLicensesLoading, error: providerStateLicensesError } = useQuery<any[], Error>({
+    queryKey: ['providerStateLicenses', singleProviderNpi],
+    queryFn: () => {
+      if (!singleProviderNpi || !providerInfoData) return Promise.resolve([]);
+      const provider = providerInfoData.find(row => String(row.npi_number) === String(singleProviderNpi));
+      if (!provider?.id) return Promise.resolve([]);
+      return fetchStateLicensesByProvider(provider.id);
+    },
+    enabled: !!singleProviderNpi && !!providerInfoData,
   });
 
   // Memoize sample data for all grids only once
@@ -152,6 +165,29 @@ const MainContent: React.FC<MainContentProps> = ({
     return sampleDataRef.current[gridKey] || [];
   };
 
+  // Function to transform provider-specific state licenses data
+  const getProviderStateLicensesData = () => {
+    if (!providerStateLicenses) return [];
+    
+    return providerStateLicenses.map((license) => ({
+      id: license.id,
+      provider_name: license.provider ? `${license.provider.first_name || ''} ${license.provider.last_name || ''}`.trim() : '',
+      title: license.provider?.title || '',
+      primary_specialty: license.provider?.primary_specialty || '',
+      license_type: license.license_type || '',
+      license_additional_info: license.license_additional_info || '',
+      state: license.state || '',
+      status: license.status || '',
+      issue_date: license.issue_date || '',
+      expiration_date: license.expiration_date || '',
+      expires_within: license.expires_within || '',
+      tags: license.tags || [],
+      last_updated: license.last_updated || '',
+      // Include the original data for side panel
+      ...license,
+    }));
+  };
+
   const handlePrevious = () => {
     setCurrentGridIndex((prev) =>
       prev > 0 ? prev - 1 : gridsToShow.length - 1,
@@ -202,9 +238,23 @@ const MainContent: React.FC<MainContentProps> = ({
     }
   };
 
+  // Function to get the appropriate template configuration for the active grid
+  const getTemplateConfigForActiveGrid = () => {
+    if (!activePanelGridName) return providerInfoConfig;
+    
+    const templateConfig = getTemplateConfigByGrid(activePanelGridName);
+    if (templateConfig) {
+      // Flatten the field groups into a single array for the SidePanel
+      return templateConfig.fieldGroups.flatMap(group => group.fields);
+    }
+    
+    return providerInfoConfig;
+  };
+
   if (singleProviderNpi) {
     // Find the selected provider's info from live providerInfoData (Supabase)
     const providerInfoGrid = gridDefinitions.find(g => g.tableName === "Provider_Info");
+    const stateLicensesGrid = gridDefinitions.find(g => g.tableName === "State_Licenses");
     const providerRows = Array.isArray(providerInfoData) ? providerInfoData : [];
     const selectedProvider = providerRows.find(row => String(row.npi_number) === String(singleProviderNpi));
 
@@ -231,8 +281,32 @@ const MainContent: React.FC<MainContentProps> = ({
       }
     };
 
+    // Handler for state license row click
+    const handleStateLicenseRowClick = (row: any) => {
+      if (!onGridRowSelect) return;
+      const gridName = stateLicensesGrid?.tableName || "State_Licenses";
+      const currentSelectedRowId = selectedRowsByGrid[gridName];
+      if (currentSelectedRowId === row.id) {
+        // Unselect and close side panel if clicking the already selected row
+        onGridRowSelect(gridName, null, null);
+        if (onCloseSidePanel) {
+          onCloseSidePanel();
+        }
+      } else {
+        // Clear any previous selections from other grids first
+        Object.keys(selectedRowsByGrid).forEach(existingGridName => {
+          if (existingGridName !== gridName && selectedRowsByGrid[existingGridName]) {
+            onGridRowSelect(existingGridName, null, null);
+          }
+        });
+        // Select the new row and open side panel
+        onGridRowSelect(gridName, row.id, row);
+      }
+    };
+
     return (
       <div className="flex flex-col flex-1 min-h-0 w-full px-4 pt-4 pb-8">
+        {/* Provider Info Grid */}
         {providerInfoGrid && (
           <div key={providerInfoGrid.tableName} className="flex flex-col mb-8 bg-white rounded shadow" style={{ height: 122 }}>
             <DataGrid
@@ -246,12 +320,38 @@ const MainContent: React.FC<MainContentProps> = ({
             />
           </div>
         )}
+
+        {/* State Licenses Grid */}
+        {stateLicensesGrid && (
+          <div key={stateLicensesGrid.tableName} className="flex flex-col mb-8 bg-white rounded shadow" style={{ height: 400 }}>
+            {providerStateLicensesLoading ? (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-gray-500">Loading state licenses...</div>
+              </div>
+            ) : providerStateLicensesError ? (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-red-500">Error loading state licenses: {providerStateLicensesError.message}</div>
+              </div>
+            ) : (
+              <DataGrid
+                title={`${stateLicensesGrid.tableName.replace(/_/g, " ")} for ${selectedProvider?.provider_name || 'Provider'}`}
+                icon={getIconByName(stateLicensesGrid.icon)}
+                data={getProviderStateLicensesData()}
+                columns={getColumnsForGrid(stateLicensesGrid.tableName)}
+                onRowClicked={handleStateLicenseRowClick}
+                showCheckboxes={false}
+                selectedRowId={selectedRowsByGrid[stateLicensesGrid.tableName]}
+              />
+            )}
+          </div>
+        )}
+
         {/* Side Panel for single-provider view */}
         {sidePanelOpen && activePanelGridName && selectedProviderByGrid[activePanelGridName] && (
           <SidePanel
             isOpen={sidePanelOpen}
             selectedRow={selectedProviderByGrid[activePanelGridName]}
-            inputConfig={providerInfoConfig}
+            inputConfig={getTemplateConfigForActiveGrid()}
             onClose={handleSidePanelClose}
             title={
               activePanelGridName && selectedProviderByGrid[activePanelGridName]?.provider_name
@@ -382,7 +482,7 @@ const MainContent: React.FC<MainContentProps> = ({
       <SidePanel
         isOpen={sidePanelOpen}
         selectedRow={selectedProvider}
-        inputConfig={providerInfoConfig}
+        inputConfig={getTemplateConfigForActiveGrid()}
         onClose={handleSidePanelClose}
         title={
           selectedProvider && activeGridName && selectedProvider.provider_name
