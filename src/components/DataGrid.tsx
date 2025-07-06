@@ -165,28 +165,28 @@ const DataGrid: React.FC<DataGridProps> = ({
   };
 
   return (
-    <div className="bg-white flex flex-col flex-1 min-h-0">
+    <section className="bg-white flex flex-col flex-1 min-h-0" role="region" aria-label={`${title} data grid`} data-testid="data-grid">
       {/* Grid Header */}
-      <div className="flex items-center justify-between pl-1 pr-3 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 rounded overflow-hidden">
+      <header className="flex items-center justify-between pl-1 pr-3 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 rounded overflow-hidden">
         <div className="flex items-center gap-2 pl-4">
-          <FontAwesomeIcon icon={icon} className="pr-1 w-4 h-4 text-[#545454]" />
-          <span className="text-[#545454] font-semibold text-xs tracking-wider">
+          <FontAwesomeIcon icon={icon} className="pr-1 w-4 h-4 text-[#545454]" aria-hidden="true" />
+          <h2 className="text-[#545454] font-semibold text-xs tracking-wider">
             {title}
-          </span>
+          </h2>
         </div>
 
         <div className="flex items-center gap-3">
           {showStatusBadges && (
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#F48100] rounded-full">
+            <div className="flex items-center gap-2" role="group" aria-label="Status indicators">
+              <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#F48100] rounded-full" role="status" aria-label="1 item expiring">
                 <span className="text-white font-bold text-xs">1</span>
                 <span className="text-white font-bold text-xs">Expiring</span>
               </div>
-              <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#DB0D00] rounded-full">
+              <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#DB0D00] rounded-full" role="status" aria-label="1 item expired">
                 <span className="text-white font-bold text-xs">1</span>
                 <span className="text-white font-bold text-xs">Expired</span>
               </div>
-              <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#545454] rounded-full">
+              <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#545454] rounded-full" role="status" aria-label="900+ total items">
                 <span className="text-white font-bold text-xs">900+</span>
                 <span className="text-white font-bold text-xs">Total</span>
               </div>
@@ -194,17 +194,22 @@ const DataGrid: React.FC<DataGridProps> = ({
           )}
 
           <div className="flex items-center">
-            <div className="w-9 h-5 bg-[#79AC48] rounded-full relative">
-              <div className="w-4 h-4 bg-white rounded-full absolute right-0.5 top-0.5"></div>
+            <div className="w-9 h-5 bg-[#79AC48] rounded-full relative" role="switch" aria-label="Toggle view mode" aria-checked="true">
+              <div className="w-4 h-4 bg-white rounded-full absolute right-0.5 top-0.5" aria-hidden="true"></div>
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* AG Grid Container */}
       <div
         className="ag-theme-alpine ag-grid-custom flex-1 min-h-0"
         style={{ width: "100%", border: "none", borderWidth: "0px", ...(height !== "100%" ? { height } : {}) } as React.CSSProperties}
+        role="grid"
+        aria-label={`${title} data table`}
+        aria-rowcount={data.length}
+        aria-colcount={columnDefs.length}
+        data-testid="ag-grid-container"
       >
         <AgGridReact
           rowData={data}
@@ -232,12 +237,13 @@ const DataGrid: React.FC<DataGridProps> = ({
                 icon={faFilter}
                 className="w-3 h-3 text-[#545454]"
                 style={{ fontSize: "12px" }}
+                aria-hidden="true"
               />
             ),
           }}
         />
       </div>
-    </div>
+    </section>
   );
 };
 

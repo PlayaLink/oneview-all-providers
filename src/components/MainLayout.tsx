@@ -229,7 +229,7 @@ const MainLayout: React.FC<{ user: any }> = ({ user }) => {
     <div className="h-screen flex flex-col bg-white" data-testid="main-layout">
       {/* Top Navigation - Two Row Design */}
       {/* First Row - Black Background */}
-      <div className="bg-black text-white">
+      <header className="bg-black text-white" role="banner" aria-label="Application Header">
         <div className="flex items-center justify-between px-5 py-3">
           <div className="flex items-center gap-9">
             {/* Modio Logo */}
@@ -240,11 +240,11 @@ const MainLayout: React.FC<{ user: any }> = ({ user }) => {
             />
 
             {/* CompHealth Dropdown */}
-            <div className="flex items-center gap-2 px-2 rounded-lg">
+            <div className="flex items-center gap-2 px-2 rounded-lg" role="button" tabIndex={0} aria-label="CompHealth organization selector">
               <div className="flex items-center w-7 h-7 rounded-full overflow-hidden">
                 <img
                   src="https://cdn.builder.io/api/v1/image/assets/TEMP/47f216dffab8a61501f2184cb57a9b37a11a21ed?width=58"
-                  alt=""
+                  alt="CompHealth logo"
                   className="w-7 h-7 object-cover rounded-full"
                 />
               </div>
@@ -266,44 +266,47 @@ const MainLayout: React.FC<{ user: any }> = ({ user }) => {
               >
                 (Salt Lake City, Utah)
               </div>
-              <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" />
+              <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" aria-hidden="true" />
             </div>
           </div>
 
           <div className="flex items-center gap-8">
             {/* Right Side Links */}
-            <div className="flex items-center gap-4">
-              <span
-                className="text-white text-center text-xs leading-normal tracking-[0.429px]"
+            <nav className="flex items-center gap-4" role="navigation" aria-label="Application navigation">
+              <a
+                href="#"
+                className="text-white text-center text-xs leading-normal tracking-[0.429px] hover:underline"
                 style={{
                   fontFamily:
                     "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
                 }}
               >
                 New Features
-              </span>
-              <span
-                className="text-white text-center text-xs leading-normal tracking-[0.429px]"
+              </a>
+              <a
+                href="#"
+                className="text-white text-center text-xs leading-normal tracking-[0.429px] hover:underline"
                 style={{
                   fontFamily:
                     "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
                 }}
               >
                 Modio U
-              </span>
-              <span
-                className="text-white text-center text-xs leading-normal tracking-[0.429px]"
+              </a>
+              <a
+                href="#"
+                className="text-white text-center text-xs leading-normal tracking-[0.429px] hover:underline"
                 style={{
                   fontFamily:
                     "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
                 }}
               >
                 Support
-              </span>
-            </div>
+              </a>
+            </nav>
 
             {/* User Profile */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2" role="button" tabIndex={0} aria-label="User profile menu">
               <div className="flex items-center justify-center w-6 h-6 aspect-square">
                 <svg
                   width="24"
@@ -311,6 +314,7 @@ const MainLayout: React.FC<{ user: any }> = ({ user }) => {
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
                 >
                   <path
                     fillRule="evenodd"
@@ -330,30 +334,30 @@ const MainLayout: React.FC<{ user: any }> = ({ user }) => {
                 John Smith
               </span>
               <div className="flex justify-center items-center w-[10px]">
-                <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" />
+                <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" aria-hidden="true" />
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Second Row - Blue Background */}
-      <div className="bg-[#3BA8D1] text-white">
+      <nav className="bg-[#3BA8D1] text-white" role="navigation" aria-label="Primary navigation">
         <div className="flex items-center justify-between px-5 py-3">
           <div className="flex items-center gap-5 flex-1 self-stretch">
-            <div className="flex items-center gap-2 self-stretch">
+            <div className="flex items-center gap-2 self-stretch" role="menubar" aria-label="Main application sections">
               {/* Team Link */}
-              <NavItem variant="main">Team</NavItem>
+              <NavItem variant="main" role="menuitem">Team</NavItem>
               {/* Provider Records Link - Active */}
-              <NavItem variant="main" active>OneView V2</NavItem>
+              <NavItem variant="main" active role="menuitem" aria-current="page">OneView V2</NavItem>
               {/* Forms Link */}
-              <NavItem variant="main">Forms</NavItem>
+              <NavItem variant="main" role="menuitem">Forms</NavItem>
               {/* Tracking Link */}
-              <NavItem variant="main">Tracking</NavItem>
+              <NavItem variant="main" role="menuitem">Tracking</NavItem>
               {/* Logins Link */}
-              <NavItem variant="main">Logins</NavItem>
+              <NavItem variant="main" role="menuitem">Logins</NavItem>
               {/* Tasks Link */}
-              <NavItem variant="main">Tasks</NavItem>
+              <NavItem variant="main" role="menuitem">Tasks</NavItem>
             </div>
           </div>
 
@@ -380,10 +384,10 @@ const MainLayout: React.FC<{ user: any }> = ({ user }) => {
           visibleSections={npi ? visibleSections : undefined}
           onSectionVisibilityChange={npi ? handleSectionVisibilityChange : undefined}
         />
-      </div>
+      </nav>
 
       {/* Main Content */}
-      <div className="flex flex-1 border-t border-gray-300" role="main" aria-label="Main Content Area" data-testid="main-content-area">
+      <main className="flex flex-1 border-t border-gray-300" role="main" aria-label="Main Content Area" data-testid="main-content-area">
         {npi ? (
           // Single-provider view: no nav, all grids, filter by NPI
           <div className="flex-1 flex flex-col min-h-0">
@@ -407,11 +411,14 @@ const MainLayout: React.FC<{ user: any }> = ({ user }) => {
           /* Left Navigation Layout */
           <div className="flex flex-1">
             {/* Left Sidebar */}
-            <div
+            <aside
               className={cn(
                 "relative border-r border-gray-300 bg-white transition-all duration-300 flex flex-col",
                 sidebarCollapsed ? "w-0" : "w-48",
               )}
+              role="complementary"
+              aria-label="Sidebar navigation"
+              data-testid="sidebar-navigation"
             >
               <SideNav
                 collapsed={sidebarCollapsed}
@@ -429,21 +436,27 @@ const MainLayout: React.FC<{ user: any }> = ({ user }) => {
                   right: sidebarCollapsed ? "-28px" : "-12px",
                   top: "-12px",
                 }}
+                aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                aria-expanded={!sidebarCollapsed}
+                data-testid="sidebar-toggle"
               >
                 {sidebarCollapsed ? (
-                  <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" />
+                  <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" aria-hidden="true" />
                 ) : (
-                  <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />
+                  <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" aria-hidden="true" />
                 )}
               </button>
-            </div>
+            </aside>
 
             {/* Main Grid Area - Flexible */}
-            <div
+            <section
               className={cn(
                 "flex-1 flex flex-col min-h-0",
                 sidebarCollapsed && "ml-4 border-l border-gray-300",
               )}
+              role="region"
+              aria-label="Content area"
+              data-testid="content-area"
             >
               <MainContent
                 selectedItem={selectedItem}
@@ -460,7 +473,7 @@ const MainLayout: React.FC<{ user: any }> = ({ user }) => {
                 providerInfoData={providerInfoData}
                 user={user}
               />
-            </div>
+            </section>
           </div>
         ) : (
           /* Horizontal Navigation Layout */
@@ -471,7 +484,7 @@ const MainLayout: React.FC<{ user: any }> = ({ user }) => {
               visibleSections={visibleSections}
               onSectionVisibilityChange={handleSectionVisibilityChange}
             />
-            <div className="flex-1 min-h-0">
+            <section className="flex-1 min-h-0" role="region" aria-label="Content area" data-testid="content-area">
               <MainContent
                 selectedItem={selectedItem}
                 selectedSection={selectedSection}
@@ -487,31 +500,35 @@ const MainLayout: React.FC<{ user: any }> = ({ user }) => {
                 providerInfoData={providerInfoData}
                 user={user}
               />
-            </div>
+            </section>
           </div>
         )}
-      </div>
+      </main>
 
       {/* Footer */}
-      <div className="bg-[#545454] text-white px-20 py-4 flex items-center justify-between">
-        <div className="text-[#91DCFB] text-xs font-semibold">
-          Privacy Policy
-        </div>
+      <footer className="bg-[#545454] text-white px-20 py-4 flex items-center justify-between" role="contentinfo" aria-label="Application footer">
+        <nav className="text-[#91DCFB] text-xs font-semibold" role="navigation" aria-label="Footer navigation">
+          <a href="#" className="hover:underline">Privacy Policy</a>
+        </nav>
         <div className="text-xs font-semibold">
           <span className="text-white">© 2023 </span>
           <span className="text-[#91DCFB]">Modio Health</span>
           <span className="text-white"> All Rights Reserved</span>
         </div>
-        <div className="text-[#91DCFB] text-xs font-semibold">
-          Terms and Conditions
-        </div>
+        <nav className="text-[#91DCFB] text-xs font-semibold" role="navigation" aria-label="Footer navigation">
+          <a href="#" className="hover:underline">Terms and Conditions</a>
+        </nav>
 
         {/* Chat Bubble */}
-        <div className="bg-[#12ABE4] px-5 py-3 rounded-full flex items-center gap-3 relative -top-2 -right-5">
+        <button 
+          className="bg-[#12ABE4] px-5 py-3 rounded-full flex items-center gap-3 relative -top-2 -right-5 hover:bg-[#0F9BC7] transition-colors"
+          aria-label="Open chat support"
+          data-testid="chat-button"
+        >
           <span className="text-white font-bold text-xs">Chat</span>
-          <div className="w-4 h-4 bg-white rounded"></div>
-        </div>
-      </div>
+          <div className="w-4 h-4 bg-white rounded" aria-hidden="true"></div>
+        </button>
+      </footer>
     </div>
   );
 };

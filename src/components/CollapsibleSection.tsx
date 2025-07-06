@@ -16,37 +16,68 @@ const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
   className = "",
 }) => {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+  const sectionId = `collapsible-section-${title.toLowerCase().replace(/\s+/g, '-')}`;
+  const contentId = `${sectionId}-content`;
 
   return (
-    <div
+    <section
       className={`flex pb-4 flex-col items-start gap-2 self-stretch ${className}`}
+      role="region"
+      aria-labelledby={`${sectionId}-header`}
+      data-testid="collapsible-section"
     >
       {/* Header */}
-      <div onClick={() => setIsExpanded(!isExpanded)} role="collapsible-header" className="flex py-2 px-4 items-center gap-3 self-stretch rounded bg-[#CFD8DC]">
+      <header 
+        onClick={() => setIsExpanded(!isExpanded)} 
+        role="button"
+        tabIndex={0}
+        aria-expanded={isExpanded}
+        aria-controls={contentId}
+        aria-label={`Toggle ${title} section`}
+        className="flex py-2 px-4 items-center gap-3 self-stretch rounded bg-[#CFD8DC] cursor-pointer hover:bg-[#B0BEC5] transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setIsExpanded(!isExpanded);
+          }
+        }}
+        data-testid="collapsible-section-header"
+      >
         <div className="flex items-center gap-[10px] flex-1">
-          <div className="text-[#545454] text-xs font-bold leading-normal tracking-[0.429px] font-['Poppins',sans-serif]">
+          <h3 
+            id={`${sectionId}-header`}
+            className="text-[#545454] text-xs font-bold leading-normal tracking-[0.429px] font-['Poppins',sans-serif]"
+          >
             {title}
-          </div>
+          </h3>
         </div>
-        <button
+        <div
           className="flex w-[18px] py-[6px] flex-col items-center gap-[10px] hover:opacity-70 transition-opacity"
+          aria-hidden="true"
         >
           <div className="flex h-2 pb-[1px] justify-center items-center">
             <FontAwesomeIcon
               icon={isExpanded ? faAngleUp : faAngleDown}
               className="text-[#545454] text-xl"
+              aria-label={isExpanded ? "Collapse section" : "Expand section"}
             />
           </div>
-        </button>
-      </div>
+        </div>
+      </header>
 
       {/* Content */}
       {isExpanded && (
-        <div className="flex p-2 flex-col items-start gap-2 self-stretch">
+        <div 
+          id={contentId}
+          className="flex p-2 flex-col items-start gap-2 self-stretch"
+          role="region"
+          aria-labelledby={`${sectionId}-header`}
+          data-testid="collapsible-section-content"
+        >
           {children}
         </div>
       )}
-    </div>
+    </section>
   );
 };
 

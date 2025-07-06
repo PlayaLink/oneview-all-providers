@@ -136,6 +136,10 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
       ref={menuRef}
       className="z-[1000] border border-gray-200 rounded shadow-lg p-4 bg-white w-[700px] min-w-[300px]"
       style={{ display: isOpen ? undefined : "none" }}
+      role="dialog"
+      aria-label="Section visibility settings"
+      aria-modal="true"
+      data-testid="sections-dropdown-menu"
     >
       {/* Search and Clear */}
       <div className="flex items-center mb-4">
@@ -172,6 +176,8 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
           className="ml-2 text-blue-600 text-sm font-medium hover:underline"
           onClick={handleClear}
           type="button"
+          aria-label="Clear all selected sections"
+          data-testid="clear-sections-button"
         >
           Clear
         </button>
@@ -222,15 +228,19 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
   );
 
   return (
-    <div className="relative" style={{ display: "inline-block" }}>
+    <div className="relative" style={{ display: "inline-block" }} role="group" aria-label="Section visibility controls">
       <button
         ref={buttonRef}
         className="flex items-center gap-2 text-xs font-medium tracking-wide border border-gray-300 rounded px-3 py-1 bg-white focus:outline-none focus:ring-0"
         onClick={() => setIsOpen((open) => !open)}
         type="button"
+        aria-haspopup="true"
+        aria-expanded={isOpen}
+        aria-label={`Sections dropdown${visibleSections.size > 0 ? ` (${visibleSections.size} selected)` : ""}`}
+        data-testid="sections-dropdown-button"
       >
         Sections{visibleSections.size > 0 ? ` (${visibleSections.size})` : ""}
-        <FontAwesomeIcon icon={faChevronDown} className="w-3 h-3 ml-1" />
+        <FontAwesomeIcon icon={faChevronDown} className="w-3 h-3 ml-1" aria-hidden="true" />
       </button>
       {isOpen && typeof window !== "undefined"
         ? createPortal(menu, document.body)

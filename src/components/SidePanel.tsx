@@ -160,7 +160,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
               <span className="text-xs">Docs</span>
             </TabsTrigger>
           </TabsList>
-          <div className="flex-1 min-h-0 flex flex-col overflow-y-auto" data-testid="side-panel-tabpanel-container">
+          <div className="flex-1 min-h-0 flex flex-col overflow-y-auto p-2" data-testid="side-panel-tabpanel-container">
             <TabsContent value="details" role="tabpanel" aria-label="Details Tab" data-testid="side-panel-tabpanel-details">
               {/* Render grouped fields as CollapsibleSections */}
               {Object.entries(groupedFields).map(([group, fields]: [string, any[]]) => (

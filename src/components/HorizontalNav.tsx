@@ -32,10 +32,10 @@ const HorizontalNav: React.FC<HorizontalNavProps> = ({
       : visibleGroups;
 
   return (
-    <div className="bg-white border-b border-gray-300">
+    <nav className="bg-white border-b border-gray-300" role="navigation" aria-label="Section navigation" data-testid="horizontal-nav">
       <div className="px-4 py-3">
         <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 overflow-x-auto flex-1">
+          <div className="flex items-center gap-2 overflow-x-auto flex-1" role="tablist" aria-label="Available sections">
             {visibleSectionList.map((section) => (
               <NavItem
                 key={section}
@@ -43,12 +43,16 @@ const HorizontalNav: React.FC<HorizontalNavProps> = ({
                 size="sm"
                 active={selectedSection === section}
                 onClick={() => onSectionSelect(section)}
+                role="tab"
+                aria-selected={selectedSection === section}
+                aria-controls={`${section.toLowerCase().replace(/\s+/g, '-')}-panel`}
+                data-testid={`nav-item-${section.toLowerCase().replace(/\s+/g, '-')}`}
               >
                 {section.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())}
               </NavItem>
             ))}
           </div>
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0" role="group" aria-label="Section visibility controls">
             <SectionsDropdown
               visibleSections={visibleSections}
               onSectionVisibilityChange={onSectionVisibilityChange}
@@ -56,7 +60,7 @@ const HorizontalNav: React.FC<HorizontalNavProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </nav>
   );
 };
 

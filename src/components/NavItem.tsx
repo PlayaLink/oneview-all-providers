@@ -45,6 +45,9 @@ const NavItem: React.FC<NavItemProps> = ({
   return (
     <button
       className={cn(baseStyles, variantStyles, sizeStyles, className)}
+      aria-current={active ? "page" : undefined}
+      aria-pressed={active ? "true" : "false"}
+      data-testid={`nav-item-${typeof children === 'string' ? children.toLowerCase().replace(/\s+/g, '-') : 'default'}`}
       {...props}
     >
       {content}
