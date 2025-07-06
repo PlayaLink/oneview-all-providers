@@ -4,7 +4,7 @@ import { faChevronUp, faChevronDown, faTable } from "@fortawesome/free-solid-svg
 import DataGrid from "@/components/DataGrid";
 import SidePanel from "@/components/SidePanel";
 import { generateSampleData } from "@/lib/dataGenerator";
-import { getColumnsForGrid } from "@/lib/columnConfigs";
+import { getColumnsForGrid, getColumnsForSingleProviderView } from "@/lib/columnConfigs";
 import { gridDefinitions, getGridsByGroup } from "@/lib/gridDefinitions";
 import { getIconByName } from "@/lib/iconMapping";
 import { Provider } from "@/types";
@@ -136,6 +136,29 @@ const MainContent: React.FC<MainContentProps> = ({
   const gridsToShow = getGridsToShow();
   const isMultipleGrids = gridsToShow.length > 1;
 
+  // Function to get provider info data for single provider view (without provider-specific columns)
+  const getProviderInfoDataForSingleView = () => {
+    if (!providerInfoData || !singleProviderNpi) return [];
+    
+    const provider = providerInfoData.find(row => String(row.npi_number) === String(singleProviderNpi));
+    if (!provider) return [];
+    
+    // Return provider data without provider-specific fields
+    return [{
+      id: provider.id,
+      // Remove provider-specific fields for single provider view
+      // provider_name, title, primary_specialty are excluded
+      npi_number: provider.npi_number || '',
+      work_email: provider.work_email || '',
+      personal_email: provider.personal_email || '',
+      mobile_phone_number: provider.mobile_phone_number || '',
+      tags: provider.tags || [],
+      last_updated: provider.last_updated || '',
+      // Include the original data for side panel
+      ...provider,
+    }];
+  };
+
   const getDataForGrid = (gridKey: string) => {
     if (gridKey === "Provider_Info") {
       return providerInfoData || [];
@@ -171,9 +194,8 @@ const MainContent: React.FC<MainContentProps> = ({
     
     return providerStateLicenses.map((license) => ({
       id: license.id,
-      provider_name: license.provider ? `${license.provider.first_name || ''} ${license.provider.last_name || ''}`.trim() : '',
-      title: license.provider?.title || '',
-      primary_specialty: license.provider?.primary_specialty || '',
+      // Remove provider-specific fields for single provider view
+      // provider_name, title, primary_specialty are excluded
       license_type: license.license_type || '',
       license_additional_info: license.license_additional_info || '',
       state: license.state || '',
@@ -312,8 +334,8 @@ const MainContent: React.FC<MainContentProps> = ({
             <DataGrid
               title={providerInfoGrid.tableName.replace(/_/g, " ")}
               icon={getIconByName(providerInfoGrid.icon)}
-              data={providerRows}
-              columns={getColumnsForGrid(providerInfoGrid.tableName)}
+              data={getProviderInfoDataForSingleView()}
+              columns={getColumnsForSingleProviderView(providerInfoGrid.tableName)}
               onRowClicked={handleSingleProviderRowClick}
               showCheckboxes={false}
               selectedRowId={selectedRowsByGrid[providerInfoGrid.tableName]}
@@ -337,7 +359,7 @@ const MainContent: React.FC<MainContentProps> = ({
                 title={`${stateLicensesGrid.tableName.replace(/_/g, " ")} for ${selectedProvider?.provider_name || 'Provider'}`}
                 icon={getIconByName(stateLicensesGrid.icon)}
                 data={getProviderStateLicensesData()}
-                columns={getColumnsForGrid(stateLicensesGrid.tableName)}
+                columns={getColumnsForSingleProviderView(stateLicensesGrid.tableName)}
                 onRowClicked={handleStateLicenseRowClick}
                 showCheckboxes={false}
                 selectedRowId={selectedRowsByGrid[stateLicensesGrid.tableName]}

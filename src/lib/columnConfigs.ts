@@ -73,6 +73,35 @@ export const getColumnsForGrid = (gridKey: string): ColDef[] => {
   });
 };
 
+// Generate column definitions for single provider view (filters out provider-specific columns)
+export const getColumnsForSingleProviderView = (gridKey: string): ColDef[] => {
+  const grid = gridDefinitions.find(g => g.tableName === gridKey);
+  if (!grid) {
+    return [];
+  }
+
+  // Columns to exclude in single provider view
+  const excludedColumns = ['provider_name', 'title', 'primary_specialty'];
+
+  return grid.columns
+    .filter(columnName => !excludedColumns.includes(columnName))
+    .map(columnName => {
+      const colDef: ColDef = {
+        field: columnName,
+        headerName: formatColumnName(columnName),
+        sortable: true,
+        filter: true,
+        resizable: true,
+        minWidth: 120,
+        flex: 1,
+      };
+      if (isDateColumn(columnName)) {
+        colDef.valueFormatter = dateValueFormatter;
+      }
+      return colDef;
+    });
+};
+
 // Legacy exports for backward compatibility
 export const standardColumns: ColDef[] = [
   {
