@@ -22,6 +22,7 @@ interface MainContentProps {
   selectedProviderByGrid?: { [gridName: string]: any | null };
   onGridRowSelect?: (gridName: string, rowId: string | null, provider: any | null) => void;
   onClearGridRowSelect?: (gridName: string) => void;
+  onUpdateSelectedProvider?: (gridName: string, updatedProvider: any) => void; // Add this callback
   sidePanelOpen?: boolean;
   setSidePanelOpen?: (open: boolean) => void;
   activePanelGridName?: string | null;
@@ -39,6 +40,7 @@ const MainContent: React.FC<MainContentProps> = ({
   selectedProviderByGrid = {},
   onGridRowSelect,
   onClearGridRowSelect,
+  onUpdateSelectedProvider,
   sidePanelOpen = false,
   setSidePanelOpen,
   activePanelGridName,
@@ -382,6 +384,7 @@ const MainContent: React.FC<MainContentProps> = ({
             }
             user={user}
             activeGridName={activePanelGridName}
+            onUpdateSelectedProvider={onUpdateSelectedProvider}
           />
         )}
       </div>

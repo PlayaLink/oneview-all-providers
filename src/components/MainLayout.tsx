@@ -218,6 +218,11 @@ const MainLayout: React.FC<{ user: any }> = ({ user }) => {
     setActivePanelGridName(null);
   };
 
+  // Handler to update selected provider data when optimistic updates are made
+  const handleUpdateSelectedProvider = (gridName: string, updatedProvider: any) => {
+    setSelectedProviderByGrid(prev => ({ ...prev, [gridName]: updatedProvider }));
+  };
+
   React.useEffect(() => {
     console.log('Fetched providerInfoData:', providerInfoData);
     if (error) {
@@ -399,6 +404,7 @@ const MainLayout: React.FC<{ user: any }> = ({ user }) => {
               selectedProviderByGrid={selectedProviderByGrid}
               onGridRowSelect={handleGridRowSelect}
               onClearGridRowSelect={handleClearGridRowSelect}
+              onUpdateSelectedProvider={handleUpdateSelectedProvider}
               sidePanelOpen={sidePanelOpen}
               setSidePanelOpen={setSidePanelOpen}
               activePanelGridName={activePanelGridName}
@@ -466,6 +472,7 @@ const MainLayout: React.FC<{ user: any }> = ({ user }) => {
                 selectedProviderByGrid={selectedProviderByGrid}
                 onGridRowSelect={handleGridRowSelect}
                 onClearGridRowSelect={handleClearGridRowSelect}
+                onUpdateSelectedProvider={handleUpdateSelectedProvider}
                 sidePanelOpen={sidePanelOpen}
                 setSidePanelOpen={setSidePanelOpen}
                 activePanelGridName={activePanelGridName}
@@ -493,6 +500,7 @@ const MainLayout: React.FC<{ user: any }> = ({ user }) => {
                 selectedProviderByGrid={selectedProviderByGrid}
                 onGridRowSelect={handleGridRowSelect}
                 onClearGridRowSelect={handleClearGridRowSelect}
+                onUpdateSelectedProvider={handleUpdateSelectedProvider}
                 sidePanelOpen={sidePanelOpen}
                 setSidePanelOpen={setSidePanelOpen}
                 activePanelGridName={activePanelGridName}
