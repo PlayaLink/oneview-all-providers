@@ -121,100 +121,102 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
           <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
         </button>
       </div>
-      {/* Tabs */}``
-      <Tabs value={tab} onValueChange={setTab} orientation="vertical" className="flex h-full">
-        <TabsList className="flex flex-col w-16 pt-4 pb-2 px-2 p-1 gap-1 border-r border-gray-200 items-center justify-start">
-          <TabsTrigger
-            value="details"
-            className={`flex flex-col items-center py-6 px-0 w-full transition-colors
+      {/* Tabs and Content */}
+      <div className="flex-1 min-h-0 flex flex-col">
+        <Tabs value={tab} onValueChange={setTab} className="flex flex-1 min-h-0">
+          <TabsList className="flex flex-col w-16 pt-4 pb-2 px-2 p-1 gap-1 border-r border-gray-200 items-center justify-start">
+            <TabsTrigger
+              value="details"
+              className={`flex flex-col items-center py-6 px-0 w-full transition-colors
               data-[state=active]:bg-[#008BC9] data-[state=active]:text-white
               data-[state=active]:hover:bg-[#0077B3]
               text-[#545454] hover:bg-gray-100`}
-          >
-            <FontAwesomeIcon icon={faUserDoctor} className="w-6 h-6 mb-1" />
-            <span className="text-xs">Details</span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="notes"
-            className={`flex flex-col items-center py-6 px-0 w-full transition-colors
+            >
+              <FontAwesomeIcon icon={faUserDoctor} className="w-6 h-6 mb-1" />
+              <span className="text-xs">Details</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="notes"
+              className={`flex flex-col items-center py-6 px-0 w-full transition-colors
               data-[state=active]:bg-[#008BC9] data-[state=active]:text-white
               data-[state=active]:hover:bg-[#0077B3]
               text-[#545454] hover:bg-gray-100`}
-          >
-            <FontAwesomeIcon icon={faFileMedical} className="w-6 h-6 mb-1" />
-            <span className="text-xs">Notes</span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="documents"
-            className={`flex flex-col items-center py-6 px-0 w-full transition-colors
+            >
+              <FontAwesomeIcon icon={faFileMedical} className="w-6 h-6 mb-1" />
+              <span className="text-xs">Notes</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="documents"
+              className={`flex flex-col items-center py-6 px-0 w-full transition-colors
               data-[state=active]:bg-[#008BC9] data-[state=active]:text-white
               data-[state=active]:hover:bg-[#0077B3]
               text-[#545454] hover:bg-gray-100`}
-          >
-            <FontAwesomeIcon icon={faFolder} className="w-6 h-6 mb-1" />
-            <span className="text-xs">Docs</span>
-          </TabsTrigger>
-        </TabsList>
-        <div className="flex-1 min-h-0 flex flex-col p-2">
-          <TabsContent value="details">
-            {/* Render grouped fields as CollapsibleSections */}
-            {Object.entries(groupedFields).map(([group, fields]: [string, any[]]) => (
-              <CollapsibleSection key={group} title={group}>
-                <div className="flex flex-col gap-4 self-stretch">
-                  {fields.map((field: InputField) => {
-                    const inputType = getInputType(field);
-                    if (inputType === "multi-select") {
-                      return (
-                        <MultiSelectInput
-                          key={field.label}
-                          label={field.label}
-                          labelPosition="left"
-                          value={formValues[field.label] || []}
-                          options={field.options?.map((opt: string) => ({ id: opt, label: opt })) || []}
-                          onChange={(val) => handleChange(field.label, Array.isArray(val) ? val.map(v => v.id) : [])}
-                          placeholder={field.placeholder}
-                          className="flex-1 min-w-0"
-                        />
-                      );
-                    } else if (inputType === "single-select") {
-                      return (
-                        <SingleSelectInput
-                          key={field.label}
-                          label={field.label}
-                          labelPosition="left"
-                          value={formValues[field.label] || null}
-                          options={field.options?.map((opt: string) => ({ id: opt, label: opt })) || []}
-                          onChange={(val) => handleChange(field.label, val?.id ?? val)}
-                          placeholder={field.placeholder}
-                          className="flex-1 min-w-0"
-                        />
-                      );
-                    } else {
-                      return (
-                        <TextInputField
-                          key={field.label}
-                          label={field.label}
-                          labelPosition="left"
-                          value={formValues[field.label] || ""}
-                          onChange={(val) => handleChange(field.label, val)}
-                          placeholder={field.placeholder}
-                          className="flex-1 min-w-0"
-                        />
-                      );
-                    }
-                  })}
-                </div>
-              </CollapsibleSection>
-            ))}
-          </TabsContent>
-          <TabsContent value="notes" className="flex-1 min-h-0 flex flex-col p-0 m-0">
-            <Notes className="flex-1 min-h-0" user={user} />
-          </TabsContent>
-          <TabsContent value="documents">
-            <div className="text-gray-500">Documents tab content goes here.</div>
-          </TabsContent>
-        </div>
-      </Tabs>
+            >
+              <FontAwesomeIcon icon={faFolder} className="w-6 h-6 mb-1" />
+              <span className="text-xs">Docs</span>
+            </TabsTrigger>
+          </TabsList>
+          <div className="flex-1 min-h-0 flex flex-col overflow-y-auto">
+            <TabsContent value="details">
+              {/* Render grouped fields as CollapsibleSections */}
+              {Object.entries(groupedFields).map(([group, fields]: [string, any[]]) => (
+                <CollapsibleSection key={group} title={group}>
+                  <div className="flex flex-col gap-4 self-stretch">
+                    {fields.map((field: InputField) => {
+                      const inputType = getInputType(field);
+                      if (inputType === "multi-select") {
+                        return (
+                          <MultiSelectInput
+                            key={field.label}
+                            label={field.label}
+                            labelPosition="left"
+                            value={formValues[field.label] || []}
+                            options={field.options?.map((opt: string) => ({ id: opt, label: opt })) || []}
+                            onChange={(val) => handleChange(field.label, Array.isArray(val) ? val.map(v => v.id) : [])}
+                            placeholder={field.placeholder}
+                            className="flex-1 min-w-0"
+                          />
+                        );
+                      } else if (inputType === "single-select") {
+                        return (
+                          <SingleSelectInput
+                            key={field.label}
+                            label={field.label}
+                            labelPosition="left"
+                            value={formValues[field.label] || null}
+                            options={field.options?.map((opt: string) => ({ id: opt, label: opt })) || []}
+                            onChange={(val) => handleChange(field.label, val?.id ?? val)}
+                            placeholder={field.placeholder}
+                            className="flex-1 min-w-0"
+                          />
+                        );
+                      } else {
+                        return (
+                          <TextInputField
+                            key={field.label}
+                            label={field.label}
+                            labelPosition="left"
+                            value={formValues[field.label] || ""}
+                            onChange={(val) => handleChange(field.label, val)}
+                            placeholder={field.placeholder}
+                            className="flex-1 min-w-0"
+                          />
+                        );
+                      }
+                    })}
+                  </div>
+                </CollapsibleSection>
+              ))}
+            </TabsContent>
+            <TabsContent value="notes" className="flex-1 min-h-0 flex flex-col p-0 m-0">
+              <Notes className="flex-1 min-h-0" user={user} />
+            </TabsContent>
+            <TabsContent value="documents">
+              <div className="text-gray-500">Documents tab content goes here.</div>
+            </TabsContent>
+          </div>
+        </Tabs>
+      </div>
       {/* Footer Actions */}
       <div className="border-t border-gray-200 p-4">
         <div className="flex gap-3">
