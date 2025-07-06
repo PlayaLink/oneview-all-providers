@@ -121,7 +121,13 @@ export const SingleSelectInput: React.FC<SingleSelectInputProps> = ({
           <button
             type="button"
             className="absolute right-8 top-1/2 -translate-y-1/2 flex items-center justify-center px-1 text-[#BABABA] hover:text-gray-600 focus:outline-none"
-            onClick={handleClear}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (disabled) return;
+              onChange(null);
+              setSearchValue("");
+              // Do NOT focus the input after clearing
+            }}
             tabIndex={-1}
             disabled={disabled}
             aria-label="Clear selection"
@@ -129,9 +135,21 @@ export const SingleSelectInput: React.FC<SingleSelectInputProps> = ({
             <X className="h-4 w-4" />
           </button>
         )}
-        <span className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center px-1">
+        {/* Chevron button to toggle dropdown */}
+        <button
+          type="button"
+          className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center px-1"
+          onClick={() => {
+            if (disabled) return;
+            setDropdownOpen((open) => !open);
+            if (!dropdownOpen) setSearchValue("");
+          }}
+          tabIndex={-1}
+          aria-label={dropdownOpen ? "Close dropdown" : "Open dropdown"}
+          disabled={disabled}
+        >
           <ChevronDown className="h-4 w-4 text-[#545454]" />
-        </span>
+        </button>
         {/* Dropdown List */}
         {dropdownOpen && (
           <div
