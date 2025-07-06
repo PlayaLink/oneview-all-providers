@@ -22,14 +22,13 @@ const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
       className={`flex pb-4 flex-col items-start gap-2 self-stretch ${className}`}
     >
       {/* Header */}
-      <div className="flex py-2 px-4 items-center gap-3 self-stretch rounded bg-[#CFD8DC]">
+      <div onClick={() => setIsExpanded(!isExpanded)} role="collapsible-header" className="flex py-2 px-4 items-center gap-3 self-stretch rounded bg-[#CFD8DC]">
         <div className="flex items-center gap-[10px] flex-1">
           <div className="text-[#545454] text-xs font-bold leading-normal tracking-[0.429px] font-['Poppins',sans-serif]">
             {title}
           </div>
         </div>
         <button
-          onClick={() => setIsExpanded(!isExpanded)}
           className="flex w-[18px] py-[6px] flex-col items-center gap-[10px] hover:opacity-70 transition-opacity"
         >
           <div className="flex h-2 pb-[1px] justify-center items-center">
