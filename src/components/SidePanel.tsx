@@ -7,7 +7,7 @@ import SingleSelectInput from "./inputs/SingleSelectInput";
 import TextInputField from "./inputs/TextInputField";
 import { Provider } from "@/types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { updateProvider } from '@/lib/supabaseClient';
+import { updateProvider, updateStateLicense, updateRecord } from '@/lib/supabaseClient';
 import { useQueryClient } from '@tanstack/react-query';
 import Notes from "./Notes";
 
@@ -36,9 +36,10 @@ interface SidePanelProps {
   onClose: () => void;
   title?: string;
   user: any;
+  activeGridName?: string | null; // Add this to determine which table to update
 }
 
-const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig, onClose, title, user }) => {
+const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig, onClose, title, user, activeGridName }) => {
   const [formValues, setFormValues] = React.useState<Record<string, any>>({});
   const [tab, setTab] = useState("details");
   const [panelWidth, setPanelWidth] = useState(() => {
@@ -130,17 +131,106 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
 
   // Handle input change
   const handleChange = async (label: string, value: any) => {
-    setFormValues((prev) => ({ ...prev, [label]: value }));
-
     // Find the rowKey for this label
     const field = inputConfig.find(f => f.label === label);
-    if (field && field.rowKey && selectedRow && selectedRow.id) {
-      try {
-        await updateProvider(selectedRow.id, { [field.rowKey]: value });
-        // Refetch providers from Supabase
-        queryClient.invalidateQueries({ queryKey: ['providers'] });
-      } catch (err) {
-        console.error('Failed to update provider:', err);
+    if (!field || !field.rowKey || !selectedRow || !selectedRow.id) return;
+
+    const oldValue = formValues[label];
+    
+    // Optimistic update - immediately update the form values
+    setFormValues((prev) => ({ ...prev, [label]: value }));
+
+    // Determine which table to update based on activeGridName
+    let tableToUpdate: string;
+    let rowId: string;
+    let updateFunction: (id: string, data: any) => Promise<any>;
+
+    if (activeGridName === 'State_Licenses') {
+      tableToUpdate = 'stateLicenses';
+      rowId = selectedRow.id;
+      updateFunction = updateStateLicense;
+    } else {
+      // Default to providers for Provider_Info and other grids
+      tableToUpdate = 'providers';
+      rowId = selectedRow.id;
+      updateFunction = updateProvider;
+    }
+
+    try {
+      // Perform the database update
+      await updateFunction(rowId, { [field.rowKey]: value });
+      
+      // Optimistically update the cached data to maintain row position
+      if (tableToUpdate === 'providers') {
+        queryClient.setQueryData(['providers'], (oldData: any[] | undefined) => {
+          if (!oldData) return oldData;
+          return oldData.map(row => 
+            row.id === selectedRow.id 
+              ? { ...row, [field.rowKey]: value }
+              : row
+          );
+        });
+      } else if (tableToUpdate === 'stateLicenses') {
+        queryClient.setQueryData(['stateLicenses'], (oldData: any[] | undefined) => {
+          if (!oldData) return oldData;
+          return oldData.map(row => 
+            row.id === selectedRow.id 
+              ? { ...row, [field.rowKey]: value }
+              : row
+          );
+        });
+        
+        // Also update provider-specific state licenses if in single provider view
+        if (selectedRow.npi_number) {
+          queryClient.setQueryData(['providerStateLicenses', selectedRow.npi_number], (oldData: any[] | undefined) => {
+            if (!oldData) return oldData;
+            return oldData.map(row => 
+              row.id === selectedRow.id 
+                ? { ...row, [field.rowKey]: value }
+                : row
+            );
+          });
+        }
+      }
+
+      // Only invalidate queries if the update might affect sorting/filtering
+      // For most fields, we don't need to refetch since we've already updated the cache
+      const fieldsThatAffectSorting = ['provider_name', 'title', 'primary_specialty', 'status', 'license_type', 'state'];
+      if (fieldsThatAffectSorting.includes(field.rowKey)) {
+        // These fields might affect sorting/filtering, so we need to refetch
+        if (tableToUpdate === 'providers') {
+          queryClient.invalidateQueries({ queryKey: ['providers'] });
+        } else if (tableToUpdate === 'stateLicenses') {
+          queryClient.invalidateQueries({ queryKey: ['stateLicenses'] });
+          queryClient.invalidateQueries({ queryKey: ['providerStateLicenses'] });
+        }
+      }
+      
+    } catch (err) {
+      console.error('Failed to update record:', err);
+      
+      // Revert optimistic update on error
+      setFormValues((prev) => ({ ...prev, [label]: oldValue }));
+      
+      // Revert cached data on error
+      if (tableToUpdate === 'providers') {
+        queryClient.setQueryData(['providers'], (oldData: any[] | undefined) => {
+          if (!oldData) return oldData;
+          return oldData.map(row => 
+            row.id === selectedRow.id 
+              ? { ...row, [field.rowKey]: oldValue }
+              : row
+          );
+        });
+      } else if (tableToUpdate === 'stateLicenses') {
+        queryClient.setQueryData(['stateLicenses'], (oldData: any[] | undefined) => {
+          if (!oldData) return oldData;
+          return oldData.map(row => 
+            row.id === selectedRow.id 
+              ? { ...row, [field.rowKey]: oldValue }
+              : row
+          );
+        });
       }
     }
   };

@@ -15,6 +15,26 @@ export async function updateProvider(id: string, updates: Record<string, any>) {
   return data;
 }
 
+export async function updateStateLicense(id: string, updates: Record<string, any>) {
+  const { data, error } = await supabase
+    .from('state_licenses')
+    .update(updates)
+    .eq('id', id)
+    .select();
+  if (error) throw error;
+  return data;
+}
+
+export async function updateRecord(tableName: string, id: string, updates: Record<string, any>) {
+  const { data, error } = await supabase
+    .from(tableName)
+    .update(updates)
+    .eq('id', id)
+    .select();
+  if (error) throw error;
+  return data;
+}
+
 export async function fetchStateLicenses() {
   const { data, error } = await supabase
     .from('state_licenses')

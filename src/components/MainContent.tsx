@@ -381,6 +381,7 @@ const MainContent: React.FC<MainContentProps> = ({
                 : undefined
             }
             user={user}
+            activeGridName={activePanelGridName}
           />
         )}
       </div>
@@ -512,6 +513,7 @@ const MainContent: React.FC<MainContentProps> = ({
             : undefined
         }
         user={user}
+        activeGridName={activeGridName}
       />
     </div>
   );
