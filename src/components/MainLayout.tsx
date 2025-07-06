@@ -226,7 +226,7 @@ const MainLayout: React.FC<{ user: any }> = ({ user }) => {
   }, [providerInfoData, error]);
 
   return (
-    <div className="h-screen flex flex-col bg-white">
+    <div className="h-screen flex flex-col bg-white" data-testid="main-layout">
       {/* Top Navigation - Two Row Design */}
       {/* First Row - Black Background */}
       <div className="bg-black text-white">
@@ -383,7 +383,7 @@ const MainLayout: React.FC<{ user: any }> = ({ user }) => {
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-1 border-t border-gray-300">
+      <div className="flex flex-1 border-t border-gray-300" role="main" aria-label="Main Content Area" data-testid="main-content-area">
         {npi ? (
           // Single-provider view: no nav, all grids, filter by NPI
           <div className="flex-1 flex flex-col min-h-0">

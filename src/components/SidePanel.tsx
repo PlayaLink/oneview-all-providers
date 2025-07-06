@@ -94,6 +94,10 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
   return (
     <div
       className={`fixed top-0 right-0 h-full w-[484px] bg-white transform transition-transform duration-300 ease-in-out z-50 flex flex-col ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+      role="dialog"
+      aria-modal="true"
+      aria-label={title || 'Side Panel'}
+      data-testid="side-panel"
       style={{
         boxShadow: isOpen
           ? "-8px 0 24px -2px rgba(0, 0, 0, 0.12), -4px 0 8px -2px rgba(0, 0, 0, 0.08)"
@@ -101,7 +105,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
       }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-[#008BC9] text-white">
+      <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-[#008BC9] text-white" data-testid="side-panel-header">
         <div className="flex-1">
           <h2 className="text-lg font-semibold">
             {title ? title : (
@@ -123,8 +127,8 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
       </div>
       {/* Tabs and Content */}
       <div className="flex-1 min-h-0 flex flex-col">
-        <Tabs value={tab} onValueChange={setTab} className="flex flex-1 min-h-0">
-          <TabsList className="flex flex-col w-16 pt-4 pb-2 px-2 p-1 gap-1 border-r border-gray-200 items-center justify-start">
+        <Tabs value={tab} onValueChange={setTab} className="flex flex-1 min-h-0" data-testid="side-panel-tabs">
+          <TabsList className="flex flex-col w-16 pt-4 pb-2 px-2 p-1 gap-1 border-r border-gray-200 items-center justify-start" data-testid="side-panel-tabs-list">
             <TabsTrigger
               value="details"
               className={`flex flex-col items-center py-6 px-0 w-full transition-colors
@@ -156,8 +160,8 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
               <span className="text-xs">Docs</span>
             </TabsTrigger>
           </TabsList>
-          <div className="flex-1 min-h-0 flex flex-col overflow-y-auto">
-            <TabsContent value="details">
+          <div className="flex-1 min-h-0 flex flex-col overflow-y-auto" data-testid="side-panel-tabpanel-container">
+            <TabsContent value="details" role="tabpanel" aria-label="Details Tab" data-testid="side-panel-tabpanel-details">
               {/* Render grouped fields as CollapsibleSections */}
               {Object.entries(groupedFields).map(([group, fields]: [string, any[]]) => (
                 <CollapsibleSection key={group} title={group}>
@@ -208,17 +212,17 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
                 </CollapsibleSection>
               ))}
             </TabsContent>
-            <TabsContent value="notes" className="flex-1 min-h-0 flex flex-col p-0 m-0">
+            <TabsContent value="notes" className="flex-1 min-h-0 flex flex-col p-0 m-0" role="tabpanel" aria-label="Notes Tab" data-testid="side-panel-tabpanel-notes">
               <Notes className="flex-1 min-h-0" user={user} />
             </TabsContent>
-            <TabsContent value="documents">
+            <TabsContent value="documents" role="tabpanel" aria-label="Documents Tab" data-testid="side-panel-tabpanel-documents">
               <div className="text-gray-500">Documents tab content goes here.</div>
             </TabsContent>
           </div>
         </Tabs>
       </div>
       {/* Footer Actions */}
-      <div className="border-t border-gray-200 p-4">
+      <div className="border-t border-gray-200 p-4" data-testid="side-panel-footer">
         <div className="flex gap-3">
           <button className="flex-1 bg-[#008BC9] text-white py-2 px-4 rounded text-sm font-medium hover:bg-[#007399] transition-colors">
             Edit

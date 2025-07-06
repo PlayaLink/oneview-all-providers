@@ -56,7 +56,7 @@ const SideNav: React.FC<SideNavProps> = ({
   const isSectionActive = (section: string) => selectedSection === section;
 
   return (
-    <div className="h-full overflow-hidden">
+    <div className="h-full overflow-hidden" role="navigation" aria-label="Sidebar Navigation" data-testid="side-nav">
       <div className="h-full p-2 flex flex-col gap-2 overflow-y-auto">
         {!collapsed && (
           <>
