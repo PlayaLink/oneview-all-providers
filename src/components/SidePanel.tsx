@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faUserDoctor, faFileMedical, faFolder } from "@fortawesome/free-solid-svg-icons";
 import CollapsibleSection from "./CollapsibleSection";
 import { MultiSelectInput } from "./inputs/MultiSelectInput";
-import SingleSelectInput from "./inputs/SingleSelectInput";
+import { SingleSelect } from "./SingleSelect";
 import TextInputField from "./inputs/TextInputField";
 import { Provider } from "@/types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -365,7 +365,7 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
                         const options = field.options?.map((opt: string) => ({ id: opt, label: opt })) || [];
                         const selectedValue = options.find(opt => opt.id === formValues[field.label]) || null;
                         return (
-                          <SingleSelectInput
+                          <SingleSelect
                             key={field.label}
                             label={field.label}
                             labelPosition="left"

@@ -22,6 +22,10 @@ export interface SingleSelectProps {
    */
   label: string;
   /**
+   * Label position: 'left' or 'top'. Default is 'left'.
+   */
+  labelPosition?: 'left' | 'top';
+  /**
    * Currently selected option
    */
   value?: SingleSelectOption;
@@ -55,6 +59,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
   (
     {
       label,
+      labelPosition = 'left',
       value,
       options,
       onChange,
@@ -160,40 +165,85 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
 
     return (
       <div
-        className={cn("flex items-start gap-1 self-stretch", className)}
+        className={cn(
+          labelPosition === 'left'
+            ? 'flex items-start gap-1 self-stretch'
+            : 'flex flex-col gap-1 self-stretch',
+          className
+        )}
         ref={ref}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
         {...props}
       >
         {/* Label */}
-        <div
-          className="flex w-[153px] py-[7px] px-2 items-start gap-1"
-          style={{ width: "var(--Label-width, 153px)" }}
-        >
-          <div className="text-[#545454] text-xs font-semibold leading-normal tracking-[0.429px] font-['Poppins',sans-serif] break-words">
-            {label}
+        {labelPosition === 'left' ? (
+          <div
+            className="flex h-[38px] px-2 items-center gap-1 min-w-[120px] max-w-[120px] break-words whitespace-normal" role="single-select-label"
+          >
+            <div className="text-[#545454] text-xs font-semibold leading-normal tracking-[0.429px] font-['Poppins',sans-serif] break-words whitespace-normal">
+              {label}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="mb-1" role="single-select-label">
+            <div className="text-[#545454] text-xs font-semibold leading-normal tracking-[0.429px] font-['Poppins',sans-serif] break-words whitespace-normal">
+              {label}
+            </div>
+          </div>
+        )}
 
         {/* Value */}
         <Popover open={open} onOpenChange={handleOpenChange}>
           <PopoverTrigger asChild>
             <div
+              role="single-select-input"
               className={cn(
-                "flex py-[6px] px-2 items-center gap-2 flex-1 rounded border border-[#E6E6E6] cursor-pointer",
+                "flex h-[38px] px-2 items-center flex-1 rounded border border-[#E6E6E6] cursor-pointer",
                 disabled && "opacity-50 cursor-not-allowed",
                 open && "ring-1 ring-blue-400",
               )}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
             >
-              {/* Content */}
-              <div className="flex-1 text-[#212529] text-xs font-normal leading-normal tracking-[0.429px] font-['Poppins',sans-serif]">
-                {value ? value.label : placeholder}
+              {/* Content + Copy button */}
+              <div className="flex items-center gap-1">
+                <div className="text-[#212529] text-xs font-normal leading-normal tracking-[0.429px] font-['Poppins',sans-serif]">
+                  {value ? value.label : (open ? placeholder : "")}
+                </div>
+                {value && (
+                  <div className="relative flex items-center">
+                    <button
+                      type="button"
+                      onClick={handleCopy}
+                      disabled={disabled}
+                      className={cn(
+                        "flex w-[20.5px] h-5 py-[1.667px] justify-center items-center gap-[6.667px] rounded-[3.333px] hover:bg-gray-50 transition-all disabled:opacity-50 ml-1",
+                        isHovered ? "opacity-100" : "opacity-0",
+                      )}
+                    >
+                      <FontAwesomeIcon
+                        icon={faCopy}
+                        className="text-[14px] text-[#3E88D5]"
+                      />
+                    </button>
+                    {/* Tooltip */}
+                    {showCopied && (
+                      <div className="absolute -top-[35px] left-1/2 transform -translate-x-1/2 z-50">
+                        <div className="flex py-[6.667px] px-[13.333px] flex-col justify-end items-center gap-[13.333px] rounded-[3.333px] border border-[#E6E6E6] bg-white shadow-md">
+                          <div className="text-[#545454] text-center text-[10px] font-normal leading-normal tracking-[0.357px] font-['Poppins',sans-serif]">
+                            Copied
+                          </div>
+                          {/* Arrow pointing down */}
+                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[3.75px] border-r-[3.75px] border-t-[8.333px] border-l-transparent border-r-transparent border-t-[#E6E6E6]" />
+                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[3.75px] border-r-[3.75px] border-t-[7.5px] border-l-transparent border-r-transparent border-t-white translate-y-[-1px]" />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-
-              {/* Dropdown controls */}
-              <div className="flex py-0 px-1 items-center gap-3 self-stretch rounded-r border-0">
-                {/* Clear button */}
+              <div className="flex-1" />
+              {/* X + Caret */}
+              <div className="flex items-center gap-1">
                 {clearable && value && (
                   <button
                     type="button"
@@ -204,7 +254,6 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                     <FontAwesomeIcon icon={faTimes} className="text-[11px]" />
                   </button>
                 )}
-
                 {/* Dropdown arrow */}
                 <div className="flex w-[18px] h-4 px-[6px] justify-center items-center">
                   <div className="flex w-[10px] h-3 flex-col justify-center flex-shrink-0 text-[#545454] text-center">
@@ -222,7 +271,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
             sideOffset={4}
             alignOffset={0}
           >
-            <div className="w-64 max-h-48 overflow-y-auto p-2">
+            <div className="w-64 max-h-48 overflow-y-auto p-2" role="single-select-dropdown">
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((option) => (
                   <div
@@ -246,40 +295,6 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
             </div>
           </PopoverContent>
         </Popover>
-
-        {/* Copy button - outside input, only show when there's a value */}
-        {value && (
-          <div className="relative flex items-center">
-            <button
-              type="button"
-              onClick={handleCopy}
-              disabled={disabled}
-              className={cn(
-                "flex w-[20.5px] h-5 py-[1.667px] justify-center items-center gap-[6.667px] rounded-[3.333px] hover:bg-gray-50 transition-all disabled:opacity-50 ml-1",
-                isHovered ? "opacity-100" : "opacity-0",
-              )}
-            >
-              <FontAwesomeIcon
-                icon={faCopy}
-                className="text-[14px] text-[#3E88D5]"
-              />
-            </button>
-
-            {/* Tooltip */}
-            {showCopied && (
-              <div className="absolute -top-[35px] left-1/2 transform -translate-x-1/2 z-50">
-                <div className="flex py-[6.667px] px-[13.333px] flex-col justify-end items-center gap-[13.333px] rounded-[3.333px] border border-[#E6E6E6] bg-white shadow-md">
-                  <div className="text-[#545454] text-center text-[10px] font-normal leading-normal tracking-[0.357px] font-['Poppins',sans-serif]">
-                    Copied
-                  </div>
-                  {/* Arrow pointing down */}
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[3.75px] border-r-[3.75px] border-t-[8.333px] border-l-transparent border-r-transparent border-t-[#E6E6E6]" />
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[3.75px] border-r-[3.75px] border-t-[7.5px] border-l-transparent border-r-transparent border-t-white translate-y-[-1px]" />
-                </div>
-              </div>
-            )}
-          </div>
-        )}
       </div>
     );
   },
