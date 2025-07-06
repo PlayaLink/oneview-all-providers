@@ -202,7 +202,14 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                 open && "ring-1 ring-blue-400",
               )}
               onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
+              onMouseLeave={() => {
+                setIsHovered(false);
+                setShowCopied(false);
+                if (copiedTimeoutRef.current) {
+                  clearTimeout(copiedTimeoutRef.current);
+                  copiedTimeoutRef.current = null;
+                }
+              }}
             >
               {/* Content + Copy button */}
               <div className="flex items-center gap-1">
@@ -226,7 +233,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                       />
                     </button>
                     {/* Tooltip */}
-                    {showCopied && (
+                    {showCopied && isHovered && (
                       <div className="absolute -top-[35px] left-1/2 transform -translate-x-1/2 z-50">
                         <div className="flex py-[6.667px] px-[13.333px] flex-col justify-end items-center gap-[13.333px] rounded-[3.333px] border border-[#E6E6E6] bg-white shadow-md">
                           <div className="text-[#545454] text-center text-[10px] font-normal leading-normal tracking-[0.357px] font-['Poppins',sans-serif]">
