@@ -9,6 +9,8 @@ import { gridDefinitions, getGridsByGroup } from "@/lib/gridDefinitions";
 import { getIconByName } from "@/lib/iconMapping";
 import { Provider } from "@/types";
 import providerInfoConfig from "@/data/provider_info_details.json";
+import { useQuery } from '@tanstack/react-query';
+import { fetchStateLicenses } from '@/lib/supabaseClient';
 
 interface MainContentProps {
   selectedItem?: string | null;
@@ -45,6 +47,12 @@ const MainContent: React.FC<MainContentProps> = ({
 }) => {
   const [currentGridIndex, setCurrentGridIndex] = useState(0);
   const [selectedGridName, setSelectedGridName] = useState<string | null>(null);
+
+  // Fetch state licenses data from Supabase
+  const { data: stateLicensesData, isLoading: stateLicensesLoading, error: stateLicensesError } = useQuery<any[], Error>({
+    queryKey: ['stateLicenses'],
+    queryFn: fetchStateLicenses,
+  });
 
   // Memoize sample data for all grids only once
   const sampleDataRef = React.useRef<{ [gridName: string]: any[] }>({});
@@ -118,6 +126,28 @@ const MainContent: React.FC<MainContentProps> = ({
   const getDataForGrid = (gridKey: string) => {
     if (gridKey === "Provider_Info") {
       return providerInfoData || [];
+    }
+    if (gridKey === "State_Licenses") {
+      if (!stateLicensesData) return [];
+      
+      // Transform the data to match the expected grid format
+      return stateLicensesData.map((license) => ({
+        id: license.id,
+        provider_name: license.provider ? `${license.provider.first_name || ''} ${license.provider.last_name || ''}`.trim() : '',
+        title: license.provider?.title || '',
+        primary_specialty: license.provider?.primary_specialty || '',
+        license_type: license.license_type || '',
+        license_additional_info: license.license_additional_info || '',
+        state: license.state || '',
+        status: license.status || '',
+        issue_date: license.issue_date || '',
+        expiration_date: license.expiration_date || '',
+        expires_within: license.expires_within || '',
+        tags: license.tags || [],
+        last_updated: license.last_updated || '',
+        // Include the original data for side panel
+        ...license,
+      }));
     }
     return sampleDataRef.current[gridKey] || [];
   };
@@ -255,6 +285,24 @@ const MainContent: React.FC<MainContentProps> = ({
     return (
       <div className="flex-1 flex items-center justify-center pt-4 px-4">
         <div className="text-gray-500">Grid configuration not found</div>
+      </div>
+    );
+  }
+
+  // Show loading state for State Licenses grid
+  if (currentGrid.tableName === "State_Licenses" && stateLicensesLoading) {
+    return (
+      <div className="flex-1 flex items-center justify-center pt-4 px-4">
+        <div className="text-gray-500">Loading state licenses...</div>
+      </div>
+    );
+  }
+
+  // Show error state for State Licenses grid
+  if (currentGrid.tableName === "State_Licenses" && stateLicensesError) {
+    return (
+      <div className="flex-1 flex items-center justify-center pt-4 px-4">
+        <div className="text-red-500">Error loading state licenses: {stateLicensesError.message}</div>
       </div>
     );
   }

@@ -194,19 +194,68 @@ export const generateSampleData = (gridKey: string, count: number = 10): any[] =
           row[columnName] = getDeterministicItem(["Due Soon", "Overdue", "Completed", "Not Required"], colIndex * 100);
           break;
         case "license_type":
-          row[columnName] = getDeterministicItem(["Medical License", "Nurse Practitioner", "Physician Assistant", "Specialty License"], colIndex * 100);
-          break;
-        case "license_additional_info":
-          row[columnName] = getDeterministicItem(["Active Practice", "Hospital Privileges", "Board Certified", "Prescriptive Authority"], colIndex * 100);
+          // Use realistic medical license types, mostly 'MD'
+          row[columnName] = getDeterministicItem([
+            "MD", "DO", "NP", "PA", "RN", "LPN", "CRNA", "DPM", "DDS", "DMD"
+          ], i + colIndex);
           break;
         case "license":
-          row[columnName] = `${faker.person.prefix()}-${Math.floor(seededRandom(colIndex * 100) * 90000) + 10000}`;
+        case "license_number":
+          // Use realistic license number formats
+          const licenseFormats = [
+            () => `C1-${faker.string.numeric(7)}`,
+            () => `DR.${faker.string.numeric(7)}`,
+            () => `${faker.string.alpha({ length: 2, casing: 'upper' })}${faker.string.alpha({ length: 2, casing: 'upper' })}${faker.string.numeric(8)}`,
+            () => faker.string.numeric(5),
+            () => faker.string.numeric(6),
+            () => `${faker.string.numeric(2)}.${faker.string.numeric(6)}`,
+            () => `MD${faker.string.numeric(7)}`,
+            () => `${faker.string.numeric(7)}-${faker.string.numeric(4)}`
+          ];
+          row[columnName] = getDeterministicItem(licenseFormats, i + colIndex)();
           break;
-        case "payment_indicator":
-          row[columnName] = getDeterministicItem(["Paid", "Unpaid", "Pending", "Waived"], colIndex * 100);
+        case "license_additional_info":
+        case "addl_info":
+        case "additional_info":
+          row[columnName] = getDeterministicItem(["No", "Yes"], i + colIndex);
+          break;
+        case "state":
+          // Use real US state codes
+          row[columnName] = getDeterministicItem([
+            "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"
+          ], i + colIndex);
+          break;
+        case "status":
+          row[columnName] = getDeterministicItem(["Active", "Expired", "Pending"], i + colIndex);
+          break;
+        case "issue_date":
+        case "issue_date_mmddyyyy":
+          // MM/DD/YYYY format
+          row[columnName] = faker.date.between({ from: '1990-01-01', to: '2015-12-31' }).toLocaleDateString('en-US');
+          break;
+        case "expiration_date":
+        case "exp_date":
+        case "exp_date_mmddyyyy":
+          // MM/DD/YYYY format, after issue date
+          const issue = faker.date.between({ from: '1990-01-01', to: '2015-12-31' });
+          const exp = faker.date.between({ from: issue, to: '2027-12-31' });
+          row[columnName] = exp.toLocaleDateString('en-US');
+          // Save for expires_within calculation
+          row._expDateObj = exp;
+          break;
+        case "expires_within":
+          // Calculate days until expiration or 'Expired'
+          if (row._expDateObj) {
+            const now = new Date();
+            const diff = Math.ceil((row._expDateObj - now) / (1000 * 60 * 60 * 24));
+            row[columnName] = diff < 0 ? "Expired" : `${diff} days`;
+          } else {
+            row[columnName] = getDeterministicItem(["Expired", "7 days", "26 days", "118 days", "211 days"], i + colIndex);
+          }
           break;
         case "tags":
-          row[columnName] = getDeterministicItem(sampleData.tags, colIndex * 100);
+          // Sometimes blank, sometimes a random number
+          row[columnName] = getDeterministicItem(["", "", "", faker.string.numeric(5)], i + colIndex);
           break;
         case "last_updated":
           row[columnName] = getDeterministicDate(new Date(2023, 0, 1), new Date(2024, 11, 31), colIndex * 100);
@@ -215,6 +264,8 @@ export const generateSampleData = (gridKey: string, count: number = 10): any[] =
           row[columnName] = `Sample ${columnName.replace(/_/g, ' ')}`;
       }
     });
+    // Remove temp _expDateObj
+    if (row._expDateObj) delete row._expDateObj;
     data.push(row);
   }
   return data;

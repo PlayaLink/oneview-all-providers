@@ -8,6 +8,7 @@ export interface GridDefinition {
   icon?: string;
   color?: string;
   defaultVisible?: boolean;
+  columns: string[];
 }
 
 export const gridDefinitions: GridDefinition[] = gridDefinitionsJson as GridDefinition[];

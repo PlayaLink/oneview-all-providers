@@ -13,4 +13,21 @@ export async function updateProvider(id: string, updates: Record<string, any>) {
     .select();
   if (error) throw error;
   return data;
+}
+
+export async function fetchStateLicenses() {
+  const { data, error } = await supabase
+    .from('state_licenses')
+    .select(`
+      *,
+      provider:providers(
+        id,
+        first_name,
+        last_name,
+        title,
+        primary_specialty
+      )
+    `);
+  if (error) throw error;
+  return data;
 } 
