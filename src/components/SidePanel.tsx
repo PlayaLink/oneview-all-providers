@@ -361,13 +361,16 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
                           />
                         );
                       } else if (inputType === "single-select") {
+                        // Find the selected option object
+                        const options = field.options?.map((opt: string) => ({ id: opt, label: opt })) || [];
+                        const selectedValue = options.find(opt => opt.id === formValues[field.label]) || null;
                         return (
                           <SingleSelectInput
                             key={field.label}
                             label={field.label}
                             labelPosition="left"
-                            value={formValues[field.label] || null}
-                            options={field.options?.map((opt: string) => ({ id: opt, label: opt })) || []}
+                            value={selectedValue}
+                            options={options}
                             onChange={(val) => handleChange(field.label, val?.id ?? val)}
                             placeholder={field.placeholder}
                             className="flex-1 min-w-0"

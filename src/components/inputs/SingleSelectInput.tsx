@@ -99,7 +99,14 @@ export const SingleSelectInput: React.FC<SingleSelectInputProps> = ({
       style={{ position: "relative" }}
     >
       {label && (
-        <label className="text-xs font-semibold mb-1 min-w-[120px]">{label}</label>
+        <label
+          className={cn(
+            "text-xs font-semibold mb-1",
+            labelPosition === "left" && "min-w-[120px] max-w-[120px] break-words whitespace-normal"
+          )}
+        >
+          {label}
+        </label>
       )}
       <div className="relative w-full">
         <input
