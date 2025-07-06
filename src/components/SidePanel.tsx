@@ -37,9 +37,10 @@ interface SidePanelProps {
   title?: string;
   user: any;
   activeGridName?: string | null; // Add this to determine which table to update
+  onUpdateSelectedProvider?: (gridName: string, updatedProvider: any) => void; // Add callback to update selected provider
 }
 
-const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig, onClose, title, user, activeGridName }) => {
+const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig, onClose, title, user, activeGridName, onUpdateSelectedProvider }) => {
   const [formValues, setFormValues] = React.useState<Record<string, any>>({});
   const [tab, setTab] = useState("details");
   const [panelWidth, setPanelWidth] = useState(() => {
@@ -52,9 +53,10 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
   const queryClient = useQueryClient();
   const resizeRef = useRef<HTMLDivElement>(null);
 
-  // Initialize form values from selectedRow when it changes
+  // Only reset form values if the selectedRow.id actually changes
+  const lastInitializedId = React.useRef<any>(null);
   React.useEffect(() => {
-    if (selectedRow) {
+    if (selectedRow && selectedRow.id !== lastInitializedId.current) {
       const initialValues: Record<string, any> = {};
       inputConfig.forEach(field => {
         if (field.rowKey) {
@@ -69,8 +71,10 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
         }
       });
       setFormValues(initialValues);
-    } else {
+      lastInitializedId.current = selectedRow.id;
+    } else if (!selectedRow) {
       setFormValues({});
+      lastInitializedId.current = null;
     }
   }, [selectedRow, inputConfig]);
 
@@ -170,6 +174,12 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
               : row
           );
         });
+        
+        // Update the selected provider data to prevent form reset
+        if (onUpdateSelectedProvider && activeGridName) {
+          const updatedProvider = { ...selectedRow, [field.rowKey]: value };
+          onUpdateSelectedProvider(activeGridName, updatedProvider);
+        }
       } else if (tableToUpdate === 'stateLicenses') {
         queryClient.setQueryData(['stateLicenses'], (oldData: any[] | undefined) => {
           if (!oldData) return oldData;
@@ -190,6 +200,12 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
                 : row
             );
           });
+        }
+        
+        // Update the selected provider data to prevent form reset
+        if (onUpdateSelectedProvider && activeGridName) {
+          const updatedProvider = { ...selectedRow, [field.rowKey]: value };
+          onUpdateSelectedProvider(activeGridName, updatedProvider);
         }
       }
 
