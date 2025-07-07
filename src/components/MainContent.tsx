@@ -265,10 +265,16 @@ const MainContent: React.FC<MainContentProps> = ({
   // Function to get the appropriate template configuration for the active grid
   const getTemplateConfigForActiveGrid = () => {
     const templateConfig = activePanelGridName ? getTemplateConfigByGrid(activePanelGridName) : null;
+    console.log('Template config for grid:', activePanelGridName, templateConfig);
+    
     if (templateConfig && Array.isArray(templateConfig.fieldGroups)) {
-      return templateConfig.fieldGroups.flatMap(group => group.fields);
+      const fields = templateConfig.fieldGroups.flatMap(group => group.fields);
+      console.log('Fields from template config:', fields);
+      return fields;
     }
+    
     // fallback to providerInfoConfig or an empty array
+    console.log('Using fallback providerInfoConfig');
     return providerInfoConfig;
   };
 
@@ -383,9 +389,8 @@ const MainContent: React.FC<MainContentProps> = ({
                 : undefined
             }
             user={user}
-            activeGridName={activePanelGridName}
+            gridName={activePanelGridName}
             onUpdateSelectedProvider={onUpdateSelectedProvider}
-            template={activePanelGridName === 'State_Licenses' ? stateLicenseTemplate : providerInfoTemplate}
           />
         )}
       </div>

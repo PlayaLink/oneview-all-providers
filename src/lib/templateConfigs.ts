@@ -334,7 +334,7 @@ export const templateConfigs: TemplateConfig[] = [
             type: "single-select",
             placeholder: "Select Mobile Phone...",
             options: ["AT&T", "Verizon", "T-Mobile", "Sprint", "Other"],
-            rowKey: "mobile_phone_carrier"
+            rowKey: "mobile_phone_carrier_name"
           }
         ]
       },
@@ -384,7 +384,7 @@ export const templateConfigs: TemplateConfig[] = [
             group: "Identification",
             type: "text",
             placeholder: "...",
-            rowKey: "ssn"
+            rowKey: "social_security_number"
           },
           {
             label: "NPI #",
@@ -396,14 +396,14 @@ export const templateConfigs: TemplateConfig[] = [
           {
             label: "Last Updated",
             group: "Identification",
-            type: "text",
+            type: "date",
             placeholder: "MM/DD/YYYY",
             rowKey: "last_updated"
           },
           {
             label: "Enumeration Date",
             group: "Identification",
-            type: "text",
+            type: "date",
             placeholder: "MM/DD/YYYY",
             rowKey: "enumeration_date"
           },
@@ -412,7 +412,7 @@ export const templateConfigs: TemplateConfig[] = [
             group: "Identification",
             type: "text",
             placeholder: "...",
-            rowKey: "driver_license_id"
+            rowKey: "driver_license_or_id_number"
           },
           {
             label: "State Issued",
@@ -431,14 +431,14 @@ export const templateConfigs: TemplateConfig[] = [
           {
             label: "Issue Date",
             group: "Identification",
-            type: "text",
+            type: "date",
             placeholder: "MM/DD/YYYY",
             rowKey: "issue_date"
           },
           {
             label: "Expiration Date",
             group: "Identification",
-            type: "text",
+            type: "date",
             placeholder: "MM/DD/YYYY",
             rowKey: "expiration_date"
           }
@@ -631,9 +631,49 @@ export const gridToTemplateMap: Record<string, string> = {
 
 // Helper function to get template config by grid name
 export function getTemplateConfigByGrid(gridName: string): TemplateConfig | null {
-  if (gridName === "Provider_Info") return providerInfoTemplate;
-  if (gridName === "State_Licenses") return stateLicenseTemplate;
-  return null;
+  console.log('getTemplateConfigByGrid called with:', gridName);
+  
+  const templateId = gridToTemplateMap[gridName];
+  console.log('Template ID from map:', templateId);
+  
+  if (!templateId) {
+    console.log('No template ID found for grid:', gridName);
+    return null;
+  }
+  
+  const template = templateConfigs.find(t => t.id === templateId);
+  console.log('Found template:', template);
+  
+  if (!template) {
+    console.log('No template found for ID:', templateId);
+    return null;
+  }
+  
+  // Merge with the template-specific header and tabs
+  if (gridName === "Provider_Info") {
+    const mergedTemplate = {
+      ...template,
+      header: providerInfoTemplate.header,
+      tabs: providerInfoTemplate.tabs,
+      DetailsComponent: providerInfoTemplate.DetailsComponent
+    };
+    console.log('Merged Provider_Info template:', mergedTemplate);
+    return mergedTemplate;
+  }
+  
+  if (gridName === "State_Licenses") {
+    const mergedTemplate = {
+      ...template,
+      header: stateLicenseTemplate.header,
+      tabs: stateLicenseTemplate.tabs,
+      DetailsComponent: stateLicenseTemplate.DetailsComponent
+    };
+    console.log('Merged State_Licenses template:', mergedTemplate);
+    return mergedTemplate;
+  }
+  
+  console.log('Returning base template:', template);
+  return template;
 }
 
 // Helper function to get template config by template ID

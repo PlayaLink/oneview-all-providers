@@ -55,7 +55,7 @@ export const providerInfoFieldGroups = [
       { label: "Pager #", group: "Contact Info", type: "text", placeholder: "(___) ___-____", rowKey: "pager_number" },
       { label: "Fax #", group: "Contact Info", type: "text", placeholder: "(___) ___-____", rowKey: "fax_number" },
       { label: "Mobile Phone #", group: "Contact Info", type: "text", placeholder: "(___) ___-____", rowKey: "mobile_phone_number" },
-      { label: "Mobile Phone Carrier Name", group: "Contact Info", type: "single-select", placeholder: "Select Mobile Phone...", options: ["AT&T", "Verizon", "T-Mobile", "Sprint", "Other"], rowKey: "mobile_phone_carrier" }
+      { label: "Mobile Phone Carrier Name", group: "Contact Info", type: "single-select", placeholder: "Select Mobile Phone...", options: ["AT&T", "Verizon", "T-Mobile", "Sprint", "Other"], rowKey: "mobile_phone_carrier_name" }
     ]
   },
   // 4. Emergency Contact
@@ -74,16 +74,16 @@ export const providerInfoFieldGroups = [
     id: "identification",
     title: "Identification",
     fields: [
-      { label: "Social Security #", group: "Identification", type: "text", placeholder: "...", rowKey: "ssn" },
+      { label: "Social Security #", group: "Identification", type: "text", placeholder: "...", rowKey: "social_security_number" },
       { label: "NPI #", group: "Identification", type: "text", placeholder: "Enter NPI number", rowKey: "npi_number" },
-      { label: "Last Updated", group: "Identification", type: "text", placeholder: "MM/DD/YYYY", rowKey: "last_updated" },
-      { label: "Enumeration Date", group: "Identification", type: "text", placeholder: "MM/DD/YYYY", rowKey: "enumeration_date" },
-      { label: "Driver License or ID #", group: "Identification", type: "text", placeholder: "...", rowKey: "driver_license_id" },
+      { label: "Last Updated", group: "Identification", type: "date", placeholder: "MM/DD/YYYY", rowKey: "last_updated" },
+      { label: "Enumeration Date", group: "Identification", type: "date", placeholder: "MM/DD/YYYY", rowKey: "enumeration_date" },
+      { label: "Driver License or ID #", group: "Identification", type: "text", placeholder: "...", rowKey: "driver_license_or_id_number" },
       { label: "State Issued", group: "Identification", type: "single-select", placeholder: "Select State Issued", options: [
         "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"
       ], rowKey: "state_issued" },
-      { label: "Issue Date", group: "Identification", type: "text", placeholder: "MM/DD/YYYY", rowKey: "issue_date" },
-      { label: "Expiration Date", group: "Identification", type: "text", placeholder: "MM/DD/YYYY", rowKey: "expiration_date" }
+      { label: "Issue Date", group: "Identification", type: "date", placeholder: "MM/DD/YYYY", rowKey: "issue_date" },
+      { label: "Expiration Date", group: "Identification", type: "date", placeholder: "MM/DD/YYYY", rowKey: "expiration_date" }
     ]
   }
 ];
@@ -109,16 +109,16 @@ const ProviderInfoDetails = ({ formValues, handleChange }) => (
                   key={key}
                   label={field.label}
                   labelPosition="left"
-                  value={formValues[field.label] || []}
+                  value={formValues[key] || []}
                   options={field.options?.map((opt) => ({ id: opt, label: opt })) || []}
-                  onChange={(val) => handleChange(field.label, Array.isArray(val) ? val.map((v) => v.id) : [])}
+                  onChange={(val) => handleChange(key, Array.isArray(val) ? val.map((v) => v.id) : [])}
                   placeholder={field.placeholder}
                   className="flex-1 min-w-0"
                 />
               );
             } else if (inputType === 'single-select') {
               const options = field.options?.map((opt) => ({ id: opt, label: opt })) || [];
-              const selectedValue = options.find((opt) => opt.id === formValues[field.label]) || null;
+              const selectedValue = options.find((opt) => opt.id === formValues[key]) || null;
               return (
                 <SingleSelect
                   key={key}
@@ -126,7 +126,7 @@ const ProviderInfoDetails = ({ formValues, handleChange }) => (
                   labelPosition="left"
                   value={selectedValue}
                   options={options}
-                  onChange={(val) => handleChange(field.label, val?.id ?? val)}
+                  onChange={(val) => handleChange(key, val?.id ?? val)}
                   placeholder={field.placeholder}
                   className="flex-1 min-w-0"
                 />
@@ -137,8 +137,8 @@ const ProviderInfoDetails = ({ formValues, handleChange }) => (
                   key={key}
                   label={field.label}
                   labelPosition="left"
-                  value={formValues[field.label] || ''}
-                  onChange={(val) => handleChange(field.label, val)}
+                  value={formValues[key] || ''}
+                  onChange={(val) => handleChange(key, val)}
                   placeholder={field.placeholder}
                   className="flex-1 min-w-0"
                 />

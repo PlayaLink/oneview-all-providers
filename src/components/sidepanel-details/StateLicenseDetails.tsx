@@ -135,30 +135,31 @@ const StateLicenseDetails = ({ formValues, handleChange }) => (
         <div className="flex flex-col gap-4 self-stretch">
           {group.fields.map((field) => {
             const inputType = getInputType(field);
+            const key = field.rowKey || field.label;
             if (inputType === 'multi-select') {
               return (
                 <MultiSelectInput
-                  key={field.label}
+                  key={key}
                   label={field.label}
                   labelPosition="left"
-                  value={formValues[field.label] || []}
+                  value={formValues[key] || []}
                   options={field.options?.map((opt) => ({ id: opt, label: opt })) || []}
-                  onChange={(val) => handleChange(field.label, Array.isArray(val) ? val.map((v) => v.id) : [])}
+                  onChange={(val) => handleChange(key, Array.isArray(val) ? val.map((v) => v.id) : [])}
                   placeholder={field.placeholder}
                   className="flex-1 min-w-0"
                 />
               );
             } else if (inputType === 'single-select') {
               const options = field.options?.map((opt) => ({ id: opt, label: opt })) || [];
-              const selectedValue = options.find((opt) => opt.id === formValues[field.label]) || null;
+              const selectedValue = options.find((opt) => opt.id === formValues[key]) || null;
               return (
                 <SingleSelect
-                  key={field.label}
+                  key={key}
                   label={field.label}
                   labelPosition="left"
                   value={selectedValue}
                   options={options}
-                  onChange={(val) => handleChange(field.label, val?.id ?? val)}
+                  onChange={(val) => handleChange(key, val?.id ?? val)}
                   placeholder={field.placeholder}
                   className="flex-1 min-w-0"
                 />
@@ -166,11 +167,11 @@ const StateLicenseDetails = ({ formValues, handleChange }) => (
             } else {
               return (
                 <TextInputField
-                  key={field.label}
+                  key={key}
                   label={field.label}
                   labelPosition="left"
-                  value={formValues[field.label] || ''}
-                  onChange={(val) => handleChange(field.label, val)}
+                  value={formValues[key] || ''}
+                  onChange={(val) => handleChange(key, val)}
                   placeholder={field.placeholder}
                   className="flex-1 min-w-0"
                 />

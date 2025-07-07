@@ -84,6 +84,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
   });
   const [isResizing, setIsResizing] = useState(false);
   const [isHoveringResizeHandle, setIsHoveringResizeHandle] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const queryClient = useQueryClient();
   const resizeRef = useRef<HTMLDivElement>(null);
 
@@ -111,26 +112,26 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
   const lastInitializedId = React.useRef<any>(null);
   React.useEffect(() => {
     if (selectedRow && selectedRow.id !== lastInitializedId.current) {
+      console.log('Initializing form values for selectedRow:', selectedRow);
+      console.log('Input config:', inputConfig);
+      
       const initialValues: Record<string, any> = {};
       inputConfig.forEach(field => {
-        if (field.rowKey) {
-          initialValues[field.label] = selectedRow[field.rowKey] ?? (field.type === 'multi-select' ? [] : '');
-        } else {
-          // fallback: try to match by label as before, or use default
-          const labelKey = field.label.replace(/\s|_/g, '').toLowerCase();
-          const foundKey = Object.keys(selectedRow).find(
-            k => k.replace(/\s|_/g, '').toLowerCase() === labelKey
-          );
-          initialValues[field.label] = foundKey ? selectedRow[foundKey] : (field.type === 'multi-select' ? [] : '');
-        }
+        const key = field.rowKey || field.label;
+        const value = selectedRow[key] ?? (field.type === 'multi-select' ? [] : '');
+        initialValues[key] = value;
+        console.log(`Setting ${key} = ${value}`);
       });
+      
+      console.log('Final initial values:', initialValues);
       setFormValues(initialValues);
       lastInitializedId.current = selectedRow.id;
     } else if (!selectedRow) {
+      console.log('Clearing form values - no selectedRow');
       setFormValues({});
       lastInitializedId.current = null;
     }
-  }, [selectedRow]);
+  }, [selectedRow, inputConfig]);
 
   // Debug: log the selectedRow prop whenever it changes
   React.useEffect(() => {
@@ -203,32 +204,113 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
   }, {});
 
   // Handle input change (local only)
-  const handleChange = (label: string, value: any) => {
-    setFormValues((prev) => ({ ...prev, [label]: value }));
+  const handleChange = (key: string, value: any) => {
+    setFormValues((prev) => ({ ...prev, [key]: value }));
   };
 
   // Handle Save (update parent and backend)
   const handleSave = async () => {
-    if (!selectedRow || !gridName) return;
-
-    // Update the backend
-    let updateFunction;
-    if (gridName === 'State_Licenses') {
-      updateFunction = updateStateLicense;
-    } else {
-      updateFunction = updateProvider;
+    console.log('handleSave called with:', { selectedRow, gridName, formValues });
+    
+    if (!selectedRow || !gridName) {
+      console.error('Missing required data for save:', { selectedRow: !!selectedRow, gridName });
+      return;
     }
+
+    setIsSaving(true);
+
     try {
-      await updateFunction(selectedRow.id, formValues);
-      // Optionally, update parent state as well
-      if (onUpdateSelectedProvider) {
-        const updatedProvider = { ...selectedRow, ...formValues };
-        onUpdateSelectedProvider(gridName, updatedProvider);
+          // Only include valid DB columns in the update
+    const validColumns = inputConfig.map(f => f.rowKey).filter(Boolean);
+    console.log('Valid columns for update:', validColumns);
+    console.log('All inputConfig fields:', inputConfig.map(f => ({ label: f.label, rowKey: f.rowKey })));
+    
+    // Filter and clean the updates
+    const filteredUpdates = Object.fromEntries(
+      Object.entries(formValues)
+        .filter(([key]) => validColumns.includes(key))
+        .map(([key, value]) => {
+          // Handle empty date fields - convert empty strings to null for date fields
+          const field = inputConfig.find(f => f.rowKey === key);
+          const isDateField = field && (
+            field.type === 'date' || 
+            key.includes('date') || 
+            key.includes('Date') ||
+            key === 'last_updated' ||
+            key === 'enumeration_date' ||
+            key === 'issue_date' ||
+            key === 'expiration_date'
+          );
+          
+          if (isDateField) {
+            console.log(`Processing date field: ${key}, value: "${value}", type: ${typeof value}`);
+          }
+          
+          if (isDateField && (value === '' || value === null || value === undefined)) {
+            console.log(`Converting empty date field ${key} to null`);
+            return [key, null];
+          }
+          
+          // Also handle invalid date strings
+          if (isDateField && typeof value === 'string' && value.trim() === '') {
+            console.log(`Converting empty string date field ${key} to null`);
+            return [key, null];
+          }
+          
+          return [key, value];
+        })
+    );
+    console.log('Filtered updates to save:', filteredUpdates);
+    
+    // Log fields that are being excluded
+    const excludedFields = Object.entries(formValues).filter(([key]) => !validColumns.includes(key));
+    if (excludedFields.length > 0) {
+      console.log('Fields excluded from save (no rowKey):', excludedFields);
+    }
+    
+    // Log the exact data being sent to the database
+    console.log('Data being sent to database:', {
+      table: gridName === 'State_Licenses' ? 'state_licenses' : 'providers',
+      id: selectedRow.id,
+      updates: filteredUpdates
+    });
+
+      // Check if there are any updates to save
+      if (Object.keys(filteredUpdates).length === 0) {
+        console.log('No valid updates to save');
+        return;
       }
-      // Optionally, show a success message or close the panel
+
+      // Update the backend
+      let updateFunction;
+      if (gridName === 'State_Licenses') {
+        updateFunction = updateStateLicense;
+      } else {
+        updateFunction = updateProvider;
+      }
+      
+      console.log('Using update function for grid:', gridName);
+      
+      const result = await updateFunction(selectedRow.id, filteredUpdates);
+      console.log('Save successful:', result);
+      
+      // Update parent state as well
+      if (onUpdateSelectedProvider) {
+        const updatedProvider = { ...selectedRow, ...filteredUpdates };
+        onUpdateSelectedProvider(gridName, updatedProvider);
+        console.log('Parent state updated');
+      }
+      
+      // Show success feedback (you could add a toast notification here)
+      console.log('Save completed successfully');
+      alert('Changes saved successfully!');
+      
     } catch (err) {
-      // Optionally, show an error message
       console.error('Failed to save:', err);
+      // Show error feedback (you could add a toast notification here)
+      alert(`Failed to save: ${err.message || 'Unknown error'}`);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -357,12 +439,27 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       <div className="border-t border-gray-200 p-4" data-testid="side-panel-footer">
         <div className="flex gap-3">
           <button
-            className="flex-1 bg-[#008BC9] text-white py-2 px-4 rounded text-sm font-medium hover:bg-[#007399] transition-colors"
+            className={`flex-1 py-2 px-4 rounded text-sm font-medium transition-colors ${
+              isSaving 
+                ? 'bg-gray-400 text-white cursor-not-allowed' 
+                : 'bg-[#008BC9] text-white hover:bg-[#007399]'
+            }`}
             onClick={handleSave}
+            disabled={isSaving}
+            aria-label={isSaving ? "Saving changes..." : "Save changes"}
+            aria-describedby={isSaving ? "saving-status" : undefined}
+            data-testid="side-panel-save-button"
+            role="button"
+            type="button"
           >
-            Save
+            {isSaving ? 'Saving...' : 'Save'}
+            {isSaving && <span id="saving-status" className="sr-only">Saving changes to database</span>}
           </button>
-          <button className="flex-1 bg-gray-100 text-[#545454] py-2 px-4 rounded text-sm font-medium hover:bg-gray-200 transition-colors">
+          <button 
+            className="flex-1 bg-gray-100 text-[#545454] py-2 px-4 rounded text-sm font-medium hover:bg-gray-200 transition-colors"
+            aria-label="View full profile"
+            data-testid="side-panel-view-profile-button"
+          >
             View Full Profile
           </button>
         </div>
