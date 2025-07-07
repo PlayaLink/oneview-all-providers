@@ -15,6 +15,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { getTemplateConfigByGrid } from '@/lib/templateConfigs';
 import ProviderInfoDetails from './sidepanel-details/ProviderInfoDetails';
 import StateLicenseDetails from './sidepanel-details/StateLicenseDetails';
+import { getIconByName } from "@/lib/iconMapping";
 
 // Types for input fields
 export interface InputField {
@@ -309,7 +310,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
                 data-[state=active]:hover:bg-[#0077B3]
                 text-[#545454] hover:bg-gray-100`}
               >
-                <FontAwesomeIcon icon={tabConfig.icon} className="w-6 h-6 mb-1" />
+                <FontAwesomeIcon icon={getIconByName(tabConfig.icon)} className="w-6 h-6 mb-1" />
                 <span className="text-xs">{tabConfig.label}</span>
               </TabsTrigger>
             ))}
