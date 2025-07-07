@@ -413,7 +413,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       setTimeout(() => {
         setSaveSuccess(false);
         // Footer will be hidden by hasUnsavedChanges being false
-      }, 3000); // Hide success message after 3 seconds
+      }, 1500); // Hide success message after 1.5 seconds
       
     } catch (err) {
       console.error('Failed to save:', err);
@@ -556,40 +556,53 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
           </div>
         </Tabs>
       </div>
-      {/* Footer Actions - Only show when there are unsaved changes or during save process */}
-      {(hasUnsavedChanges || isSaving || saveSuccess) && (
-        <div className="border-t border-gray-200 p-4" data-testid="side-panel-footer">
-          <div className="flex gap-3">
-            <button 
-              className="flex-1 bg-gray-100 text-[#545454] py-2 px-4 rounded text-sm font-medium hover:bg-gray-200 transition-colors"
-              aria-label="Discard Changes"
-              data-testid="side-panel-discard-changes-button"
-              onClick={handleDiscardChanges}
-            >
-              Discard Changes
-            </button>
-            <button
-              className={`flex-1 py-2 px-4 rounded text-sm font-medium transition-colors ${
-                isSaving 
-                  ? 'bg-gray-400 text-white cursor-not-allowed' 
-                  : saveSuccess
-                  ? 'bg-[#79AC48] text-white cursor-default'
-                  : 'bg-[#008BC9] text-white hover:bg-[#007399]'
-              }`}
-              onClick={handleSave}
-              disabled={isSaving || saveSuccess}
-              aria-label={isSaving ? "Saving changes..." : saveSuccess ? "Changes saved successfully" : "Save changes"}
-              aria-describedby={isSaving ? "saving-status" : undefined}
-              data-testid="side-panel-save-button"
-              role="button"
-              type="button"
-            >
-              {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save'}
-              {isSaving && <span id="saving-status" className="sr-only">Saving changes to database</span>}
-            </button>
-          </div>
+      {/* Footer Actions - Animated slide from bottom */}
+      <div 
+        className={`border-t border-gray-200 p-4 transition-all duration-300 ease-in-out transform ${
+          (hasUnsavedChanges || isSaving || saveSuccess) 
+            ? 'translate-y-0 opacity-100' 
+            : 'translate-y-full opacity-0'
+        }`}
+        data-testid="side-panel-footer"
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          background: 'white',
+          zIndex: 10
+        }}
+      >
+        <div className="flex gap-3">
+          <button 
+            className="flex-1 bg-gray-100 text-[#545454] py-2 px-4 rounded text-sm font-medium hover:bg-gray-200 transition-colors"
+            aria-label="Discard Changes"
+            data-testid="side-panel-discard-changes-button"
+            onClick={handleDiscardChanges}
+          >
+            Discard Changes
+          </button>
+          <button
+            className={`flex-1 py-2 px-4 rounded text-sm font-medium transition-colors ${
+              isSaving 
+                ? 'bg-gray-400 text-white cursor-not-allowed' 
+                : saveSuccess
+                ? 'bg-[#79AC48] text-white cursor-default'
+                : 'bg-[#008BC9] text-white hover:bg-[#007399]'
+            }`}
+            onClick={handleSave}
+            disabled={isSaving || saveSuccess}
+            aria-label={isSaving ? "Saving changes..." : saveSuccess ? "Changes saved successfully" : "Save changes"}
+            aria-describedby={isSaving ? "saving-status" : undefined}
+            data-testid="side-panel-save-button"
+            role="button"
+            type="button"
+          >
+            {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save'}
+            {isSaving && <span id="saving-status" className="sr-only">Saving changes to database</span>}
+          </button>
         </div>
-      )}
+      </div>
     </div>
   );
 };
