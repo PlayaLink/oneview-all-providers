@@ -6,6 +6,8 @@ export interface TemplateConfig {
   description: string;
   tabs: TabConfig[];
   fieldGroups: FieldGroup[];
+  header?: (args: { gridName: string; row: any; provider?: any }) => string;
+  DetailsComponent?: string;
 }
 
 export interface TabConfig {
@@ -592,6 +594,35 @@ export const templateConfigs: TemplateConfig[] = [
   }
 ];
 
+export const providerInfoTemplate = {
+  header: ({ gridName, row, provider }) => {
+    const name = provider ? `${provider.first_name || ''} ${provider.last_name || ''}`.trim() : (row.provider_name || '');
+    const title = provider ? provider.title || '' : (row.title || '');
+    return `${gridName} for ${name} ${title}`.trim();
+  },
+  tabs: [
+    { id: 'details', label: 'Details', icon: 'user-doctor', enabled: true },
+    { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true },
+    { id: 'documents', label: 'Documents', icon: 'folder', enabled: true },
+    { id: 'team', label: 'Team', icon: 'users', enabled: true },
+  ],
+  DetailsComponent: 'ProviderInfoDetails',
+};
+
+export const stateLicenseTemplate = {
+  header: ({ gridName, row, provider }) => {
+    const name = provider ? `${provider.first_name || ''} ${provider.last_name || ''}`.trim() : (row.provider_name || '');
+    const title = provider ? provider.title || '' : (row.title || '');
+    return `${gridName} ${row.license || ''} for ${name} ${title}`.trim();
+  },
+  tabs: [
+    { id: 'details', label: 'Details', icon: 'shield-halved', enabled: true },
+    { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true },
+    { id: 'documents', label: 'Documents', icon: 'folder', enabled: true },
+  ],
+  DetailsComponent: 'StateLicenseDetails',
+};
+
 // Mapping from grid table names to template IDs
 export const gridToTemplateMap: Record<string, string> = {
   "Provider_Info": "provider_info",
@@ -600,10 +631,9 @@ export const gridToTemplateMap: Record<string, string> = {
 
 // Helper function to get template config by grid name
 export function getTemplateConfigByGrid(gridName: string): TemplateConfig | null {
-  const templateId = gridToTemplateMap[gridName];
-  if (!templateId) return null;
-  
-  return templateConfigs.find(template => template.id === templateId) || null;
+  if (gridName === "Provider_Info") return providerInfoTemplate;
+  if (gridName === "State_Licenses") return stateLicenseTemplate;
+  return null;
 }
 
 // Helper function to get template config by template ID

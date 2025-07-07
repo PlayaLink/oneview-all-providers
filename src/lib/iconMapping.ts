@@ -8,6 +8,7 @@ import {
   faBook,
   faPlay,
   faShieldAlt,
+  faShieldHalved,
   faClipboard,
   faClipboardList,
   faCheckCircle,
@@ -19,6 +20,7 @@ import {
   faHospital,
   faBriefcase,
   faUserGroup,
+  faUsers,
   faMedal,
   faGavel,
   faFolder,
@@ -31,6 +33,7 @@ import {
   faKey,
   faWallet,
   faVolumeHigh,
+  faClock,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Icon mapping from string names to FontAwesome icon objects
@@ -39,10 +42,10 @@ const iconMap: Record<string, IconDefinition> = {
   weight: faWeight,
   "house-chimney": faHouse,
   "address-book": faAddressBook,
-  "files-medical": faFileMedical,
+  "file-medical": faFileMedical,
   "book-atlas": faBook,
   triangle: faPlay, // Using faPlay as triangle alternative
-  "shield-halved": faShieldAlt,
+  "shield-halved": faShieldHalved,
   "clipboard-prescription": faClipboard,
   prescription: faClipboard,
   "clipboard-list-check": faClipboardList,
@@ -55,8 +58,10 @@ const iconMap: Record<string, IconDefinition> = {
   "hospital-symbol": faHospital,
   "briefcase-medical": faBriefcase, // Using faBriefcase as alternative
   "people-arrows": faUserGroup, // Using faUserGroup as alternative
+  "users": faUsers,
   medal: faMedal,
   gavel: faGavel,
+  "folder": faFolder,
   "folder-download": faFolder,
   "file-import": faFileImport,
   "seal-exclamation": faExclamationTriangle, // Using faExclamationTriangle as alternative
@@ -66,6 +71,7 @@ const iconMap: Record<string, IconDefinition> = {
   key: faKey,
   wallet: faWallet,
   "siren-on": faVolumeHigh, // Using faVolumeHigh as alternative
+  "clock": faClock,
 };
 
 // Function to get FontAwesome icon from icon name

@@ -11,7 +11,7 @@ import { Provider } from "@/types";
 import providerInfoConfig from "@/data/provider_info_details.json";
 import { useQuery } from '@tanstack/react-query';
 import { fetchStateLicenses, fetchStateLicensesByProvider } from '@/lib/supabaseClient';
-import { getTemplateConfigByGrid } from '@/lib/templateConfigs';
+import { getTemplateConfigByGrid, providerInfoTemplate, stateLicenseTemplate } from '@/lib/templateConfigs';
 
 interface MainContentProps {
   selectedItem?: string | null;
@@ -264,16 +264,16 @@ const MainContent: React.FC<MainContentProps> = ({
 
   // Function to get the appropriate template configuration for the active grid
   const getTemplateConfigForActiveGrid = () => {
-    if (!activePanelGridName) return providerInfoConfig;
-    
-    const templateConfig = getTemplateConfigByGrid(activePanelGridName);
-    if (templateConfig) {
-      // Flatten the field groups into a single array for the SidePanel
+    const templateConfig = activePanelGridName ? getTemplateConfigByGrid(activePanelGridName) : null;
+    if (templateConfig && Array.isArray(templateConfig.fieldGroups)) {
       return templateConfig.fieldGroups.flatMap(group => group.fields);
     }
-    
+    // fallback to providerInfoConfig or an empty array
     return providerInfoConfig;
   };
+
+  // Memoize inputConfig for SidePanel
+  const inputConfig = useMemo(() => getTemplateConfigForActiveGrid(), [activePanelGridName]);
 
   if (singleProviderNpi) {
     // Find the selected provider's info from live providerInfoData (Supabase)
@@ -385,6 +385,7 @@ const MainContent: React.FC<MainContentProps> = ({
             user={user}
             activeGridName={activePanelGridName}
             onUpdateSelectedProvider={onUpdateSelectedProvider}
+            template={activePanelGridName === 'State_Licenses' ? stateLicenseTemplate : providerInfoTemplate}
           />
         )}
       </div>
@@ -508,7 +509,7 @@ const MainContent: React.FC<MainContentProps> = ({
       <SidePanel
         isOpen={sidePanelOpen}
         selectedRow={selectedProvider}
-        inputConfig={getTemplateConfigForActiveGrid()}
+        inputConfig={inputConfig}
         onClose={handleSidePanelClose}
         title={
           selectedProvider && activeGridName && selectedProvider.provider_name
@@ -516,7 +517,8 @@ const MainContent: React.FC<MainContentProps> = ({
             : undefined
         }
         user={user}
-        activeGridName={activeGridName}
+        gridName={activeGridName}
+        onUpdateSelectedProvider={onUpdateSelectedProvider}
       />
     </div>
   );
