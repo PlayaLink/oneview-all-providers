@@ -209,6 +209,28 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
     setFormValues((prev) => ({ ...prev, [key]: value }));
   };
 
+  // Handle Discard Changes - reset form to original values
+  const handleDiscardChanges = () => {
+    if (!selectedRow) return;
+    
+    console.log('Discarding changes, resetting to original values');
+    
+    // Reset form values to original selectedRow values
+    const originalValues: Record<string, any> = {};
+    inputConfig.forEach(field => {
+      const key = field.rowKey || field.label;
+      const value = selectedRow[key] ?? (field.type === 'multi-select' ? [] : '');
+      originalValues[key] = value;
+    });
+    
+    setFormValues(originalValues);
+    
+    // Clear any success states
+    setSaveSuccess(false);
+    
+    console.log('Form reset to original values:', originalValues);
+  };
+
   // Handle Save (update parent and backend)
   const handleSave = async () => {
     console.log('handleSave called with:', { selectedRow, gridName, formValues });
@@ -513,6 +535,14 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       {/* Footer Actions */}
       <div className="border-t border-gray-200 p-4" data-testid="side-panel-footer">
         <div className="flex gap-3">
+        <button 
+            className="flex-1 bg-gray-100 text-[#545454] py-2 px-4 rounded text-sm font-medium hover:bg-gray-200 transition-colors"
+            aria-label="Discard Changes"
+            data-testid="side-panel-discard-changes-button"
+            onClick={handleDiscardChanges}
+          >
+            Discard Changes
+          </button>
           <button
             className={`flex-1 py-2 px-4 rounded text-sm font-medium transition-colors ${
               isSaving 
@@ -532,13 +562,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
             {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save'}
             {isSaving && <span id="saving-status" className="sr-only">Saving changes to database</span>}
           </button>
-          <button 
-            className="flex-1 bg-gray-100 text-[#545454] py-2 px-4 rounded text-sm font-medium hover:bg-gray-200 transition-colors"
-            aria-label="View full profile"
-            data-testid="side-panel-view-profile-button"
-          >
-            View Full Profile
-          </button>
+        
         </div>
       </div>
     </div>

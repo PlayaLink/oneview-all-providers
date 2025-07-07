@@ -39,7 +39,7 @@ const SettingsDropdown: React.FC<SettingsDropdownProps> = ({
           {/* Grid Sections Setting */}
           <div className="space-y-2">
             <label className="text-xs font-medium text-gray-700">
-              Grid Sections
+              Grid Sections Navigation
             </label>
             <div className="relative">
               <select
