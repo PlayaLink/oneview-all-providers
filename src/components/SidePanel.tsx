@@ -16,7 +16,6 @@ import { getTemplateConfigByGrid } from '@/lib/templateConfigs';
 import ProviderInfoDetails from './sidepanel-details/ProviderInfoDetails';
 import StateLicenseDetails from './sidepanel-details/StateLicenseDetails';
 import { getIconByName } from "@/lib/iconMapping";
-import { useToast } from "@/hooks/use-toast";
 
 // Types for input fields
 export interface InputField {
@@ -88,7 +87,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
   const [isSaving, setIsSaving] = useState(false);
   const queryClient = useQueryClient();
   const resizeRef = useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   // Select template based on gridName
   const template = gridName ? getTemplateConfigByGrid(gridName) : null;
@@ -367,11 +366,8 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       
       // Show success feedback
       console.log('Save completed successfully');
-      toast({
-        title: "Success",
-        description: "Changes saved successfully!",
-        variant: "default",
-      });
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000); // Hide success message after 3 seconds
       
     } catch (err) {
       console.error('Failed to save:', err);
@@ -386,11 +382,8 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       }
       
       // Show error feedback
-      toast({
-        title: "Error",
-        description: `Failed to save: ${err.message || 'Unknown error'}`,
-        variant: "destructive",
-      });
+      setSaveSuccess(false); // Hide success message on error
+      console.error('Save failed:', err.message || 'Unknown error');
     } finally {
       setIsSaving(false);
     }
@@ -524,17 +517,19 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
             className={`flex-1 py-2 px-4 rounded text-sm font-medium transition-colors ${
               isSaving 
                 ? 'bg-gray-400 text-white cursor-not-allowed' 
+                : saveSuccess
+                ? 'bg-green-500 text-white cursor-default'
                 : 'bg-[#008BC9] text-white hover:bg-[#007399]'
             }`}
             onClick={handleSave}
-            disabled={isSaving}
-            aria-label={isSaving ? "Saving changes..." : "Save changes"}
+            disabled={isSaving || saveSuccess}
+            aria-label={isSaving ? "Saving changes..." : saveSuccess ? "Changes saved successfully" : "Save changes"}
             aria-describedby={isSaving ? "saving-status" : undefined}
             data-testid="side-panel-save-button"
             role="button"
             type="button"
           >
-            {isSaving ? 'Saving...' : 'Save'}
+            {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save'}
             {isSaving && <span id="saving-status" className="sr-only">Saving changes to database</span>}
           </button>
           <button 
