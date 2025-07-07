@@ -5,6 +5,7 @@ import {
   faCaretDown,
   faTimes,
   faCopy,
+  faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -285,13 +286,16 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                     key={option.id}
                     className={cn(
                       "flex items-center px-2 py-1.5 rounded text-sm cursor-pointer transition-colors",
-                      value?.id === option.id && "bg-blue-50 text-blue-700",
-                      value?.id !== option.id && "hover:bg-gray-50",
+                      value?.id === option.id && "bg-[#008BC9] text-white",
+                      value?.id !== option.id && "hover:bg-blue-50",
                       option.disabled && "opacity-50 cursor-not-allowed",
                     )}
                     onClick={() => !option.disabled && handleSelect(option)}
                   >
-                    {option.label}
+                    <span className="flex-1">{option.label}</span>
+                    {value?.id === option.id && (
+                      <FontAwesomeIcon icon={faCheck} className="ml-2 text-white text-xs"  />
+                    )}
                   </div>
                 ))
               ) : (
