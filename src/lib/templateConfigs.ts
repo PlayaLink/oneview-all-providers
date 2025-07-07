@@ -16,6 +16,8 @@ export interface TabConfig {
   icon: string;
   component?: string;
   enabled: boolean;
+  fullLabel?: string;
+  iconLabel?: string;
 }
 
 export interface FieldGroup {
@@ -601,10 +603,10 @@ export const providerInfoTemplate = {
     return `${gridName} for ${name} ${title}`.trim();
   },
   tabs: [
-    { id: 'details', label: 'Details', icon: 'user-doctor', enabled: true },
-    { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true },
-    { id: 'documents', label: 'Docs', icon: 'folder', enabled: true },
-    { id: 'team', label: 'Team', icon: 'users', enabled: true },
+    { id: 'details', label: 'Details', icon: 'user-doctor', enabled: true, fullLabel: 'Details', iconLabel: 'Details' },
+    { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true, fullLabel: 'Notes', iconLabel: 'Notes' },
+    { id: 'documents', label: 'Documents', icon: 'folder', enabled: true, fullLabel: 'Documents', iconLabel: 'Docs' },
+    { id: 'team', label: 'Team', icon: 'users', enabled: true, fullLabel: 'Team', iconLabel: 'Team' },
   ],
   DetailsComponent: 'ProviderInfoDetails',
 };
@@ -616,9 +618,9 @@ export const stateLicenseTemplate = {
     return `${gridName} ${row.license || ''} for ${name} ${title}`.trim();
   },
   tabs: [
-    { id: 'details', label: 'Details', icon: 'shield-halved', enabled: true },
-    { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true },
-    { id: 'documents', label: 'Docs', icon: 'folder', enabled: true },
+    { id: 'details', label: 'Details', icon: 'shield-halved', enabled: true, fullLabel: 'Details', iconLabel: 'Details' },
+    { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true, fullLabel: 'Notes', iconLabel: 'Notes' },
+    { id: 'documents', label: 'Documents', icon: 'folder', enabled: true, fullLabel: 'Documents', iconLabel: 'Docs' },
   ],
   DetailsComponent: 'StateLicenseDetails',
 };

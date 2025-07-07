@@ -16,6 +16,7 @@ import { getTemplateConfigByGrid } from '@/lib/templateConfigs';
 import ProviderInfoDetails from './sidepanel-details/ProviderInfoDetails';
 import StateLicenseDetails from './sidepanel-details/StateLicenseDetails';
 import { getIconByName } from "@/lib/iconMapping";
+import SidePanelTab from "./TabTitle";
 
 // Types for input fields
 export interface InputField {
@@ -436,7 +437,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
   };
 
   // Select the DetailsComponent from the static map
-  const DetailsComponent = template?.DetailsComponent ? detailsComponentMap[template.DetailsComponent] : undefined;
+const DetailsComponent = template?.DetailsComponent ? detailsComponentMap[template.DetailsComponent] : undefined;
 
   // Header formatting
   let headerText = '';
@@ -508,17 +509,29 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
               <TabsTrigger
                 key={tabConfig.id}
                 value={tabConfig.id}
-                className={`flex flex-col items-center py-6 px-0 w-full transition-colors
-                data-[state=active]:bg-[#008BC9] data-[state=active]:text-white
-                data-[state=active]:hover:bg-[#0077B3]
-                text-[#545454] hover:bg-gray-100`}
+                className="p-0 border-0 bg-transparent"
               >
-                <FontAwesomeIcon icon={getIconByName(tabConfig.icon)} className="w-6 h-6 mb-1" />
-                <span className="text-xs">{tabConfig.label}</span>
+                <SidePanelTab
+                  rowKey={tabConfig.id}
+                  fullLabel={tabConfig.fullLabel || tabConfig.label}
+                  iconLabel={tabConfig.iconLabel || tabConfig.label}
+                  icon={tabConfig.icon}
+                  isActive={tab === tabConfig.id}
+                />
               </TabsTrigger>
             ))}
           </TabsList>
           <div className="flex-1 min-h-0 flex flex-col overflow-y-auto p-2" data-testid="side-panel-tabpanel-container">
+            {/* Tab Title */}
+            {(() => {
+              const activeTab = tabs.find(t => t.id === tab);
+              return activeTab ? (
+                <h2 className="text-lg font-semibold text-[#545454] my-4" data-testid="side-panel-tab-title">
+                  {activeTab.fullLabel || activeTab.label}
+                </h2>
+              ) : null;
+            })()}
+            
             {tabs.some((t) => t.id === 'details') && (
               <TabsContent value="details" role="tabpanel" aria-label="Details Tab" data-testid="side-panel-tabpanel-details">
                 {DetailsComponent && (
