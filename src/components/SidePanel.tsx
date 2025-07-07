@@ -518,12 +518,9 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
               isSaving 
                 ? 'bg-gray-400 text-white cursor-not-allowed' 
                 : saveSuccess
-                ? 'text-white cursor-default'
+                ? 'bg-[#79AC48] text-white cursor-default'
                 : 'bg-[#008BC9] text-white hover:bg-[#007399]'
             }`}
-            style={{
-              backgroundColor: saveSuccess ? '#79AC48' : undefined
-            }}
             onClick={handleSave}
             disabled={isSaving || saveSuccess}
             aria-label={isSaving ? "Saving changes..." : saveSuccess ? "Changes saved successfully" : "Save changes"}
