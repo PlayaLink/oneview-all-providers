@@ -395,7 +395,14 @@ const SidePanel: React.FC<SidePanelProps> = ({ isOpen, selectedRow, inputConfig,
               ))}
             </TabsContent>
             <TabsContent value="notes" className="flex-1 min-h-0 flex flex-col p-0 m-0" role="tabpanel" aria-label="Notes Tab" data-testid="side-panel-tabpanel-notes">
-              <Notes className="flex-1 min-h-0" />
+              {selectedRow && (
+                <Notes
+                  className="flex-1 min-h-0"
+                  recordId={selectedRow.id}
+                  recordType={activeGridName || 'Provider_Info'}
+                  user={user}
+                />
+              )}
             </TabsContent>
             <TabsContent value="documents" role="tabpanel" aria-label="Documents Tab" data-testid="side-panel-tabpanel-documents">
               <div className="text-gray-500">Documents tab content goes here.</div>

@@ -1,38 +1,51 @@
 import React, { useState, useRef, useEffect } from "react";
 import { MoreHorizontal } from "lucide-react";
+import { fetchNotes, addNote, updateNote, deleteNote } from "@/lib/supabaseClient";
 
 interface Note {
   id: number;
   text: string;
-  createdAt: string;
+  created_at: string;
   author: string;
 }
 
-const initialNotes: Note[] = [
-  {
-    id: 1,
-    text: "Follow-up updated to Fri Sep 29 by Becca Fuller (name@email.com) Giving Jasmine extra time to review and respond to updated itinerary.",
-    createdAt: "10/16/2023 @ 10:30 AM",
-    author: "Becca Fuller",
-  },
-  {
-    id: 2,
-    text: `Trip Planning - Adventure Tour Refinement sent to Jasmine Rose (j.rose@email.com), Becca Fuller (b.fuller@email.com)\n\nJasmine,\n\nMade changes to the adventure tour option per our last call. If this looks good please submit the agreement on our website with the deposit and we can officially begin booking.\n\nFor the next step, we will begin contacting accommodations with over estimated numbers, but we will need a final count of travelers as soon as possible. Thank you for your cooperation.\n\nBecca`,
-    createdAt: "10/16/2023 @ 10:28 AM",
-    author: "Becca Fuller",
-  },
-];
+interface NotesProps {
+  recordId: string;
+  recordType: string;
+  user: any; // Supabase user object
+  className?: string;
+}
 
 const MAX_LENGTH = 3000;
 
-const Notes: React.FC<{ className?: string }> = ({ className }) => {
-  const [notes, setNotes] = useState<Note[]>(initialNotes);
+const Notes: React.FC<NotesProps> = ({ recordId, recordType, user, className }) => {
+  const [notes, setNotes] = useState<Note[]>([]);
   const [input, setInput] = useState("");
   const [focused, setFocused] = useState(false);
   const [menuOpenId, setMenuOpenId] = useState<number | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editValue, setEditValue] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | HTMLInputElement>(null);
+
+  // Fetch notes from Supabase
+  useEffect(() => {
+    let mounted = true;
+    setLoading(true);
+    setError(null);
+    fetchNotes(recordId, recordType)
+      .then((data) => {
+        if (mounted) setNotes(data || []);
+      })
+      .catch((err) => {
+        if (mounted) setError("Failed to load notes");
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+    return () => { mounted = false; };
+  }, [recordId, recordType]);
 
   // When focused, scroll input into view
   useEffect(() => {
@@ -41,25 +54,42 @@ const Notes: React.FC<{ className?: string }> = ({ className }) => {
     }
   }, [focused]);
 
-  const handleAddNote = () => {
+  const handleAddNote = async () => {
+    console.log('handleAddNote called', { input, recordId, recordType, user });
     if (input.trim()) {
-      setNotes([
-        {
-          id: Date.now(),
+      setLoading(true);
+      setError(null);
+      try {
+        const author = user?.user_metadata?.full_name || user?.email || "Unknown";
+        const newNote = await addNote({
+          recordId,
+          recordType,
           text: input.trim(),
-          createdAt: new Date().toLocaleString(),
-          author: "Becca Fuller",
-        },
-        ...notes,
-      ]);
-      setInput("");
-      setFocused(false);
+          author,
+        });
+        setNotes([newNote, ...notes]);
+        setInput("");
+        setFocused(false);
+      } catch (err) {
+        setError("Failed to add note");
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
-  const handleDeleteNote = (id: number) => {
-    setNotes(notes.filter((note) => note.id !== id));
-    setMenuOpenId(null);
+  const handleDeleteNote = async (id: number) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await deleteNote(id);
+      setNotes(notes.filter((note) => note.id !== id));
+      setMenuOpenId(null);
+    } catch (err) {
+      setError("Failed to delete note");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleEditNote = (id: number) => {
@@ -71,10 +101,20 @@ const Notes: React.FC<{ className?: string }> = ({ className }) => {
     }
   };
 
-  const handleSaveEdit = () => {
-    setNotes(notes.map(n => n.id === editingId ? { ...n, text: editValue } : n));
-    setEditingId(null);
-    setEditValue("");
+  const handleSaveEdit = async () => {
+    if (!editingId) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const updated = await updateNote(editingId, { text: editValue });
+      setNotes(notes.map(n => n.id === editingId ? { ...n, text: updated.text } : n));
+      setEditingId(null);
+      setEditValue("");
+    } catch (err) {
+      setError("Failed to update note");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCancelEdit = () => {
@@ -99,9 +139,12 @@ const Notes: React.FC<{ className?: string }> = ({ className }) => {
     <div className={`relative flex-1 min-h-0 ${className || ""}`}>  
       {/* Notes List */}
       <div className="absolute inset-0 pb-[120px] overflow-y-auto pr-1">
-        {notes.length === 0 ? (
+        {loading && <div className="text-center py-8">Loading notes...</div>}
+        {error && <div className="text-center py-8 text-red-500">{error}</div>}
+        {!loading && !error && notes.length === 0 && (
           <div className="text-gray-400 text-sm">No notes yet.</div>
-        ) : (
+        )}
+        {!loading && !error && notes.length > 0 && (
           <ul className="space-y-3">
             {notes.map((note, idx) => (
               <li
@@ -140,7 +183,7 @@ const Notes: React.FC<{ className?: string }> = ({ className }) => {
                   )}
                 </div>
                 <div className="text-sm font-bold mb-1 text-gray-700">
-                  {note.author} - <span className="font-normal text-xs">{note.createdAt}</span>
+                  {note.author} - <span className="font-normal text-xs">{note.created_at}</span>
                 </div>
                 {editingId === note.id ? (
                   <div className="flex flex-col gap-2 mt-1">

@@ -2,6 +2,8 @@ import * as React from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { MultiSelectItem } from "./MultiSelectInput";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 interface SingleSelectDropdownProps {
   options: MultiSelectItem[];
@@ -86,6 +88,9 @@ export const SingleSelectDropdown = React.forwardRef<
                 <span className="flex-1 text-xs font-medium font-poppins tracking-[0.429px]">
                   {option.label}
                 </span>
+                {isSelected && (
+                  <FontAwesomeIcon icon={faCheck} className="ml-2 text-green-600 text-xs" />
+                )}
               </div>
             );
           })

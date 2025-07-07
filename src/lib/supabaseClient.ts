@@ -68,4 +68,46 @@ export async function fetchStateLicensesByProvider(providerId: string) {
     .eq('provider_id', providerId);
   if (error) throw error;
   return data;
+}
+
+// NOTES CRUD
+export async function fetchNotes(recordId: string, recordType: string) {
+  const { data, error } = await supabase
+    .from('notes')
+    .select('*')
+    .eq('record_id', recordId)
+    .eq('record_type', recordType)
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data;
+}
+
+export async function addNote({ recordId, recordType, text, author }: { recordId: string, recordType: string, text: string, author: string }) {
+  const { data, error } = await supabase
+    .from('notes')
+    .insert([
+      { record_id: recordId, record_type: recordType, text, author }
+    ])
+    .select();
+  if (error) throw error;
+  return data?.[0];
+}
+
+export async function updateNote(noteId: string, updates: { text?: string }) {
+  const { data, error } = await supabase
+    .from('notes')
+    .update(updates)
+    .eq('id', noteId)
+    .select();
+  if (error) throw error;
+  return data?.[0];
+}
+
+export async function deleteNote(noteId: string) {
+  const { error } = await supabase
+    .from('notes')
+    .delete()
+    .eq('id', noteId);
+  if (error) throw error;
+  return true;
 } 

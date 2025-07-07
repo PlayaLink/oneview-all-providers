@@ -28,7 +28,11 @@ const fetchProviders = async () => {
   return data;
 };
 
-const MainLayout: React.FC<{ user: any }> = ({ user }) => {
+interface MainLayoutProps {
+  user: any; // You can type this more strictly if desired
+}
+
+const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
   const { npi } = useParams<{ npi?: string }>();
   const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -395,7 +399,7 @@ const MainLayout: React.FC<{ user: any }> = ({ user }) => {
       <main className="flex flex-1 border-t border-gray-300" role="main" aria-label="Main Content Area" data-testid="main-content-area">
         {npi ? (
           // Single-provider view: no nav, all grids, filter by NPI
-          <div className="flex-1 flex flex-col min-h-0">
+          <div className="flex-1 flex flex-col min-h-0 w-full px-4 pt-4 pb-8">
             <MainContent
               singleProviderNpi={npi}
               visibleSections={visibleSections}
