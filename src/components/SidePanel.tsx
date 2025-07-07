@@ -16,6 +16,7 @@ import { getTemplateConfigByGrid } from '@/lib/templateConfigs';
 import ProviderInfoDetails from './sidepanel-details/ProviderInfoDetails';
 import StateLicenseDetails from './sidepanel-details/StateLicenseDetails';
 import { getIconByName } from "@/lib/iconMapping";
+import { useToast } from "@/hooks/use-toast";
 
 // Types for input fields
 export interface InputField {
@@ -87,6 +88,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
   const [isSaving, setIsSaving] = useState(false);
   const queryClient = useQueryClient();
   const resizeRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   // Select template based on gridName
   const template = gridName ? getTemplateConfigByGrid(gridName) : null;
@@ -219,66 +221,109 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
 
     setIsSaving(true);
 
+    // Store the previous data for rollback in case of error
+    let previousData: any = null;
+    let previousProviderData: any = null;
+
     try {
-          // Only include valid DB columns in the update
-    const validColumns = inputConfig.map(f => f.rowKey).filter(Boolean);
-    console.log('Valid columns for update:', validColumns);
-    console.log('All inputConfig fields:', inputConfig.map(f => ({ label: f.label, rowKey: f.rowKey })));
-    
-    // Filter and clean the updates
-    const filteredUpdates = Object.fromEntries(
-      Object.entries(formValues)
-        .filter(([key]) => validColumns.includes(key))
-        .map(([key, value]) => {
-          // Handle empty date fields - convert empty strings to null for date fields
-          const field = inputConfig.find(f => f.rowKey === key);
-          const isDateField = field && (
-            field.type === 'date' || 
-            key.includes('date') || 
-            key.includes('Date') ||
-            key === 'last_updated' ||
-            key === 'enumeration_date' ||
-            key === 'issue_date' ||
-            key === 'expiration_date'
-          );
-          
-          if (isDateField) {
-            console.log(`Processing date field: ${key}, value: "${value}", type: ${typeof value}`);
-          }
-          
-          if (isDateField && (value === '' || value === null || value === undefined)) {
-            console.log(`Converting empty date field ${key} to null`);
-            return [key, null];
-          }
-          
-          // Also handle invalid date strings
-          if (isDateField && typeof value === 'string' && value.trim() === '') {
-            console.log(`Converting empty string date field ${key} to null`);
-            return [key, null];
-          }
-          
-          return [key, value];
-        })
-    );
-    console.log('Filtered updates to save:', filteredUpdates);
-    
-    // Log fields that are being excluded
-    const excludedFields = Object.entries(formValues).filter(([key]) => !validColumns.includes(key));
-    if (excludedFields.length > 0) {
-      console.log('Fields excluded from save (no rowKey):', excludedFields);
-    }
-    
-    // Log the exact data being sent to the database
-    console.log('Data being sent to database:', {
-      table: gridName === 'State_Licenses' ? 'state_licenses' : 'providers',
-      id: selectedRow.id,
-      updates: filteredUpdates
-    });
+      // Only include valid DB columns in the update
+      const validColumns = inputConfig.map(f => f.rowKey).filter(Boolean);
+      console.log('Valid columns for update:', validColumns);
+      console.log('All inputConfig fields:', inputConfig.map(f => ({ label: f.label, rowKey: f.rowKey })));
+      
+      // Filter and clean the updates
+      const filteredUpdates = Object.fromEntries(
+        Object.entries(formValues)
+          .filter(([key]) => validColumns.includes(key))
+          .map(([key, value]) => {
+            // Handle empty date fields - convert empty strings to null for date fields
+            const field = inputConfig.find(f => f.rowKey === key);
+            const isDateField = field && (
+              field.type === 'date' || 
+              key.includes('date') || 
+              key.includes('Date') ||
+              key === 'last_updated' ||
+              key === 'enumeration_date' ||
+              key === 'issue_date' ||
+              key === 'expiration_date'
+            );
+            
+            if (isDateField) {
+              console.log(`Processing date field: ${key}, value: "${value}", type: ${typeof value}`);
+            }
+            
+            if (isDateField && (value === '' || value === null || value === undefined)) {
+              console.log(`Converting empty date field ${key} to null`);
+              return [key, null];
+            }
+            
+            // Also handle invalid date strings
+            if (isDateField && typeof value === 'string' && value.trim() === '') {
+              console.log(`Converting empty string date field ${key} to null`);
+              return [key, null];
+            }
+            
+            return [key, value];
+          })
+      );
+      console.log('Filtered updates to save:', filteredUpdates);
+      
+      // Log fields that are being excluded
+      const excludedFields = Object.entries(formValues).filter(([key]) => !validColumns.includes(key));
+      if (excludedFields.length > 0) {
+        console.log('Fields excluded from save (no rowKey):', excludedFields);
+      }
+      
+      // Log the exact data being sent to the database
+      console.log('Data being sent to database:', {
+        table: gridName === 'State_Licenses' ? 'state_licenses' : 'providers',
+        id: selectedRow.id,
+        updates: filteredUpdates
+      });
 
       // Check if there are any updates to save
       if (Object.keys(filteredUpdates).length === 0) {
         console.log('No valid updates to save');
         return;
+      }
+
+      // Optimistic update: Update the cache immediately
+      if (gridName === 'State_Licenses') {
+        // Optimistically update state licenses cache
+        queryClient.setQueryData(['stateLicenses'], (oldData: any[]) => {
+          if (!oldData) return oldData;
+          previousData = oldData;
+          return oldData.map(item => 
+            item.id === selectedRow.id 
+              ? { ...item, ...filteredUpdates }
+              : item
+          );
+        });
+
+        // Also update provider-specific state licenses if applicable
+        if (selectedRow.provider_id) {
+          queryClient.setQueryData(['providerStateLicenses', selectedRow.provider_id], (oldData: any[]) => {
+            if (!oldData) return oldData;
+            return oldData.map(item => 
+              item.id === selectedRow.id 
+                ? { ...item, ...filteredUpdates }
+                : item
+            );
+          });
+        }
+        console.log('Optimistic update applied to state licenses cache');
+      } else if (gridName === 'Provider_Info') {
+        // Optimistically update providers cache
+        queryClient.setQueryData(['providers'], (oldData: any[]) => {
+          if (!oldData) return oldData;
+          previousData = oldData;
+          return oldData.map(item => 
+            item.id === selectedRow.id 
+              ? { ...item, ...filteredUpdates }
+              : item
+          );
+        });
+        console.log('Optimistic update applied to providers cache');
       }
 
       // Update the backend
@@ -300,15 +345,52 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
         onUpdateSelectedProvider(gridName, updatedProvider);
         console.log('Parent state updated');
       }
+
+      // Invalidate and refetch the appropriate query cache to ensure consistency
+      if (gridName === 'State_Licenses') {
+        // Invalidate state licenses queries
+        await queryClient.invalidateQueries({ queryKey: ['stateLicenses'] });
+        
+        // If we're in single provider view, also invalidate provider-specific state licenses
+        if (selectedRow.provider_id) {
+          await queryClient.invalidateQueries({ 
+            queryKey: ['providerStateLicenses'], 
+            exact: false 
+          });
+        }
+        console.log('State licenses cache invalidated');
+      } else if (gridName === 'Provider_Info') {
+        // Invalidate providers queries
+        await queryClient.invalidateQueries({ queryKey: ['providers'] });
+        console.log('Providers cache invalidated');
+      }
       
-      // Show success feedback (you could add a toast notification here)
+      // Show success feedback
       console.log('Save completed successfully');
-      alert('Changes saved successfully!');
+      toast({
+        title: "Success",
+        description: "Changes saved successfully!",
+        variant: "default",
+      });
       
     } catch (err) {
       console.error('Failed to save:', err);
-      // Show error feedback (you could add a toast notification here)
-      alert(`Failed to save: ${err.message || 'Unknown error'}`);
+      
+      // Rollback optimistic updates on error
+      if (gridName === 'State_Licenses' && previousData) {
+        queryClient.setQueryData(['stateLicenses'], previousData);
+        console.log('Rolled back state licenses cache on error');
+      } else if (gridName === 'Provider_Info' && previousData) {
+        queryClient.setQueryData(['providers'], previousData);
+        console.log('Rolled back providers cache on error');
+      }
+      
+      // Show error feedback
+      toast({
+        title: "Error",
+        description: `Failed to save: ${err.message || 'Unknown error'}`,
+        variant: "destructive",
+      });
     } finally {
       setIsSaving(false);
     }
