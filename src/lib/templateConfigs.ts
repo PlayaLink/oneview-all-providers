@@ -603,7 +603,7 @@ export const providerInfoTemplate = {
   tabs: [
     { id: 'details', label: 'Details', icon: 'user-doctor', enabled: true },
     { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true },
-    { id: 'documents', label: 'Documents', icon: 'folder', enabled: true },
+    { id: 'documents', label: 'Docs', icon: 'folder', enabled: true },
     { id: 'team', label: 'Team', icon: 'users', enabled: true },
   ],
   DetailsComponent: 'ProviderInfoDetails',
@@ -618,7 +618,7 @@ export const stateLicenseTemplate = {
   tabs: [
     { id: 'details', label: 'Details', icon: 'shield-halved', enabled: true },
     { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true },
-    { id: 'documents', label: 'Documents', icon: 'folder', enabled: true },
+    { id: 'documents', label: 'Docs', icon: 'folder', enabled: true },
   ],
   DetailsComponent: 'StateLicenseDetails',
 };
