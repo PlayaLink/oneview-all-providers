@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { fetchNotes, addNote, updateNote, deleteNote } from "@/lib/supabaseClient";
+import dayjs from 'dayjs';
 
 interface Note {
   id: number;
@@ -17,6 +18,20 @@ interface NotesProps {
 }
 
 const MAX_LENGTH = 3000;
+
+function getDisplayName(author: string) {
+  // If it's an email, show the part before the @ as a fallback
+  if (author && author.includes('@')) {
+    return author.split('@')[0];
+  }
+  return author;
+}
+
+function formatNoteDate(dateString: string) {
+  // Format as MM/DD/YYYY @ HH:MM AM/PM
+  const d = dayjs(dateString);
+  return d.isValid() ? d.format('MM/DD/YYYY @ hh:mm A') : dateString;
+}
 
 const Notes: React.FC<NotesProps> = ({ recordId, recordType, user, className }) => {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -183,7 +198,7 @@ const Notes: React.FC<NotesProps> = ({ recordId, recordType, user, className }) 
                   )}
                 </div>
                 <div className="text-sm font-bold mb-1 text-gray-700">
-                  {note.author} - <span className="font-normal text-xs">{note.created_at}</span>
+                  {getDisplayName(typeof note.author === 'string' ? note.author : String(note.author))} - <span className="font-normal text-xs">{formatNoteDate(String(note.created_at))}</span>
                 </div>
                 {editingId === note.id ? (
                   <div className="flex flex-col gap-2 mt-1">
@@ -213,7 +228,7 @@ const Notes: React.FC<NotesProps> = ({ recordId, recordType, user, className }) 
                     </div>
                   </div>
                 ) : (
-                  <div className="text-sm text-gray-800 whitespace-pre-line">{note.text}</div>
+                  <div className="text-sm text-gray-800 whitespace-pre-line">{String(note.text)}</div>
                 )}
               </li>
             ))}
