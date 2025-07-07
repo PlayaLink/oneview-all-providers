@@ -1,0 +1,43 @@
+import React from 'react';
+import { useDropzone } from 'react-dropzone';
+
+interface FileDropzoneProps {
+  onFilesAccepted: (files: File[]) => void;
+}
+
+const FileDropzone: React.FC<FileDropzoneProps> = ({ onFilesAccepted }) => {
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: acceptedFiles => onFilesAccepted(acceptedFiles),
+    multiple: true,
+    accept: {
+      'application/pdf': [],
+      'application/msword': [],
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [],
+      'text/plain': [],
+      'text/rtf': [],
+      'image/gif': [],
+      'image/jpeg': [],
+      'image/png': [],
+    },
+  });
+
+  return (
+    <div
+      {...getRootProps()}
+      className={`border-2 border-dashed rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer transition-colors min-h-[400px] bg-[#fafafa] ${
+        isDragActive ? 'border-blue-400 bg-blue-50' : 'border-gray-300'
+      }`}
+      style={{ width: '100%', height: '100%' }}
+      data-testid="file-dropzone"
+    >
+      <input {...getInputProps()} />
+      <div className="flex flex-col items-center">
+        <span className="text-2xl mb-2" role="img" aria-label="upload">📤</span>
+        <span className="text-gray-700">Drop documents here or <span className="text-blue-600 underline">Click here to browse</span></span>
+        <span className="text-xs text-gray-400 mt-2">PDF, DOCX, TXT, RTF, GIF, JPG, PNG</span>
+      </div>
+    </div>
+  );
+};
+
+export default FileDropzone; 

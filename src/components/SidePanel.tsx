@@ -17,6 +17,7 @@ import ProviderInfoDetails from './sidepanel-details/ProviderInfoDetails';
 import StateLicenseDetails from './sidepanel-details/StateLicenseDetails';
 import { getIconByName } from "@/lib/iconMapping";
 import SidePanelTab from "./TabTitle";
+import FileDropzone from './FileDropzone';
 
 // Types for input fields
 export interface InputField {
@@ -90,6 +91,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
   const resizeRef = useRef<HTMLDivElement>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
 
   // Select template based on gridName
   const template = gridName ? getTemplateConfigByGrid(gridName) : null;
@@ -436,6 +438,24 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
     }
   };
 
+  const handleFilesAccepted = async (files: File[]) => {
+    if (!user || !user.id) {
+      alert('User not found. Cannot upload files.');
+      return;
+    }
+    const uploaded: string[] = [];
+    for (const file of files) {
+      const filePath = `${user.id}/${file.name}`;
+      const { data, error } = await supabase.storage.from('documents').upload(filePath, file, { upsert: true });
+      if (error) {
+        alert(`Failed to upload ${file.name}: ${error.message}`);
+      } else {
+        uploaded.push(file.name);
+      }
+    }
+    setUploadedFiles(prev => [...prev, ...uploaded]);
+  };
+
   // Select the DetailsComponent from the static map
 const DetailsComponent = template?.DetailsComponent ? detailsComponentMap[template.DetailsComponent] : undefined;
 
@@ -558,7 +578,17 @@ const DetailsComponent = template?.DetailsComponent ? detailsComponentMap[templa
             )}
             {tabs.some((t) => t.id === 'documents') && (
               <TabsContent value="documents" role="tabpanel" aria-label="Documents Tab" data-testid="side-panel-tabpanel-documents">
-                <div className="text-gray-500">Documents tab content goes here.</div>
+                <FileDropzone onFilesAccepted={handleFilesAccepted} />
+                {uploadedFiles.length > 0 && (
+                  <div className="mt-6">
+                    <h3 className="font-semibold mb-2">Uploaded Files</h3>
+                    <ul className="list-disc pl-5 text-sm text-gray-700">
+                      {uploadedFiles.map((name, idx) => (
+                        <li key={idx}>{name}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </TabsContent>
             )}
             {tabs.some((t) => t.id === 'team') && (
