@@ -88,6 +88,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
   const queryClient = useQueryClient();
   const resizeRef = useRef<HTMLDivElement>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   // Select template based on gridName
   const template = gridName ? getTemplateConfigByGrid(gridName) : null;
@@ -126,6 +127,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       
       console.log('Final initial values:', initialValues);
       setFormValues(initialValues);
+      setHasUnsavedChanges(false); // Reset unsaved changes when new row is selected
       lastInitializedId.current = selectedRow.id;
     } else if (!selectedRow) {
       console.log('Clearing form values - no selectedRow');
@@ -207,6 +209,23 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
   // Handle input change (local only)
   const handleChange = (key: string, value: any) => {
     setFormValues((prev) => ({ ...prev, [key]: value }));
+    
+    // Check if this change is different from the original value
+    if (selectedRow) {
+      const originalValue = selectedRow[key] ?? (inputConfig.find(f => f.rowKey === key)?.type === 'multi-select' ? [] : '');
+      const hasChanged = JSON.stringify(value) !== JSON.stringify(originalValue);
+      
+      if (hasChanged) {
+        setHasUnsavedChanges(true);
+      } else {
+        // Check if any other fields have changes
+        const anyChanges = Object.entries({ ...formValues, [key]: value }).some(([fieldKey, fieldValue]) => {
+          const fieldOriginalValue = selectedRow[fieldKey] ?? (inputConfig.find(f => f.rowKey === fieldKey)?.type === 'multi-select' ? [] : '');
+          return JSON.stringify(fieldValue) !== JSON.stringify(fieldOriginalValue);
+        });
+        setHasUnsavedChanges(anyChanges);
+      }
+    }
   };
 
   // Handle Discard Changes - reset form to original values
@@ -225,8 +244,9 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
     
     setFormValues(originalValues);
     
-    // Clear any success states
+    // Clear any success states and unsaved changes
     setSaveSuccess(false);
+    setHasUnsavedChanges(false);
     
     console.log('Form reset to original values:', originalValues);
   };
@@ -389,7 +409,11 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       // Show success feedback
       console.log('Save completed successfully');
       setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 3000); // Hide success message after 3 seconds
+      setHasUnsavedChanges(false); // Clear unsaved changes state
+      setTimeout(() => {
+        setSaveSuccess(false);
+        // Footer will be hidden by hasUnsavedChanges being false
+      }, 3000); // Hide success message after 3 seconds
       
     } catch (err) {
       console.error('Failed to save:', err);
@@ -532,39 +556,40 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
           </div>
         </Tabs>
       </div>
-      {/* Footer Actions */}
-      <div className="border-t border-gray-200 p-4" data-testid="side-panel-footer">
-        <div className="flex gap-3">
-        <button 
-            className="flex-1 bg-gray-100 text-[#545454] py-2 px-4 rounded text-sm font-medium hover:bg-gray-200 transition-colors"
-            aria-label="Discard Changes"
-            data-testid="side-panel-discard-changes-button"
-            onClick={handleDiscardChanges}
-          >
-            Discard Changes
-          </button>
-          <button
-            className={`flex-1 py-2 px-4 rounded text-sm font-medium transition-colors ${
-              isSaving 
-                ? 'bg-gray-400 text-white cursor-not-allowed' 
-                : saveSuccess
-                ? 'bg-[#79AC48] text-white cursor-default'
-                : 'bg-[#008BC9] text-white hover:bg-[#007399]'
-            }`}
-            onClick={handleSave}
-            disabled={isSaving || saveSuccess}
-            aria-label={isSaving ? "Saving changes..." : saveSuccess ? "Changes saved successfully" : "Save changes"}
-            aria-describedby={isSaving ? "saving-status" : undefined}
-            data-testid="side-panel-save-button"
-            role="button"
-            type="button"
-          >
-            {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save'}
-            {isSaving && <span id="saving-status" className="sr-only">Saving changes to database</span>}
-          </button>
-        
+      {/* Footer Actions - Only show when there are unsaved changes or during save process */}
+      {(hasUnsavedChanges || isSaving || saveSuccess) && (
+        <div className="border-t border-gray-200 p-4" data-testid="side-panel-footer">
+          <div className="flex gap-3">
+            <button 
+              className="flex-1 bg-gray-100 text-[#545454] py-2 px-4 rounded text-sm font-medium hover:bg-gray-200 transition-colors"
+              aria-label="Discard Changes"
+              data-testid="side-panel-discard-changes-button"
+              onClick={handleDiscardChanges}
+            >
+              Discard Changes
+            </button>
+            <button
+              className={`flex-1 py-2 px-4 rounded text-sm font-medium transition-colors ${
+                isSaving 
+                  ? 'bg-gray-400 text-white cursor-not-allowed' 
+                  : saveSuccess
+                  ? 'bg-[#79AC48] text-white cursor-default'
+                  : 'bg-[#008BC9] text-white hover:bg-[#007399]'
+              }`}
+              onClick={handleSave}
+              disabled={isSaving || saveSuccess}
+              aria-label={isSaving ? "Saving changes..." : saveSuccess ? "Changes saved successfully" : "Save changes"}
+              aria-describedby={isSaving ? "saving-status" : undefined}
+              data-testid="side-panel-save-button"
+              role="button"
+              type="button"
+            >
+              {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save'}
+              {isSaving && <span id="saving-status" className="sr-only">Saving changes to database</span>}
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
