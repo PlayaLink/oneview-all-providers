@@ -7,13 +7,14 @@ import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import SideNav from "@/components/SideNav";
 import HorizontalNav from "@/components/HorizontalNav";
 import PageHeader from "@/components/PageHeader";
 import MainContent from "@/components/MainContent";
-import SettingsDropdown from "@/components/SettingsDropdown";
+
 import { getGroups, getGridsByGroup } from "@/lib/gridDefinitions";
 import { useParams, useNavigate } from "react-router-dom";
 import { generateSampleData } from "@/lib/dataGenerator";
@@ -239,8 +240,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
   }, [providerInfoData, error]);
 
   const [profileDropdownOpen, setProfileDropdownOpen] = React.useState(false);
+  const [newFeaturesDropdownOpen, setNewFeaturesDropdownOpen] = React.useState(false);
 
   const profileRef = useRef<HTMLDivElement>(null);
+
+  const gridSectionOptions = [
+    { value: "left-nav" as const, label: "Left Hand Nav" },
+    { value: "horizontal" as const, label: "Horizontal" },
+  ];
 
   useEffect(() => {
     if (!profileDropdownOpen) return;
@@ -306,16 +313,60 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
           <div className="flex items-center gap-8">
             {/* Right Side Links */}
             <nav className="flex items-center gap-4" role="navigation" aria-label="Application navigation">
-              <a
-                href="#"
-                className="text-white text-center text-xs leading-normal tracking-[0.429px] hover:underline"
-                style={{
-                  fontFamily:
-                    "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
-                }}
-              >
-                New Features
-              </a>
+              <Popover open={newFeaturesDropdownOpen} onOpenChange={setNewFeaturesDropdownOpen}>
+                <PopoverTrigger asChild>
+                  <button
+                    className="text-white text-center text-xs leading-normal tracking-[0.429px] hover:underline bg-transparent border-none cursor-pointer"
+                    style={{
+                      fontFamily:
+                        "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
+                    }}
+                    aria-label="New Features and settings"
+                    aria-expanded={newFeaturesDropdownOpen}
+                    aria-haspopup="true"
+                    data-testid="new-features-dropdown"
+                  >
+                    New Features
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-64 p-0 border border-gray-200 bg-white shadow-lg"
+                  align="start"
+                  side="bottom"
+                  sideOffset={4}
+                >
+                  <div className="p-4">
+                    {/* Settings Section */}
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-900 mb-3">Settings</h3>
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium text-gray-700">
+                          Grid Sections Navigation
+                        </label>
+                        <div className="relative">
+                          <select
+                            value={gridSectionMode}
+                            onChange={(e) =>
+                              handleGridSectionModeChange(
+                                e.target.value as "left-nav" | "horizontal",
+                              )
+                            }
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                            aria-label="Grid sections navigation mode"
+                            data-testid="grid-section-mode-select"
+                          >
+                            {gridSectionOptions.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
               <a
                 href="#"
                 className="text-white text-center text-xs leading-normal tracking-[0.429px] hover:underline"
@@ -409,11 +460,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
             </div>
           </div>
 
-          {/* Settings Dropdown - positioned on far right */}
-          <SettingsDropdown
-            gridSectionMode={gridSectionMode}
-            onGridSectionModeChange={handleGridSectionModeChange}
-          />
+          {/* Settings moved to Add Provider dropdown */}
         </div>
 
         {/* Page Header */}

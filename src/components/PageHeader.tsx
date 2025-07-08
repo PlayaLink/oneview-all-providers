@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown, faSearch, faTimes, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faTimes, faUser } from "@fortawesome/free-solid-svg-icons";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { Button } from "@/components/ui/button";
 import SectionsDropdown from "@/components/SectionsDropdown";
