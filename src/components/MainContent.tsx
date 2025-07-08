@@ -86,19 +86,11 @@ const MainContent: React.FC<MainContentProps> = ({
   const getGridsToShow = () => {
     if (singleProviderNpi) {
       // Show grids in single-provider view, filtered by visible sections
-      console.log('=== SINGLE PROVIDER VIEW DEBUG ===');
-      console.log('visibleSections:', Array.from(visibleSections));
-      console.log('visibleSections.size:', visibleSections.size);
-      console.log('all gridDefinitions:', gridDefinitions.map(g => g.tableName));
-      
       if (visibleSections.size === 0) {
-        console.log('No filtering, showing all grids');
         return gridDefinitions; // No filtering, show all grids (same as main view)
       }
       
       const filteredGrids = gridDefinitions.filter((grid) => visibleSections.has(grid.tableName));
-      console.log('Filtered grids:', filteredGrids.map(g => g.tableName));
-      console.log('Grids that should be hidden:', gridDefinitions.filter(grid => !visibleSections.has(grid.tableName)).map(g => g.tableName));
       return filteredGrids;
     }
     if (selectedItem && selectedItem !== "all-sections") {
@@ -306,16 +298,13 @@ const MainContent: React.FC<MainContentProps> = ({
   // Function to get the appropriate template configuration for the active grid
   const getTemplateConfigForActiveGrid = () => {
     const templateConfig = activePanelGridName ? getTemplateConfigByGrid(activePanelGridName) : null;
-    console.log('Template config for grid:', activePanelGridName, templateConfig);
     
     if (templateConfig && Array.isArray(templateConfig.fieldGroups)) {
       const fields = templateConfig.fieldGroups.flatMap(group => group.fields);
-      console.log('Fields from template config:', fields);
       return fields;
     }
     
     // fallback to providerInfoConfig or an empty array
-    console.log('Using fallback providerInfoConfig');
     return providerInfoConfig;
   };
 

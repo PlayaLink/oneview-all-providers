@@ -22,6 +22,7 @@ import { gridDefinitions } from "@/lib/gridDefinitions";
 import NavItem from "@/components/NavItem";
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabaseClient';
+import { useFeatureSettings } from '@/hooks/useFeatureSettings';
 
 const fetchProviders = async () => {
   const { data, error } = await supabase.from('providers').select('*');
@@ -36,6 +37,9 @@ interface MainLayoutProps {
 const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
   const { npi } = useParams<{ npi?: string }>();
   const navigate = useNavigate();
+  // Use feature settings for grid section mode
+  const { settings, updateSetting, isLoading: settingsLoading } = useFeatureSettings();
+  const gridSectionMode = settingsLoading ? 'left-nav' : settings.grid_section_navigation;
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string | null>(
     null,
@@ -43,9 +47,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
   const [selectedSection, setSelectedSection] = useState<string | null>(
     "Provider Info",
   );
-  const [gridSectionMode, setGridSectionMode] = useState<
-    "left-nav" | "horizontal"
-  >("left-nav");
 
   // Initialize with no sections selected (no filtering by default)
   const [visibleSections, setVisibleSections] = useState<Set<string>>(
@@ -155,7 +156,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
   };
 
   const handleGridSectionModeChange = (mode: "left-nav" | "horizontal") => {
-    setGridSectionMode(mode);
+    updateSetting('grid_section_navigation', mode);
     // When switching to horizontal mode, ensure we select a section instead of an item
     if (mode === "horizontal" && selectedItem && !selectedSection) {
       // Map current item to its section for better UX
@@ -233,11 +234,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
   };
 
   React.useEffect(() => {
-    console.log('Fetched providerInfoData:', providerInfoData);
     if (error) {
       console.error('Supabase fetch error:', error);
     }
   }, [providerInfoData, error]);
+
+
 
   const [profileDropdownOpen, setProfileDropdownOpen] = React.useState(false);
   const [newFeaturesDropdownOpen, setNewFeaturesDropdownOpen] = React.useState(false);
@@ -353,15 +355,20 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
                                 e.target.value as "left-nav" | "horizontal",
                               )
                             }
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                            disabled={settingsLoading}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white disabled:opacity-50 disabled:cursor-not-allowed"
                             aria-label="Grid sections navigation mode"
                             data-testid="grid-section-mode-select"
                           >
-                            {gridSectionOptions.map((option) => (
-                              <option key={option.value} value={option.value}>
-                                {option.label}
-                              </option>
-                            ))}
+                            {settingsLoading ? (
+                              <option>Loading...</option>
+                            ) : (
+                              gridSectionOptions.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                  {option.label}
+                                </option>
+                              ))
+                            )}
                           </select>
                         </div>
                       </div>

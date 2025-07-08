@@ -163,4 +163,52 @@ export async function deleteDocument(id: string, bucket: string, path: string) {
     .eq('id', id);
   if (dbError) throw dbError;
   return true;
+}
+
+// FEATURE SETTINGS CRUD
+export async function fetchFeatureSettings() {
+  const { data, error } = await supabase
+    .from('feature_settings')
+    .select('*')
+    .order('setting_key');
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchFeatureSetting(key: string) {
+  const { data, error } = await supabase
+    .from('feature_settings')
+    .select('*')
+    .eq('setting_key', key)
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function updateFeatureSetting(key: string, value: any) {
+  const { data, error } = await supabase
+    .from('feature_settings')
+    .update({ setting_value: value })
+    .eq('setting_key', key)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function upsertFeatureSetting(key: string, value: any, description?: string) {
+  const { data, error } = await supabase
+    .from('feature_settings')
+    .upsert(
+      { 
+        setting_key: key, 
+        setting_value: value,
+        description: description || `Setting for ${key}`
+      },
+      { onConflict: 'setting_key' }
+    )
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
 } 

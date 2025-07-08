@@ -312,16 +312,8 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       if (excludedFields.length > 0) {
       }
       
-      // Log the exact data being sent to the database
-      console.log('Data being sent to database:', {
-        table: gridName === 'State_Licenses' ? 'state_licenses' : 'providers',
-        id: selectedRow.id,
-        updates: filteredUpdates
-      });
-
       // Check if there are any updates to save
       if (Object.keys(filteredUpdates).length === 0) {
-        console.log('No valid updates to save');
         return;
       }
 

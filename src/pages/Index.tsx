@@ -868,7 +868,7 @@ const Index = () => {
           buttonIcon={faUserPlus}
           onButtonClick={() => {
             // Handle add provider action
-            console.log("Add Provider clicked");
+            // Add Provider functionality
           }}
         />
       </div>

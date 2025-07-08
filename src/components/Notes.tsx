@@ -70,7 +70,6 @@ const Notes: React.FC<NotesProps> = ({ recordId, recordType, user, className }) 
   }, [focused]);
 
   const handleAddNote = async () => {
-    console.log('handleAddNote called', { input, recordId, recordType, user });
     if (input.trim()) {
       setLoading(true);
       setError(null);
@@ -97,7 +96,7 @@ const Notes: React.FC<NotesProps> = ({ recordId, recordType, user, className }) 
     setLoading(true);
     setError(null);
     try {
-      await deleteNote(id);
+      await deleteNote(String(id));
       setNotes(notes.filter((note) => note.id !== id));
       setMenuOpenId(null);
     } catch (err) {
@@ -121,7 +120,7 @@ const Notes: React.FC<NotesProps> = ({ recordId, recordType, user, className }) 
     setLoading(true);
     setError(null);
     try {
-      const updated = await updateNote(editingId, { text: editValue });
+      const updated = await updateNote(String(editingId), { text: editValue });
       setNotes(notes.map(n => n.id === editingId ? { ...n, text: updated.text } : n));
       setEditingId(null);
       setEditValue("");
