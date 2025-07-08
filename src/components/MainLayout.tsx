@@ -192,7 +192,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
 
   // Handler for provider search selection (to be used in PageHeader)
   const handleProviderSelect = (providerNpi: string) => {
-    navigate(`/${providerNpi}`);
+    if (providerNpi) {
+      navigate(`/${providerNpi}`);
+    } else {
+      navigate('/');
+    }
   };
 
   // Handler to update selected row for a grid

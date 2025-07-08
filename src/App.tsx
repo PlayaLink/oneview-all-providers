@@ -37,6 +37,11 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <Routes>
+            {/* Route for provider detail pages with NPI parameter */}
+            <Route path="/:npi" element={<MainLayout user={user} />} />
+            {/* Route for the main page (all providers view) */}
+            <Route path="/" element={<MainLayout user={user} />} />
+            {/* Catch-all route for any other paths */}
             <Route path="/*" element={<MainLayout user={user} />} />
           </Routes>
         </BrowserRouter>
