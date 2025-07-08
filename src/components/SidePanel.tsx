@@ -517,21 +517,22 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
     const successCount = results.filter(r => r.success).length;
     const failureCount = results.filter(r => !r.success).length;
 
-    // Show summary toast if there were multiple files
-    if (files.length > 1) {
-      if (successCount > 0 && failureCount === 0) {
-        toast({
-          title: "Upload Complete",
-          description: `Successfully uploaded ${successCount} file${successCount > 1 ? 's' : ''}`,
-        });
-      } else if (successCount > 0 && failureCount > 0) {
-        toast({
-          title: "Upload Partial",
-          description: `Uploaded ${successCount} file${successCount > 1 ? 's' : ''}, ${failureCount} failed`,
-          variant: "default",
-        });
+          // Show summary toast if there were multiple files
+      if (files.length > 1) {
+        if (successCount > 0 && failureCount === 0) {
+          toast({
+            title: "Upload Complete",
+            description: `Successfully uploaded ${successCount} file${successCount > 1 ? 's' : ''}`,
+            variant: "success",
+          });
+        } else if (successCount > 0 && failureCount > 0) {
+          toast({
+            title: "Upload Partial",
+            description: `Uploaded ${successCount} file${successCount > 1 ? 's' : ''}, ${failureCount} failed`,
+            variant: "default",
+          });
+        }
       }
-    }
   };
 
   const handleEditDocument = (doc: any) => {
@@ -542,10 +543,6 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
     try {
       await deleteDocument(doc.id, doc.bucket, doc.path);
       setDocuments(prev => prev.filter(d => d.id !== doc.id));
-      toast({
-        title: "Document Deleted",
-        description: `Successfully deleted "${doc.name}"`,
-      });
     } catch (err: any) {
       toast({
         title: "Delete Failed",
