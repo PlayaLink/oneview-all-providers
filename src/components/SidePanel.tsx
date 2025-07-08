@@ -18,6 +18,8 @@ import StateLicenseDetails from './sidepanel-details/StateLicenseDetails';
 import { getIconByName } from "@/lib/iconMapping";
 import SidePanelTab from "./TabTitle";
 import FileDropzone from './FileDropzone';
+import DocumentsGrid from './DocumentsGrid';
+import { fetchDocumentsForRecord, insertDocument, updateDocument, deleteDocument } from '@/lib/supabaseClient';
 
 // Types for input fields
 export interface InputField {
@@ -92,6 +94,9 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
+  const [documents, setDocuments] = useState<any[]>([]);
+  const [documentsLoading, setDocumentsLoading] = useState(false);
+  const [editingDocument, setEditingDocument] = useState<any | null>(null);
 
   // Select template based on gridName
   const template = gridName ? getTemplateConfigByGrid(gridName) : null;
@@ -199,6 +204,15 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isResizing, handleMouseMove, handleMouseUp]);
+
+  // Fetch documents for the selected record
+  useEffect(() => {
+    if (!selectedRow?.id) return;
+    setDocumentsLoading(true);
+    fetchDocumentsForRecord(selectedRow.id)
+      .then(setDocuments)
+      .finally(() => setDocumentsLoading(false));
+  }, [selectedRow?.id]);
 
   if (!selectedRow) return null;
 
@@ -439,21 +453,54 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
   };
 
   const handleFilesAccepted = async (files: File[]) => {
-    if (!user || !user.id) {
-      alert('User not found. Cannot upload files.');
+    if (!user || !user.id || !selectedRow?.id) {
+      alert('User or record not found. Cannot upload files.');
       return;
     }
-    const uploaded: string[] = [];
     for (const file of files) {
-      const filePath = `${user.id}/${file.name}`;
-      const { data, error } = await supabase.storage.from('documents').upload(filePath, file, { upsert: true });
-      if (error) {
-        alert(`Failed to upload ${file.name}: ${error.message}`);
-      } else {
-        uploaded.push(file.name);
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const filePath = `${user.id}/${safeName}`;
+      const { data: uploadData, error: uploadError } = await supabase.storage.from('documents').upload(filePath, file, { upsert: true });
+      if (uploadError) {
+        alert(`Failed to upload ${file.name}: ${uploadError.message}`);
+        continue;
+      }
+      // Insert metadata into documents table
+      const docMeta = {
+        user_id: user.id,
+        record_id: selectedRow.id,
+        name: file.name,
+        size: file.size,
+        document_type: 'Other Misc', // Default, can be edited
+        permission: 'Public', // Default, can be edited
+        date: new Date().toISOString().slice(0, 10),
+        exp_date: null,
+        verif_date: null,
+        exp_na: false,
+        bucket: 'documents',
+        path: filePath,
+      };
+      try {
+        const inserted = await insertDocument(docMeta);
+        setDocuments(prev => [inserted, ...prev]);
+      } catch (err: any) {
+        alert(`Failed to save document metadata: ${err.message}`);
       }
     }
-    setUploadedFiles(prev => [...prev, ...uploaded]);
+  };
+
+  const handleEditDocument = (doc: any) => {
+    setEditingDocument(doc);
+  };
+
+  const handleDeleteDocument = async (doc: any) => {
+    if (!window.confirm(`Delete document "${doc.name}"?`)) return;
+    try {
+      await deleteDocument(doc.id, doc.bucket, doc.path);
+      setDocuments(prev => prev.filter(d => d.id !== doc.id));
+    } catch (err: any) {
+      alert(`Failed to delete document: ${err.message}`);
+    }
   };
 
   // Select the DetailsComponent from the static map
@@ -579,16 +626,15 @@ const DetailsComponent = template?.DetailsComponent ? detailsComponentMap[templa
             {tabs.some((t) => t.id === 'documents') && (
               <TabsContent value="documents" role="tabpanel" aria-label="Documents Tab" data-testid="side-panel-tabpanel-documents">
                 <FileDropzone onFilesAccepted={handleFilesAccepted} />
-                {uploadedFiles.length > 0 && (
-                  <div className="mt-6">
-                    <h3 className="font-semibold mb-2">Uploaded Files</h3>
-                    <ul className="list-disc pl-5 text-sm text-gray-700">
-                      {uploadedFiles.map((name, idx) => (
-                        <li key={idx}>{name}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                <div className="mt-6">
+                  <DocumentsGrid
+                    documents={documents}
+                    onEdit={handleEditDocument}
+                    onDelete={handleDeleteDocument}
+                  />
+                  {documentsLoading && <div className="text-gray-500 mt-2">Loading documents...</div>}
+                </div>
+                {/* TODO: Add edit modal for editing document metadata */}
               </TabsContent>
             )}
             {tabs.some((t) => t.id === 'team') && (

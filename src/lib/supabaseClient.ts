@@ -111,3 +111,47 @@ export async function deleteNote(noteId: string) {
   if (error) throw error;
   return true;
 } 
+
+export async function fetchDocumentsForRecord(recordId: string) {
+  const { data, error } = await supabase
+    .from('documents')
+    .select('*')
+    .eq('record_id', recordId)
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data;
+}
+
+export async function insertDocument(document: any) {
+  const { data, error } = await supabase
+    .from('documents')
+    .insert([document])
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function updateDocument(id: string, updates: any) {
+  const { data, error } = await supabase
+    .from('documents')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteDocument(id: string, bucket: string, path: string) {
+  // Delete from storage first
+  const { error: storageError } = await supabase.storage.from(bucket).remove([path]);
+  if (storageError) throw storageError;
+  // Then delete from table
+  const { error: dbError } = await supabase
+    .from('documents')
+    .delete()
+    .eq('id', id);
+  if (dbError) throw dbError;
+  return true;
+} 
