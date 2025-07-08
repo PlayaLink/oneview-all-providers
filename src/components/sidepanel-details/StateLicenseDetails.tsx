@@ -3,6 +3,7 @@ import CollapsibleSection from '../CollapsibleSection';
 import { MultiSelectInput } from '../inputs/MultiSelectInput';
 import { SingleSelect } from '../SingleSelect';
 import TextInputField from '../inputs/TextInputField';
+import { getInputType } from './getInputType';
 
 // State Licenses fieldGroups definition
 export const stateLicenseFieldGroups = [
@@ -120,13 +121,6 @@ export const stateLicenseFieldGroups = [
     ]
   }
 ];
-
-function getInputType(field) {
-  if (Array.isArray(field.options) && field.options.length > 0) {
-    return field.multi ? 'multi-select' : 'single-select';
-  }
-  return 'text';
-}
 
 const StateLicenseDetails = ({ formValues, handleChange }) => (
   <>

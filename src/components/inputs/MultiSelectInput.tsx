@@ -90,7 +90,7 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
     ref,
   ) => {
     // Extra safety: ensure value and options are never undefined
-    value = value ?? [];
+    value = Array.isArray(value) ? value : [];
     options = options ?? [];
 
     // Generate add/search text if not provided

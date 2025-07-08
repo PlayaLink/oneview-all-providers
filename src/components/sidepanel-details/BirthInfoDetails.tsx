@@ -3,6 +3,7 @@ import CollapsibleSection from '../CollapsibleSection';
 import { MultiSelectInput } from '../inputs/MultiSelectInput';
 import { SingleSelect } from '../SingleSelect';
 import TextInputField from '../inputs/TextInputField';
+import { getInputType } from './getInputType';
 
 // Birth Info field group definition (from templateConfigs)
 export const birthInfoFieldGroup = {
@@ -28,13 +29,6 @@ export const birthInfoFieldGroup = {
     { label: 'Tags', type: 'multi-select', rowKey: 'tags' },
   ],
 };
-
-function getInputType(field) {
-  if (Array.isArray(field.options) && field.options.length > 0) {
-    return field.type === 'multi-select' ? 'multi-select' : 'single-select';
-  }
-  return 'text';
-}
 
 const BirthInfoDetails = ({ formValues, handleChange }) => (
   <CollapsibleSection key={birthInfoFieldGroup.id} title={birthInfoFieldGroup.title}>
