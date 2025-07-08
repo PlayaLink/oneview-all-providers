@@ -21,6 +21,7 @@ import FileDropzone from './FileDropzone';
 import DocumentsGrid from './DocumentsGrid';
 import { fetchDocumentsForRecord, insertDocument, updateDocument, deleteDocument } from '@/lib/supabaseClient';
 import { toast } from '@/hooks/use-toast';
+import BirthInfoDetails from './sidepanel-details/BirthInfoDetails';
 
 // Types for input fields
 export interface InputField {
@@ -69,6 +70,7 @@ function formatGridName(name: string) {
 const detailsComponentMap: Record<string, React.ComponentType<any>> = {
   ProviderInfoDetails,
   StateLicenseDetails,
+  BirthInfoDetails,
   // Add more as needed
 };
 

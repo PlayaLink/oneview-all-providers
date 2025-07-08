@@ -12,6 +12,7 @@ import providerInfoConfig from "@/data/provider_info_details.json";
 import { useQuery } from '@tanstack/react-query';
 import { fetchStateLicenses, fetchStateLicensesByProvider } from '@/lib/supabaseClient';
 import { getTemplateConfigByGrid, providerInfoTemplate, stateLicenseTemplate } from '@/lib/templateConfigs';
+import { useGridData } from '@/hooks/useGridData';
 
 interface MainContentProps {
   selectedItem?: string | null;
@@ -56,23 +57,10 @@ const MainContent: React.FC<MainContentProps> = ({
   const gridRefs = useRef<(HTMLDivElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Fetch state licenses data from Supabase
-  const { data: stateLicensesData, isLoading: stateLicensesLoading, error: stateLicensesError } = useQuery<any[], Error>({
-    queryKey: ['stateLicenses'],
-    queryFn: fetchStateLicenses,
-  });
-
-  // Fetch state licenses for specific provider in single provider view
-  const { data: providerStateLicenses, isLoading: providerStateLicensesLoading, error: providerStateLicensesError } = useQuery<any[], Error>({
-    queryKey: ['providerStateLicenses', singleProviderNpi],
-    queryFn: () => {
-      if (!singleProviderNpi || !providerInfoData) return Promise.resolve([]);
-      const provider = providerInfoData.find(row => String(row.npi_number) === String(singleProviderNpi));
-      if (!provider?.id) return Promise.resolve([]);
-      return fetchStateLicensesByProvider(provider.id);
-    },
-    enabled: !!singleProviderNpi && !!providerInfoData,
-  });
+  // Centralized grid data fetching
+  const providerInfoQuery = useGridData('Provider_Info');
+  const stateLicensesQuery = useGridData('State_Licenses');
+  const birthInfoQuery = useGridData('Birth_Info');
 
   // Memoize sample data for all grids only once
   const sampleDataRef = React.useRef<{ [gridName: string]: any[] }>({});
@@ -81,6 +69,47 @@ const MainContent: React.FC<MainContentProps> = ({
       sampleDataRef.current[grid.tableName] = generateSampleData(grid.tableName, 15);
     });
   }
+
+  // Function to get data for each grid
+  const getDataForGrid = (gridKey: string) => {
+    if (gridKey === "Provider_Info") {
+      const { data } = providerInfoQuery;
+      if (!data) return [];
+      return data.map((row: any) => ({
+        ...row,
+        provider_name: `${row.last_name || ''}, ${row.first_name || ''}`.trim(),
+        primary_specialty: row.primary_specialty,
+        npi_number: row.npi_number,
+        work_email: row.work_email,
+        personal_email: row.personal_email,
+        mobile_phone_number: row.mobile_phone_number,
+        title: row.title,
+        tags: row.tags || [],
+        last_updated: row.last_updated,
+      }));
+    }
+    if (gridKey === "State_Licenses") {
+      const { data } = stateLicensesQuery;
+      if (!data) return [];
+      return data.map((license: any) => ({
+        ...license,
+        provider_name: license.provider ? `${license.provider.last_name}, ${license.provider.first_name}` : '',
+        title: license.provider?.title || '',
+        primary_specialty: license.provider?.primary_specialty || '',
+      }));
+    }
+    if (gridKey === "Birth_Info") {
+      const { data } = birthInfoQuery;
+      if (!data) return [];
+      return data.map((row: any) => ({
+        ...row,
+        provider_name: row.provider ? `${row.provider.last_name}, ${row.provider.first_name}` : '',
+        title: row.provider?.title || '',
+        primary_specialty: row.provider?.primary_specialty || '',
+      }));
+    }
+    return sampleDataRef.current[gridKey] || [];
+  };
 
   // Function to get grids based on selection and filtered sections
   const getGridsToShow = () => {
@@ -158,40 +187,11 @@ const MainContent: React.FC<MainContentProps> = ({
     }];
   };
 
-  const getDataForGrid = (gridKey: string) => {
-    if (gridKey === "Provider_Info") {
-      return providerInfoData || [];
-    }
-    if (gridKey === "State_Licenses") {
-      if (!stateLicensesData) return [];
-      
-      // Transform the data to match the expected grid format
-      return stateLicensesData.map((license) => ({
-        id: license.id,
-        provider_name: license.provider ? `${license.provider.first_name || ''} ${license.provider.last_name || ''}`.trim() : '',
-        title: license.provider?.title || '',
-        primary_specialty: license.provider?.primary_specialty || '',
-        license_type: license.license_type || '',
-        license_additional_info: license.license_additional_info || '',
-        state: license.state || '',
-        status: license.status || '',
-        issue_date: license.issue_date || '',
-        expiration_date: license.expiration_date || '',
-        expires_within: license.expires_within || '',
-        tags: license.tags || [],
-        last_updated: license.last_updated || '',
-        // Include the original data for side panel
-        ...license,
-      }));
-    }
-    return sampleDataRef.current[gridKey] || [];
-  };
-
   // Function to transform provider-specific state licenses data
   const getProviderStateLicensesData = () => {
-    if (!providerStateLicenses) return [];
+    if (!stateLicensesQuery.data) return [];
     
-    return providerStateLicenses.map((license) => ({
+    return stateLicensesQuery.data.map((license) => ({
       id: license.id,
       // Remove provider-specific fields for single provider view
       // provider_name, title, primary_specialty are excluded
@@ -384,13 +384,13 @@ const MainContent: React.FC<MainContentProps> = ({
         {/* State Licenses Grid */}
         {stateLicensesGrid && (
           <div key={stateLicensesGrid.tableName} className="flex flex-col mb-8 bg-white rounded shadow" style={{ height: 400 }}>
-            {providerStateLicensesLoading ? (
+            {stateLicensesQuery.isLoading ? (
               <div className="flex items-center justify-center h-full">
                 <div className="text-gray-500">Loading state licenses...</div>
               </div>
-            ) : providerStateLicensesError ? (
+            ) : stateLicensesQuery.error ? (
               <div className="flex items-center justify-center h-full">
-                <div className="text-red-500">Error loading state licenses: {providerStateLicensesError.message}</div>
+                <div className="text-red-500">Error loading state licenses: {stateLicensesQuery.error.message}</div>
               </div>
             ) : (
               <DataGrid
@@ -452,7 +452,7 @@ const MainContent: React.FC<MainContentProps> = ({
   }
 
   // Show loading state for State Licenses grid
-  if (currentGrid.tableName === "State_Licenses" && stateLicensesLoading) {
+  if (currentGrid.tableName === "State_Licenses" && stateLicensesQuery.isLoading) {
     return (
       <div className="flex-1 flex items-center justify-center pt-4 px-4">
         <div className="text-gray-500">Loading state licenses...</div>
@@ -461,10 +461,10 @@ const MainContent: React.FC<MainContentProps> = ({
   }
 
   // Show error state for State Licenses grid
-  if (currentGrid.tableName === "State_Licenses" && stateLicensesError) {
+  if (currentGrid.tableName === "State_Licenses" && stateLicensesQuery.error) {
     return (
       <div className="flex-1 flex items-center justify-center pt-4 px-4">
-        <div className="text-red-500">Error loading state licenses: {stateLicensesError.message}</div>
+        <div className="text-red-500">Error loading state licenses: {stateLicensesQuery.error.message}</div>
       </div>
     );
   }

@@ -1,0 +1,88 @@
+import React from 'react';
+import CollapsibleSection from '../CollapsibleSection';
+import { MultiSelectInput } from '../inputs/MultiSelectInput';
+import { SingleSelect } from '../SingleSelect';
+import TextInputField from '../inputs/TextInputField';
+
+// Birth Info field group definition (from templateConfigs)
+export const birthInfoFieldGroup = {
+  id: 'birth_info_flat',
+  title: 'Birth Info',
+  fields: [
+    { label: 'Date of Birth', type: 'text', rowKey: 'date_of_birth' },
+    { label: 'Country of Citizenship', type: 'text', rowKey: 'country_of_citizenship' },
+    { label: 'Citizenship/Work Auth', type: 'text', rowKey: 'citizenship_work_auth' },
+    { label: 'US Work Auth', type: 'text', rowKey: 'us_work_auth' },
+    { label: 'Birth City', type: 'text', rowKey: 'birth_city' },
+    { label: 'Birth State/Province', type: 'text', rowKey: 'birth_state_province' },
+    { label: 'Birth County', type: 'text', rowKey: 'birth_county' },
+    { label: 'Birth Country', type: 'text', rowKey: 'birth_country' },
+    { label: 'Gender', type: 'single-select', options: ['Male', 'Female', 'Non-binary', 'Other'], rowKey: 'gender' },
+    { label: 'Identifies as transgender?', type: 'single-select', options: ['Yes', 'No'], rowKey: 'identifies_transgender' },
+    { label: 'Hair Color', type: 'single-select', options: ['Black', 'Brown', 'Blonde', 'Red', 'Gray', 'Other'], rowKey: 'hair_color' },
+    { label: 'Eye Color', type: 'single-select', options: ['Brown', 'Blue', 'Green', 'Hazel', 'Gray', 'Other'], rowKey: 'eye_color' },
+    { label: 'Height (ft)', type: 'text', rowKey: 'height_ft' },
+    { label: 'Height (in)', type: 'text', rowKey: 'height_in' },
+    { label: 'Weight (lbs)', type: 'text', rowKey: 'weight_lbs' },
+    { label: 'Ethnicity', type: 'single-select', options: ['Hispanic', 'Non-Hispanic', 'Asian', 'Black', 'White', 'Native American', 'Other'], rowKey: 'ethnicity' },
+    { label: 'Tags', type: 'multi-select', rowKey: 'tags' },
+  ],
+};
+
+function getInputType(field) {
+  if (Array.isArray(field.options) && field.options.length > 0) {
+    return field.type === 'multi-select' ? 'multi-select' : 'single-select';
+  }
+  return 'text';
+}
+
+const BirthInfoDetails = ({ formValues, handleChange }) => (
+  <CollapsibleSection key={birthInfoFieldGroup.id} title={birthInfoFieldGroup.title}>
+    <div className="flex flex-col gap-4 self-stretch">
+      {birthInfoFieldGroup.fields.map((field) => {
+        const inputType = getInputType(field);
+        const key = field.rowKey || field.label;
+        if (inputType === 'multi-select') {
+          return (
+            <MultiSelectInput
+              key={key}
+              label={field.label}
+              labelPosition="left"
+              value={formValues[key] || []}
+              options={field.options?.map((opt) => ({ id: opt, label: opt })) || []}
+              onChange={(val) => handleChange(key, Array.isArray(val) ? val.map((v) => v.id) : [])}
+              className="flex-1 min-w-0"
+            />
+          );
+        } else if (inputType === 'single-select') {
+          const options = field.options?.map((opt) => ({ id: opt, label: opt })) || [];
+          const selectedValue = options.find((opt) => opt.id === formValues[key]) || null;
+          return (
+            <SingleSelect
+              key={key}
+              label={field.label}
+              labelPosition="left"
+              value={selectedValue}
+              options={options}
+              onChange={(val) => handleChange(key, val?.id ?? val)}
+              className="flex-1 min-w-0"
+            />
+          );
+        } else {
+          return (
+            <TextInputField
+              key={key}
+              label={field.label}
+              labelPosition="left"
+              value={formValues[key] || ''}
+              onChange={(val) => handleChange(key, val)}
+              className="flex-1 min-w-0"
+            />
+          );
+        }
+      })}
+    </div>
+  </CollapsibleSection>
+);
+
+export default BirthInfoDetails; 
