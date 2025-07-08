@@ -20,6 +20,7 @@ import SidePanelTab from "./TabTitle";
 import FileDropzone from './FileDropzone';
 import DocumentsGrid from './DocumentsGrid';
 import { fetchDocumentsForRecord, insertDocument, updateDocument, deleteDocument } from '@/lib/supabaseClient';
+import { toast } from '@/hooks/use-toast';
 
 // Types for input fields
 export interface InputField {
@@ -423,37 +424,112 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
 
   const handleFilesAccepted = async (files: File[]) => {
     if (!user || !user.id || !selectedRow?.id) {
-      alert('User or record not found. Cannot upload files.');
+      toast({
+        title: "Upload Error",
+        description: "User or record not found. Cannot upload files.",
+        variant: "destructive",
+      });
       return;
     }
-    for (const file of files) {
+
+    // Create optimistic documents immediately
+    const optimisticDocuments = files.map((file, index) => ({
+      id: `optimistic-${Date.now()}-${index}`,
+      user_id: user.id,
+      record_id: selectedRow.id,
+      name: file.name,
+      size: file.size,
+      document_type: 'Other Misc',
+      permission: 'Public',
+      date: new Date().toISOString().slice(0, 10),
+      exp_date: null,
+      verif_date: null,
+      exp_na: false,
+      bucket: 'documents',
+      path: `${user.id}/${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`,
+      created_at: new Date().toISOString(),
+      author: user?.user_metadata?.full_name || user?.email || "Unknown",
+      isOptimistic: true, // Flag to identify optimistic documents
+    }));
+
+    // Add optimistic documents to the UI immediately
+    setDocuments(prev => [...optimisticDocuments, ...prev]);
+
+    // Process each file upload
+    const uploadPromises = files.map(async (file, index) => {
+      const optimisticDoc = optimisticDocuments[index];
       const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
       const filePath = `${user.id}/${safeName}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage.from('documents').upload(filePath, file, { upsert: true });
-      if (uploadError) {
-        alert(`Failed to upload ${file.name}: ${uploadError.message}`);
-        continue;
-      }
-      // Insert metadata into documents table
-      const docMeta = {
-        user_id: user.id,
-        record_id: selectedRow.id,
-        name: file.name,
-        size: file.size,
-        document_type: 'Other Misc', // Default, can be edited
-        permission: 'Public', // Default, can be edited
-        date: new Date().toISOString().slice(0, 10),
-        exp_date: null,
-        verif_date: null,
-        exp_na: false,
-        bucket: 'documents',
-        path: filePath,
-      };
+
       try {
+        // Upload file to storage
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('documents')
+          .upload(filePath, file, { upsert: true });
+
+        if (uploadError) {
+          throw new Error(`Storage upload failed: ${uploadError.message}`);
+        }
+
+        // Insert metadata into documents table
+        const docMeta = {
+          user_id: user.id,
+          record_id: selectedRow.id,
+          name: file.name,
+          size: file.size,
+          document_type: 'Other Misc',
+          permission: 'Public',
+          date: new Date().toISOString().slice(0, 10),
+          exp_date: null,
+          verif_date: null,
+          exp_na: false,
+          bucket: 'documents',
+          path: filePath,
+        };
+
         const inserted = await insertDocument(docMeta);
-        setDocuments(prev => [inserted, ...prev]);
-      } catch (err: any) {
-        alert(`Failed to save document metadata: ${err.message}`);
+
+        // Replace optimistic document with real one
+        setDocuments(prev => 
+          prev.map(doc => 
+            doc.id === optimisticDoc.id ? { ...inserted, isOptimistic: false } : doc
+          )
+        );
+
+        return { success: true, file: file.name };
+      } catch (error: any) {
+        // Remove optimistic document on error
+        setDocuments(prev => prev.filter(doc => doc.id !== optimisticDoc.id));
+        
+        // Show error toast
+        toast({
+          title: "Upload Failed",
+          description: `Failed to upload "${file.name}": ${error.message}`,
+          variant: "destructive",
+        });
+
+        return { success: false, file: file.name, error: error.message };
+      }
+    });
+
+    // Wait for all uploads to complete
+    const results = await Promise.all(uploadPromises);
+    const successCount = results.filter(r => r.success).length;
+    const failureCount = results.filter(r => !r.success).length;
+
+    // Show summary toast if there were multiple files
+    if (files.length > 1) {
+      if (successCount > 0 && failureCount === 0) {
+        toast({
+          title: "Upload Complete",
+          description: `Successfully uploaded ${successCount} file${successCount > 1 ? 's' : ''}`,
+        });
+      } else if (successCount > 0 && failureCount > 0) {
+        toast({
+          title: "Upload Partial",
+          description: `Uploaded ${successCount} file${successCount > 1 ? 's' : ''}, ${failureCount} failed`,
+          variant: "default",
+        });
       }
     }
   };
@@ -463,12 +539,19 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
   };
 
   const handleDeleteDocument = async (doc: any) => {
-    if (!window.confirm(`Delete document "${doc.name}"?`)) return;
     try {
       await deleteDocument(doc.id, doc.bucket, doc.path);
       setDocuments(prev => prev.filter(d => d.id !== doc.id));
+      toast({
+        title: "Document Deleted",
+        description: `Successfully deleted "${doc.name}"`,
+      });
     } catch (err: any) {
-      alert(`Failed to delete document: ${err.message}`);
+      toast({
+        title: "Delete Failed",
+        description: `Failed to delete "${doc.name}": ${err.message}`,
+        variant: "destructive",
+      });
     }
   };
 
