@@ -568,7 +568,7 @@ const DetailsComponent = template?.DetailsComponent ? detailsComponentMap[templa
               ) : null;
             })()}
             
-            {tabs.some((t) => t.id === 'details') && (
+            {tabs.some((t) => t.id === 'details') && tab === 'details' && (
               <TabsContent value="details" role="tabpanel" aria-label="Details Tab" data-testid="side-panel-tabpanel-details">
                 {DetailsComponent && (
                   <Suspense fallback={<div>Loading details...</div>}>
@@ -580,7 +580,7 @@ const DetailsComponent = template?.DetailsComponent ? detailsComponentMap[templa
                 )}
               </TabsContent>
             )}
-            {tabs.some((t) => t.id === 'notes') && (
+            {tabs.some((t) => t.id === 'notes') && tab === 'notes' && (
               <TabsContent value="notes" className="flex-1 min-h-0 flex flex-col p-0 m-0" role="tabpanel" aria-label="Notes Tab" data-testid="side-panel-tabpanel-notes">
                 {selectedRow && (
                   <Notes
@@ -592,7 +592,7 @@ const DetailsComponent = template?.DetailsComponent ? detailsComponentMap[templa
                 )}
               </TabsContent>
             )}
-            {tabs.some((t) => t.id === 'documents') && (
+            {tabs.some((t) => t.id === 'documents') && tab === 'documents' && (
               <TabsContent value="documents" role="tabpanel" aria-label="Documents Tab" data-testid="side-panel-tabpanel-documents">
                 {documents.length > 0 && (
                   <div className="mb-6">
@@ -608,7 +608,7 @@ const DetailsComponent = template?.DetailsComponent ? detailsComponentMap[templa
                 {/* TODO: Add edit modal for editing document metadata */}
               </TabsContent>
             )}
-            {tabs.some((t) => t.id === 'team') && (
+            {tabs.some((t) => t.id === 'team') && tab === 'team' && (
               <TabsContent value="team" role="tabpanel" aria-label="Team Tab" data-testid="side-panel-tabpanel-team">
                 <div className="text-gray-500">Team tab content goes here.</div>
               </TabsContent>
