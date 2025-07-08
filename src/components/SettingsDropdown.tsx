@@ -40,8 +40,6 @@ const SettingsDropdown: React.FC<SettingsDropdownProps> = ({
         sideOffset={4}
       >
         <div className="p-4">
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">Settings</h3>
-
           {/* Grid Sections Setting */}
           <div className="space-y-2">
             <label className="text-xs font-medium text-gray-700">

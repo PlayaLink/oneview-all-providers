@@ -45,7 +45,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
   );
   const [gridSectionMode, setGridSectionMode] = useState<
     "left-nav" | "horizontal"
-  >("horizontal");
+  >("left-nav");
 
   // Initialize with no sections selected (no filtering by default)
   const [visibleSections, setVisibleSections] = useState<Set<string>>(
@@ -261,8 +261,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
   }, [profileDropdownOpen]);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    window.location.href = '/'; // Redirect to login or home
+    await supabase.auth.signOut({
+      scope: 'local'
+    });
+    // Use the current origin for redirect
+    window.location.href = window.location.origin;
   };
 
   return (
@@ -338,8 +341,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
                   <div className="p-4">
                     {/* Settings Section */}
                     <div>
-                      <h3 className="text-sm font-semibold text-gray-900 mb-3">Settings</h3>
-                      <div className="space-y-2">
+                      <div className="space-y-2" role="feature-settings">
                         <label className="text-xs font-medium text-gray-700">
                           Grid Sections Navigation
                         </label>
