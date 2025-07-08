@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronDown,
@@ -234,6 +234,26 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
     }
   }, [providerInfoData, error]);
 
+  const [profileDropdownOpen, setProfileDropdownOpen] = React.useState(false);
+
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!profileDropdownOpen) return;
+    function handleClick(event: MouseEvent) {
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setProfileDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [profileDropdownOpen]);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/'; // Redirect to login or home
+  };
+
   return (
     <div className="h-screen flex flex-col bg-white" data-testid="main-layout">
       {/* Top Navigation - Two Row Design */}
@@ -315,7 +335,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
             </nav>
 
             {/* User Profile */}
-            <div className="flex items-center gap-2" role="button" tabIndex={0} aria-label="User profile menu">
+            <div ref={profileRef} className="flex items-center gap-2 relative" role="button" tabIndex={0} aria-label="User profile menu">
               <div className="flex items-center justify-center w-6 h-6 aspect-square">
                 <svg
                   width="24"
@@ -335,16 +355,25 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
               </div>
               <span
                 className="text-white text-center text-xs font-bold leading-normal tracking-[0.429px]"
-                style={{
-                  fontFamily:
-                    "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
-                }}
+                style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+                onClick={() => setProfileDropdownOpen((open) => !open)}
               >
-                John Smith
+                {user?.full_name || user?.email || 'User'}
               </span>
               <div className="flex justify-center items-center w-[10px]">
                 <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" aria-hidden="true" />
               </div>
+              {/* Dropdown */}
+              {profileDropdownOpen && (
+                <div className="absolute right-0 top-8 bg-white border border-gray-200 rounded shadow-lg z-50 min-w-[120px]">
+                  <button
+                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
