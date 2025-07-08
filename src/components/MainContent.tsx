@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronUp, faChevronDown, faTable } from "@fortawesome/free-solid-svg-icons";
 import DataGrid from "@/components/DataGrid";
@@ -50,6 +50,11 @@ const MainContent: React.FC<MainContentProps> = ({
 }) => {
   const [currentGridIndex, setCurrentGridIndex] = useState(0);
   const [selectedGridName, setSelectedGridName] = useState<string | null>(null);
+  const [visibleGrids, setVisibleGrids] = useState<Set<number>>(new Set([0])); // Track which grids are loaded
+  
+  // Add refs for grid scrolling
+  const gridRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Fetch state licenses data from Supabase
   const { data: stateLicensesData, isLoading: stateLicensesLoading, error: stateLicensesError } = useQuery<any[], Error>({
@@ -213,15 +218,51 @@ const MainContent: React.FC<MainContentProps> = ({
   };
 
   const handlePrevious = () => {
-    setCurrentGridIndex((prev) =>
-      prev > 0 ? prev - 1 : gridsToShow.length - 1,
-    );
+    const newIndex = currentGridIndex > 0 ? currentGridIndex - 1 : gridsToShow.length - 1;
+    setCurrentGridIndex(newIndex);
+    
+    // Add the new grid to visible grids for lazy loading
+    setVisibleGrids(prev => new Set([...prev, newIndex]));
+    
+    // Smooth scroll within the grid container
+    setTimeout(() => {
+      const targetGrid = gridRefs.current[newIndex];
+      const scrollContainer = containerRef.current?.querySelector('[role="grid-scroll-container"]') as HTMLElement;
+      if (targetGrid && scrollContainer) {
+        const containerRect = scrollContainer.getBoundingClientRect();
+        const targetRect = targetGrid.getBoundingClientRect();
+        const scrollTop = scrollContainer.scrollTop + (targetRect.top - containerRect.top);
+        
+        scrollContainer.scrollTo({
+          top: scrollTop,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
   };
 
   const handleNext = () => {
-    setCurrentGridIndex((prev) =>
-      prev < gridsToShow.length - 1 ? prev + 1 : 0,
-    );
+    const newIndex = currentGridIndex < gridsToShow.length - 1 ? currentGridIndex + 1 : 0;
+    setCurrentGridIndex(newIndex);
+    
+    // Add the new grid to visible grids for lazy loading
+    setVisibleGrids(prev => new Set([...prev, newIndex]));
+    
+    // Smooth scroll within the grid container
+    setTimeout(() => {
+      const targetGrid = gridRefs.current[newIndex];
+      const scrollContainer = containerRef.current?.querySelector('[role="grid-scroll-container"]') as HTMLElement;
+      if (targetGrid && scrollContainer) {
+        const containerRect = scrollContainer.getBoundingClientRect();
+        const targetRect = targetGrid.getBoundingClientRect();
+        const scrollTop = scrollContainer.scrollTop + (targetRect.top - containerRect.top);
+        
+        scrollContainer.scrollTo({
+          top: scrollTop,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
   };
 
   // Handler for row click in main (All Providers) view
@@ -442,23 +483,61 @@ const MainContent: React.FC<MainContentProps> = ({
   return (
     <div className="flex-1 flex flex-col min-h-0 h-full" role="region" aria-label="Main Content" data-testid="main-content">
       {/* Main Content Area */}
-      <div className="flex flex-1 gap-4 min-h-0 pt-4 px-4">
-        {/* Current Grid */}
+      <div ref={containerRef} className="flex flex-1 gap-2 min-h-0 pt-4 pl-4 pr-2">
+          {/* Grids Container */}
         <div className="flex-1 flex flex-col min-h-0">
-          <DataGrid
-            title={currentGrid.tableName.replace(/_/g, " ")}
-            icon={getIconByName(currentGrid.icon)}
-            data={getDataForGrid(currentGrid.tableName)}
-            columns={getColumnsForGrid(currentGrid.tableName)}
-            height="100%"
-            onRowClicked={handleProviderSelect}
-            selectedRowId={selectedRowId}
-          />
+          <div 
+            role="grid-scroll-container" 
+            aria-label="Grid Scroll Container"
+            className="overflow-y-auto"
+            style={{ 
+              height: 'calc(100vh - 200px)' // Fixed height equal to one grid
+            }}
+          >
+            {gridsToShow.map((grid, index) => (
+              <div
+                key={grid.tableName}
+                ref={(el) => gridRefs.current[index] = el}
+                className="flex flex-col min-h-0 mb-4 last:mb-0"
+                style={{ 
+                  minHeight: 'calc(100vh - 200px)', // Each grid fills the container
+                  height: 'calc(100vh - 200px)'
+                }}
+              >
+                {/* Only render DataGrid if it's been visited or is the current grid */}
+                {visibleGrids.has(index) ? (
+                  <DataGrid
+                    title={grid.tableName.replace(/_/g, " ")}
+                    icon={getIconByName(grid.icon)}
+                    data={getDataForGrid(grid.tableName)}
+                    columns={getColumnsForGrid(grid.tableName)}
+                    height="100%"
+                    onRowClicked={handleProviderSelect}
+                    selectedRowId={selectedRowsByGrid[grid.tableName]}
+                  />
+                ) : (
+                  // Placeholder for unloaded grids
+                  <div 
+                    className="flex items-center justify-center bg-gray-50 border-2 border-dashed border-gray-300 rounded"
+                    style={{ 
+                      minHeight: 'calc(100vh - 200px)',
+                      height: 'calc(100vh - 200px)'
+                    }}
+                  >
+                    <div className="text-gray-500 text-center">
+                      <FontAwesomeIcon icon={faTable} className="w-8 h-8 mb-2" />
+                      <p>Click navigation to load {grid.tableName.replace(/_/g, " ")}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Scroll Navigation - Next to Grid */}
+        {/* Scroll Navigation - Always Visible */}
         {isMultipleGrids && (
-          <div className="flex flex-col items-center gap-2 pt-2 flex-shrink-0">
+          <div className="flex flex-col items-center gap-2 pt-2 flex-shrink-0" role="grid-scroll-navigation" aria-label="Grid Scroll Navigation">
             {/* Scroll Arrows */}
             <div
               className="flex flex-col gap-0.5 rounded p-1"
@@ -470,6 +549,7 @@ const MainContent: React.FC<MainContentProps> = ({
               <button
                 onClick={handlePrevious}
                 className="flex items-center justify-center w-6 h-6 text-white hover:bg-white hover:bg-opacity-10 transition-colors rounded"
+                aria-label="Previous grid"
               >
                 <FontAwesomeIcon
                   icon={faChevronUp}
@@ -479,6 +559,7 @@ const MainContent: React.FC<MainContentProps> = ({
               <button
                 onClick={handleNext}
                 className="flex items-center justify-center w-6 h-6 text-white hover:bg-white hover:bg-opacity-10 transition-colors rounded"
+                aria-label="Next grid"
               >
                 <FontAwesomeIcon
                   icon={faChevronDown}
