@@ -33,7 +33,7 @@ export const templateConfigs: TemplateConfig[] = [
     name: "Provider Information",
     description: "Template for displaying provider information details",
     tabs: [
-      { id: "details", label: "Details", icon: "user-doctor", enabled: true },
+      { id: "details", label: "Details", icon: "bars-staggered", enabled: true },
       { id: "notes", label: "Notes", icon: "file-medical", enabled: true },
       { id: "documents", label: "Documents", icon: "folder", enabled: true },
       { id: "history", label: "History", icon: "clock", enabled: true }
@@ -66,7 +66,7 @@ export const templateConfigs: TemplateConfig[] = [
     name: "State Licenses",
     description: "Template for displaying state license details",
     tabs: [
-      { id: "details", label: "Details", icon: "shield-alt", enabled: true },
+      { id: "details", label: "Details", icon: "bars-staggered", enabled: true },
       { id: "notes", label: "Notes", icon: "file-medical", enabled: true },
       { id: "documents", label: "Documents", icon: "folder", enabled: true }
     ],
@@ -85,15 +85,15 @@ export const templateConfigs: TemplateConfig[] = [
           { label: "Tags", fieldType: "multi-select", dataType: "text[]", rowKey: "tags", group: "State Licenses" },
           { label: "Last Updated", fieldType: "text", dataType: "timestamptz", rowKey: "last_updated", group: "State Licenses" }
         ]
-      }
-    ]
-  },
-  {
+          }
+        ]
+      },
+      {
     id: "birth_info",
     name: "Birth Info",
     description: "Template for displaying provider birth information",
     tabs: [
-      { id: "details", label: "Details", icon: "weight", enabled: true },
+      { id: "details", label: "Details", icon: "bars-staggered", enabled: true },
       { id: "notes", label: "Notes", icon: "file-medical", enabled: true },
       { id: "documents", label: "Documents", icon: "folder", enabled: true }
     ],
@@ -138,7 +138,7 @@ export const providerInfoTemplate = {
     return `${gridName} for ${name} ${title}`.trim();
   },
   tabs: [
-    { id: 'details', label: 'Details', icon: 'user-doctor', enabled: true, fullLabel: 'Details', iconLabel: 'Details' },
+    { id: 'details', label: 'Details', icon: 'bars-staggered', enabled: true, fullLabel: 'Details', iconLabel: 'Details' },
     { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true, fullLabel: 'Notes', iconLabel: 'Notes' },
     { id: 'documents', label: 'Documents', icon: 'folder', enabled: true, fullLabel: 'Documents', iconLabel: 'Docs' },
     { id: 'team', label: 'Team', icon: 'users', enabled: true, fullLabel: 'Team', iconLabel: 'Team' },
@@ -153,7 +153,7 @@ export const stateLicenseTemplate = {
     return `${gridName} ${row.license || ''} for ${name} ${title}`.trim();
   },
   tabs: [
-    { id: 'details', label: 'Details', icon: 'shield-halved', enabled: true, fullLabel: 'Details', iconLabel: 'Details' },
+    { id: 'details', label: 'Details', icon: 'bars-staggered', enabled: true, fullLabel: 'Details', iconLabel: 'Details' },
     { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true, fullLabel: 'Notes', iconLabel: 'Notes' },
     { id: 'documents', label: 'Documents', icon: 'folder', enabled: true, fullLabel: 'Documents', iconLabel: 'Docs' },
   ],
