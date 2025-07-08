@@ -593,18 +593,24 @@ const DetailsComponent = template?.DetailsComponent ? detailsComponentMap[templa
               </TabsContent>
             )}
             {tabs.some((t) => t.id === 'documents') && tab === 'documents' && (
-              <TabsContent value="documents" role="tabpanel" aria-label="Documents Tab" data-testid="side-panel-tabpanel-documents">
-                {documents.length > 0 && (
-                  <div className="mb-6">
-                    <DocumentsGrid
-                      documents={documents}
-                      onEdit={handleEditDocument}
-                      onDelete={handleDeleteDocument}
-                    />
-                    {documentsLoading && <div className="text-gray-500 mt-2">Loading documents...</div>}
-                  </div>
+              <TabsContent value="documents" role="tabpanel" aria-label="Documents Tab" data-testid="side-panel-tabpanel-documents" className="flex flex-col h-full">
+                {documents.length > 0 ? (
+                  <>
+                    <div className="flex-1 overflow-y-auto" role="attached-documents-grid">
+                      <DocumentsGrid
+                        documents={documents}
+                        onEdit={handleEditDocument}
+                        onDelete={handleDeleteDocument}
+                      />
+                      {documentsLoading && <div className="text-gray-500 mt-2">Loading documents...</div>}
+                    </div>
+                    <div className="mt-4 flex-shrink-0">
+                      <FileDropzone onFilesAccepted={handleFilesAccepted} />
+                    </div>
+                  </>
+                ) : (
+                  <FileDropzone onFilesAccepted={handleFilesAccepted} />
                 )}
-                <FileDropzone onFilesAccepted={handleFilesAccepted} />
                 {/* TODO: Add edit modal for editing document metadata */}
               </TabsContent>
             )}
