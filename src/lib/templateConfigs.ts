@@ -107,7 +107,7 @@ export const templateConfigs: TemplateConfig[] = [
           { label: "Citizenship/Work Auth", fieldType: "text", dataType: "text", rowKey: "citizenship_work_auth", group: "Birth Info" },
           { label: "US Work Auth", fieldType: "text", dataType: "text", rowKey: "us_work_auth", group: "Birth Info" },
           { label: "Birth City", fieldType: "text", dataType: "text", rowKey: "birth_city", group: "Birth Info" },
-          { label: "Birth State/Province", fieldType: "text", dataType: "text", rowKey: "birth_state_province", group: "Birth Info" },
+          { label: "Birth State/Province", fieldType: "single-select", dataType: "text", rowKey: "birth_state_province", group: "Birth Info" },
           { label: "Birth County", fieldType: "text", dataType: "text", rowKey: "birth_county", group: "Birth Info" },
           { label: "Birth Country", fieldType: "text", dataType: "text", rowKey: "birth_country", group: "Birth Info" },
           { label: "Gender", fieldType: "single-select", dataType: "text", options: ["Male", "Female", "Non-binary", "Other"], rowKey: "gender", group: "Birth Info" },

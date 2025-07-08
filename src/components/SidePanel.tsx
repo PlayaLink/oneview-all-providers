@@ -7,12 +7,12 @@ import { SingleSelect } from "./SingleSelect";
 import TextInputField from "./inputs/TextInputField";
 import { Provider } from "@/types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { updateProvider, updateStateLicense } from '@/lib/supabaseClient';
+import { updateProvider, updateStateLicense, updateRecord } from '@/lib/supabaseClient';
 import { useQueryClient } from '@tanstack/react-query';
 import Notes from "./Notes";
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabaseClient';
-import { getTemplateConfigByGrid } from '@/lib/templateConfigs';
+import { getTemplateConfigByGrid, gridToTemplateMap } from '@/lib/templateConfigs';
 import ProviderInfoDetails from './sidepanel-details/ProviderInfoDetails';
 import StateLicenseDetails from './sidepanel-details/StateLicenseDetails';
 import { getIconByName } from "@/lib/iconMapping";
@@ -319,9 +319,8 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
         return;
       }
 
-      // Optimistic update: Update the cache immediately
+      // Optimistic update: Update the cache immediately (optional, can be expanded for more grids)
       if (gridName === 'State_Licenses') {
-        // Optimistically update state licenses cache
         queryClient.setQueryData(['stateLicenses'], (oldData: any[]) => {
           if (!oldData) return oldData;
           previousData = oldData;
@@ -331,8 +330,6 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
               : item
           );
         });
-
-        // Also update provider-specific state licenses if applicable
         if (selectedRow.provider_id) {
           queryClient.setQueryData(['providerStateLicenses', selectedRow.provider_id], (oldData: any[]) => {
             if (!oldData) return oldData;
@@ -344,7 +341,6 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
           });
         }
       } else if (gridName === 'Provider_Info') {
-        // Optimistically update providers cache
         queryClient.setQueryData(['providers'], (oldData: any[]) => {
           if (!oldData) return oldData;
           previousData = oldData;
@@ -355,39 +351,27 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
           );
         });
       }
-
-      // Update the backend
-      let updateFunction;
-      if (gridName === 'State_Licenses') {
-        updateFunction = updateStateLicense;
-      } else {
-        updateFunction = updateProvider;
+      // --- DYNAMIC TABLE UPDATE LOGIC ---
+      const tableName = gridToTableMap[gridName];
+      if (!tableName) {
+        throw new Error(`No table mapping found for gridName: ${gridName}`);
       }
-      
-      
-      const result = await updateFunction(selectedRow.id, filteredUpdates);
-      
+      const result = await updateRecord(tableName, selectedRow.id, filteredUpdates);
       // Update parent state as well
       if (onUpdateSelectedProvider) {
         const updatedProvider = { ...selectedRow, ...filteredUpdates };
         onUpdateSelectedProvider(gridName, updatedProvider);
       }
-
       // Invalidate and refetch the appropriate query cache to ensure consistency
-      if (gridName === 'State_Licenses') {
-        // Invalidate state licenses queries
-        await queryClient.invalidateQueries({ queryKey: ['stateLicenses'] });
-        
-        // If we're in single provider view, also invalidate provider-specific state licenses
-        if (selectedRow.provider_id) {
-          await queryClient.invalidateQueries({ 
-            queryKey: ['providerStateLicenses'], 
-            exact: false 
-          });
-        }
-      } else if (gridName === 'Provider_Info') {
-        // Invalidate providers queries
-        await queryClient.invalidateQueries({ queryKey: ['providers'] });
+      const queryKeyMap: Record<string, string> = {
+        Provider_Info: 'providers',
+        State_Licenses: 'state_licenses',
+        Birth_Info: 'birth_info',
+        // Add more as needed
+      };
+      const queryKey = queryKeyMap[gridName];
+      if (queryKey) {
+        await queryClient.invalidateQueries({ queryKey: [queryKey] });
       }
       
       // Show success feedback
@@ -566,6 +550,14 @@ const DetailsComponent = template?.DetailsComponent ? detailsComponentMap[templa
 
   // Tabs from template
   const tabs = template && template.tabs ? template.tabs : [];
+
+  // Mapping from gridName to table name
+  const gridToTableMap: Record<string, string> = {
+    Provider_Info: 'providers',
+    State_Licenses: 'state_licenses',
+    Birth_Info: 'birth_info',
+    // Add more as needed
+  };
 
   return (
     <div
