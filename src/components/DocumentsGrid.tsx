@@ -35,7 +35,8 @@ const DocumentsGrid: React.FC<DocumentsGridProps> = ({ documents, onEdit, onDele
     {
       headerName: 'Name',
       field: 'name',
-      flex: 2,
+      flex: 3,
+      minWidth: 200,
       cellRenderer: (params: any) => (
         <a
           href={`https://nsqushsijqnlstgwgkzx.supabase.co/storage/v1/object/public/${params.data.bucket}/${params.data.path}`}
@@ -48,22 +49,54 @@ const DocumentsGrid: React.FC<DocumentsGridProps> = ({ documents, onEdit, onDele
       ),
       filter: 'agTextColumnFilter',
     },
-    { headerName: 'Document Type', field: 'document_type', flex: 1, filter: 'agTextColumnFilter' },
-    { headerName: 'Permission', field: 'permission', flex: 1, filter: 'agTextColumnFilter' },
-    { headerName: 'Date', field: 'date', flex: 1, filter: 'agDateColumnFilter' },
-    { headerName: 'Exp. Date', field: 'exp_date', flex: 1, filter: 'agDateColumnFilter' },
-    { headerName: 'Verif. Date', field: 'verif_date', flex: 1, filter: 'agDateColumnFilter' },
+    { 
+      headerName: 'Document Type', 
+      field: 'document_type', 
+      flex: 2, 
+      minWidth: 120,
+      filter: 'agTextColumnFilter' 
+    },
+    { 
+      headerName: 'Permission', 
+      field: 'permission', 
+      flex: 1.5, 
+      minWidth: 100,
+      filter: 'agTextColumnFilter' 
+    },
+    { 
+      headerName: 'Date', 
+      field: 'date', 
+      flex: 2, 
+      minWidth: 130,
+      filter: 'agDateColumnFilter' 
+    },
+    { 
+      headerName: 'Exp. Date', 
+      field: 'exp_date', 
+      flex: 2, 
+      minWidth: 130,
+      filter: 'agDateColumnFilter' 
+    },
+    { 
+      headerName: 'Verif. Date', 
+      field: 'verif_date', 
+      flex: 2, 
+      minWidth: 130,
+      filter: 'agDateColumnFilter' 
+    },
     {
       headerName: 'Exp. N/A',
       field: 'exp_na',
       flex: 1,
+      minWidth: 80,
       filter: 'agTextColumnFilter',
       valueFormatter: (params: any) => (params.value ? 'Yes' : 'No'),
     },
     {
-      headerName: '',
+      headerName: 'Actions',
       field: 'actions',
-      flex: 1,
+      flex: 1.5,
+      minWidth: 120,
       cellRenderer: (params: any) => (
         <div className="flex gap-2">
           <button className="text-blue-600 underline text-xs" onClick={() => onEdit(params.data)}>Edit</button>
