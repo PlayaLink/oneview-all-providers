@@ -23,7 +23,13 @@ const SettingsDropdown: React.FC<SettingsDropdownProps> = ({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button className="flex items-center gap-2 hover:bg-white hover:bg-opacity-10 rounded px-2 py-1 transition-colors">
+        <button 
+          className="flex items-center gap-2 hover:bg-white hover:bg-opacity-10 rounded px-2 py-1 transition-colors"
+          aria-label="Open settings menu"
+          aria-expanded={open}
+          aria-haspopup="true"
+          data-testid="settings-dropdown-trigger"
+        >
           <FontAwesomeIcon icon={faGear} className="w-4 h-4 text-white" />
         </button>
       </PopoverTrigger>
@@ -50,6 +56,8 @@ const SettingsDropdown: React.FC<SettingsDropdownProps> = ({
                   )
                 }
                 className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                aria-label="Grid sections navigation mode"
+                data-testid="grid-section-mode-select"
               >
                 {gridSectionOptions.map((option) => (
                   <option key={option.value} value={option.value}>

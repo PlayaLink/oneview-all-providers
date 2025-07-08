@@ -43,6 +43,8 @@ const DocumentsGrid: React.FC<DocumentsGridProps> = ({ documents, onEdit, onDele
           target="_blank"
           rel="noopener noreferrer"
           className="text-blue-600 underline"
+          aria-label={`Open ${params.value} document (${formatSize(params.data.size)})`}
+          data-testid={`document-link-${params.data.id}`}
         >
           {params.value} <span className="text-xs text-gray-500">({formatSize(params.data.size)})</span>
         </a>
@@ -98,9 +100,23 @@ const DocumentsGrid: React.FC<DocumentsGridProps> = ({ documents, onEdit, onDele
       flex: 1.5,
       minWidth: 120,
       cellRenderer: (params: any) => (
-        <div className="flex gap-2">
-          <button className="text-blue-600 underline text-xs" onClick={() => onEdit(params.data)}>Edit</button>
-          <button className="text-red-500 underline text-xs" onClick={() => onDelete(params.data)}>Delete</button>
+        <div className="flex gap-2" role="group" aria-label={`Actions for ${params.data.name}`}>
+          <button 
+            className="text-blue-600 underline text-xs" 
+            onClick={() => onEdit(params.data)}
+            aria-label={`Edit ${params.data.name}`}
+            data-testid={`edit-document-${params.data.id}`}
+          >
+            Edit
+          </button>
+          <button 
+            className="text-red-500 underline text-xs" 
+            onClick={() => onDelete(params.data)}
+            aria-label={`Delete ${params.data.name}`}
+            data-testid={`delete-document-${params.data.id}`}
+          >
+            Delete
+          </button>
         </div>
       ),
       filter: false,

@@ -195,10 +195,10 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
         {/* Value */}
         <Popover open={open} onOpenChange={handleOpenChange}>
           <PopoverTrigger asChild>
-            <div
-              role="single-select-input"
+            <button
+              type="button"
               className={cn(
-                "flex h-[38px] px-2 items-center flex-1 rounded border border-[#E6E6E6] cursor-pointer",
+                "flex h-[38px] px-2 items-center flex-1 rounded border border-[#E6E6E6] cursor-pointer w-full text-left bg-transparent",
                 disabled && "opacity-50 cursor-not-allowed",
                 open && "ring-1 ring-blue-400",
               )}
@@ -211,6 +211,11 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                   copiedTimeoutRef.current = null;
                 }
               }}
+              aria-label={`Select ${label}`}
+              aria-expanded={open}
+              aria-haspopup="listbox"
+              disabled={disabled}
+              data-testid={`single-select-${label.toLowerCase().replace(/\s+/g, '-')}`}
             >
               {/* Content + Copy button */}
               <div className="flex items-center gap-1">
@@ -227,6 +232,8 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                         "flex w-[20.5px] h-5 py-[1.667px] justify-center items-center gap-[6.667px] rounded-[3.333px] hover:bg-gray-50 transition-all disabled:opacity-50 ml-1",
                         isHovered ? "opacity-100" : "opacity-0",
                       )}
+                      aria-label={`Copy ${label} selection to clipboard`}
+                      data-testid={`single-select-copy-${label.toLowerCase().replace(/\s+/g, '-')}`}
                     >
                       <FontAwesomeIcon
                         icon={faCopy}
@@ -258,6 +265,8 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                     onClick={handleClear}
                     disabled={disabled}
                     className="flex h-4 px-[6px] justify-center items-center text-[#BABABA] hover:text-gray-600 transition-colors disabled:opacity-50"
+                    aria-label={`Clear ${label} selection`}
+                    data-testid={`single-select-clear-${label.toLowerCase().replace(/\s+/g, '-')}`}
                   >
                     <FontAwesomeIcon icon={faTimes} className="text-[11px]" />
                   </button>
@@ -269,7 +278,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                   </div>
                 </div>
               </div>
-            </div>
+            </button>
           </PopoverTrigger>
 
           <PopoverContent
@@ -279,7 +288,12 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
             sideOffset={4}
             alignOffset={0}
           >
-            <div className="w-64 max-h-48 overflow-y-auto p-2" role="single-select-dropdown">
+            <div 
+              className="w-64 max-h-48 overflow-y-auto p-2" 
+              role="listbox"
+              aria-label={`${label} options`}
+              data-testid={`single-select-dropdown-${label.toLowerCase().replace(/\s+/g, '-')}`}
+            >
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((option) => (
                   <div
@@ -291,6 +305,9 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                       option.disabled && "opacity-50 cursor-not-allowed",
                     )}
                     onClick={() => !option.disabled && handleSelect(option)}
+                    role="option"
+                    aria-selected={value?.id === option.id}
+                    data-testid={`single-select-option-${option.id}`}
                   >
                     <span className="flex-1">{option.label}</span>
                     {value?.id === option.id && (

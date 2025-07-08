@@ -550,6 +550,7 @@ const MainContent: React.FC<MainContentProps> = ({
                 onClick={handlePrevious}
                 className="flex items-center justify-center w-6 h-6 text-white hover:bg-white hover:bg-opacity-10 transition-colors rounded"
                 aria-label="Previous grid"
+                data-testid="previous-grid-button"
               >
                 <FontAwesomeIcon
                   icon={faChevronUp}
@@ -560,6 +561,7 @@ const MainContent: React.FC<MainContentProps> = ({
                 onClick={handleNext}
                 className="flex items-center justify-center w-6 h-6 text-white hover:bg-white hover:bg-opacity-10 transition-colors rounded"
                 aria-label="Next grid"
+                data-testid="next-grid-button"
               >
                 <FontAwesomeIcon
                   icon={faChevronDown}

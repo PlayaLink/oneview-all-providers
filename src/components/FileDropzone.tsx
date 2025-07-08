@@ -29,9 +29,13 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFilesAccepted }) => {
       }`}
       style={{ width: '100%', height: '200px' }}
       data-testid="file-dropzone"
+      role="button"
+      tabIndex={0}
+      aria-label="File upload area. Drop files here or click to browse."
+      aria-describedby="file-dropzone-description"
     >
       <input {...getInputProps()} />
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center" id="file-dropzone-description">
         <span className="text-2xl mb-2" role="img" aria-label="upload">📤</span>
         <span className="text-gray-700">Drop documents here or <span className="text-blue-600 underline">Click here to browse</span></span>
         <span className="text-xs text-gray-400 mt-2">PDF, DOCX, TXT, RTF, GIF, JPG, PNG</span>

@@ -41,7 +41,7 @@ export interface SelectedItemUIProps {
 }
 
 export interface MultiSelectProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'>,
     VariantProps<typeof multiSelectVariants> {
   /**
    * Label displayed next to the component
@@ -375,6 +375,10 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
                 "bg-[#FFF] px-2 py-0.5 text-xs font-semibold text-[#006CAB] hover:bg-blue-50 hover:text-blue-800 border-0 shadow-none rounded font-poppins tracking-[0.429px] disabled:opacity-50",
                 fullWidthButton ? "w-full h-auto p-2 justify-start" : "h-6",
               )}
+              aria-label={`Add ${label}`}
+              aria-expanded={open}
+              aria-haspopup="true"
+              data-testid={`multi-select-add-${label.toLowerCase().replace(/\s+/g, '-')}`}
             >
               {addButtonText}
               <Plus className="h-3 w-3" />
@@ -450,15 +454,17 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
           {/* Copy button - outside input, only show when there are selected items */}
           {value && value.length > 0 && (
             <div className="relative flex items-center">
-              <button
-                type="button"
-                onClick={handleCopy}
-                disabled={disabled}
-                className={cn(
-                  "flex w-[20.5px] h-5 py-[1.667px] justify-center items-center gap-[6.667px] rounded-[3.333px] hover:bg-gray-50 transition-all disabled:opacity-50",
-                  isHovered ? "opacity-100" : "opacity-0",
-                )}
-              >
+                          <button
+              type="button"
+              onClick={handleCopy}
+              disabled={disabled}
+              className={cn(
+                "flex w-[20.5px] h-5 py-[1.667px] justify-center items-center gap-[6.667px] rounded-[3.333px] hover:bg-gray-50 transition-all disabled:opacity-50",
+                isHovered ? "opacity-100" : "opacity-0",
+              )}
+              aria-label={`Copy ${label} selections to clipboard`}
+              data-testid={`multi-select-copy-${label.toLowerCase().replace(/\s+/g, '-')}`}
+            >
                 <FontAwesomeIcon
                   icon={faCopy}
                   className="text-[14px] text-[#3E88D5]"

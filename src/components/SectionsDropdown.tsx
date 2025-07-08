@@ -158,6 +158,7 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
                 style={{ fontWeight: 'bold', fontSize: '1rem', lineHeight: '1' }}
                 onClick={() => onSectionVisibilityChange(grid.tableName, false)}
                 aria-label={`Remove ${grid.tableName.replace(/_/g, ' ')}`}
+                data-testid={`remove-section-${grid.tableName.toLowerCase().replace(/_/g, '-')}`}
               >
                 ×
               </button>
@@ -170,6 +171,8 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
             value={search}
             onChange={e => setSearch(e.target.value)}
             style={{ minWidth: '80px' }}
+            aria-label="Search sections"
+            data-testid="sections-search-input"
           />
         </div>
         <button
@@ -198,6 +201,8 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
                       if (el) el.indeterminate = isGroupIndeterminate(group);
                     }}
                     onChange={() => handleGroupToggle(group)}
+                    aria-label={`Toggle all ${group} sections`}
+                    data-testid={`group-checkbox-${group.toLowerCase().replace(/\s+/g, '-')}`}
                   />
                   {group}
                 </label>
@@ -214,6 +219,8 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
                         checked={visibleSections.has(grid.tableName)}
                         disabled={disabledGrids.has(grid.tableName)}
                         onChange={() => handleGridToggle(grid)}
+                        aria-label={`Toggle ${grid.tableName.replace(/_/g, ' ')} section`}
+                        data-testid={`grid-checkbox-${grid.tableName.toLowerCase().replace(/_/g, '-')}`}
                       />
                       {grid.tableName.replace(/_/g, " ")}
                     </label>

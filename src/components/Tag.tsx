@@ -121,8 +121,9 @@ export const Tag = React.forwardRef<HTMLDivElement, TagProps>(
             type="button"
             onClick={handleRemove}
             disabled={loading}
+            aria-label={`Remove ${label} tag`}
+            data-testid={`remove-tag-${label.toLowerCase().replace(/\s+/g, '-')}`}
             className="ml-0 flex h-[18px] w-[18px] items-center justify-center border-l border-[#AFD6FF] text-[#212529] hover:text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            aria-label={`Remove ${label}`}
           >
             {removeIcon || <X className="h-2 w-2" />}
           </button>

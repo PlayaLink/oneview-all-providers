@@ -357,13 +357,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
                   />
                 </svg>
               </div>
-              <span
-                className="text-white text-center text-xs font-bold leading-normal tracking-[0.429px]"
+              <button
+                className="text-white text-center text-xs font-bold leading-normal tracking-[0.429px] bg-transparent border-none cursor-pointer"
                 style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
                 onClick={() => setProfileDropdownOpen((open) => !open)}
+                aria-label="Toggle user profile menu"
+                aria-expanded={profileDropdownOpen}
+                aria-haspopup="true"
+                data-testid="user-profile-toggle"
               >
                 {user?.full_name || user?.email || 'User'}
-              </span>
+              </button>
               <div className="flex justify-center items-center w-[10px]">
                 <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" aria-hidden="true" />
               </div>
@@ -373,6 +377,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
                   <button
                     className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     onClick={handleLogout}
+                    aria-label="Logout from application"
+                    data-testid="logout-button"
                   >
                     Logout
                   </button>
@@ -423,6 +429,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
           onButtonClick={() => {
             // Add Provider functionality
           }}
+          buttonClassName="bg-[#79AC48] hover:bg-[#6B9A3F] text-white"
           visibleSections={npi ? visibleSections : undefined}
           onSectionVisibilityChange={npi ? handleSectionVisibilityChange : undefined}
         />

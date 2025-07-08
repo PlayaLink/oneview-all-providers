@@ -163,6 +163,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                 onClick={handleClear}
                 type="button"
                 aria-label="Clear search"
+                data-testid="clear-search-button"
               >
                 <FontAwesomeIcon icon={faTimes} className="w-4 h-4" aria-hidden="true" />
               </button>

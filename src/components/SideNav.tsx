@@ -57,18 +57,21 @@ const SideNav: React.FC<SideNavProps> = ({
 
   return (
     <div className="h-full overflow-hidden" role="navigation" aria-label="Sidebar Navigation" data-testid="side-nav">
-      <div className="h-full p-2 flex flex-col gap-2 overflow-y-auto">
+      <div className="h-full px-2 pt-4 flex flex-col gap-2 overflow-y-auto">
         {!collapsed && (
           <>
             {/* All Sections Header */}
-            <div
+            <button
               className={cn(
-                "flex items-center justify-between p-2 rounded cursor-pointer",
+                "flex items-center justify-between p-2 rounded cursor-pointer w-full text-left bg-transparent border-none",
                 isItemActive("all-sections")
                   ? "bg-[#008BC9] text-white"
                   : "hover:bg-gray-50",
               )}
               onClick={() => handleItemClick("all-sections")}
+              aria-label="View all sections"
+              aria-pressed={isItemActive("all-sections")}
+              data-testid="all-sections-button"
             >
               <span
                 className={cn(
@@ -89,7 +92,7 @@ const SideNav: React.FC<SideNavProps> = ({
                     : "text-[#545454]",
                 )}
               />
-            </div>
+            </button>
 
             {/* Dynamic Sections based on gridDefinitions */}
             {groups.map((group) => {
@@ -104,42 +107,54 @@ const SideNav: React.FC<SideNavProps> = ({
                         ? "bg-[#008BC9] text-white"
                         : "hover:bg-gray-50",
                     )}
+                    role="group"
+                    aria-label={`${group} section`}
                   >
-                    <span
+                    <button
                       className={cn(
-                        "text-xs uppercase font-medium tracking-wide flex-1",
+                        "text-xs uppercase font-medium tracking-wide flex-1 text-left bg-transparent border-none cursor-pointer",
                         isSectionActive(group)
                           ? "text-white"
                           : "text-[#545454]",
                       )}
                       onClick={() => handleSectionClick(group)}
+                      aria-label={`Select ${group} section`}
+                      aria-pressed={isSectionActive(group)}
+                      data-testid={`section-button-${group.toLowerCase().replace(/\s+/g, '-')}`}
                     >
                       {group}
-                    </span>
-                    <FontAwesomeIcon
-                      icon={faChevronDown}
+                    </button>
+                    <button
                       className={cn(
-                        "w-4 h-4 transition-transform duration-200",
+                        "w-4 h-4 transition-transform duration-200 bg-transparent border-none cursor-pointer flex items-center justify-center",
                         !expandedSections[group] && "rotate-180",
                         isSectionActive(group)
                           ? "text-white"
                           : "text-[#545454]",
                       )}
                       onClick={() => toggleSection(group)}
-                    />
+                      aria-label={`${expandedSections[group] ? 'Collapse' : 'Expand'} ${group} section`}
+                      aria-expanded={expandedSections[group]}
+                      data-testid={`section-toggle-${group.toLowerCase().replace(/\s+/g, '-')}`}
+                    >
+                      <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" />
+                    </button>
                   </div>
                   {expandedSections[group] && (
                     <div className="pl-3 flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
                       {gridsInGroup.map((grid) => (
-                        <div
+                        <button
                           key={grid.tableName}
                           className={cn(
-                            "flex items-center gap-2 p-2 rounded cursor-pointer",
+                            "flex items-center gap-2 p-2 rounded cursor-pointer w-full text-left bg-transparent border-none",
                             isItemActive(grid.tableName)
                               ? "bg-[#008BC9] text-white"
                               : "text-[#545454] hover:bg-gray-50",
                           )}
                           onClick={() => handleItemClick(grid.tableName)}
+                          aria-label={`View ${grid.tableName.replace(/_/g, " ")} grid`}
+                          aria-pressed={isItemActive(grid.tableName)}
+                          data-testid={`grid-button-${grid.tableName.toLowerCase().replace(/_/g, '-')}`}
                         >
                           <FontAwesomeIcon 
                             icon={getIconByName(grid.icon)} 
@@ -148,7 +163,7 @@ const SideNav: React.FC<SideNavProps> = ({
                           <span className="text-xs font-semibold">
                             {grid.tableName.replace(/_/g, " ")}
                           </span>
-                        </div>
+                        </button>
                       ))}
                     </div>
                   )}
