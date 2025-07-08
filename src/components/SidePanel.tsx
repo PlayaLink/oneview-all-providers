@@ -72,11 +72,6 @@ const detailsComponentMap: Record<string, React.ComponentType<any>> = {
 };
 
 const SidePanel: React.FC<SidePanelProps> = (props) => {
-  // Debug: log all props whenever they change
-  React.useEffect(() => {
-    console.log('SidePanel props:', props);
-  }, [props]);
-
   // Destructure props as before
   const { isOpen, selectedRow, inputConfig, onClose, title, user, gridName, onUpdateSelectedProvider } = props;
   const [formValues, setFormValues] = React.useState<Record<string, any>>({});
@@ -100,7 +95,6 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
 
   // Select template based on gridName
   const template = gridName ? getTemplateConfigByGrid(gridName) : null;
-  console.log('SidePanel template:', template);
 
   // Fetch provider if selectedRow has provider_id and it's not a provider row itself
   const providerId = selectedRow && selectedRow.provider_id ? selectedRow.provider_id : (selectedRow && selectedRow.id && gridName === 'Provider_Info' ? selectedRow.id : null);
@@ -122,23 +116,18 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
   const lastInitializedId = React.useRef<any>(null);
   React.useEffect(() => {
     if (selectedRow && selectedRow.id !== lastInitializedId.current) {
-      console.log('Initializing form values for selectedRow:', selectedRow);
-      console.log('Input config:', inputConfig);
       
       const initialValues: Record<string, any> = {};
       inputConfig.forEach(field => {
         const key = field.rowKey || field.label;
         const value = selectedRow[key] ?? (field.type === 'multi-select' ? [] : '');
         initialValues[key] = value;
-        console.log(`Setting ${key} = ${value}`);
       });
       
-      console.log('Final initial values:', initialValues);
       setFormValues(initialValues);
       setHasUnsavedChanges(false); // Reset unsaved changes when new row is selected
       lastInitializedId.current = selectedRow.id;
     } else if (!selectedRow) {
-      console.log('Clearing form values - no selectedRow');
       setFormValues({});
       lastInitializedId.current = null;
     }
@@ -146,17 +135,17 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
 
   // Debug: log the selectedRow prop whenever it changes
   React.useEffect(() => {
-    console.log('SidePanel selectedRow:', selectedRow);
+    
   }, [selectedRow]);
 
   // Diagnostic: log when selectedRow reference changes
   React.useEffect(() => {
-    console.log('selectedRow reference changed:', selectedRow);
+    
   }, [selectedRow]);
 
   // Diagnostic: log when inputConfig reference changes
   React.useEffect(() => {
-    console.log('inputConfig reference changed:', inputConfig);
+    
   }, [inputConfig]);
 
   // Handle mouse down on resize handle
@@ -249,7 +238,6 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
   const handleDiscardChanges = () => {
     if (!selectedRow) return;
     
-    console.log('Discarding changes, resetting to original values');
     
     // Reset form values to original selectedRow values
     const originalValues: Record<string, any> = {};
@@ -265,12 +253,10 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
     setSaveSuccess(false);
     setHasUnsavedChanges(false);
     
-    console.log('Form reset to original values:', originalValues);
   };
 
   // Handle Save (update parent and backend)
   const handleSave = async () => {
-    console.log('handleSave called with:', { selectedRow, gridName, formValues });
     
     if (!selectedRow || !gridName) {
       console.error('Missing required data for save:', { selectedRow: !!selectedRow, gridName });
@@ -286,8 +272,6 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
     try {
       // Only include valid DB columns in the update
       const validColumns = inputConfig.map(f => f.rowKey).filter(Boolean);
-      console.log('Valid columns for update:', validColumns);
-      console.log('All inputConfig fields:', inputConfig.map(f => ({ label: f.label, rowKey: f.rowKey })));
       
       // Filter and clean the updates
       const filteredUpdates = Object.fromEntries(
@@ -307,29 +291,24 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
             );
             
             if (isDateField) {
-              console.log(`Processing date field: ${key}, value: "${value}", type: ${typeof value}`);
             }
             
             if (isDateField && (value === '' || value === null || value === undefined)) {
-              console.log(`Converting empty date field ${key} to null`);
               return [key, null];
             }
             
             // Also handle invalid date strings
             if (isDateField && typeof value === 'string' && value.trim() === '') {
-              console.log(`Converting empty string date field ${key} to null`);
               return [key, null];
             }
             
             return [key, value];
           })
       );
-      console.log('Filtered updates to save:', filteredUpdates);
       
       // Log fields that are being excluded
       const excludedFields = Object.entries(formValues).filter(([key]) => !validColumns.includes(key));
       if (excludedFields.length > 0) {
-        console.log('Fields excluded from save (no rowKey):', excludedFields);
       }
       
       // Log the exact data being sent to the database
@@ -369,7 +348,6 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
             );
           });
         }
-        console.log('Optimistic update applied to state licenses cache');
       } else if (gridName === 'Provider_Info') {
         // Optimistically update providers cache
         queryClient.setQueryData(['providers'], (oldData: any[]) => {
@@ -381,7 +359,6 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
               : item
           );
         });
-        console.log('Optimistic update applied to providers cache');
       }
 
       // Update the backend
@@ -392,16 +369,13 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
         updateFunction = updateProvider;
       }
       
-      console.log('Using update function for grid:', gridName);
       
       const result = await updateFunction(selectedRow.id, filteredUpdates);
-      console.log('Save successful:', result);
       
       // Update parent state as well
       if (onUpdateSelectedProvider) {
         const updatedProvider = { ...selectedRow, ...filteredUpdates };
         onUpdateSelectedProvider(gridName, updatedProvider);
-        console.log('Parent state updated');
       }
 
       // Invalidate and refetch the appropriate query cache to ensure consistency
@@ -416,15 +390,12 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
             exact: false 
           });
         }
-        console.log('State licenses cache invalidated');
       } else if (gridName === 'Provider_Info') {
         // Invalidate providers queries
         await queryClient.invalidateQueries({ queryKey: ['providers'] });
-        console.log('Providers cache invalidated');
       }
       
       // Show success feedback
-      console.log('Save completed successfully');
       setSaveSuccess(true);
       setHasUnsavedChanges(false); // Clear unsaved changes state
       setTimeout(() => {
@@ -438,10 +409,8 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       // Rollback optimistic updates on error
       if (gridName === 'State_Licenses' && previousData) {
         queryClient.setQueryData(['stateLicenses'], previousData);
-        console.log('Rolled back state licenses cache on error');
       } else if (gridName === 'Provider_Info' && previousData) {
         queryClient.setQueryData(['providers'], previousData);
-        console.log('Rolled back providers cache on error');
       }
       
       // Show error feedback
