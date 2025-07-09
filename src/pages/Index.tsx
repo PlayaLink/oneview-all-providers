@@ -1,22 +1,12 @@
 import React from "react";
 import SearchCriteria from "@/components/SearchCriteria";
 
-// Import AG Grid styles
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
-
-interface HealthcareProvider {
-  id: string;
+interface SearchCriteriaData {
+  state: string;
+  licenseType: string;
+  license: string;
   firstName: string;
   lastName: string;
-  title: string;
-  primarySpecialty: string;
-  npiNumber: string;
-  workEmail: string;
-  personalEmail: string;
-  mobilePhone: string;
-  tags: string[];
-  lastUpdated: string;
 }
 
 const sampleProviders: HealthcareProvider[] = [
