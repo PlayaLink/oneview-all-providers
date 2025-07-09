@@ -1,5 +1,5 @@
 import React from "react";
-import SearchCriteria from "@/components/SearchCriteria";
+import SearchCriteria from "@/components/sidepanel-details/SearchCriteria";
 
 interface SearchCriteriaData {
   state: string;
