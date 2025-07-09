@@ -122,59 +122,130 @@ export const stateLicenseFieldGroups = [
   }
 ];
 
+// 1. Define the custom grouping for search criteria fields
+const searchCriteriaFields = [
+  stateLicenseFieldGroups[0].fields.find(f => f.rowKey === 'state'),
+  stateLicenseFieldGroups[0].fields.find(f => f.rowKey === 'license_type'),
+  stateLicenseFieldGroups[0].fields.find(f => f.rowKey === 'license'),
+].filter(Boolean);
+
+// 2. Gather the remaining fields for General Info
+const generalInfoFields = [
+  ...stateLicenseFieldGroups[0].fields.filter(f => !['state', 'license_type', 'license'].includes(f.rowKey)),
+  ...stateLicenseFieldGroups[1].fields,
+  ...stateLicenseFieldGroups[2].fields,
+];
+
 const StateLicenseDetails = ({ formValues, handleChange }) => (
   <>
-    {stateLicenseFieldGroups.map((group) => (
-      <CollapsibleSection key={group.id} title={group.title}>
-        <div className="flex flex-col gap-4 self-stretch">
-          {group.fields.map((field) => {
-            const inputType = getInputType(field);
-            const key = field.rowKey || field.label;
-            if (inputType === 'multi-select') {
-              return (
-                <MultiSelectInput
-                  key={key}
-                  label={field.label}
-                  labelPosition="left"
-                  value={formValues[key] || []}
-                  options={field.options?.map((opt) => ({ id: opt, label: opt })) || []}
-                  onChange={(val) => handleChange(key, Array.isArray(val) ? val.map((v) => v.id) : [])}
-                  placeholder={field.placeholder}
-                  className="flex-1 min-w-0"
-                />
-              );
-            } else if (inputType === 'single-select') {
-              const options = field.options?.map((opt) => ({ id: opt, label: opt })) || [];
-              const selectedValue = options.find((opt) => opt.id === formValues[key]) || null;
-              return (
-                <SingleSelect
-                  key={key}
-                  label={field.label}
-                  labelPosition="left"
-                  value={selectedValue}
-                  options={options}
-                  onChange={(val) => handleChange(key, val?.id ?? val)}
-                  placeholder={field.placeholder}
-                  className="flex-1 min-w-0"
-                />
-              );
-            } else {
-              return (
-                <TextInputField
-                  key={key}
-                  label={field.label}
-                  labelPosition="left"
-                  value={formValues[key] || ''}
-                  onChange={(val) => handleChange(key, val)}
-                  placeholder={field.placeholder}
-                  className="flex-1 min-w-0"
-                />
-              );
-            }
-          })}
-        </div>
-      </CollapsibleSection>
-    ))}
+    {/* Custom Search Criteria Grouping */}
+    <div className="p-6 rounded-2xl border border-gray-200 bg-gray-50">
+      {/* Header */}
+      <div className="mb-4">
+        <h2 className="text-xs font-semibold text-blue-600 uppercase tracking-wide">
+          Search Criteria
+        </h2>
+      </div>
+
+      {/* Form Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+      {searchCriteriaFields.map((field) => {
+          const inputType = getInputType(field);
+          const key = field.rowKey || field.label;
+          if (inputType === 'multi-select') {
+            return (
+              <MultiSelectInput
+                key={key}
+                label={field.label}
+                labelPosition="left"
+                value={formValues[key] || []}
+                options={field.options?.map((opt) => ({ id: opt, label: opt })) || []}
+                onChange={(val) => handleChange(key, Array.isArray(val) ? val.map((v) => v.id) : [])}
+                placeholder={field.placeholder}
+                className="flex-1 min-w-0"
+              />
+            );
+          } else if (inputType === 'single-select') {
+            const options = field.options?.map((opt) => ({ id: opt, label: opt })) || [];
+            const selectedValue = options.find((opt) => opt.id === formValues[key]) || null;
+            return (
+              <SingleSelect
+                key={key}
+                label={field.label}
+                labelPosition="left"
+                value={selectedValue}
+                options={options}
+                onChange={(val) => handleChange(key, val?.id ?? val)}
+                placeholder={field.placeholder}
+                className="flex-1 min-w-0"
+              />
+            );
+          } else {
+            return (
+              <TextInputField
+                key={key}
+                label={field.label}
+                labelPosition="left"
+                value={formValues[key] || ''}
+                onChange={(val) => handleChange(key, val)}
+                placeholder={field.placeholder}
+                className="flex-1 min-w-0"
+              />
+            );
+          }
+        })}
+      </div>
+      </div>
+    {/* General Info Section */}
+    <CollapsibleSection title="General Info">
+      <div className="flex flex-col gap-4 self-stretch">
+        {generalInfoFields.map((field) => {
+          const inputType = getInputType(field);
+          const key = field.rowKey || field.label;
+          if (inputType === 'multi-select') {
+            return (
+              <MultiSelectInput
+                key={key}
+                label={field.label}
+                labelPosition="left"
+                value={formValues[key] || []}
+                options={field.options?.map((opt) => ({ id: opt, label: opt })) || []}
+                onChange={(val) => handleChange(key, Array.isArray(val) ? val.map((v) => v.id) : [])}
+                placeholder={field.placeholder}
+                className="flex-1 min-w-0"
+              />
+            );
+          } else if (inputType === 'single-select') {
+            const options = field.options?.map((opt) => ({ id: opt, label: opt })) || [];
+            const selectedValue = options.find((opt) => opt.id === formValues[key]) || null;
+            return (
+              <SingleSelect
+                key={key}
+                label={field.label}
+                labelPosition="left"
+                value={selectedValue}
+                options={options}
+                onChange={(val) => handleChange(key, val?.id ?? val)}
+                placeholder={field.placeholder}
+                className="flex-1 min-w-0"
+              />
+            );
+          } else {
+            return (
+              <TextInputField
+                key={key}
+                label={field.label}
+                labelPosition="left"
+                value={formValues[key] || ''}
+                onChange={(val) => handleChange(key, val)}
+                placeholder={field.placeholder}
+                className="flex-1 min-w-0"
+              />
+            );
+          }
+        })}
+      </div>
+    </CollapsibleSection>
   </>
 );
 
