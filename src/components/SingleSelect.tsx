@@ -168,7 +168,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
       <div
         className={cn(
           labelPosition === 'left'
-            ? 'flex items-start gap-1 self-stretch'
+            ? 'flex items-center gap-2 flex-1 min-w-0'
             : 'flex flex-col gap-1 self-stretch',
           className
         )}
@@ -178,11 +178,9 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
         {/* Label */}
         {labelPosition === 'left' ? (
           <div
-            className="flex h-[38px] px-2 items-center gap-1 min-w-[120px] max-w-[120px] break-words whitespace-normal" role="single-select-label"
+            className="text-xs font-semibold mb-1 min-w-[120px] max-w-[120px] break-words whitespace-normal"
           >
-            <div className="text-[#545454] text-xs font-semibold leading-normal tracking-[0.429px] font-['Poppins',sans-serif] break-words whitespace-normal">
-              {label}
-            </div>
+            {label}
           </div>
         ) : (
           <div className="mb-1" role="single-select-label">
