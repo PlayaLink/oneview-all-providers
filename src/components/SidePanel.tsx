@@ -531,7 +531,14 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
   };
 
   // Select the DetailsComponent from the static map
-const DetailsComponent = template?.DetailsComponent ? detailsComponentMap[template.DetailsComponent] : undefined;
+let DetailsComponent;
+if (template?.DetailsComponent) {
+  if (typeof template.DetailsComponent === 'string') {
+    DetailsComponent = detailsComponentMap[template.DetailsComponent];
+  } else {
+    DetailsComponent = template.DetailsComponent;
+  }
+}
 
   // Header formatting
   let headerText = '';

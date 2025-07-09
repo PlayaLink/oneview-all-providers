@@ -145,4 +145,24 @@ const ProviderInfoDetails = ({ formValues, handleChange }) => (
   </>
 );
 
+// Unified template object for Provider Info side panel
+export const providerInfoTemplate = {
+  id: 'provider_info',
+  name: 'Provider Information',
+  description: 'Template for displaying provider information details',
+  header: ({ gridName, row, provider }) => {
+    const name = provider ? `${provider.first_name || ''} ${provider.last_name || ''}`.trim() : (row.provider_name || '');
+    const title = provider ? provider.title || '' : (row.title || '');
+    return `${gridName} for ${name} ${title}`.trim();
+  },
+  tabs: [
+    { id: 'details', label: 'Details', icon: 'bars-staggered', enabled: true },
+    { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true },
+    { id: 'documents', label: 'Documents', icon: 'folder', enabled: true },
+    { id: 'team', label: 'Team', icon: 'users', enabled: true },
+  ],
+  fieldGroups: providerInfoFieldGroups,
+  DetailsComponent: ProviderInfoDetails,
+};
+
 export default ProviderInfoDetails; 

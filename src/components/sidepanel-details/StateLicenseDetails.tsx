@@ -178,4 +178,23 @@ const StateLicenseDetails = ({ formValues, handleChange }) => (
   </>
 );
 
+// Unified template object for State Licenses side panel
+export const stateLicenseTemplate = {
+  id: 'state_licenses',
+  name: 'State Licenses',
+  description: 'Template for displaying state license details',
+  header: ({ gridName, row, provider }) => {
+    const name = provider ? `${provider.first_name || ''} ${provider.last_name || ''}`.trim() : (row.provider_name || '');
+    const title = provider ? provider.title || '' : (row.title || '');
+    return `${gridName} ${row.license || ''} for ${name} ${title}`.trim();
+  },
+  tabs: [
+    { id: 'details', label: 'Details', icon: 'bars-staggered', enabled: true },
+    { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true },
+    { id: 'documents', label: 'Documents', icon: 'folder', enabled: true },
+  ],
+  fieldGroups: stateLicenseFieldGroups,
+  DetailsComponent: StateLicenseDetails,
+};
+
 export default StateLicenseDetails; 
