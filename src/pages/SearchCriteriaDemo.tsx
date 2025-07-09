@@ -1,5 +1,5 @@
 import React from "react";
-import SearchCriteria from "@/components/SearchCriteria";
+import SearchCriteria from "@/components/sidepanel-details/SearchCriteria";
 
 const SearchCriteriaDemo: React.FC = () => {
   const handleSearch = (data: any) => {
