@@ -1,4 +1,5 @@
 import { InputField } from "@/components/SidePanel";
+import { z } from 'zod';
 
 export interface TemplateConfig {
   id: string;
@@ -254,6 +255,43 @@ function validateFieldTypes(templateConfigs: any[], componentMap: Record<string,
       }
     }
   }
+}
+
+// Zod schema for template config validation
+const FieldSchema = z.object({
+  label: z.string(),
+  fieldType: z.enum(["text", "single-select", "multi-select"]),
+  dataType: z.string(),
+  rowKey: z.string(),
+  group: z.string(),
+  options: z.array(z.any()).optional(),
+});
+const FieldGroupSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  fields: z.array(FieldSchema),
+});
+const TabSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  icon: z.string(),
+  enabled: z.boolean(),
+  fullLabel: z.string().optional(),
+  iconLabel: z.string().optional(),
+});
+const TemplateConfigSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  tabs: z.array(TabSchema),
+  fieldGroups: z.array(FieldGroupSchema),
+  header: z.any().optional(),
+  DetailsComponent: z.string().optional(),
+});
+
+// Validate all template configs at module load
+for (const config of templateConfigs) {
+  TemplateConfigSchema.parse(config);
 }
 
 validateFieldTypes(templateConfigs, componentMap); 

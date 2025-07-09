@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { z } from 'zod';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://nsqushsijqnlstgwgkzx.supabase.co';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zcXVzaHNpanFubHN0Z3dna3p4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NTA2OTksImV4cCI6MjA2NzEyNjY5OX0.v0zmEJ83t1tI9Obt-ofjk6SJ3VxynkOoKJIwpDGLc5g';
@@ -44,6 +45,68 @@ export async function updateRecord(tableName: string, id: string, updates: Recor
   return data;
 }
 
+// Zod schemas for runtime data validation
+export const ProviderSchema = z.object({
+  id: z.string(),
+  first_name: z.string().optional(),
+  last_name: z.string().optional(),
+  npi_number: z.string().optional(),
+  work_email: z.string().optional(),
+  personal_email: z.string().optional(),
+  mobile_phone_number: z.string().optional(),
+  title: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  primary_specialty: z.string().optional(),
+  // ...add other fields as needed
+});
+export const StateLicenseSchema = z.object({
+  id: z.string(),
+  provider_id: z.string().optional(),
+  license_type: z.string().optional(),
+  license_additional_info: z.string().optional(),
+  state: z.string().optional(),
+  status: z.string().optional(),
+  issue_date: z.string().optional(),
+  expiration_date: z.string().optional(),
+  expires_within: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  last_updated: z.string().optional(),
+  provider: z.any().optional(),
+  // ...add other fields as needed
+});
+export const BirthInfoSchema = z.object({
+  id: z.string(),
+  provider_id: z.string().optional(),
+  date_of_birth: z.string().optional(),
+  country_of_citizenship: z.string().optional(),
+  citizenship_work_auth: z.string().optional(),
+  us_work_auth: z.string().optional(),
+  birth_city: z.string().optional(),
+  birth_state_province: z.string().optional(),
+  birth_county: z.string().optional(),
+  birth_country: z.string().optional(),
+  gender: z.string().optional(),
+  identifies_transgender: z.string().optional(),
+  hair_color: z.string().optional(),
+  eye_color: z.string().optional(),
+  height_ft: z.string().optional(),
+  height_in: z.string().optional(),
+  weight_lbs: z.string().optional(),
+  ethnicity: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  provider: z.any().optional(),
+  // ...add other fields as needed
+});
+
+// Validate fetched data for providers
+export async function fetchProviders() {
+  const { data, error } = await supabase.from('providers').select('*');
+  if (error) throw error;
+  if (!Array.isArray(data)) throw new Error('Providers data is not an array');
+  data.forEach(row => ProviderSchema.parse(row));
+  return data;
+};
+// Validate fetched data for state licenses
 export async function fetchStateLicenses() {
   const { data, error } = await supabase
     .from('state_licenses')
@@ -58,8 +121,29 @@ export async function fetchStateLicenses() {
       )
     `);
   if (error) throw error;
+  if (!Array.isArray(data)) throw new Error('State licenses data is not an array');
+  data.forEach(row => StateLicenseSchema.parse(row));
   return data;
-}
+};
+// Validate fetched data for birth info
+export async function fetchBirthInfo() {
+  const { data, error } = await supabase
+    .from('birth_info')
+    .select(`
+      *,
+      provider:providers(
+        id,
+        first_name,
+        last_name,
+        title,
+        primary_specialty
+      )
+    `);
+  if (error) throw error;
+  if (!Array.isArray(data)) throw new Error('Birth info data is not an array');
+  data.forEach(row => BirthInfoSchema.parse(row));
+  return data;
+};
 
 export async function fetchStateLicensesByProvider(providerId: string) {
   const { data, error } = await supabase
