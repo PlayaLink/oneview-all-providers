@@ -137,7 +137,7 @@ const generalInfoFields = [
 ];
 
 const StateLicenseDetails = ({ formValues, handleChange }) => (
-  <>
+  <div className="flex flex-col gap-4">
     {/* Custom Search Criteria Grouping */}
     <div className="p-6 rounded-2xl border border-gray-200 bg-gray-50">
       {/* Header */}
@@ -148,7 +148,7 @@ const StateLicenseDetails = ({ formValues, handleChange }) => (
       </div>
 
       {/* Form Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+      <div className="flex flex-col gap-4">
       {searchCriteriaFields.map((field) => {
           const inputType = getInputType(field);
           const key = field.rowKey || field.label;
@@ -246,7 +246,7 @@ const StateLicenseDetails = ({ formValues, handleChange }) => (
         })}
       </div>
     </CollapsibleSection>
-  </>
+  </div>
 );
 
 // Unified template object for State Licenses side panel
@@ -262,7 +262,7 @@ export const stateLicenseTemplate = {
   tabs: [
     { id: 'details', label: 'Details', icon: 'bars-staggered', enabled: true },
     { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true },
-    { id: 'documents', label: 'Documents', icon: 'folder', enabled: true },
+    { id: 'documents', label: 'Docs', icon: 'folder', enabled: true },
   ],
   fieldGroups: stateLicenseFieldGroups,
   DetailsComponent: StateLicenseDetails,
