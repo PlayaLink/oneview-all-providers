@@ -1,7 +1,7 @@
 import React from 'react';
 import CollapsibleSection from '../CollapsibleSection';
 import { MultiSelectInput } from '../inputs/MultiSelectInput';
-import { SingleSelect } from '../SingleSelect';
+import { SingleSelect } from '../inputs/SingleSelect';
 import TextInputField from '../inputs/TextInputField';
 import { getInputType, renderFieldComponent } from './getInputType';
 

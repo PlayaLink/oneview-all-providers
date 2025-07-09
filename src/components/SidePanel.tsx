@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faUserDoctor, faFileMedical, faFolder } from "@fortawesome/free-solid-svg-icons";
 import CollapsibleSection from "./CollapsibleSection";
 import { MultiSelectInput } from "./inputs/MultiSelectInput";
-import { SingleSelect } from "./SingleSelect";
+import { SingleSelect } from "./inputs/SingleSelect";
 import TextInputField from "./inputs/TextInputField";
 import { Provider } from "@/types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";

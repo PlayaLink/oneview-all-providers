@@ -1,6 +1,6 @@
 import React from 'react';
 import { MultiSelectInput } from '../inputs/MultiSelectInput';
-import { SingleSelect } from '../SingleSelect';
+import { SingleSelect } from '../inputs/SingleSelect';
 import TextInputField from '../inputs/TextInputField';
 
 export function getInputType(field: { options?: any[]; type?: string }) {

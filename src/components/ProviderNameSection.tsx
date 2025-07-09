@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import CollapsibleSection from "./CollapsibleSection";
 import TextInput from "./TextInput";
-import { SingleSelect, SingleSelectOption } from "./SingleSelect";
+import { SingleSelect, SingleSelectOption } from "./inputs/SingleSelect";
 import { Provider } from "@/types";
 
 interface ProviderNameSectionProps {
