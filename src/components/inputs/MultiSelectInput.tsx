@@ -93,6 +93,16 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
     value = Array.isArray(value) ? value : [];
     options = options ?? [];
 
+    // Filter out any invalid items from value array
+    const validValue = value.filter(item => item && typeof item === 'object' && item.id !== undefined && item.label !== undefined);
+    
+    // If the filtered array is different from the original, update the parent
+    React.useEffect(() => {
+      if (validValue.length !== value.length) {
+        onChange(validValue);
+      }
+    }, [value, validValue, onChange]);
+
     // Generate add/search text if not provided
     const { nounSingular, nounPlural } = getNounFromLabel(label);
     const computedAddButtonText = addButtonText || `Add ${nounSingular}`;
@@ -108,18 +118,18 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
         if (disabled) return;
         let newItems: MultiSelectItem[];
         if (isSelected) {
-          newItems = value.filter((existing) => existing.id !== item.id);
+          newItems = validValue.filter((existing) => existing.id !== item.id);
         } else {
-          const itemExists = value.some((existing) => existing.id === item.id);
+          const itemExists = validValue.some((existing) => existing.id === item.id);
           if (!itemExists) {
-            newItems = [...value, item];
+            newItems = [...validValue, item];
           } else {
-            newItems = value;
+            newItems = validValue;
           }
         }
         onChange(newItems);
       },
-      [value, onChange, disabled],
+      [validValue, onChange, disabled],
     );
 
     const handleCreateNew = React.useCallback(
@@ -129,20 +139,20 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
           id: `new-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           label: label.trim(),
         };
-        const newItems = [...value, newItem];
+        const newItems = [...validValue, newItem];
         onChange(newItems);
         setOpen(false);
       },
-      [value, onChange, disabled],
+      [validValue, onChange, disabled],
     );
 
     const handleRemove = React.useCallback(
       (itemToRemove: MultiSelectItem) => {
         if (disabled) return;
-        const newItems = value.filter((item) => item.id !== itemToRemove.id);
+        const newItems = validValue.filter((item) => item.id !== itemToRemove.id);
         onChange(newItems);
       },
-      [value, onChange, disabled],
+      [validValue, onChange, disabled],
     );
 
     React.useEffect(() => {
@@ -184,7 +194,7 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
                 onClick={() => { if (!disabled) setOpen((prev) => !prev); }}
               >
                 {/* Only show selected items and their remove buttons if there are selected values */}
-                {value.length > 0 && value.map((item) => (
+                {validValue.length > 0 && validValue.map((item) => (
                   <SelectedItemComponent
                     key={item.id}
                     item={item}
@@ -192,7 +202,7 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
                     removable={allowRemove}
                   />
                 ))}
-                {value.length === 0 && (
+                {validValue.length === 0 && (
                   <span className="text-gray-400 text-xs mr-1">{computedAddButtonText}</span>
                 )}
                 <Button
@@ -216,7 +226,7 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
             >
               <MultiSelectDropdown
                 options={options}
-                selectedItems={value}
+                selectedItems={validValue}
                 onSelectionChange={handleSelectionChange}
                 searchValue={searchValue}
                 onSearchChange={setSearchValue}

@@ -153,6 +153,17 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
     },
     ref,
   ) => {
+    // Ensure value and options are arrays and filter out invalid items
+    const validValue = Array.isArray(value) ? value.filter(item => item && typeof item === 'object' && item.id !== undefined && item.label !== undefined) : [];
+    const validOptions = Array.isArray(options) ? options : [];
+    
+    // If the filtered array is different from the original, update the parent
+    React.useEffect(() => {
+      if (validValue.length !== (Array.isArray(value) ? value.length : 0)) {
+        onChange(validValue);
+      }
+    }, [value, validValue, onChange]);
+
     const [open, setOpen] = React.useState(false);
     const [searchValue, setSearchValue] = React.useState("");
     const [showCopied, setShowCopied] = React.useState(false);
@@ -166,19 +177,19 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
         let newItems: MultiSelectItem[];
         if (isSelected) {
           // Remove item
-          newItems = value.filter((existing) => existing.id !== item.id);
+          newItems = validValue.filter((existing) => existing.id !== item.id);
         } else {
           // Add item
-          const itemExists = value.some((existing) => existing.id === item.id);
+          const itemExists = validValue.some((existing) => existing.id === item.id);
           if (!itemExists) {
-            newItems = [...value, item];
+            newItems = [...validValue, item];
           } else {
-            newItems = value;
+            newItems = validValue;
           }
         }
         onChange(newItems);
       },
-      [value, onChange, disabled],
+      [validValue, onChange, disabled],
     );
 
     const handleCreateNew = React.useCallback(
@@ -192,13 +203,13 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
         };
 
         // Add to selected items
-        const newItems = [...value, newItem];
+        const newItems = [...validValue, newItem];
         onChange(newItems);
 
         // Close dropdown
         setOpen(false);
       },
-      [value, onChange, disabled],
+      [validValue, onChange, disabled],
     );
 
     const handleRemove = React.useCallback(

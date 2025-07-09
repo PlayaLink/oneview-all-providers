@@ -3,7 +3,7 @@ import CollapsibleSection from '../CollapsibleSection';
 import { MultiSelectInput } from '../inputs/MultiSelectInput';
 import { SingleSelect } from '../SingleSelect';
 import TextInputField from '../inputs/TextInputField';
-import { getInputType } from './getInputType';
+import { getInputType, renderFieldComponent } from './getInputType';
 
 // Birth Info field group definition (from templateConfigs)
 export const birthInfoFieldGroup = {
@@ -32,48 +32,11 @@ export const birthInfoFieldGroup = {
 
 const BirthInfoDetails = ({ formValues, handleChange }) => (
   <div className="flex flex-col gap-4 self-stretch">
-      {birthInfoFieldGroup.fields.map((field) => {
-        const inputType = getInputType(field);
-        const key = field.rowKey || field.label;
-        if (inputType === 'multi-select') {
-          return (
-            <MultiSelectInput
-              key={key}
-              label={field.label}
-              labelPosition="left"
-              value={formValues[key] || []}
-              options={field.options?.map((opt) => ({ id: opt, label: opt })) || []}
-              onChange={(val) => handleChange(key, Array.isArray(val) ? val.map((v) => v.id) : [])}
-              className="flex-1 min-w-0"
-            />
-          );
-        } else if (inputType === 'single-select') {
-          const options = field.options?.map((opt) => ({ id: opt, label: opt })) || [];
-          const selectedValue = options.find((opt) => opt.id === formValues[key]) || null;
-          return (
-            <SingleSelect
-              key={key}
-              label={field.label}
-              labelPosition="left"
-              value={selectedValue}
-              options={options}
-              onChange={(val) => handleChange(key, val?.id ?? val)}
-              className="flex-1 min-w-0"
-            />
-          );
-        } else {
-          return (
-            <TextInputField
-              key={key}
-              label={field.label}
-              labelPosition="left"
-              value={formValues[key] || ''}
-              onChange={(val) => handleChange(key, val)}
-              className="flex-1 min-w-0"
-            />
-          );
-        }
-      })}
+      {birthInfoFieldGroup.fields.map((field) => (
+        <React.Fragment key={field.rowKey || field.label}>
+          {renderFieldComponent({ field, formValues, handleChange })}
+        </React.Fragment>
+      ))}
     </div>
 );
 

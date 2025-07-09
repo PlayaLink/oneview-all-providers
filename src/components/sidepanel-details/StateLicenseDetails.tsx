@@ -3,7 +3,7 @@ import CollapsibleSection from '../CollapsibleSection';
 import { MultiSelectInput } from '../inputs/MultiSelectInput';
 import { SingleSelect } from '../SingleSelect';
 import TextInputField from '../inputs/TextInputField';
-import { getInputType } from './getInputType';
+import { getInputType, renderFieldComponent } from './getInputType';
 
 // State Licenses fieldGroups definition
 export const stateLicenseFieldGroups = [
@@ -149,101 +149,21 @@ const StateLicenseDetails = ({ formValues, handleChange }) => (
 
       {/* Form Grid */}
       <div className="flex flex-col gap-4">
-      {searchCriteriaFields.map((field) => {
-          const inputType = getInputType(field);
-          const key = field.rowKey || field.label;
-          if (inputType === 'multi-select') {
-            return (
-              <MultiSelectInput
-                key={key}
-                label={field.label}
-                labelPosition="left"
-                value={formValues[key] || []}
-                options={field.options?.map((opt) => ({ id: opt, label: opt })) || []}
-                onChange={(val) => handleChange(key, Array.isArray(val) ? val.map((v) => v.id) : [])}
-                placeholder={field.placeholder}
-                className="flex-1 min-w-0"
-              />
-            );
-          } else if (inputType === 'single-select') {
-            const options = field.options?.map((opt) => ({ id: opt, label: opt })) || [];
-            const selectedValue = options.find((opt) => opt.id === formValues[key]) || null;
-            return (
-              <SingleSelect
-                key={key}
-                label={field.label}
-                labelPosition="left"
-                value={selectedValue}
-                options={options}
-                onChange={(val) => handleChange(key, val?.id ?? val)}
-                placeholder={field.placeholder}
-                className="flex-1 min-w-0"
-              />
-            );
-          } else {
-            return (
-              <TextInputField
-                key={key}
-                label={field.label}
-                labelPosition="left"
-                value={formValues[key] || ''}
-                onChange={(val) => handleChange(key, val)}
-                placeholder={field.placeholder}
-                className="flex-1 min-w-0"
-              />
-            );
-          }
-        })}
+      {searchCriteriaFields.map((field) => (
+        <React.Fragment key={field.rowKey || field.label}>
+          {renderFieldComponent({ field, formValues, handleChange })}
+        </React.Fragment>
+      ))}
       </div>
       </div>
     {/* General Info Section */}
     <CollapsibleSection title="General Info">
       <div className="flex flex-col gap-4 self-stretch">
-        {generalInfoFields.map((field) => {
-          const inputType = getInputType(field);
-          const key = field.rowKey || field.label;
-          if (inputType === 'multi-select') {
-            return (
-              <MultiSelectInput
-                key={key}
-                label={field.label}
-                labelPosition="left"
-                value={formValues[key] || []}
-                options={field.options?.map((opt) => ({ id: opt, label: opt })) || []}
-                onChange={(val) => handleChange(key, Array.isArray(val) ? val.map((v) => v.id) : [])}
-                placeholder={field.placeholder}
-                className="flex-1 min-w-0"
-              />
-            );
-          } else if (inputType === 'single-select') {
-            const options = field.options?.map((opt) => ({ id: opt, label: opt })) || [];
-            const selectedValue = options.find((opt) => opt.id === formValues[key]) || null;
-            return (
-              <SingleSelect
-                key={key}
-                label={field.label}
-                labelPosition="left"
-                value={selectedValue}
-                options={options}
-                onChange={(val) => handleChange(key, val?.id ?? val)}
-                placeholder={field.placeholder}
-                className="flex-1 min-w-0"
-              />
-            );
-          } else {
-            return (
-              <TextInputField
-                key={key}
-                label={field.label}
-                labelPosition="left"
-                value={formValues[key] || ''}
-                onChange={(val) => handleChange(key, val)}
-                placeholder={field.placeholder}
-                className="flex-1 min-w-0"
-              />
-            );
-          }
-        })}
+        {generalInfoFields.map((field) => (
+          <React.Fragment key={field.rowKey || field.label}>
+            {renderFieldComponent({ field, formValues, handleChange })}
+          </React.Fragment>
+        ))}
       </div>
     </CollapsibleSection>
   </div>
