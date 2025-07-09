@@ -222,13 +222,12 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                 </div>
                 {value && (
                   <div className="relative flex items-center">
-                    <button
-                      type="button"
+                    <div
                       onClick={handleCopy}
-                      disabled={disabled}
                       className={cn(
-                        "flex w-[20.5px] h-5 py-[1.667px] justify-center items-center gap-[6.667px] rounded-[3.333px] hover:bg-gray-50 transition-all disabled:opacity-50 ml-1",
+                        "flex w-[20.5px] h-5 py-[1.667px] justify-center items-center gap-[6.667px] rounded-[3.333px] hover:bg-gray-50 transition-all disabled:opacity-50 ml-1 cursor-pointer",
                         isHovered ? "opacity-100" : "opacity-0",
+                        disabled && "opacity-50 cursor-not-allowed"
                       )}
                       aria-label={`Copy ${label} selection to clipboard`}
                       data-testid={`single-select-copy-${label.toLowerCase().replace(/\s+/g, '-')}`}
@@ -237,7 +236,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                         icon={faCopy}
                         className="text-[14px] text-[#3E88D5]"
                       />
-                    </button>
+                    </div>
                     {/* Tooltip */}
                     {showCopied && isHovered && (
                       <div className="absolute -top-[35px] left-1/2 transform -translate-x-1/2 z-50">
@@ -258,16 +257,17 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
               {/* X + Caret */}
               <div className="flex items-center gap-1">
                 {clearable && value && (
-                  <button
-                    type="button"
+                  <div
                     onClick={handleClear}
-                    disabled={disabled}
-                    className="flex h-4 px-[6px] justify-center items-center text-[#BABABA] hover:text-gray-600 transition-colors disabled:opacity-50"
+                    className={cn(
+                      "flex h-4 px-[6px] justify-center items-center text-[#BABABA] hover:text-gray-600 transition-colors cursor-pointer",
+                      disabled && "opacity-50 cursor-not-allowed"
+                    )}
                     aria-label={`Clear ${label} selection`}
                     data-testid={`single-select-clear-${label.toLowerCase().replace(/\s+/g, '-')}`}
                   >
                     <FontAwesomeIcon icon={faTimes} className="text-[11px]" />
-                  </button>
+                  </div>
                 )}
                 {/* Dropdown arrow */}
                 <div className="flex w-[18px] h-4 px-[6px] justify-center items-center">

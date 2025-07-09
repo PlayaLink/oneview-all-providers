@@ -42,8 +42,9 @@ export const stateLicenseFieldGroups = [
       {
         label: "Additional Info",
         group: "License Details",
-        type: "text",
-        placeholder: "Enter additional information",
+        type: "single-select",
+        options: ["Yes", "No"],
+        placeholder: "Anything else?",
         rowKey: "license_additional_info"
       },
       {
