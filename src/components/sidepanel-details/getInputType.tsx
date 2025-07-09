@@ -28,13 +28,19 @@ export function renderFieldComponent({ field, formValues, handleChange, classNam
   const fieldKey = field.rowKey || field.label;
 
   if (inputType === 'multi-select') {
+    const options = field.options?.map((opt) => ({ id: opt, label: opt })) || [];
+    const stored = formValues[fieldKey] || [];
+    const value = Array.isArray(stored)
+      ? stored.map((v) => (typeof v === 'object' && v !== null ? v : options.find((opt) => opt.id === v))).filter(Boolean)
+      : [];
+
     return (
       <MultiSelectInput
         label={field.label}
         labelPosition="left"
-        value={formValues[fieldKey] || []}
-        options={field.options?.map((opt) => ({ id: opt, label: opt })) || []}
-        onChange={(val) => handleChange(fieldKey, Array.isArray(val) ? val.map((v) => v.id) : [])}
+        value={value}
+        options={options}
+        onChange={(val) => handleChange(fieldKey, val)}
         placeholder={field.placeholder}
         className={className}
       />
