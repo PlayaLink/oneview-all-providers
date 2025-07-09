@@ -31,8 +31,7 @@ export const birthInfoFieldGroup = {
 };
 
 const BirthInfoDetails = ({ formValues, handleChange }) => (
-  <CollapsibleSection key={birthInfoFieldGroup.id} title={birthInfoFieldGroup.title}>
-    <div className="flex flex-col gap-4 self-stretch">
+  <div className="flex flex-col gap-4 self-stretch">
       {birthInfoFieldGroup.fields.map((field) => {
         const inputType = getInputType(field);
         const key = field.rowKey || field.label;
@@ -76,7 +75,6 @@ const BirthInfoDetails = ({ formValues, handleChange }) => (
         }
       })}
     </div>
-  </CollapsibleSection>
 );
 
 // Unified template object for Birth Info side panel
