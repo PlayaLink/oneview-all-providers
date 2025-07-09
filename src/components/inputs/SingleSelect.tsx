@@ -8,8 +8,8 @@ import {
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
-import { Button } from "./ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Button } from "../ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 export interface SingleSelectOption {
   id: string | number;
