@@ -1,41 +1,5 @@
-import React, { useState, useMemo } from "react";
-import { AgGridReact } from "ag-grid-react";
-import {
-  ColDef,
-  GridReadyEvent,
-  SelectionChangedEvent,
-} from "ag-grid-community";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChevronDown,
-  faSearch,
-  faUserPlus,
-  faUserDoctor,
-  faChevronLeft,
-  faChevronRight,
-  faChartBar,
-  faMessage,
-  faFileText,
-  faUsers,
-  faXmark,
-  faCircleDown,
-  faUpRightFromSquare,
-  faFlag,
-  faEllipsisVertical,
-  faPlus,
-  faFilter,
-  faCircleQuestion,
-  faBarsStaggered,
-} from "@fortawesome/free-solid-svg-icons";
-import { faEdit } from "@fortawesome/free-regular-svg-icons";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import SideNav from "@/components/SideNav";
-import DataGrid from "@/components/DataGrid";
-import PageHeader from "@/components/PageHeader";
+import React from "react";
+import SearchCriteria from "@/components/SearchCriteria";
 
 // Import AG Grid styles
 import "ag-grid-community/styles/ag-grid.css";
