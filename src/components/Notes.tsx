@@ -293,4 +293,10 @@ const Notes: React.FC<NotesProps> = ({ recordId, recordType, user, className }) 
   );
 };
 
-export default Notes; 
+export const notesTab = {
+  id: 'notes',
+  label: 'Notes',
+  icon: 'file-medical',
+  enabled: true,
+  Component: Notes,
+}; 

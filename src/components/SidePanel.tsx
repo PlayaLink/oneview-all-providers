@@ -9,7 +9,6 @@ import { Provider } from "@/types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { updateProvider, updateStateLicense, updateRecord } from '@/lib/supabaseClient';
 import { useQueryClient } from '@tanstack/react-query';
-import Notes from "./Notes";
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabaseClient';
 import { getTemplateConfigByGrid, gridToTemplateMap } from '@/lib/templateConfigs';
@@ -18,10 +17,10 @@ import StateLicenseDetails from './sidepanel-details/StateLicenseDetails';
 import { getIconByName } from "@/lib/iconMapping";
 import SidePanelTab from "./TabTitle";
 import FileDropzone from './FileDropzone';
-import DocumentsGrid from './DocumentsGrid';
 import { fetchDocumentsForRecord, insertDocument, updateDocument, deleteDocument } from '@/lib/supabaseClient';
 import { toast } from '@/hooks/use-toast';
 import BirthInfoDetails from './sidepanel-details/BirthInfoDetails';
+import { sharedTabsById } from './tabsRegistry';
 
 // Types for input fields
 export interface InputField {
@@ -556,7 +555,43 @@ if (template?.DetailsComponent) {
   }
 
   // Tabs from template
-  const tabs = template && template.tabs ? template.tabs : [];
+  let tabIds: string[] = [];
+  let tabs: any[] = [];
+  // Type guard for array of tab config objects
+  function isTabConfigArray(tabs: any[]): tabs is { id: string }[] {
+    return Array.isArray(tabs) && typeof tabs[0] === 'object' && tabs[0] !== null && 'id' in tabs[0];
+  }
+  if (template && template.tabs) {
+    if (isTabConfigArray(template.tabs)) {
+      // Array of tab config objects
+      tabs = template.tabs.map((tabObj) => {
+        if (tabObj.id === 'details' || tabObj.id === 'team') {
+          return {
+            id: tabObj.id,
+            label: tabObj.label || tabObj.id.charAt(0).toUpperCase() + tabObj.id.slice(1),
+            icon: tabObj.icon || (tabObj.id === 'details' ? 'bars-staggered' : 'users'),
+            enabled: tabObj.enabled !== undefined ? tabObj.enabled : true,
+          };
+        }
+        return sharedTabsById[tabObj.id] || { id: tabObj.id, label: tabObj.label || tabObj.id, enabled: false };
+      });
+      tabIds = tabs.map((t: any) => String(t.id));
+    } else {
+      // Array of tab ids (strings)
+      tabIds = template.tabs as string[];
+      tabs = tabIds.map((id) => {
+        if (id === 'details' || id === 'team') {
+          return {
+            id,
+            label: id.charAt(0).toUpperCase() + id.slice(1),
+            icon: id === 'details' ? 'bars-staggered' : 'users',
+            enabled: true,
+          };
+        }
+        return sharedTabsById[id] || { id, label: id, enabled: false };
+      });
+    }
+  }
 
   // Mapping from gridName to table name
   const gridToTableMap: Record<string, string> = {
@@ -622,8 +657,8 @@ if (template?.DetailsComponent) {
               >
                 <SidePanelTab
                   rowKey={tabConfig.id}
-                  fullLabel={tabConfig.fullLabel || tabConfig.label}
-                  iconLabel={tabConfig.iconLabel || tabConfig.label}
+                  fullLabel={tabConfig.label}
+                  iconLabel={tabConfig.label}
                   icon={tabConfig.icon}
                   isActive={tab === tabConfig.id}
                 />
@@ -636,7 +671,7 @@ if (template?.DetailsComponent) {
               const activeTab = tabs.find(t => t.id === tab);
               return activeTab ? (
                 <h2 className="text-lg font-semibold text-[#545454] my-4" data-testid="side-panel-tab-title">
-                  {activeTab.fullLabel || activeTab.label}
+                  {activeTab.label}
                 </h2>
               ) : null;
             })()}
@@ -653,38 +688,47 @@ if (template?.DetailsComponent) {
                 )}
               </TabsContent>
             )}
-            {tabs.some((t) => t.id === 'notes') && tab === 'notes' && (
-              <TabsContent value="notes" className="flex-1 min-h-0 flex flex-col p-0 m-0" role="tabpanel" aria-label="Notes Tab" data-testid="side-panel-tabpanel-notes">
-                {selectedRow && (
-                  <Notes
-                    className="flex-1 min-h-0"
-                    recordId={selectedRow.id}
-                    recordType={gridName || 'Provider_Info'}
-                    user={user}
-                  />
-                )}
-              </TabsContent>
-            )}
-            {tabs.some((t) => t.id === 'documents') && tab === 'documents' && (
-              <TabsContent value="documents" role="tabpanel" aria-label="Documents Tab" data-testid="side-panel-tabpanel-documents" className="flex flex-col h-full">
-                {documents.length > 0 ? (
-                  <>
-                    <div className="flex-1 overflow-y-auto" role="attached-documents-grid">
-                      <DocumentsGrid
-                        documents={documents}
-                        onEdit={handleEditDocument}
-                        onDelete={handleDeleteDocument}
-                      />
-                      {documentsLoading && <div className="text-gray-500 mt-2">Loading documents...</div>}
-                    </div>
-                    <div className="mt-4 flex-shrink-0">
-                      <FileDropzone onFilesAccepted={handleFilesAccepted} />
-                    </div>
-                  </>
-                ) : (
-                  <FileDropzone onFilesAccepted={handleFilesAccepted} />
-                )}
-                {/* TODO: Add edit modal for editing document metadata */}
+            {tabs.some((t) => t.id === tab) && (
+              <TabsContent value={tab} className="flex-1 min-h-0 flex flex-col p-0 m-0" role="tabpanel" aria-label={`${tab.charAt(0).toUpperCase() + tab.slice(1)} Tab`} data-testid={`side-panel-tabpanel-${tab}`}>
+                {(() => {
+                  switch (tab) {
+                    case 'notes': {
+                      const NotesComponent = sharedTabsById['notes']?.Component as React.FC<any>;
+                      return selectedRow && NotesComponent &&
+                        React.createElement(NotesComponent, {
+                          className: "flex-1 min-h-0",
+                          recordId: selectedRow.id,
+                          recordType: gridName || 'Provider_Info',
+                          user: user,
+                        });
+                    }
+                    case 'documents': {
+                      const DocumentsComponent = sharedTabsById['documents']?.Component as React.FC<any>;
+                      return (
+                        documents.length > 0 ? (
+                          <>
+                            <div className="flex-1 overflow-y-auto" role="attached-documents-grid">
+                              {DocumentsComponent &&
+                                React.createElement(DocumentsComponent, {
+                                  documents: documents,
+                                  onEdit: handleEditDocument,
+                                  onDelete: handleDeleteDocument,
+                                })}
+                              {documentsLoading && <div className="text-gray-500 mt-2">Loading documents...</div>}
+                            </div>
+                            <div className="mt-4 flex-shrink-0">
+                              <FileDropzone onFilesAccepted={handleFilesAccepted} />
+                            </div>
+                          </>
+                        ) : (
+                          <FileDropzone onFilesAccepted={handleFilesAccepted} />
+                        )
+                      );
+                    }
+                    default:
+                      return null;
+                  }
+                })()}
               </TabsContent>
             )}
             {tabs.some((t) => t.id === 'team') && tab === 'team' && (

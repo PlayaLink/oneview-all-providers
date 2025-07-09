@@ -137,4 +137,10 @@ const DocumentsGrid: React.FC<DocumentsGridProps> = ({ documents, onEdit, onDele
   );
 };
 
-export default DocumentsGrid; 
+export const documentsTab = {
+  id: 'documents',
+  label: 'Documents',
+  icon: 'folder',
+  enabled: true,
+  Component: DocumentsGrid,
+}; 
