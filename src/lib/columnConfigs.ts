@@ -75,10 +75,7 @@ export const getColumnsForGrid = (gridKey: string): ColDef[] => {
         const { first_name, last_name, provider_name } = params.data;
         let value = '';
         if (first_name || last_name) {
-          console.log('first_name:', first_name);
-          console.log('last_name:', last_name); 
           value = formatProviderName(last_name, first_name);
-          console.log('value:', value);
         } else {
           // fallback: try to split provider_name
           const name = provider_name || '';
@@ -90,7 +87,6 @@ export const getColumnsForGrid = (gridKey: string): ColDef[] => {
             value = name;
           }
         }
-        console.log('AG Grid valueGetter provider_name:', value);
         return value;
       };
     }
@@ -162,7 +158,6 @@ export const standardColumns: ColDef[] = [
       } else {
         // fallback: try to split provider_name
         const name = provider_name || '';
-        console.log('Raw provider_name:', name);
         const [first, ...rest] = name.split(' ');
         const last = rest.join(' ');
         if (first || last) {
@@ -171,7 +166,6 @@ export const standardColumns: ColDef[] = [
           value = name;
         }
       }
-      console.log('AG Grid valueGetter provider_name:', value);
       return value;
     },
   },
@@ -277,7 +271,6 @@ export const birthInfoColumns: ColDef[] = [
           value = name;
         }
       }
-      console.log('AG Grid valueGetter provider_name:', value);
       return value;
     },
   },
