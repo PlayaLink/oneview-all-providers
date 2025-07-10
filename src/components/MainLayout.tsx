@@ -53,9 +53,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
     new Set(),
   );
 
-  // --- Per-grid row selection state ---
-  const [selectedRowsByGrid, setSelectedRowsByGrid] = useState<{ [gridName: string]: string | null }>({});
-  const [selectedProviderByGrid, setSelectedProviderByGrid] = useState<{ [gridName: string]: any | null }>({});
+  // --- Single row selection state ---
+  const [selectedRow, setSelectedRow] = useState<(any & { gridName: string }) | null>(null);
   
   // --- Side panel state ---
   const [sidePanelOpen, setSidePanelOpen] = useState(false);
@@ -201,36 +200,24 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
     }
   };
 
-  // Handler to update selected row for a grid
-  const handleGridRowSelect = (gridName: string, rowId: string | null, provider: any | null) => {
-    setSelectedRowsByGrid(prev => ({ ...prev, [gridName]: rowId }));
-    setSelectedProviderByGrid(prev => ({ ...prev, [gridName]: provider }));
-    
-    // Set the active panel grid and open the side panel
-    if (rowId && provider) {
-      setActivePanelGridName(gridName);
-      setSidePanelOpen(true);
+  // Handler to update selected row (table-agnostic)
+  const handleRowSelect = (row: any | null, gridName?: string) => {
+    if (row && gridName) {
+      setSelectedRow({ ...row, gridName });
     } else {
-      setActivePanelGridName(null);
-      setSidePanelOpen(false);
+      setSelectedRow(null);
     }
-  };
-
-  // Handler to clear selected row for a grid
-  const handleClearGridRowSelect = (gridName: string) => {
-    setSelectedRowsByGrid(prev => ({ ...prev, [gridName]: null }));
-    setSelectedProviderByGrid(prev => ({ ...prev, [gridName]: null }));
   };
 
   // Handler to close the side panel
   const handleCloseSidePanel = () => {
-    setSidePanelOpen(false);
-    setActivePanelGridName(null);
+    setSelectedRow(null);
   };
 
   // Handler to update selected provider data when optimistic updates are made
   const handleUpdateSelectedProvider = (gridName: string, updatedProvider: any) => {
-    setSelectedProviderByGrid(prev => ({ ...prev, [gridName]: updatedProvider }));
+    // This handler is no longer needed as selectedRow is the single source of truth
+    // setSelectedProviderByGrid(prev => ({ ...prev, [gridName]: updatedProvider }));
   };
 
   React.useEffect(() => {
@@ -500,14 +487,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
               singleProviderNpi={npi}
               visibleSections={visibleSections}
               // ...pass other props as needed...
-              selectedRowsByGrid={selectedRowsByGrid}
-              selectedProviderByGrid={selectedProviderByGrid}
-              onGridRowSelect={handleGridRowSelect}
-              onClearGridRowSelect={handleClearGridRowSelect}
-              onUpdateSelectedProvider={handleUpdateSelectedProvider}
-              sidePanelOpen={sidePanelOpen}
-              setSidePanelOpen={setSidePanelOpen}
-              activePanelGridName={activePanelGridName}
+              selectedRow={selectedRow}
+              onRowSelect={handleRowSelect}
               onCloseSidePanel={handleCloseSidePanel}
               providerInfoData={providerInfoData}
               user={user}
@@ -568,14 +549,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
                 selectedItem={selectedItem}
                 selectedSection={selectedSection}
                 visibleSections={visibleSections}
-                selectedRowsByGrid={selectedRowsByGrid}
-                selectedProviderByGrid={selectedProviderByGrid}
-                onGridRowSelect={handleGridRowSelect}
-                onClearGridRowSelect={handleClearGridRowSelect}
-                onUpdateSelectedProvider={handleUpdateSelectedProvider}
-                sidePanelOpen={sidePanelOpen}
-                setSidePanelOpen={setSidePanelOpen}
-                activePanelGridName={activePanelGridName}
+                selectedRow={selectedRow}
+                onRowSelect={handleRowSelect}
                 onCloseSidePanel={handleCloseSidePanel}
                 providerInfoData={providerInfoData}
                 user={user}
@@ -596,14 +571,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
                 selectedItem={selectedItem}
                 selectedSection={selectedSection}
                 visibleSections={visibleSections}
-                selectedRowsByGrid={selectedRowsByGrid}
-                selectedProviderByGrid={selectedProviderByGrid}
-                onGridRowSelect={handleGridRowSelect}
-                onClearGridRowSelect={handleClearGridRowSelect}
-                onUpdateSelectedProvider={handleUpdateSelectedProvider}
-                sidePanelOpen={sidePanelOpen}
-                setSidePanelOpen={setSidePanelOpen}
-                activePanelGridName={activePanelGridName}
+                selectedRow={selectedRow}
+                onRowSelect={handleRowSelect}
                 onCloseSidePanel={handleCloseSidePanel}
                 providerInfoData={providerInfoData}
                 user={user}

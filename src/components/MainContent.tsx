@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronUp, faChevronDown, faTable } from "@fortawesome/free-solid-svg-icons";
 import DataGrid from "@/components/DataGrid";
@@ -21,7 +21,7 @@ interface MainContentProps {
   visibleSections?: Set<string>;
   singleProviderNpi?: string;
   selectedRowsByGrid?: { [gridName: string]: string | null };
-  selectedProviderByGrid?: { [gridName: string]: any | null };
+  selectedProviderByGrid?: { [gridName: string]: (any & { gridName: string }) | null };
   onGridRowSelect?: (gridName: string, rowId: string | null, provider: any | null) => void;
   onClearGridRowSelect?: (gridName: string) => void;
   onUpdateSelectedProvider?: (gridName: string, updatedProvider: any) => void; // Add this callback
@@ -31,6 +31,9 @@ interface MainContentProps {
   onCloseSidePanel?: () => void;
   providerInfoData?: any[];
   user: any;
+  selectedRow: (any & { gridName: string }) | null;
+  onRowSelect: (row: any | null, gridName?: string) => void;
+  onCloseSidePanel: () => void;
 }
 
 const MainContent: React.FC<MainContentProps> = ({
@@ -49,6 +52,9 @@ const MainContent: React.FC<MainContentProps> = ({
   onCloseSidePanel,
   providerInfoData = [],
   user,
+  selectedRow,
+  onRowSelect,
+  onCloseSidePanel: onCloseSidePanelProp,
 }) => {
   const [currentGridIndex, setCurrentGridIndex] = useState(0);
   const [selectedGridName, setSelectedGridName] = useState<string | null>(null);
@@ -57,6 +63,7 @@ const MainContent: React.FC<MainContentProps> = ({
   // Add refs for grid scrolling
   const gridRefs = useRef<(HTMLDivElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+  const observerRefs = useRef<(IntersectionObserver | null)[]>([]);
 
   // Centralized grid data fetching (now using per-table helpers)
   const providerInfoQuery = useQuery({
@@ -342,6 +349,46 @@ const MainContent: React.FC<MainContentProps> = ({
   // Memoize inputConfig for SidePanel
   const inputConfig = useMemo(() => getTemplateConfigForActiveGrid(), [activePanelGridName]);
 
+  // Define handleRowClick before usage
+  const handleRowClick = (row: any, gridName: string) => {
+    if (selectedRow && selectedRow.id === row.id && selectedRow.gridName === gridName) {
+      onRowSelect(null);
+    } else {
+      onRowSelect(row, gridName);
+    }
+  };
+
+  const handleGridInView = useCallback((index: number) => {
+    setVisibleGrids(prev => {
+      if (!prev.has(index)) {
+        return new Set([...prev, index]);
+      }
+      return prev;
+    });
+  }, []);
+
+  useEffect(() => {
+    gridsToShow.forEach((_, index) => {
+      const gridEl = gridRefs.current[index];
+      if (!gridEl) return;
+      if (observerRefs.current[index]) {
+        observerRefs.current[index]?.disconnect();
+      }
+      observerRefs.current[index] = new window.IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            handleGridInView(index);
+          }
+        },
+        { threshold: 0.5 }
+      );
+      observerRefs.current[index]?.observe(gridEl);
+    });
+    return () => {
+      observerRefs.current.forEach((observer) => observer?.disconnect());
+    };
+  }, [gridsToShow, handleGridInView]);
+
   if (singleProviderNpi) {
     // Find the selected provider's info from live providerInfoData (Supabase)
     const providerInfoGrid = gridDefinitions.find(g => g.tableName === "Provider_Info");
@@ -450,7 +497,6 @@ const MainContent: React.FC<MainContentProps> = ({
                 : undefined
             }
             user={user}
-            gridName={activePanelGridName}
             onUpdateSelectedProvider={onUpdateSelectedProvider}
           />
         )}
@@ -532,8 +578,8 @@ const MainContent: React.FC<MainContentProps> = ({
                     data={getDataForGrid(grid.tableName)}
                     columns={getColumnsForGrid(grid.tableName)}
                     height="100%"
-                    onRowClicked={handleProviderSelect}
-                    selectedRowId={selectedRowsByGrid[grid.tableName]}
+                    onRowClicked={(row) => handleRowClick(row, grid.tableName)}
+                    selectedRowId={selectedRow && selectedRow.gridName === grid.tableName ? selectedRow.id : null}
                   />
                 ) : (
                   // Placeholder for unloaded grids
@@ -614,20 +660,21 @@ const MainContent: React.FC<MainContentProps> = ({
       </div>
 
       {/* Side Panel */}
-      <SidePanel
-        isOpen={sidePanelOpen}
-        selectedRow={selectedProvider}
-        inputConfig={inputConfig}
-        onClose={handleSidePanelClose}
-        title={
-          selectedProvider && activeGridName && selectedProvider.provider_name
-            ? `${activeGridName.replace(/_/g, " ")} for ${selectedProvider.provider_name}${selectedProvider.title ? ", " + selectedProvider.title : ""}`
-            : undefined
-        }
-        user={user}
-        gridName={activeGridName}
-        onUpdateSelectedProvider={onUpdateSelectedProvider}
-      />
+      {selectedRow && (
+        <SidePanel
+          isOpen={!!selectedRow}
+          selectedRow={selectedRow}
+          inputConfig={getTemplateConfigForActiveGrid()}
+          onClose={onCloseSidePanel}
+          title={
+            selectedRow?.provider_name
+              ? `${selectedRow.gridName.replace(/_/g, " ")} for ${selectedRow.provider_name}${selectedRow.title ? ", " + selectedRow.title : ""}`
+              : undefined
+          }
+          user={user}
+          onUpdateSelectedProvider={onUpdateSelectedProvider}
+        />
+      )}
     </div>
   );
 };

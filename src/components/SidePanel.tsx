@@ -43,12 +43,11 @@ function getInputType(field: InputField) {
 // Add prop type for template
 interface SidePanelProps {
   isOpen: boolean;
-  selectedRow: any | null;
+  selectedRow: (any & { gridName: string }) | null;
   inputConfig: InputField[];
   onClose: () => void;
   title?: string;
   user: any;
-  gridName?: string | null; // NEW: grid name for template selection
   onUpdateSelectedProvider?: (gridName: string, updatedProvider: any) => void;
 }
 
@@ -75,7 +74,9 @@ const detailsComponentMap: Record<string, React.ComponentType<any>> = {
 
 const SidePanel: React.FC<SidePanelProps> = (props) => {
   // Destructure props as before
-  const { isOpen, selectedRow, inputConfig, onClose, title, user, gridName, onUpdateSelectedProvider } = props;
+  const { isOpen, selectedRow, inputConfig, onClose, title, user, onUpdateSelectedProvider } = props;
+  // Use gridName from selectedRow
+  const gridName = selectedRow?.gridName;
   const [formValues, setFormValues] = React.useState<Record<string, any>>({});
   const [tab, setTab] = useState("details");
   const [panelWidth, setPanelWidth] = useState(() => {
