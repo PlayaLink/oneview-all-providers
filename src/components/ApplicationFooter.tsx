@@ -10,7 +10,11 @@ const ApplicationFooter: React.FC<ApplicationFooterProps> = ({ showFooter = true
   }
 
   return (
-    <footer className="bg-[#545454] text-white px-20 py-4 flex items-center justify-between" role="contentinfo" aria-label="Application footer">
+    <footer 
+      className="bg-[#545454] text-white px-20 py-4 flex items-center justify-between fixed bottom-0 left-0 right-0 z-50" 
+      role="contentinfo" 
+      aria-label="Application footer"
+    >
       <nav className="text-[#91DCFB] text-xs font-semibold" role="navigation" aria-label="Footer navigation">
         <a href="#" className="hover:underline">Privacy Policy</a>
       </nav>

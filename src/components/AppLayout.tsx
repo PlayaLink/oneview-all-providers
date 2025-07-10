@@ -19,7 +19,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({ user, children, showFooter = true
           {children}
         </MainContentArea>
       </PageContainer>
-      
       <ApplicationFooter showFooter={showFooter} />
     </div>
   );

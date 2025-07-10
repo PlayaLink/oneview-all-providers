@@ -558,7 +558,7 @@ const MainContent: React.FC<MainContentProps> = ({
             aria-label="Grid Scroll Container"
             className="overflow-y-auto"
             style={{ 
-              height: 'calc(100vh - 200px)' // Fixed height equal to one grid
+              height: 'calc(100vh - 280px)' // Fixed height minus footer height (80px)
             }}
           >
             {gridsToShow.map((grid, index) => (
@@ -567,8 +567,8 @@ const MainContent: React.FC<MainContentProps> = ({
                 ref={(el) => gridRefs.current[index] = el}
                 className="flex flex-col min-h-0 mb-4 last:mb-0"
                 style={{ 
-                  minHeight: 'calc(100vh - 200px)', // Each grid fills the container
-                  height: 'calc(100vh - 200px)'
+                  minHeight: 'calc(100vh - 280px)', // Each grid fills the container minus footer
+                  height: 'calc(100vh - 280px)'
                 }}
               >
                 {/* Only render DataGrid if it's been visited or is the current grid */}
@@ -587,8 +587,8 @@ const MainContent: React.FC<MainContentProps> = ({
                   <div 
                     className="flex items-center justify-center bg-gray-50 border-2 border-dashed border-gray-300 rounded"
                     style={{ 
-                      minHeight: 'calc(100vh - 200px)',
-                      height: 'calc(100vh - 200px)'
+                      minHeight: 'calc(100vh - 280px)',
+                      height: 'calc(100vh - 280px)'
                     }}
                   >
                     <div className="text-gray-500 text-center">
