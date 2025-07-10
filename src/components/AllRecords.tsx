@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import SideNav from "@/components/SideNav";
 import HorizontalNav from "@/components/HorizontalNav";
-import PageHeader from "@/components/PageHeader";
+import AllProvidersHeader from "@/components/AllProvidersHeader";
 import MainContent from "@/components/MainContent";
 import MainContentArea from "@/components/MainContentArea";
 
@@ -205,8 +205,8 @@ const AllRecords: React.FC<AllRecordsProps> = () => {
 
   return (
     <>
-      {/* Page Header */}
-      <PageHeader
+      {/* All Providers Header */}
+      <AllProvidersHeader
         title={npi ? undefined : "All Providers"}
         npi={npi}
         providerInfo={selectedProviderInfo}

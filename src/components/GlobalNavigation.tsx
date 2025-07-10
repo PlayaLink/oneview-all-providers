@@ -38,7 +38,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
     <>
       {/* Black Header */}
       <header className="bg-black text-white" role="banner" aria-label="Application Header">
-        <div className="flex items-center justify-between px-5 py-3">
+        <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-9">
             {/* Modio Logo */}
             <img
@@ -143,7 +143,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
       </header>
       {/* Blue Navigation Bar */}
       <nav className="bg-[#3BA8D1] text-white" role="navigation" aria-label="Primary navigation">
-        <div className="flex items-center justify-between px-5 py-3">
+        <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-5 flex-1 self-stretch">
             <div className="flex items-center gap-2 self-stretch" role="menubar" aria-label="Main application sections">
               <NavItem

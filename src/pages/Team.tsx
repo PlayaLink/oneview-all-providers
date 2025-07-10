@@ -30,7 +30,7 @@ const TeamPage: React.FC = () => {
   return (
     <>
       <header className="mb-6">
-        <h1 className="text-2xl font-bold" role="heading" aria-level={1} data-testid="all-providers-header">Providers</h1>
+        <h1 className="text-2xl font-bold" role="heading" aria-level={1} data-testid="team-title">Providers</h1>
       </header>
       <section className="flex-1 min-h-0 flex flex-col" role="region" aria-label="Providers Data Grid">
         <DataGrid
