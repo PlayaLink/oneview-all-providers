@@ -159,16 +159,18 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
               >
                 Team
               </NavItem>
-              <NavItem
-                variant="main"
-                role="menuitem"
-                aria-current={location.pathname === "/all-records" ? "page" : undefined}
-                active={location.pathname === "/all-records"}
-                onClick={() => navigate("/all-records")}
-                data-testid="nav-item-oneview"
-              >
-                {gridSectionMode === 'left-nav' ? 'All Records' : 'OneView V2'}
-              </NavItem>
+              {gridSectionMode === 'left-nav' && (
+                <NavItem
+                  variant="main"
+                  role="menuitem"
+                  aria-current={location.pathname === "/all-records" ? "page" : undefined}
+                  active={location.pathname === "/all-records"}
+                  onClick={() => navigate("/all-records")}
+                  data-testid="nav-item-oneview"
+                >
+                  All Records
+                </NavItem>
+              )}
               <NavItem variant="main" role="menuitem">Forms</NavItem>
               <NavItem variant="main" role="menuitem">Tracking</NavItem>
               <NavItem variant="main" role="menuitem">Logins</NavItem>
