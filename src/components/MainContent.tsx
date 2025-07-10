@@ -11,7 +11,8 @@ import { Provider } from "@/types";
 import providerInfoConfig from "@/data/provider_info_details.json";
 import { useQuery } from '@tanstack/react-query';
 import { fetchProviders, fetchStateLicenses, fetchBirthInfo, fetchAddresses } from '@/lib/supabaseClient';
-import { getTemplateConfigByGrid, providerInfoTemplate, stateLicenseTemplate } from '@/lib/templateConfigs';
+import { getTemplateConfigByGrid } from '@/lib/templateConfigs';
+// Removed: import { providerInfoTemplate, stateLicenseTemplate } from '@/lib/templateConfigs';
 // Removed: import { useGridData } from '@/hooks/useGridData';
 
 interface MainContentProps {
@@ -75,20 +76,11 @@ const MainContent: React.FC<MainContentProps> = ({
     queryFn: fetchAddresses,
   });
 
-  // Memoize sample data for all grids only once
-  const sampleDataRef = React.useRef<{ [gridName: string]: any[] }>({});
-  if (Object.keys(sampleDataRef.current).length === 0) {
-    gridDefinitions.forEach(grid => {
-      sampleDataRef.current[grid.tableName] = generateSampleData(grid.tableName, 15);
-    });
-  }
-
-  // Function to get data for each grid
-  const getDataForGrid = (gridKey: string) => {
-    if (gridKey === "Provider_Info") {
-      const { data } = providerInfoQuery;
-      if (!data) return [];
-      return data.map((row: any) => ({
+  // DRY mapping of grid keys to data sources and mapping logic
+  const gridDataSources: Record<string, { query: any, map: (row: any) => any }> = {
+    Provider_Info: {
+      query: providerInfoQuery,
+      map: (row) => ({
         ...row,
         provider_name: `${row.last_name || ''}, ${row.first_name || ''}`.trim(),
         primary_specialty: row.primary_specialty,
@@ -99,39 +91,48 @@ const MainContent: React.FC<MainContentProps> = ({
         title: row.title,
         tags: row.tags || [],
         last_updated: row.last_updated,
-      }));
-    }
-    if (gridKey === "State_Licenses") {
-      const { data } = stateLicensesQuery;
-      if (!data) return [];
-      return data.map((license: any) => ({
+      }),
+    },
+    State_Licenses: {
+      query: stateLicensesQuery,
+      map: (license) => ({
         ...license,
         provider_name: license.provider ? `${license.provider.last_name}, ${license.provider.first_name}` : '',
         title: license.provider?.title || '',
         primary_specialty: license.provider?.primary_specialty || '',
-      }));
-    }
-    if (gridKey === "Birth_Info") {
-      const { data } = birthInfoQuery;
-      if (!data) return [];
-      return data.map((row: any) => ({
+      }),
+    },
+    Birth_Info: {
+      query: birthInfoQuery,
+      map: (row) => ({
         ...row,
         provider_name: row.provider ? `${row.provider.last_name}, ${row.provider.first_name}` : '',
         title: row.provider?.title || '',
         primary_specialty: row.provider?.primary_specialty || '',
-      }));
-    }
-    if (gridKey === "Addresses") {
-      const { data } = addressesQuery;
-      if (!data) return [];
-      return data.map((row: any) => ({
+      }),
+    },
+    Addresses: {
+      query: addressesQuery,
+      map: (row) => ({
         ...row,
         provider_name: row.provider ? `${row.provider.last_name}, ${row.provider.first_name}` : '',
         title: row.provider?.title || '',
         primary_specialty: row.provider?.primary_specialty || '',
-      }));
+      }),
+    },
+    // Add more grids as needed
+  };
+
+  // Function to get data for each grid (now DRY)
+  const getDataForGrid = (gridKey: string) => {
+    const source = gridDataSources[gridKey];
+    if (source) {
+      const { data } = source.query;
+      if (!data) return [];
+      return data.map(source.map);
     }
-    return sampleDataRef.current[gridKey] || [];
+    // For all other grids, return empty
+    return [];
   };
 
   // Function to get grids based on selection and filtered sections
