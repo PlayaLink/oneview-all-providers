@@ -68,9 +68,9 @@ const TeamPage: React.FC = () => {
         }}
         buttonClassName="bg-[#79AC48] hover:bg-[#6B9A3F] text-white"
       />
-      <section className="flex-1 min-h-0 flex flex-col" role="region" aria-label="Providers Data Grid">
+      <section className="flex-1 min-h-0 flex flex-col pl-3 pr-4 pt-4" role="region" aria-label="Providers Data Grid">
         <DataGrid
-          title="Providers"
+          title="Team"
           icon={faUsers}
           data={mappedData}
           columns={getColumnsForGrid("Provider_Info")}
