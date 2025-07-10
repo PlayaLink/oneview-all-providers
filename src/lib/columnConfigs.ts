@@ -65,15 +65,15 @@ export const getColumnsForGrid = (gridKey: string): ColDef[] => {
       colDef.valueGetter = (params: any) => {
         if (!params.data) return '';
         const { first_name, last_name, provider_name } = params.data;
-        if (first_name && last_name) {
-          return `${last_name}, ${first_name}`;
+        if (first_name || last_name) {
+          return [last_name, first_name].filter(Boolean).join(', ');
         }
         // fallback: try to split provider_name
         const name = provider_name || '';
         const [first, ...rest] = name.split(' ');
         const last = rest.join(' ');
-        if (first && last) {
-          return `${last}, ${first}`;
+        if (first || last) {
+          return [last, first].filter(Boolean).join(', ');
         }
         return name;
       };
@@ -140,15 +140,15 @@ export const standardColumns: ColDef[] = [
     valueGetter: (params: any) => {
       if (!params.data) return '';
       const { first_name, last_name, provider_name } = params.data;
-      if (first_name && last_name) {
-        return `${last_name}, ${first_name}`;
+      if (first_name || last_name) {
+        return [last_name, first_name].filter(Boolean).join(', ');
       }
       // fallback: try to split provider_name
       const name = provider_name || '';
       const [first, ...rest] = name.split(' ');
       const last = rest.join(' ');
-      if (first && last) {
-        return `${last}, ${first}`;
+      if (first || last) {
+        return [last, first].filter(Boolean).join(', ');
       }
       return name;
     },
