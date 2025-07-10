@@ -16,7 +16,7 @@ import PageHeader from "@/components/PageHeader";
 import MainContent from "@/components/MainContent";
 
 import { getGroups, getGridsByGroup } from "@/lib/gridDefinitions";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { generateSampleData } from "@/lib/dataGenerator";
 import { gridDefinitions } from "@/lib/gridDefinitions";
 import NavItem from "@/components/NavItem";
@@ -37,6 +37,7 @@ interface MainLayoutProps {
 const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
   const { npi } = useParams<{ npi?: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   // Use feature settings for grid section mode
   const { settings, updateSetting, isLoading: settingsLoading } = useFeatureSettings();
   const gridSectionMode = settingsLoading ? 'left-nav' : settings.grid_section_navigation;
@@ -442,9 +443,27 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
           <div className="flex items-center gap-5 flex-1 self-stretch">
             <div className="flex items-center gap-2 self-stretch" role="menubar" aria-label="Main application sections">
               {/* Team Link */}
-              <NavItem variant="main" role="menuitem">Team</NavItem>
+              <NavItem
+                variant="main"
+                role="menuitem"
+                aria-current={location.pathname === "/team" ? "page" : undefined}
+                active={location.pathname === "/team"}
+                onClick={() => navigate("/team")}
+                data-testid="nav-item-team"
+              >
+                Team
+              </NavItem>
               {/* Provider Records Link - Active */}
-              <NavItem variant="main" active role="menuitem" aria-current="page">OneView V2</NavItem>
+              <NavItem
+                variant="main"
+                role="menuitem"
+                aria-current={location.pathname === "/all-records" ? "page" : undefined}
+                active={location.pathname === "/all-records"}
+                onClick={() => navigate("/all-records")}
+                data-testid="nav-item-oneview"
+              >
+                OneView V2
+              </NavItem>
               {/* Forms Link */}
               <NavItem variant="main" role="menuitem">Forms</NavItem>
               {/* Tracking Link */}

@@ -3,10 +3,11 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import MainLayout from "./components/MainLayout";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import AuthPage from "./pages/Auth";
+import TeamPage from "./pages/Team";
 
 const queryClient = new QueryClient();
 
@@ -39,10 +40,12 @@ const App = () => {
           <Routes>
             {/* Route for provider detail pages with NPI parameter */}
             <Route path="/:npi" element={<MainLayout user={user} />} />
-            {/* Route for the main page (all providers view) */}
-            <Route path="/" element={<MainLayout user={user} />} />
-            {/* Catch-all route for any other paths */}
-            <Route path="/*" element={<MainLayout user={user} />} />
+            {/* Route for the main page (all providers view) - now at /all-records */}
+            <Route path="/all-records" element={<MainLayout user={user} />} />
+            {/* New Team route */}
+            <Route path="/team" element={<TeamPage user={user} />} />
+            {/* Catch-all route: redirect to /all-records */}
+            <Route path="/*" element={<Navigate to="/all-records" replace />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
