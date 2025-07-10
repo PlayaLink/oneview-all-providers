@@ -28,7 +28,6 @@ interface MainContentProps {
   sidePanelOpen?: boolean;
   setSidePanelOpen?: (open: boolean) => void;
   activePanelGridName?: string | null;
-  onCloseSidePanel?: () => void;
   providerInfoData?: any[];
   user: any;
   selectedRow: (any & { gridName: string }) | null;
@@ -49,12 +48,11 @@ const MainContent: React.FC<MainContentProps> = ({
   sidePanelOpen = false,
   setSidePanelOpen,
   activePanelGridName,
-  onCloseSidePanel,
   providerInfoData = [],
   user,
   selectedRow,
   onRowSelect,
-  onCloseSidePanel: onCloseSidePanelProp,
+  onCloseSidePanel,
 }) => {
   const [currentGridIndex, setCurrentGridIndex] = useState(0);
   const [selectedGridName, setSelectedGridName] = useState<string | null>(null);
@@ -335,7 +333,9 @@ const MainContent: React.FC<MainContentProps> = ({
 
   // Function to get the appropriate template configuration for the active grid
   const getTemplateConfigForActiveGrid = () => {
-    const templateConfig = activePanelGridName ? getTemplateConfigByGrid(activePanelGridName) : null;
+    // Use activePanelGridName if available, otherwise use selectedRow.gridName
+    const gridName = activePanelGridName || selectedRow?.gridName;
+    const templateConfig = gridName ? getTemplateConfigByGrid(gridName) : null;
     
     if (templateConfig && Array.isArray(templateConfig.fieldGroups)) {
       const fields = templateConfig.fieldGroups.flatMap(group => group.fields);
