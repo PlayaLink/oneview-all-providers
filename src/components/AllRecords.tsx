@@ -32,11 +32,11 @@ const fetchProviders = async () => {
   return data;
 };
 
-interface MainLayoutProps {
+interface AllRecordsProps {
   user: any; // You can type this more strictly if desired
 }
 
-const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
+const AllRecords: React.FC<AllRecordsProps> = ({ user }) => {
   const { npi } = useParams<{ npi?: string }>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -415,4 +415,4 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
   );
 };
 
-export default MainLayout;
+export default AllRecords;
