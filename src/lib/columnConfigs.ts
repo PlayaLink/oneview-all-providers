@@ -32,6 +32,18 @@ const dateValueFormatter = (params: any) => {
   );
 };
 
+// Reusable valueFormatter for multi-select (array) fields
+export const multiSelectValueFormatter = (params: any) => {
+  const val = params.value;
+  if (Array.isArray(val)) {
+    if (val.length > 0 && typeof val[0] === 'object') {
+      return val.map(v => v.label || v.id || v).join(', ');
+    }
+    return val.join(', ');
+  }
+  return val || '';
+};
+
 // Generate column definitions for any grid based on its column names
 export const getColumnsForGrid = (gridKey: string): ColDef[] => {
   const grid = gridDefinitions.find(g => g.tableName === gridKey);
@@ -68,6 +80,19 @@ export const getColumnsForGrid = (gridKey: string): ColDef[] => {
     }
     if (isDateColumn(columnName)) {
       colDef.valueFormatter = dateValueFormatter;
+    }
+    // Use multiSelectValueFormatter for known multi-select fields
+    if ([
+      'primary_specialty',
+      'tags',
+      'classifications',
+      'taxonomy_codes',
+      'clinical_services',
+      'fluent_languages',
+      'cms_medicare_specialty_codes',
+      'other_specialties',
+    ].includes(columnName)) {
+      colDef.valueFormatter = multiSelectValueFormatter;
     }
     return colDef;
   });
@@ -145,6 +170,7 @@ export const standardColumns: ColDef[] = [
     resizable: true,
     minWidth: 150,
     flex: 1,
+    valueFormatter: multiSelectValueFormatter,
   },
   {
     field: "npi_number",
@@ -190,6 +216,7 @@ export const standardColumns: ColDef[] = [
     resizable: true,
     minWidth: 120,
     flex: 1,
+    valueFormatter: multiSelectValueFormatter,
   },
   {
     field: "last_updated",

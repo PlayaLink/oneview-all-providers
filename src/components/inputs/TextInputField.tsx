@@ -13,6 +13,21 @@ interface TextInputFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>
   className?: string;
 }
 
+// Utility: format YYYY-MM-DD or ISO date string as MM/DD/YYYY
+function formatDateForDisplay(val: any): string {
+  if (!val) return '';
+  if (typeof val !== 'string') return String(val);
+  // Match YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ
+  const match = val.match(/^\d{4}-\d{2}-\d{2}/);
+  if (match) {
+    const [year, month, day] = match[0].split('-');
+    if (year && month && day) {
+      return `${month}/${day}/${year}`;
+    }
+  }
+  return val;
+}
+
 export const TextInputField: React.FC<TextInputFieldProps> = ({
   label,
   labelPosition = "top",
@@ -77,7 +92,7 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
   const input = (
     <input
       type="text"
-      value={value}
+      value={formatDateForDisplay(value)}
       onChange={e => onChange(e.target.value)}
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
@@ -122,7 +137,7 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
       >
         <input
           type="text"
-          value={value}
+          value={formatDateForDisplay(value)}
           onChange={e => onChange(e.target.value)}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
