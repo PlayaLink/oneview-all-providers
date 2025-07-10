@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
+import { dbFetch, dbInsert, dbUpdate, dbDelete } from './dbClient';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://nsqushsijqnlstgwgkzx.supabase.co';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zcXVzaHNpanFubHN0Z3dna3p4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NTA2OTksImV4cCI6MjA2NzEyNjY5OX0.v0zmEJ83t1tI9Obt-ofjk6SJ3VxynkOoKJIwpDGLc5g';
@@ -55,22 +56,22 @@ export const ProviderSchema = z.object({
   personal_email: z.string().optional(),
   mobile_phone_number: z.string().optional(),
   title: z.string().optional(),
-  tags: z.array(z.string()).optional(),
+  tags: z.array(z.string()).nullable().optional(),
   primary_specialty: z.string().optional(),
   // ...add other fields as needed
 });
 export const StateLicenseSchema = z.object({
   id: z.string(),
   provider_id: z.string().optional(),
-  license_type: z.string().optional(),
-  license_additional_info: z.string().optional(),
-  state: z.string().optional(),
-  status: z.string().optional(),
-  issue_date: z.string().optional(),
-  expiration_date: z.string().optional(),
-  expires_within: z.string().optional(),
-  tags: z.array(z.string()).optional(),
-  last_updated: z.string().optional(),
+  license_type: z.string().nullable().optional(),
+  license_additional_info: z.string().nullable().optional(),
+  state: z.string().nullable().optional(),
+  status: z.string().nullable().optional(),
+  issue_date: z.string().nullable().optional(),
+  expiration_date: z.string().nullable().optional(),
+  expires_within: z.string().nullable().optional(),
+  tags: z.array(z.string()).nullable().optional(),
+  last_updated: z.string().nullable().optional(),
   provider: z.any().optional(),
   // ...add other fields as needed
 });
@@ -93,57 +94,31 @@ export const BirthInfoSchema = z.object({
   height_in: z.string().optional(),
   weight_lbs: z.string().optional(),
   ethnicity: z.string().optional(),
-  tags: z.array(z.string()).optional(),
+  tags: z.array(z.string()).nullable().optional(),
   provider: z.any().optional(),
   // ...add other fields as needed
 });
 
-// Validate fetched data for providers
-export async function fetchProviders() {
-  const { data, error } = await supabase.from('providers').select('*');
-  if (error) throw error;
-  if (!Array.isArray(data)) throw new Error('Providers data is not an array');
-  data.forEach(row => ProviderSchema.parse(row));
-  return data;
-};
-// Validate fetched data for state licenses
-export async function fetchStateLicenses() {
-  const { data, error } = await supabase
-    .from('state_licenses')
-    .select(`
-      *,
-      provider:providers(
-        id,
-        first_name,
-        last_name,
-        title,
-        primary_specialty
-      )
-    `);
-  if (error) throw error;
-  if (!Array.isArray(data)) throw new Error('State licenses data is not an array');
-  data.forEach(row => StateLicenseSchema.parse(row));
-  return data;
-};
-// Validate fetched data for birth info
-export async function fetchBirthInfo() {
-  const { data, error } = await supabase
-    .from('birth_info')
-    .select(`
-      *,
-      provider:providers(
-        id,
-        first_name,
-        last_name,
-        title,
-        primary_specialty
-      )
-    `);
-  if (error) throw error;
-  if (!Array.isArray(data)) throw new Error('Birth info data is not an array');
-  data.forEach(row => BirthInfoSchema.parse(row));
-  return data;
-};
+// Per-table helpers using dbFetch
+export function fetchProviders() {
+  return dbFetch('providers', '*', ProviderSchema);
+}
+
+export function fetchStateLicenses() {
+  return dbFetch(
+    'state_licenses',
+    '*,provider:providers(id,first_name,last_name,title,primary_specialty)',
+    StateLicenseSchema
+  );
+}
+
+export function fetchBirthInfo() {
+  return dbFetch(
+    'birth_info',
+    '*,provider:providers(id,first_name,last_name,title,primary_specialty)',
+    BirthInfoSchema
+  );
+}
 
 export async function fetchStateLicensesByProvider(providerId: string) {
   const { data, error } = await supabase
@@ -295,4 +270,32 @@ export async function upsertFeatureSetting(key: string, value: any, description?
     .single();
   if (error) throw error;
   return data;
+} 
+
+export const AddressSchema = z.object({
+  id: z.string(),
+  provider_id: z.string(),
+  type: z.string().nullable(),
+  address: z.string().nullable(),
+  address_2: z.string().nullable(),
+  city: z.string().nullable(),
+  state: z.string().nullable(),
+  zip_postal_code: z.string().nullable(),
+  phone_number: z.string().nullable(),
+  email: z.string().nullable(),
+  start_date: z.string().nullable(),
+  end_date: z.string().nullable(),
+  county: z.string().nullable(),
+  country: z.string().nullable(),
+  tags: z.array(z.string()).nullable().optional(),
+  last_updated: z.string().optional(),
+  provider: z.any().optional(),
+});
+
+export function fetchAddresses() {
+  return dbFetch(
+    'addresses',
+    '*,provider:providers(id,first_name,last_name,title,primary_specialty)',
+    AddressSchema
+  );
 } 

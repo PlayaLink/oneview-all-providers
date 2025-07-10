@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase, fetchAddresses } from '@/lib/supabaseClient';
 
 // Fetch functions for each grid
 const fetchProviders = async () => {
@@ -42,6 +42,10 @@ const fetchBirthInfo = async () => {
   return data;
 };
 
+const fetchAddressesData = async () => {
+  return fetchAddresses();
+};
+
 // Central hook
 export function useGridData(gridName: string) {
   switch (gridName) {
@@ -59,6 +63,11 @@ export function useGridData(gridName: string) {
       return useQuery({
         queryKey: ['birth_info'],
         queryFn: fetchBirthInfo,
+      });
+    case 'Addresses':
+      return useQuery({
+        queryKey: ['addresses'],
+        queryFn: fetchAddressesData,
       });
     default:
       return { data: [], isLoading: false, error: null };

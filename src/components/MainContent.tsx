@@ -10,9 +10,9 @@ import { getIconByName } from "@/lib/iconMapping";
 import { Provider } from "@/types";
 import providerInfoConfig from "@/data/provider_info_details.json";
 import { useQuery } from '@tanstack/react-query';
-import { fetchStateLicenses, fetchStateLicensesByProvider } from '@/lib/supabaseClient';
+import { fetchProviders, fetchStateLicenses, fetchBirthInfo, fetchAddresses } from '@/lib/supabaseClient';
 import { getTemplateConfigByGrid, providerInfoTemplate, stateLicenseTemplate } from '@/lib/templateConfigs';
-import { useGridData } from '@/hooks/useGridData';
+// Removed: import { useGridData } from '@/hooks/useGridData';
 
 interface MainContentProps {
   selectedItem?: string | null;
@@ -57,10 +57,23 @@ const MainContent: React.FC<MainContentProps> = ({
   const gridRefs = useRef<(HTMLDivElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Centralized grid data fetching
-  const providerInfoQuery = useGridData('Provider_Info');
-  const stateLicensesQuery = useGridData('State_Licenses');
-  const birthInfoQuery = useGridData('Birth_Info');
+  // Centralized grid data fetching (now using per-table helpers)
+  const providerInfoQuery = useQuery({
+    queryKey: ['providers'],
+    queryFn: fetchProviders,
+  });
+  const stateLicensesQuery = useQuery({
+    queryKey: ['state_licenses'],
+    queryFn: fetchStateLicenses,
+  });
+  const birthInfoQuery = useQuery({
+    queryKey: ['birth_info'],
+    queryFn: fetchBirthInfo,
+  });
+  const addressesQuery = useQuery({
+    queryKey: ['addresses'],
+    queryFn: fetchAddresses,
+  });
 
   // Memoize sample data for all grids only once
   const sampleDataRef = React.useRef<{ [gridName: string]: any[] }>({});
@@ -100,6 +113,16 @@ const MainContent: React.FC<MainContentProps> = ({
     }
     if (gridKey === "Birth_Info") {
       const { data } = birthInfoQuery;
+      if (!data) return [];
+      return data.map((row: any) => ({
+        ...row,
+        provider_name: row.provider ? `${row.provider.last_name}, ${row.provider.first_name}` : '',
+        title: row.provider?.title || '',
+        primary_specialty: row.provider?.primary_specialty || '',
+      }));
+    }
+    if (gridKey === "Addresses") {
+      const { data } = addressesQuery;
       if (!data) return [];
       return data.map((row: any) => ({
         ...row,

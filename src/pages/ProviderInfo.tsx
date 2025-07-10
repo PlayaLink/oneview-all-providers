@@ -3,13 +3,7 @@ import { faUserDoctor } from "@fortawesome/free-solid-svg-icons";
 import DataGrid from "@/components/DataGrid";
 import { standardColumns } from "@/lib/gridConfig";
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/lib/supabaseClient';
-
-const fetchProviders = async () => {
-  const { data, error } = await supabase.from('providers').select('*');
-  if (error) throw error;
-  return data;
-};
+import { fetchProviders } from '@/lib/supabaseClient';
 
 const ProviderInfo: React.FC = () => {
   const { data: providers, isLoading, error } = useQuery<any[], Error>({
@@ -19,6 +13,8 @@ const ProviderInfo: React.FC = () => {
 
   // Map the data to the expected grid format
   const gridData = React.useMemo(() => {
+    console.log('gridData', gridData);
+
     if (!providers) return [];
     return providers.map((row) => ({
       ...row,
