@@ -7,6 +7,7 @@ import { faUsers } from "@fortawesome/free-solid-svg-icons";
 import NavItem from "@/components/NavItem";
 import { useNavigate, useLocation } from "react-router-dom";
 import GlobalNavigation from "@/components/GlobalNavigation";
+import PageContainer from "@/components/PageContainer";
 
 const TeamPage: React.FC<{ user: any }> = ({ user }) => {
   console.log("TeamPage loaded");
@@ -27,7 +28,7 @@ const TeamPage: React.FC<{ user: any }> = ({ user }) => {
   console.log("mappedData", mappedData);
 
   return (
-    <main className="flex flex-col flex-1 min-h-0 h-full w-full px-4 pt-4 pb-8 bg-white" role="main" aria-label="Team Providers Page" data-testid="team-page">
+    <PageContainer>
       <GlobalNavigation user={user} />
       <header className="mb-6">
         <h1 className="text-2xl font-bold" role="heading" aria-level={1} data-testid="team-title">Providers</h1>
@@ -44,7 +45,7 @@ const TeamPage: React.FC<{ user: any }> = ({ user }) => {
         {isLoading && <div className="text-gray-500 mt-4">Loading providers...</div>}
         {error && <div className="text-red-500 mt-4">Error loading providers: {error.message}</div>}
       </section>
-    </main>
+    </PageContainer>
   );
 };
 

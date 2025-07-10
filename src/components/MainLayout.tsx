@@ -24,6 +24,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabaseClient';
 import { useFeatureSettings } from '@/hooks/useFeatureSettings';
 import GlobalNavigation from "@/components/GlobalNavigation";
+import PageContainer from "@/components/PageContainer";
 
 const fetchProviders = async () => {
   const { data, error } = await supabase.from('providers').select('*');
@@ -280,110 +281,111 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user }) => {
         visibleSections={npi ? visibleSections : undefined}
         onSectionVisibilityChange={npi ? handleSectionVisibilityChange : undefined}
       />
-
-      {/* Main Content */}
-      <main className="flex flex-1 border-t border-gray-300" role="main" aria-label="Main Content Area" data-testid="main-content-area">
-        {npi ? (
-          // Single-provider view: no nav, all grids, filter by NPI
-          <div className="flex-1 flex flex-col min-h-0 w-full px-4 pt-4 pb-8">
-            <MainContent
-              singleProviderNpi={npi}
-              visibleSections={visibleSections}
-              // ...pass other props as needed...
-              selectedRow={selectedRow}
-              onRowSelect={handleRowSelect}
-              onCloseSidePanel={handleCloseSidePanel}
-              providerInfoData={providerInfoData}
-              user={user}
-            />
-          </div>
-        ) : gridSectionMode === "left-nav" ? (
-          /* Left Navigation Layout */
-          <div className="flex flex-1">
-            {/* Left Sidebar */}
-            <aside
-              className={cn(
-                "relative border-r border-gray-300 bg-white transition-all duration-300 flex flex-col",
-                sidebarCollapsed ? "w-0" : "w-48",
-              )}
-              role="complementary"
-              aria-label="Sidebar navigation"
-              data-testid="sidebar-navigation"
-            >
-              <SideNav
-                collapsed={sidebarCollapsed}
-                selectedItem={selectedItem}
-                selectedSection={selectedSection}
-                onItemSelect={handleItemSelect}
-                onSectionSelect={handleSectionSelect}
+      <PageContainer>
+        {/* Main Content */}
+        <main className="flex flex-1 border-t border-gray-300" role="main" aria-label="Main Content Area" data-testid="main-content-area">
+          {npi ? (
+            // Single-provider view: no nav, all grids, filter by NPI
+            <div className="flex-1 flex flex-col min-h-0 w-full px-4 pt-4 pb-8">
+              <MainContent
+                singleProviderNpi={npi}
+                visibleSections={visibleSections}
+                // ...pass other props as needed...
+                selectedRow={selectedRow}
+                onRowSelect={handleRowSelect}
+                onCloseSidePanel={handleCloseSidePanel}
+                providerInfoData={providerInfoData}
+                user={user}
               />
-
-              {/* Collapse Toggle */}
-              <button
-                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                className="absolute w-6 h-6 bg-[#545454] text-white rounded-full flex items-center justify-center hover:bg-[#3f3f3f] transition-colors z-20"
-                style={{
-                  right: sidebarCollapsed ? "-28px" : "-12px",
-                  top: "-12px",
-                }}
-                aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-                aria-expanded={!sidebarCollapsed}
-                data-testid="sidebar-toggle"
-              >
-                {sidebarCollapsed ? (
-                  <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" aria-hidden="true" />
-                ) : (
-                  <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" aria-hidden="true" />
+            </div>
+          ) : gridSectionMode === "left-nav" ? (
+            /* Left Navigation Layout */
+            <div className="flex flex-1">
+              {/* Left Sidebar */}
+              <aside
+                className={cn(
+                  "relative border-r border-gray-300 bg-white transition-all duration-300 flex flex-col",
+                  sidebarCollapsed ? "w-0" : "w-48",
                 )}
-              </button>
-            </aside>
+                role="complementary"
+                aria-label="Sidebar navigation"
+                data-testid="sidebar-navigation"
+              >
+                <SideNav
+                  collapsed={sidebarCollapsed}
+                  selectedItem={selectedItem}
+                  selectedSection={selectedSection}
+                  onItemSelect={handleItemSelect}
+                  onSectionSelect={handleSectionSelect}
+                />
 
-            {/* Main Grid Area - Flexible */}
-            <section
-              className={cn(
-                "flex-1 flex flex-col min-h-0",
-                sidebarCollapsed && "ml-4 border-l border-gray-300",
-              )}
-              role="region"
-              aria-label="Content area"
-              data-testid="content-area"
-            >
-              <MainContent
-                selectedItem={selectedItem}
+                {/* Collapse Toggle */}
+                <button
+                  onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                  className="absolute w-6 h-6 bg-[#545454] text-white rounded-full flex items-center justify-center hover:bg-[#3f3f3f] transition-colors z-20"
+                  style={{
+                    right: sidebarCollapsed ? "-28px" : "-12px",
+                    top: "-12px",
+                  }}
+                  aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                  aria-expanded={!sidebarCollapsed}
+                  data-testid="sidebar-toggle"
+                >
+                  {sidebarCollapsed ? (
+                    <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" aria-hidden="true" />
+                  ) : (
+                    <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" aria-hidden="true" />
+                  )}
+                </button>
+              </aside>
+
+              {/* Main Grid Area - Flexible */}
+              <section
+                className={cn(
+                  "flex-1 flex flex-col min-h-0",
+                  sidebarCollapsed && "ml-4 border-l border-gray-300",
+                )}
+                role="region"
+                aria-label="Content area"
+                data-testid="content-area"
+              >
+                <MainContent
+                  selectedItem={selectedItem}
+                  selectedSection={selectedSection}
+                  visibleSections={visibleSections}
+                  selectedRow={selectedRow}
+                  onRowSelect={handleRowSelect}
+                  onCloseSidePanel={handleCloseSidePanel}
+                  providerInfoData={providerInfoData}
+                  user={user}
+                />
+              </section>
+            </div>
+          ) : (
+            /* Horizontal Navigation Layout */
+            <div className="flex-1 flex flex-col min-h-0">
+              <HorizontalNav
                 selectedSection={selectedSection}
+                onSectionSelect={handleSectionSelect}
                 visibleSections={visibleSections}
-                selectedRow={selectedRow}
-                onRowSelect={handleRowSelect}
-                onCloseSidePanel={handleCloseSidePanel}
-                providerInfoData={providerInfoData}
-                user={user}
+                onSectionVisibilityChange={handleSectionVisibilityChange}
               />
-            </section>
-          </div>
-        ) : (
-          /* Horizontal Navigation Layout */
-          <div className="flex-1 flex flex-col min-h-0">
-            <HorizontalNav
-              selectedSection={selectedSection}
-              onSectionSelect={handleSectionSelect}
-              visibleSections={visibleSections}
-              onSectionVisibilityChange={handleSectionVisibilityChange}
-            />
-            <section className="flex-1 min-h-0" role="region" aria-label="Content area" data-testid="content-area">
-              <MainContent
-                selectedItem={selectedItem}
-                selectedSection={selectedSection}
-                visibleSections={visibleSections}
-                selectedRow={selectedRow}
-                onRowSelect={handleRowSelect}
-                onCloseSidePanel={handleCloseSidePanel}
-                providerInfoData={providerInfoData}
-                user={user}
-              />
-            </section>
-          </div>
-        )}
-      </main>
+              <section className="flex-1 min-h-0" role="region" aria-label="Content area" data-testid="content-area">
+                <MainContent
+                  selectedItem={selectedItem}
+                  selectedSection={selectedSection}
+                  visibleSections={visibleSections}
+                  selectedRow={selectedRow}
+                  onRowSelect={handleRowSelect}
+                  onCloseSidePanel={handleCloseSidePanel}
+                  providerInfoData={providerInfoData}
+                  user={user}
+                />
+              </section>
+            </div>
+          )}
+        </main>
+      </PageContainer>
 
       {/* Footer */}
       <footer className="bg-[#545454] text-white px-20 py-4 flex items-center justify-between" role="contentinfo" aria-label="Application footer">
