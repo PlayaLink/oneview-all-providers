@@ -14,6 +14,7 @@ import SideNav from "@/components/SideNav";
 import HorizontalNav from "@/components/HorizontalNav";
 import PageHeader from "@/components/PageHeader";
 import MainContent from "@/components/MainContent";
+import MainContentArea from "@/components/MainContentArea";
 
 import { getGroups, getGridsByGroup } from "@/lib/gridDefinitions";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
@@ -283,7 +284,7 @@ const AllRecords: React.FC<AllRecordsProps> = ({ user }) => {
       />
       <PageContainer>
         {/* Main Content */}
-        <main className="flex flex-1 border-t border-gray-300" role="main" aria-label="Main Content Area" data-testid="main-content-area">
+        <MainContentArea>
           {npi ? (
             // Single-provider view: no nav, all grids, filter by NPI
             <div className="flex-1 flex flex-col min-h-0 w-full px-4 pt-4 pb-8">
@@ -384,7 +385,7 @@ const AllRecords: React.FC<AllRecordsProps> = ({ user }) => {
               </section>
             </div>
           )}
-        </main>
+        </MainContentArea>
       </PageContainer>
 
       {/* Footer */}
