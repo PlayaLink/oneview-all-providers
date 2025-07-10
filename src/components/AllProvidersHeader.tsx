@@ -5,6 +5,7 @@ import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { Button } from "@/components/ui/button";
 import SectionsDropdown from "@/components/SectionsDropdown";
 import { useNavigate } from "react-router-dom";
+import { useFeatureSettings } from "@/hooks/useFeatureSettings";
 
 interface ProviderInfo {
   fullName: string;
@@ -58,6 +59,8 @@ const AllProvidersHeader: React.FC<AllProvidersHeaderProps> = ({
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const { settings, isLoading: settingsLoading } = useFeatureSettings();
+  const gridSectionMode = settingsLoading ? 'left-nav' : settings.grid_section_navigation;
 
   // Initialize search value when on provider detail route
   React.useEffect(() => {
@@ -131,7 +134,7 @@ const AllProvidersHeader: React.FC<AllProvidersHeaderProps> = ({
         <div className="flex items-center gap-2 min-w-0">
           {!npi && title && (
             <h1 className="font-bold text-base tracking-wider capitalize" role="all-providers-header-title">
-              {title.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())}
+              {gridSectionMode === 'left-nav' ? 'All Records' : title.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())}
             </h1>
           )}
           {/* Single-provider view header */}

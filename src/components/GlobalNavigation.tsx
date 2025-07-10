@@ -6,6 +6,7 @@ import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { supabase } from "@/lib/supabaseClient";
 import GlobalFeatureToggle from "@/components/GlobalFeatureToggle";
+import { useFeatureSettings } from "@/hooks/useFeatureSettings";
 
 interface GlobalNavigationProps {
   user: any;
@@ -17,6 +18,8 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [newFeaturesDropdownOpen, setNewFeaturesDropdownOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
+  const { settings, isLoading: settingsLoading } = useFeatureSettings();
+  const gridSectionMode = settingsLoading ? 'left-nav' : settings.grid_section_navigation;
 
   useEffect(() => {
     if (!profileDropdownOpen) return;
@@ -164,7 +167,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
                 onClick={() => navigate("/all-records")}
                 data-testid="nav-item-oneview"
               >
-                OneView V2
+                {gridSectionMode === 'left-nav' ? 'All Records' : 'OneView V2'}
               </NavItem>
               <NavItem variant="main" role="menuitem">Forms</NavItem>
               <NavItem variant="main" role="menuitem">Tracking</NavItem>

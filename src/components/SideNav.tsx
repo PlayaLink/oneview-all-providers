@@ -7,6 +7,7 @@ import {
 import { cn } from "@/lib/utils";
 import { gridDefinitions, getGroups, getGridsByGroup } from "@/lib/gridDefinitions";
 import { getIconByName } from "@/lib/iconMapping";
+import { useFeatureSettings } from "@/hooks/useFeatureSettings";
 
 interface SideNavProps {
   collapsed: boolean;
@@ -36,6 +37,9 @@ const SideNav: React.FC<SideNavProps> = ({
     });
     return initial;
   });
+
+  const { settings, isLoading: settingsLoading } = useFeatureSettings();
+  const gridSectionMode = settingsLoading ? 'left-nav' : settings.grid_section_navigation;
 
   const toggleSection = (sectionKey: string) => {
     setExpandedSections((prev) => ({
@@ -80,8 +84,9 @@ const SideNav: React.FC<SideNavProps> = ({
                     ? "text-white"
                     : "text-[#545454]",
                 )}
+                role="all-sections-button-text"
               >
-                All Sections
+                {gridSectionMode === 'left-nav' ? 'All Records' : 'All Sections'}
               </span>
               <FontAwesomeIcon
                 icon={faEllipsis}
