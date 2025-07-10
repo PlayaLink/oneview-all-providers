@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import AuthPage from "./pages/Auth";
 import TeamPage from "./pages/Team";
+import AppLayout from "./components/AppLayout";
+import { UserProvider } from "./contexts/UserContext";
 
 const queryClient = new QueryClient();
 
@@ -37,16 +39,20 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            {/* Route for provider detail pages with NPI parameter */}
-            <Route path="/:npi" element={<AllRecords user={user} />} />
-            {/* Route for the main page (all providers view) - now at /all-records */}
-            <Route path="/all-records" element={<AllRecords user={user} />} />
-            {/* New Team route */}
-            <Route path="/team" element={<TeamPage user={user} />} />
-            {/* Catch-all route: redirect to /all-records */}
-            <Route path="/*" element={<Navigate to="/all-records" replace />} />
-          </Routes>
+          <UserProvider user={user}>
+            <AppLayout user={user}>
+              <Routes>
+                {/* Route for provider detail pages with NPI parameter */}
+                <Route path="/:npi" element={<AllRecords />} />
+                {/* Route for the main page (all providers view) - now at /all-records */}
+                <Route path="/all-records" element={<AllRecords />} />
+                {/* New Team route */}
+                <Route path="/team" element={<TeamPage />} />
+                {/* Catch-all route: redirect to /all-records */}
+                <Route path="/*" element={<Navigate to="/all-records" replace />} />
+              </Routes>
+            </AppLayout>
+          </UserProvider>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>

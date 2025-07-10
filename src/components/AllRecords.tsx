@@ -24,8 +24,7 @@ import NavItem from "@/components/NavItem";
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabaseClient';
 import { useFeatureSettings } from '@/hooks/useFeatureSettings';
-import GlobalNavigation from "@/components/GlobalNavigation";
-import PageContainer from "@/components/PageContainer";
+import { useUser } from '@/contexts/UserContext';
 
 const fetchProviders = async () => {
   const { data, error } = await supabase.from('providers').select('*');
@@ -34,10 +33,11 @@ const fetchProviders = async () => {
 };
 
 interface AllRecordsProps {
-  user: any; // You can type this more strictly if desired
+  // user is now provided by AppLayout, so we don't need it as a prop
 }
 
-const AllRecords: React.FC<AllRecordsProps> = ({ user }) => {
+const AllRecords: React.FC<AllRecordsProps> = () => {
+  const { user } = useUser();
   const { npi } = useParams<{ npi?: string }>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -204,9 +204,7 @@ const AllRecords: React.FC<AllRecordsProps> = ({ user }) => {
 
 
   return (
-    <div className="h-screen flex flex-col bg-white" data-testid="main-layout">
-
-      <GlobalNavigation user={user} />
+    <>
       {/* Page Header */}
       <PageHeader
         title={npi ? undefined : "All Providers"}
@@ -224,9 +222,7 @@ const AllRecords: React.FC<AllRecordsProps> = ({ user }) => {
         visibleSections={npi ? visibleSections : undefined}
         onSectionVisibilityChange={npi ? handleSectionVisibilityChange : undefined}
       />
-      <PageContainer>
-        {/* Main Content */}
-        <MainContentArea>
+      {/* Main Content */}
           {npi ? (
             // Single-provider view: no nav, all grids, filter by NPI
             <div className="flex-1 flex flex-col min-h-0 w-full px-4 pt-4 pb-8">
@@ -327,34 +323,7 @@ const AllRecords: React.FC<AllRecordsProps> = ({ user }) => {
               </section>
             </div>
           )}
-        </MainContentArea>
-      </PageContainer>
-
-      {/* Footer */}
-      <footer className="bg-[#545454] text-white px-20 py-4 flex items-center justify-between" role="contentinfo" aria-label="Application footer">
-        <nav className="text-[#91DCFB] text-xs font-semibold" role="navigation" aria-label="Footer navigation">
-          <a href="#" className="hover:underline">Privacy Policy</a>
-        </nav>
-        <div className="text-xs font-semibold">
-          <span className="text-white">© 2023 </span>
-          <span className="text-[#91DCFB]">Modio Health</span>
-          <span className="text-white"> All Rights Reserved</span>
-        </div>
-        <nav className="text-[#91DCFB] text-xs font-semibold" role="navigation" aria-label="Footer navigation">
-          <a href="#" className="hover:underline">Terms and Conditions</a>
-        </nav>
-
-        {/* Chat Bubble */}
-        <button 
-          className="bg-[#12ABE4] px-5 py-3 rounded-full flex items-center gap-3 relative -top-2 -right-5 hover:bg-[#0F9BC7] transition-colors"
-          aria-label="Open chat support"
-          data-testid="chat-button"
-        >
-          <span className="text-white font-bold text-xs">Chat</span>
-          <div className="w-4 h-4 bg-white rounded" aria-hidden="true"></div>
-        </button>
-      </footer>
-    </div>
+    </>
   );
 };
 
