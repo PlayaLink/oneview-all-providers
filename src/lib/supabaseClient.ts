@@ -86,13 +86,13 @@ export const BirthInfoSchema = z.object({
   birth_state_province: z.string().optional(),
   birth_county: z.string().optional(),
   birth_country: z.string().optional(),
-  gender: z.string().optional(),
-  identifies_transgender: z.string().optional(),
+  gender: z.string().nullable().optional(),
+  identifies_transgender: z.union([z.string(), z.boolean()]).optional().nullable(),
   hair_color: z.string().optional(),
   eye_color: z.string().optional(),
-  height_ft: z.string().optional(),
-  height_in: z.string().optional(),
-  weight_lbs: z.string().optional(),
+  height_ft: z.union([z.string(), z.number()]).optional().nullable(),
+  height_in: z.union([z.string(), z.number()]).optional().nullable(),
+  weight_lbs: z.union([z.string(), z.number()]).optional().nullable(),
   ethnicity: z.string().optional(),
   tags: z.array(z.string()).nullable().optional(),
   provider: z.any().optional(),
@@ -113,11 +113,15 @@ export function fetchStateLicenses() {
 }
 
 export function fetchBirthInfo() {
+  console.log("fetchBirthInfo called");
   return dbFetch(
     'birth_info',
     '*,provider:providers(id,first_name,last_name,title,primary_specialty)',
     BirthInfoSchema
-  );
+  ).then(result => {
+    console.log("fetchBirthInfo result:", result);
+    return result;
+  });
 }
 
 export async function fetchStateLicensesByProvider(providerId: string) {

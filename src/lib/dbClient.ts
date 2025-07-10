@@ -6,7 +6,15 @@ export async function dbFetch<T>(table: string, select: string, schema: z.ZodTyp
   const { data, error } = await supabase.from(table).select(select);
   if (error) throw error;
   if (!Array.isArray(data)) throw new Error(`${table} data is not an array`);
-  data.forEach(row => schema.parse(row));
+  if (data.length > 0) {
+    console.log(`[dbFetch] First row for table ${table}:`, data[0]);
+  }
+  try {
+    data.forEach(row => schema.parse(row));
+  } catch (e) {
+    console.error(`[dbFetch] Zod validation error for table ${table}:`, e);
+    throw e;
+  }
   return data as T[];
 }
 

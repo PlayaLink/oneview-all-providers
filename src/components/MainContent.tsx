@@ -71,6 +71,7 @@ const MainContent: React.FC<MainContentProps> = ({
     queryKey: ['birth_info'],
     queryFn: fetchBirthInfo,
   });
+  console.log("birthInfoQuery state:", birthInfoQuery);
   const addressesQuery = useQuery({
     queryKey: ['addresses'],
     queryFn: fetchAddresses,
