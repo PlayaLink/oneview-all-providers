@@ -160,7 +160,7 @@ const AllRecords: React.FC<AllRecordsProps> = () => {
 
 
 
-  // Handler for provider search selection (to be used in PageHeader)
+  // Handler for provider search selection (to be used in AllProvidersHeader)
   const handleProviderSelect = (providerNpi: string) => {
     if (providerNpi) {
       navigate(`/${providerNpi}`);

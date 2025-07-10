@@ -4,6 +4,7 @@ import { faSearch, faTimes, faUser } from "@fortawesome/free-solid-svg-icons";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { Button } from "@/components/ui/button";
 import SectionsDropdown from "@/components/SectionsDropdown";
+import { useNavigate } from "react-router-dom";
 
 interface ProviderInfo {
   fullName: string;
@@ -56,6 +57,7 @@ const AllProvidersHeader: React.FC<AllProvidersHeaderProps> = ({
   const [search, setSearch] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   // Initialize search value when on provider detail route
   React.useEffect(() => {
@@ -83,7 +85,15 @@ const AllProvidersHeader: React.FC<AllProvidersHeaderProps> = ({
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
+    const newValue = e.target.value;
+    setSearch(newValue);
+    
+    // If the search becomes empty (user cleared it manually), go back to previous page
+    if (newValue === "" && search !== "") {
+      navigate(-1);
+      return;
+    }
+    
     setDropdownOpen(true);
   };
 
@@ -95,7 +105,8 @@ const AllProvidersHeader: React.FC<AllProvidersHeaderProps> = ({
     setSearch("");
     setDropdownOpen(false);
     inputRef.current?.focus();
-    if (onProviderSelect) onProviderSelect(""); // reroute to main view
+    // Go back to the previous page when search is cleared
+    navigate(-1);
   };
 
   // Close dropdown on click outside
@@ -119,7 +130,7 @@ const AllProvidersHeader: React.FC<AllProvidersHeaderProps> = ({
         {/* Left: Icon and Title or Provider Info */}
         <div className="flex items-center gap-2 min-w-0">
           {!npi && title && (
-            <h1 className="font-bold text-base tracking-wider capitalize">
+            <h1 className="font-bold text-base tracking-wider capitalize" role="all-providers-header-title">
               {title.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())}
             </h1>
           )}
