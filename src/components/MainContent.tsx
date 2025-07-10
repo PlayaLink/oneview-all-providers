@@ -4,7 +4,7 @@ import { faChevronUp, faChevronDown, faTable } from "@fortawesome/free-solid-svg
 import DataGrid from "@/components/DataGrid";
 import SidePanel from "@/components/SidePanel";
 import { generateSampleData } from "@/lib/dataGenerator";
-import { getColumnsForGrid, getColumnsForSingleProviderView } from "@/lib/columnConfigs";
+import { getColumnsForGrid, getColumnsForSingleProviderView, formatProviderName } from "@/lib/columnConfigs";
 import { gridDefinitions, getGridsByGroup } from "@/lib/gridDefinitions";
 import { getIconByName } from "@/lib/iconMapping";
 import { Provider } from "@/types";
@@ -96,27 +96,33 @@ const MainContent: React.FC<MainContentProps> = ({
     },
     State_Licenses: {
       query: stateLicensesQuery,
-      map: (license) => ({
-        ...license,
-        provider_name: license.provider ? `${license.provider.last_name}, ${license.provider.first_name}` : '',
-        title: license.provider?.title || '',
-        primary_specialty: license.provider?.primary_specialty || '',
-      }),
+      map: (license) => {
+        console.log('State License provider name parts:', license.provider?.last_name, license.provider?.first_name);
+        return {
+          ...license,
+          provider_name: license.provider ? formatProviderName(license.provider.last_name, license.provider.first_name) : '',
+          title: license.provider?.title || '',
+          primary_specialty: license.provider?.primary_specialty || '',
+        };
+      },
     },
     Birth_Info: {
       query: birthInfoQuery,
-      map: (row) => ({
-        ...row,
-        provider_name: row.provider ? `${row.provider.last_name}, ${row.provider.first_name}` : '',
-        title: row.provider?.title || '',
-        primary_specialty: row.provider?.primary_specialty || '',
-      }),
+      map: (row) => {
+        console.log('Birth Info provider name parts:', row.provider?.last_name, row.provider?.first_name);
+        return {
+          ...row,
+          provider_name: row.provider ? formatProviderName(row.provider.last_name, row.provider.first_name) : '',
+          title: row.provider?.title || '',
+          primary_specialty: row.provider?.primary_specialty || '',
+        };
+      },
     },
     Addresses: {
       query: addressesQuery,
       map: (row) => ({
         ...row,
-        provider_name: row.provider ? `${row.provider.last_name}, ${row.provider.first_name}` : '',
+        provider_name: row.provider ? formatProviderName(row.provider.last_name, row.provider.first_name) : '',
         title: row.provider?.title || '',
         primary_specialty: row.provider?.primary_specialty || '',
       }),

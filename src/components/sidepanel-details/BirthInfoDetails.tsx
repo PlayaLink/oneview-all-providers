@@ -47,7 +47,7 @@ export const birthInfoTemplate = {
   description: 'Template for displaying provider birth information',
   header: ({ gridName, row, provider }) => {
     // For Birth Info, just use the provider name if available, else fallback to row
-    const name = provider ? `${provider.first_name || ''} ${provider.last_name || ''}`.trim() : (row.provider_name || '');
+    const name = provider ? [provider.last_name, provider.first_name].filter(Boolean).join(', ') : (row.provider_name || '');
     const title = provider ? provider.title || '' : (row.title || '');
     return `${gridName} for ${name} ${title}`.trim();
   },

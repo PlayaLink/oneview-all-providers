@@ -44,6 +44,14 @@ export const multiSelectValueFormatter = (params: any) => {
   return val || '';
 };
 
+// Utility to robustly join provider names without extra commas
+export function formatProviderName(lastName: string | undefined, firstName: string | undefined): string {
+  return [lastName, firstName]
+    .map(part => (part || '').replace(/,+$/, '').trim()) // Remove trailing commas and trim
+    .filter(part => part.length > 0)
+    .join(', ');
+}
+
 // Generate column definitions for any grid based on its column names
 export const getColumnsForGrid = (gridKey: string): ColDef[] => {
   const grid = gridDefinitions.find(g => g.tableName === gridKey);
@@ -65,17 +73,25 @@ export const getColumnsForGrid = (gridKey: string): ColDef[] => {
       colDef.valueGetter = (params: any) => {
         if (!params.data) return '';
         const { first_name, last_name, provider_name } = params.data;
+        let value = '';
         if (first_name || last_name) {
-          return [last_name, first_name].filter(Boolean).join(', ');
+          console.log('first_name:', first_name);
+          console.log('last_name:', last_name); 
+          value = formatProviderName(last_name, first_name);
+          console.log('value:', value);
+        } else {
+          // fallback: try to split provider_name
+          const name = provider_name || '';
+          const [first, ...rest] = name.split(' ');
+          const last = rest.join(' ');
+          if (first || last) {
+            value = formatProviderName(last, first);
+          } else {
+            value = name;
+          }
         }
-        // fallback: try to split provider_name
-        const name = provider_name || '';
-        const [first, ...rest] = name.split(' ');
-        const last = rest.join(' ');
-        if (first || last) {
-          return [last, first].filter(Boolean).join(', ');
-        }
-        return name;
+        console.log('AG Grid valueGetter provider_name:', value);
+        return value;
       };
     }
     if (isDateColumn(columnName)) {
@@ -140,17 +156,23 @@ export const standardColumns: ColDef[] = [
     valueGetter: (params: any) => {
       if (!params.data) return '';
       const { first_name, last_name, provider_name } = params.data;
+      let value = '';
       if (first_name || last_name) {
-        return [last_name, first_name].filter(Boolean).join(', ');
+        value = formatProviderName(last_name, first_name);
+      } else {
+        // fallback: try to split provider_name
+        const name = provider_name || '';
+        console.log('Raw provider_name:', name);
+        const [first, ...rest] = name.split(' ');
+        const last = rest.join(' ');
+        if (first || last) {
+          value = formatProviderName(last, first);
+        } else {
+          value = name;
+        }
       }
-      // fallback: try to split provider_name
-      const name = provider_name || '';
-      const [first, ...rest] = name.split(' ');
-      const last = rest.join(' ');
-      if (first || last) {
-        return [last, first].filter(Boolean).join(', ');
-      }
-      return name;
+      console.log('AG Grid valueGetter provider_name:', value);
+      return value;
     },
   },
   {
@@ -241,17 +263,22 @@ export const birthInfoColumns: ColDef[] = [
     valueGetter: (params: any) => {
       if (!params.data) return '';
       const { first_name, last_name, provider_name } = params.data;
-      if (first_name && last_name) {
-        return `${last_name}, ${first_name}`;
+      let value = '';
+      if (first_name || last_name) {
+        value = formatProviderName(last_name, first_name);
+      } else {
+        // fallback: try to split provider_name
+        const name = provider_name || '';
+        const [first, ...rest] = name.split(' ');
+        const last = rest.join(' ');
+        if (first || last) {
+          value = formatProviderName(last, first);
+        } else {
+          value = name;
+        }
       }
-      // fallback: try to split provider_name
-      const name = provider_name || '';
-      const [first, ...rest] = name.split(' ');
-      const last = rest.join(' ');
-      if (first && last) {
-        return `${last}, ${first}`;
-      }
-      return name;
+      console.log('AG Grid valueGetter provider_name:', value);
+      return value;
     },
   },
   {

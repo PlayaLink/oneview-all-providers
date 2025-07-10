@@ -176,7 +176,7 @@ export const stateLicenseTemplate = {
   name: 'State Licenses',
   description: 'Template for displaying state license details',
   header: ({ gridName, row, provider }) => {
-    const name = provider ? `${provider.first_name || ''} ${provider.last_name || ''}`.trim() : (row.provider_name || '');
+    const name = provider ? [provider.last_name, provider.first_name].filter(Boolean).join(', ') : (row.provider_name || '');
     const title = provider ? provider.title || '' : (row.title || '');
     return `${gridName} ${row.license || ''} for ${name} ${title}`.trim();
   },
