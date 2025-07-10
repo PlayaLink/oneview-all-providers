@@ -49,6 +49,13 @@ const TeamPage: React.FC = () => {
     }
   };
 
+  // Handler for DataGrid row clicks - navigate to provider detail page
+  const handleRowClick = (rowData: any) => {
+    if (rowData.npi_number) {
+      navigate(`/${rowData.npi_number}`);
+    }
+  };
+
   console.log("providerInfoData", providerInfoData);
   console.log("mappedData", mappedData);
 
@@ -76,6 +83,7 @@ const TeamPage: React.FC = () => {
           columns={getColumnsForGrid("Provider_Info")}
           showCheckboxes={true}
           height="100%"
+          onRowClicked={handleRowClick}
         />
         {isLoading && <div className="text-gray-500 mt-4">Loading providers...</div>}
         {error && <div className="text-red-500 mt-4">Error loading providers: {error.message}</div>}
