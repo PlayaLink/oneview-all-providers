@@ -16,10 +16,46 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   }
 });
 
+// Utility to convert text[] to {id, label}[]
+function toIdLabelArray(arr: any): {id: string, label: string}[] {
+  if (!Array.isArray(arr)) return [];
+  return arr.map((v) => ({ id: v, label: v }));
+}
+// Utility to convert {id, label}[] to string[]
+function fromIdLabelArray(arr: any): string[] {
+  if (!Array.isArray(arr)) return [];
+  return arr.map((v) => (typeof v === 'object' && v !== null ? v.id || v.label : v));
+}
+
+// --- PROVIDER HELPERS ---
+export async function fetchProviders() {
+  const data = await dbFetch('providers', '*', ProviderSchema);
+  // Convert multi-select fields to {id, label}[]
+  return data.map((row: any) => ({
+    ...row,
+    tags: toIdLabelArray(row.tags),
+    classifications: toIdLabelArray(row.classifications),
+    taxonomy_codes: toIdLabelArray(row.taxonomy_codes),
+    clinical_services: toIdLabelArray(row.clinical_services),
+    fluent_languages: toIdLabelArray(row.fluent_languages),
+    cms_medicare_specialty_codes: toIdLabelArray(row.cms_medicare_specialty_codes),
+    other_specialties: toIdLabelArray(row.other_specialties),
+  }));
+}
+
 export async function updateProvider(id: string, updates: Record<string, any>) {
+  // Convert multi-select fields to string[]
+  const updatesCopy = { ...updates };
+  if ('tags' in updatesCopy) updatesCopy.tags = fromIdLabelArray(updatesCopy.tags);
+  if ('classifications' in updatesCopy) updatesCopy.classifications = fromIdLabelArray(updatesCopy.classifications);
+  if ('taxonomy_codes' in updatesCopy) updatesCopy.taxonomy_codes = fromIdLabelArray(updatesCopy.taxonomy_codes);
+  if ('clinical_services' in updatesCopy) updatesCopy.clinical_services = fromIdLabelArray(updatesCopy.clinical_services);
+  if ('fluent_languages' in updatesCopy) updatesCopy.fluent_languages = fromIdLabelArray(updatesCopy.fluent_languages);
+  if ('cms_medicare_specialty_codes' in updatesCopy) updatesCopy.cms_medicare_specialty_codes = fromIdLabelArray(updatesCopy.cms_medicare_specialty_codes);
+  if ('other_specialties' in updatesCopy) updatesCopy.other_specialties = fromIdLabelArray(updatesCopy.other_specialties);
   const { data, error } = await supabase
     .from('providers')
-    .update(updates)
+    .update(updatesCopy)
     .eq('id', id)
     .select();
   if (error) throw error;
@@ -100,10 +136,6 @@ export const BirthInfoSchema = z.object({
 });
 
 // Per-table helpers using dbFetch
-export function fetchProviders() {
-  return dbFetch('providers', '*', ProviderSchema);
-}
-
 export function fetchStateLicenses() {
   return dbFetch(
     'state_licenses',

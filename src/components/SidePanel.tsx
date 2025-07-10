@@ -122,7 +122,11 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       const initialValues: Record<string, any> = {};
       inputConfig.forEach(field => {
         const key = field.rowKey || field.label;
-        const value = selectedRow[key] ?? (field.type === 'multi-select' ? [] : '');
+        let value = selectedRow[key] ?? (field.type === 'multi-select' ? [] : '');
+        // Deserialize multi-select fields: convert array of strings to array of {id, label}
+        if (field.type === 'multi-select' && Array.isArray(value) && value.length > 0 && typeof value[0] === 'string') {
+          value = value.map(v => ({ id: v, label: v }));
+        }
         initialValues[key] = value;
       });
       
@@ -280,8 +284,12 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
         Object.entries(formValues)
           .filter(([key]) => validColumns.includes(key))
           .map(([key, value]) => {
-            // Handle empty date fields - convert empty strings to null for date fields
             const field = inputConfig.find(f => f.rowKey === key);
+            // Serialize multi-select fields: convert array of {id, label} to array of strings
+            if (field && field.type === 'multi-select' && Array.isArray(value)) {
+              return [key, value.map((v: any) => (typeof v === 'object' && v !== null ? v.id || v.label : v))];
+            }
+            // Handle empty date fields - convert empty strings to null for date fields
             const isDateField = field && (
               field.type === 'date' || 
               key.includes('date') || 
