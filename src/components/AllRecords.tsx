@@ -158,42 +158,7 @@ const AllRecords: React.FC<AllRecordsProps> = ({ user }) => {
     });
   };
 
-  const handleGridSectionModeChange = (mode: "left-nav" | "horizontal") => {
-    updateSetting('grid_section_navigation', mode);
-    // When switching to horizontal mode, ensure we select a section instead of an item
-    if (mode === "horizontal" && selectedItem && !selectedSection) {
-      // Map current item to its section for better UX
-      const itemToSectionMap: Record<string, string> = {
-        "provider-info": "Provider Info",
-        "birth-info": "Provider Info",
-        addresses: "Provider Info",
-        "additional-names": "Provider Info",
-        caqh: "CAQH",
-        "health-info": "Provider Info",
-        "state-licenses": "Licensure",
-        "dea-licenses": "Licensure",
-        "controlled-substance-licenses": "Licensure",
-        "event-log": "Actions and Exclusions",
-        oig: "Actions and Exclusions",
-        "board-certifications": "Certifications",
-        "other-certifications": "Certifications",
-        "education-training": "Education and Training",
-        exams: "Education and Training",
-        "practice-employer": "Work Experience",
-        "facility-affiliations": "Work Experience",
-        "work-history": "Work Experience",
-        "peer-references": "Work Experience",
-        "military-experience": "Work Experience",
-        "malpractice-insurance": "Malpractice Insurance",
-        documents: "Documents",
-        "sent-forms": "Documents",
-      };
 
-      const section = itemToSectionMap[selectedItem] || "Provider Info";
-      setSelectedSection(section);
-      setSelectedItem(null);
-    }
-  };
 
   // Handler for provider search selection (to be used in PageHeader)
   const handleProviderSelect = (providerNpi: string) => {
@@ -232,34 +197,11 @@ const AllRecords: React.FC<AllRecordsProps> = ({ user }) => {
 
 
 
-  const [profileDropdownOpen, setProfileDropdownOpen] = React.useState(false);
-  const [newFeaturesDropdownOpen, setNewFeaturesDropdownOpen] = React.useState(false);
 
-  const profileRef = useRef<HTMLDivElement>(null);
 
-  const gridSectionOptions = [
-    { value: "left-nav" as const, label: "Left Hand Nav" },
-    { value: "horizontal" as const, label: "Horizontal" },
-  ];
 
-  useEffect(() => {
-    if (!profileDropdownOpen) return;
-    function handleClick(event: MouseEvent) {
-      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
-        setProfileDropdownOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, [profileDropdownOpen]);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut({
-      scope: 'local'
-    });
-    // Use the current origin for redirect
-    window.location.href = window.location.origin;
-  };
+
 
   return (
     <div className="h-screen flex flex-col bg-white" data-testid="main-layout">

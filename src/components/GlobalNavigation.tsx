@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { supabase } from "@/lib/supabaseClient";
+import GlobalFeatureToggle from "@/components/GlobalFeatureToggle";
 
 interface GlobalNavigationProps {
   user: any;
@@ -83,22 +84,14 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
                   <div className="p-4">
                     {/* Settings Section */}
                     <div>
-                      <div className="space-y-2" role="feature-settings">
-                        <label className="text-xs font-medium text-gray-700">
-                          Grid Sections Navigation
-                        </label>
-                        <div className="relative">
-                          <select
-                            disabled
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white disabled:opacity-50 disabled:cursor-not-allowed"
-                            aria-label="Grid sections navigation mode"
-                            data-testid="grid-section-mode-select"
-                          >
-                            <option>Left Hand Nav</option>
-                            <option>Horizontal</option>
-                          </select>
-                        </div>
-                      </div>
+                      <GlobalFeatureToggle
+                        settingKey="grid_section_navigation"
+                        label="Grid Sections Navigation"
+                        options={[
+                          { value: "left-nav", label: "Left Hand Nav" },
+                          { value: "horizontal", label: "Horizontal" },
+                        ]}
+                      />
                     </div>
                   </div>
                 </PopoverContent>

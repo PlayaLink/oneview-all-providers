@@ -3,22 +3,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import GlobalFeatureToggle from "@/components/GlobalFeatureToggle";
 
 interface SettingsDropdownProps {
-  gridSectionMode: "left-nav" | "horizontal";
-  onGridSectionModeChange: (mode: "left-nav" | "horizontal") => void;
+  // This component can now be used independently without props
+  // as it uses the global feature settings
 }
 
-const SettingsDropdown: React.FC<SettingsDropdownProps> = ({
-  gridSectionMode,
-  onGridSectionModeChange,
-}) => {
+const SettingsDropdown: React.FC<SettingsDropdownProps> = () => {
   const [open, setOpen] = useState(false);
-
-  const gridSectionOptions = [
-    { value: "left-nav" as const, label: "Left Hand Nav" },
-    { value: "horizontal" as const, label: "Horizontal" },
-  ];
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -41,30 +34,14 @@ const SettingsDropdown: React.FC<SettingsDropdownProps> = ({
       >
         <div className="p-4">
           {/* Grid Sections Setting */}
-          <div className="space-y-2">
-            <label className="text-xs font-medium text-gray-700">
-              Grid Sections Navigation
-            </label>
-            <div className="relative">
-              <select
-                value={gridSectionMode}
-                onChange={(e) =>
-                  onGridSectionModeChange(
-                    e.target.value as "left-nav" | "horizontal",
-                  )
-                }
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-                aria-label="Grid sections navigation mode"
-                data-testid="grid-section-mode-select"
-              >
-                {gridSectionOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
+          <GlobalFeatureToggle
+            settingKey="grid_section_navigation"
+            label="Grid Sections Navigation"
+            options={[
+              { value: "left-nav", label: "Left Hand Nav" },
+              { value: "horizontal", label: "Horizontal" },
+            ]}
+          />
         </div>
       </PopoverContent>
     </Popover>
