@@ -58,7 +58,8 @@ const MainContent: React.FC<MainContentProps> = ({
   const { value: showFooter } = useFeatureFlag("footer");
   const [currentGridIndex, setCurrentGridIndex] = useState(0);
   const [selectedGridName, setSelectedGridName] = useState<string | null>(null);
-  const [visibleGrids, setVisibleGrids] = useState<Set<number>>(new Set([0])); // Track which grids are loaded
+  // Render the first two grids by default
+  const [visibleGrids, setVisibleGrids] = useState<Set<number>>(new Set([0, 1])); // Track which grids are loaded
   
   // Add refs for grid scrolling
   const gridRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -382,7 +383,7 @@ const MainContent: React.FC<MainContentProps> = ({
             handleGridInView(index);
           }
         },
-        { threshold: 0.5 }
+        { threshold: 0 } // Trigger as soon as the top of the grid enters the viewport
       );
       observerRefs.current[index]?.observe(gridEl);
     });
