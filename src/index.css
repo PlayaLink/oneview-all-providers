@@ -36,12 +36,13 @@ body {
 .ag-theme-alpine {
   --ag-header-background-color: #fff;
   --ag-font-family: "Poppins", -apple-system, Roboto, Helvetica, Arial, sans-serif;
+  --ag-foreground-color: #545454;
 }
 
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: #545454;
 
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
