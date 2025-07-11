@@ -68,6 +68,7 @@ export const getColumnsForGrid = (gridKey: string): ColDef[] => {
       resizable: true,
       minWidth: 120,
       flex: 1,
+      floatingFilter: true, // Show floating filter input for all columns
     };
     if (columnName === "provider_name") {
       colDef.valueGetter = (params: any) => {

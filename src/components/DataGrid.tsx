@@ -241,6 +241,19 @@ const DataGrid: React.FC<DataGridProps> = ({
               />
             ),
           }}
+          sideBar={{
+            toolPanels: [
+              {
+                id: 'columns',
+                labelDefault: 'Columns',
+                labelKey: 'columns',
+                iconKey: 'columns',
+                toolPanel: 'agColumnsToolPanel',
+              },
+            ],
+            defaultToolPanel: 'columns',
+            position: 'right',
+          }} // Sidebar open by default to Columns panel
         />
       </div>
     </section>

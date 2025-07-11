@@ -33,6 +33,10 @@ body {
   z-index: auto;
 }
 
+.ag-theme-alpine {
+  --ag-header-background-color: #fff;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -129,82 +133,6 @@ body {
   body {
     @apply bg-background text-foreground;
   }
-}
-
-/* AG Grid custom styling */
-.ag-theme-alpine {
-  --ag-header-height: 48px;
-  --ag-row-height: 42px;
-  --ag-border-color: #e2e2e2;
-  --ag-header-background-color: #ffffff;
-  --ag-header-foreground-color: #545454;
-  --ag-row-border-color: #d2d5dc;
-  --ag-selected-row-background-color: #e8f3ff;
-  --ag-font-size: 12px;
-  --ag-font-family: "Poppins", -apple-system, Roboto, Helvetica, sans-serif;
-  --ag-background-color: #ffffff;
-  --ag-foreground-color: #545454;
-  --ag-data-color: #545454;
-  --ag-secondary-border-color: #d2d5dc;
-  --ag-input-border-color: #e2e2e2;
-  --ag-input-focus-border-color: #008bc9;
-}
-
-.ag-theme-alpine .ag-header-cell {
-  font-weight: 700;
-  letter-spacing: 0.429px;
-  font-size: 12px;
-  color: #545454;
-  border-bottom: 1px solid #e2e2e2;
-}
-
-.ag-theme-alpine .ag-cell {
-  font-weight: 400;
-  letter-spacing: 0.429px;
-  font-size: 12px;
-  color: #545454;
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid #d2d5dc;
-}
-
-.ag-theme-alpine .ag-row:hover {
-  background-color: #f8f9fa;
-}
-
-.ag-theme-alpine .ag-row.ag-row-selected {
-  background-color: #e8f3ff;
-}
-
-.ag-theme-alpine .ag-row.ag-row-selected:hover {
-  background-color: #d6ebff;
-}
-
-.ag-theme-alpine .ag-floating-filter-input {
-  height: 32px;
-  border: 1px solid #e2e2e2;
-  border-radius: 4px;
-  padding-left: 16px;
-  font-size: 12px;
-  background: #ffffff;
-}
-
-.ag-theme-alpine .checkbox-cell,
-.ag-theme-alpine .actions-cell {
-  justify-content: center;
-}
-
-.ag-theme-alpine .checkbox-header {
-  padding: 9px 16px;
-  background: #e6e7eb;
-  border: 1px solid #e6e6e6;
-  border-radius: 4px;
-}
-
-.ag-theme-alpine .actions-header {
-  background: #ffffff;
-  box-shadow: -4px 0px 30px 0px rgba(0, 0, 0, 0.3);
-  padding: 15px 4px 12px 8px;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
