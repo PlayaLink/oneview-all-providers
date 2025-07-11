@@ -39,6 +39,11 @@ body {
   --ag-foreground-color: #545454;
 }
 
+.ag-theme-alpine .ag-root-wrapper {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

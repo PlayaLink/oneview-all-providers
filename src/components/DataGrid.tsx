@@ -167,7 +167,7 @@ const DataGrid: React.FC<DataGridProps> = ({
   return (
     <section className="bg-white flex flex-col flex-1 min-h-0" role="region" aria-label={`${title} data grid`} data-testid="data-grid">
       {/* Grid Header */}
-      <header className="flex items-center justify-between pl-1 pr-3 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 rounded overflow-hidden">
+      <header className="flex items-center justify-between pl-1 pr-3 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 rounded-t overflow-hidden" role="grid-header" aria-label="Grid header" data-testid="grid-header">
         <div className="flex items-center gap-2 pl-4">
           <FontAwesomeIcon icon={icon} className="pr-1 w-4 h-4 text-[#545454]" aria-hidden="true" />
           <h2 className="text-[#545454] font-semibold text-xs tracking-wider">
