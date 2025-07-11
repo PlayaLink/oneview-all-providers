@@ -69,6 +69,9 @@ const DataGrid: React.FC<DataGridProps> = ({
     ...columns.map((col) => ({
       ...col,
       floatingFilter: showFloatingFilters,
+      suppressMenu: false,
+      filter: true,
+      menuTabs: ['filterMenuTab', 'generalMenuTab', 'columnsMenuTab'],
       cellStyle: (params: any) => {
         const baseCellStyle = {
           color: "#545454",
@@ -258,6 +261,7 @@ const DataGrid: React.FC<DataGridProps> = ({
                 aria-hidden="true"
               />
             ),
+            menu: undefined, // Use AG Grid's default menu icon
           }}
           sideBar={{
             toolPanels: [
@@ -272,6 +276,8 @@ const DataGrid: React.FC<DataGridProps> = ({
             defaultToolPanel: 'columns',
             position: 'right',
           }} // Sidebar open by default to Columns panel
+          suppressMenuHide={true}
+          columnMenu="legacy"
         />
       </div>
     </section>
