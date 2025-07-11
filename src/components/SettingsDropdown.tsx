@@ -1,17 +1,13 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGear, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import GlobalFeatureToggle from "@/components/GlobalFeatureToggle";
+import { useFeatureFlags } from "@/contexts/FeatureFlagContext";
 
-interface SettingsDropdownProps {
-  // This component can now be used independently without props
-  // as it uses the global feature settings
-}
-
-const SettingsDropdown: React.FC<SettingsDropdownProps> = () => {
+const SettingsDropdown: React.FC = () => {
   const [open, setOpen] = useState(false);
+  const { allSettings, updateFlag, isLoading } = useFeatureFlags();
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -33,15 +29,20 @@ const SettingsDropdown: React.FC<SettingsDropdownProps> = () => {
         sideOffset={4}
       >
         <div className="p-4">
-          {/* Grid Sections Setting */}
-          <GlobalFeatureToggle
-            settingKey="grid_section_navigation"
-            label="Grid Sections Navigation"
-            options={[
-              { value: "left-nav", label: "Left Hand Nav" },
-              { value: "horizontal", label: "Horizontal" },
-            ]}
-          />
+          {allSettings.map(setting => (
+            <div key={setting.setting_key} className="mb-4 flex items-center justify-between">
+              <label className="text-xs font-medium text-gray-700">
+                {setting.label || setting.setting_key}
+              </label>
+              <input
+                type="checkbox"
+                checked={!!setting.setting_value}
+                onChange={e => updateFlag(setting.setting_key as any, e.target.checked)}
+                disabled={isLoading}
+                className="ml-2"
+              />
+            </div>
+          ))}
         </div>
       </PopoverContent>
     </Popover>

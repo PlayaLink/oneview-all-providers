@@ -60,7 +60,6 @@ const AllProvidersHeader: React.FC<AllProvidersHeaderProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const { settings, isLoading: settingsLoading } = useFeatureSettings();
-  const gridSectionMode = settingsLoading ? 'left-nav' : settings.grid_section_navigation;
 
   // Initialize search value when on provider detail route
   React.useEffect(() => {
@@ -134,7 +133,7 @@ const AllProvidersHeader: React.FC<AllProvidersHeaderProps> = ({
         <div className="flex items-center gap-2 min-w-0">
           {!npi && title && (
             <h1 className="font-bold text-base tracking-wider capitalize" role="all-providers-header-title">
-              {gridSectionMode === 'left-nav' ? 'All Records' : title.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())}
+              {title.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())}
             </h1>
           )}
           {/* Single-provider view header */}

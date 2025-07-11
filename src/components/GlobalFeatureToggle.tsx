@@ -21,8 +21,21 @@ const GlobalFeatureToggle: React.FC<GlobalFeatureToggleProps> = ({
   
   const currentValue = settings[settingKey];
   
+  // Coerce boolean to string for select value
+  let selectValue: string = '';
+  if (typeof currentValue === 'boolean') {
+    selectValue = currentValue ? 'true' : 'false';
+  } else if (typeof currentValue === 'string') {
+    selectValue = currentValue;
+  } else {
+    selectValue = String(currentValue ?? '');
+  }
+
   const handleChange = (value: string) => {
-    updateSetting(settingKey, value);
+    let newValue: any = value;
+    if (value === 'true') newValue = true;
+    if (value === 'false') newValue = false;
+    updateSetting(settingKey, newValue);
   };
 
   if (isLoading) {
@@ -52,7 +65,7 @@ const GlobalFeatureToggle: React.FC<GlobalFeatureToggleProps> = ({
       </label>
       <div className="relative">
         <select
-          value={currentValue}
+          value={selectValue}
           onChange={(e) => handleChange(e.target.value)}
           disabled={disabled}
           className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white disabled:opacity-50 disabled:cursor-not-allowed"
@@ -60,7 +73,7 @@ const GlobalFeatureToggle: React.FC<GlobalFeatureToggleProps> = ({
           data-testid={`${settingKey}-select`}
         >
           {options.map((option) => (
-            <option key={option.value} value={option.value}>
+            <option key={String(option.value)} value={String(option.value)}>
               {option.label}
             </option>
           ))}

@@ -7,7 +7,7 @@ import {
 import { cn } from "@/lib/utils";
 import { gridDefinitions, getGroups, getGridsByGroup } from "@/lib/gridDefinitions";
 import { getIconByName } from "@/lib/iconMapping";
-import { useFeatureSettings } from "@/hooks/useFeatureSettings";
+import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 
 interface SideNavProps {
   collapsed: boolean;
@@ -26,11 +26,7 @@ const SideNav: React.FC<SideNavProps> = ({
 }) => {
   // Get groups from gridDefinitions
   const groups = getGroups();
-  
-  // State for collapsible sections - initialize all sections as expanded
-  const [expandedSections, setExpandedSections] = useState<
-    Record<string, boolean>
-  >(() => {
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
     groups.forEach(group => {
       initial[group] = true;
@@ -38,8 +34,7 @@ const SideNav: React.FC<SideNavProps> = ({
     return initial;
   });
 
-  const { settings, isLoading: settingsLoading } = useFeatureSettings();
-  const gridSectionMode = settingsLoading ? 'left-nav' : settings.grid_section_navigation;
+  const { value: isLeftNav, isLoading: navLoading } = useFeatureFlag("left_nav");
 
   const toggleSection = (sectionKey: string) => {
     setExpandedSections((prev) => ({
@@ -86,7 +81,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 )}
                 role="all-sections-button-text"
               >
-                {gridSectionMode === 'left-nav' ? 'All Records' : 'All Sections'}
+                {navLoading || isLeftNav ? 'All Records' : 'All Sections'}
               </span>
               <FontAwesomeIcon
                 icon={faEllipsis}
@@ -102,7 +97,6 @@ const SideNav: React.FC<SideNavProps> = ({
             {/* Dynamic Sections based on gridDefinitions */}
             {groups.map((group) => {
               const gridsInGroup = getGridsByGroup(group);
-              
               return (
                 <div key={group} className="flex flex-col">
                   <div
@@ -128,21 +122,6 @@ const SideNav: React.FC<SideNavProps> = ({
                       data-testid={`section-button-${group.toLowerCase().replace(/\s+/g, '-')}`}
                     >
                       {group}
-                    </button>
-                    <button
-                      className={cn(
-                        "w-4 h-4 transition-transform duration-200 bg-transparent border-none cursor-pointer flex items-center justify-center",
-                        !expandedSections[group] && "rotate-180",
-                        isSectionActive(group)
-                          ? "text-white"
-                          : "text-[#545454]",
-                      )}
-                      onClick={() => toggleSection(group)}
-                      aria-label={`${expandedSections[group] ? 'Collapse' : 'Expand'} ${group} section`}
-                      aria-expanded={expandedSections[group]}
-                      data-testid={`section-toggle-${group.toLowerCase().replace(/\s+/g, '-')}`}
-                    >
-                      <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" />
                     </button>
                   </div>
                   {expandedSections[group] && (

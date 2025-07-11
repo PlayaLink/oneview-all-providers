@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-import NavItem from "@/components/NavItem";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { supabase } from "@/lib/supabaseClient";
-import GlobalFeatureToggle from "@/components/GlobalFeatureToggle";
-import { useFeatureSettings } from "@/hooks/useFeatureSettings";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import NavItem from "./NavItem";
+import SettingsDropdown from "./SettingsDropdown";
+import GlobalFeatureToggle from "./GlobalFeatureToggle";
+import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 
 interface GlobalNavigationProps {
   user: any;
@@ -18,8 +18,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [newFeaturesDropdownOpen, setNewFeaturesDropdownOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
-  const { settings, isLoading: settingsLoading } = useFeatureSettings();
-  const gridSectionMode = settingsLoading ? 'left-nav' : settings.grid_section_navigation;
+  const { value: isLeftNav, isLoading: navLoading } = useFeatureFlag("left_nav");
 
   useEffect(() => {
     if (!profileDropdownOpen) return;
@@ -33,8 +32,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
   }, [profileDropdownOpen]);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut({ scope: 'local' });
-    window.location.href = window.location.origin;
+    // ... existing logout logic ...
   };
 
   return (
@@ -70,29 +68,38 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
           <div className="flex items-center gap-8">
             {/* Right Side Links */}
             <nav className="flex items-center gap-4" role="navigation" aria-label="Application navigation">
+              {/* New Features Dropdown */}
               <Popover open={newFeaturesDropdownOpen} onOpenChange={setNewFeaturesDropdownOpen}>
                 <PopoverTrigger asChild>
                   <button
-                    className="text-white text-center text-xs leading-normal tracking-[0.429px] hover:underline bg-transparent border-none cursor-pointer"
+                    className="text-white text-center text-xs leading-normal tracking-[0.429px] hover:underline bg-transparent border-none cursor-pointer px-2 py-1 rounded hover:bg-white/10 transition-colors"
                     style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
                     aria-label="New Features and settings"
                     aria-expanded={newFeaturesDropdownOpen}
                     aria-haspopup="true"
-                    data-testid="new-features-dropdown"
+                    data-testid="feature-flags-dropdown-header"
                   >
                     New Features
                   </button>
                 </PopoverTrigger>
-                <PopoverContent className="w-64 p-0 border border-gray-200 bg-white shadow-lg" align="start" side="bottom" sideOffset={4}>
-                  <div className="p-4">
+                <PopoverContent className="w-64 p-0 border border-gray-200 bg-white shadow-lg" align="end" side="bottom" sideOffset={4}>
+                  <div className="p-4" role="feature-flags-list" data-testid="feature-flags-list-header">
                     {/* Settings Section */}
-                    <div>
+                    <div className="space-y-4">
                       <GlobalFeatureToggle
-                        settingKey="grid_section_navigation"
-                        label="Grid Sections Navigation"
+                        settingKey="footer"
+                        label="Footer"
                         options={[
-                          { value: "left-nav", label: "Left Hand Nav" },
-                          { value: "horizontal", label: "Horizontal" },
+                          { value: "false", label: "No" },
+                          { value: "true", label: "Yes" },
+                        ]}
+                      />
+                      <GlobalFeatureToggle
+                        settingKey="left_nav"
+                        label="Grids Navigation"
+                        options={[
+                          { value: "false", label: "Horizontal" },
+                          { value: "true", label: "Left-nav" },
                         ]}
                       />
                     </div>
@@ -144,6 +151,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
           </div>
         </div>
       </header>
+
       {/* Blue Navigation Bar */}
       <nav className="bg-[#3BA8D1] text-white" role="navigation" aria-label="Primary navigation">
         <div className="flex items-center justify-between px-4 py-3">
@@ -159,7 +167,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
               >
                 Team
               </NavItem>
-              {gridSectionMode === 'left-nav' && (
+              {(navLoading || isLeftNav) && (
                 <NavItem
                   variant="main"
                   role="menuitem"
@@ -176,6 +184,9 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
               <NavItem variant="main" role="menuitem">Logins</NavItem>
               <NavItem variant="main" role="menuitem">Tasks</NavItem>
             </div>
+          </div>
+          <div className="flex items-center gap-4">
+            {/* Settings Dropdown */}
           </div>
         </div>
       </nav>

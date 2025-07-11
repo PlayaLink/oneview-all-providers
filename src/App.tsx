@@ -10,6 +10,7 @@ import AuthPage from "./pages/Auth";
 import TeamPage from "./pages/Team";
 import AppLayout from "./components/AppLayout";
 import { UserProvider } from "./contexts/UserContext";
+import { FeatureFlagProvider } from "./contexts/FeatureFlagContext";
 
 const queryClient = new QueryClient();
 
@@ -40,18 +41,20 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <UserProvider user={user}>
-            <AppLayout user={user}>
-              <Routes>
-                {/* Route for provider detail pages with NPI parameter */}
-                <Route path="/:npi" element={<AllRecords />} />
-                {/* Route for the main page (all providers view) - now at /all-records */}
-                <Route path="/all-records" element={<AllRecords />} />
-                {/* New Team route */}
-                <Route path="/team" element={<TeamPage />} />
-                {/* Catch-all route: redirect to /all-records */}
-                <Route path="/*" element={<Navigate to="/all-records" replace />} />
-              </Routes>
-            </AppLayout>
+            <FeatureFlagProvider>
+              <AppLayout user={user}>
+                <Routes>
+                  {/* Route for provider detail pages with NPI parameter */}
+                  <Route path="/:npi" element={<AllRecords />} />
+                  {/* Route for the main page (all providers view) - now at /all-records */}
+                  <Route path="/all-records" element={<AllRecords />} />
+                  {/* New Team route */}
+                  <Route path="/team" element={<TeamPage />} />
+                  {/* Catch-all route: redirect to /all-records */}
+                  <Route path="/*" element={<Navigate to="/all-records" replace />} />
+                </Routes>
+              </AppLayout>
+            </FeatureFlagProvider>
           </UserProvider>
         </BrowserRouter>
       </TooltipProvider>

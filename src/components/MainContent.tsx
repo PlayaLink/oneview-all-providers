@@ -12,6 +12,7 @@ import providerInfoConfig from "@/data/provider_info_details.json";
 import { useQuery } from '@tanstack/react-query';
 import { fetchProviders, fetchStateLicenses, fetchBirthInfo, fetchAddresses } from '@/lib/supabaseClient';
 import { getTemplateConfigByGrid } from '@/lib/templateConfigs';
+import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 // Removed: import { providerInfoTemplate, stateLicenseTemplate } from '@/lib/templateConfigs';
 // Removed: import { useGridData } from '@/hooks/useGridData';
 
@@ -54,6 +55,7 @@ const MainContent: React.FC<MainContentProps> = ({
   onRowSelect,
   onCloseSidePanel,
 }) => {
+  const { value: showFooter } = useFeatureFlag("footer");
   const [currentGridIndex, setCurrentGridIndex] = useState(0);
   const [selectedGridName, setSelectedGridName] = useState<string | null>(null);
   const [visibleGrids, setVisibleGrids] = useState<Set<number>>(new Set([0])); // Track which grids are loaded
@@ -556,20 +558,13 @@ const MainContent: React.FC<MainContentProps> = ({
           <div 
             role="grid-scroll-container" 
             aria-label="Grid Scroll Container"
-            className="overflow-y-auto"
-            style={{ 
-              height: 'calc(100vh - 280px)' // Fixed height minus footer height (80px)
-            }}
+            className={`overflow-y-auto flex-1${showFooter ? ' pb-24' : ''}`}
           >
             {gridsToShow.map((grid, index) => (
               <div
                 key={grid.tableName}
                 ref={(el) => gridRefs.current[index] = el}
-                className="flex flex-col min-h-0 mb-4 last:mb-0"
-                style={{ 
-                  minHeight: 'calc(100vh - 280px)', // Each grid fills the container minus footer
-                  height: 'calc(100vh - 280px)'
-                }}
+                className="flex flex-col min-h-0 mb-4 last:mb-0 h-full"
               >
                 {/* Only render DataGrid if it's been visited or is the current grid */}
                 {visibleGrids.has(index) ? (
@@ -585,11 +580,7 @@ const MainContent: React.FC<MainContentProps> = ({
                 ) : (
                   // Placeholder for unloaded grids
                   <div 
-                    className="flex items-center justify-center bg-gray-50 border-2 border-dashed border-gray-300 rounded"
-                    style={{ 
-                      minHeight: 'calc(100vh - 280px)',
-                      height: 'calc(100vh - 280px)'
-                    }}
+                    className="flex items-center justify-center bg-gray-50 border-2 border-dashed border-gray-300 rounded flex-1"
                   >
                     <div className="text-gray-500 text-center">
                       <FontAwesomeIcon icon={faTable} className="w-8 h-8 mb-2" />

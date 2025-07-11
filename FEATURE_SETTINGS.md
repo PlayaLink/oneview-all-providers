@@ -11,6 +11,7 @@ CREATE TABLE feature_settings (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     setting_key TEXT NOT NULL UNIQUE,
     setting_value JSONB NOT NULL,
+    label TEXT,
     description TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -21,11 +22,32 @@ CREATE TABLE feature_settings (
 
 | Setting Key | Type | Default | Description |
 |-------------|------|---------|-------------|
-| `grid_section_navigation` | `'left-nav' \| 'horizontal'` | `'left-nav'` | Navigation mode for grid sections |
+| `left_nav` | `boolean` | `true` | Controls whether to show left sidebar navigation |
+| `footer` | `boolean` | `true` | Controls whether to show the footer |
 
 ## Usage
 
-### In React Components
+### Using Feature Flag Context (Recommended)
+
+```typescript
+import { useFeatureFlag } from '@/contexts/FeatureFlagContext';
+
+function MyComponent() {
+  const { value: isLeftNav, isLoading } = useFeatureFlag('left_nav');
+  const { value: showFooter } = useFeatureFlag('footer');
+  
+  if (isLoading) return <div>Loading...</div>;
+  
+  return (
+    <div>
+      {isLeftNav && <Sidebar />}
+      {showFooter && <Footer />}
+    </div>
+  );
+}
+```
+
+### Using Feature Settings Hook (Legacy)
 
 ```typescript
 import { useFeatureSettings } from '@/hooks/useFeatureSettings';
@@ -34,18 +56,19 @@ function MyComponent() {
   const { settings, updateSetting } = useFeatureSettings();
   
   // Read a setting
-  const navigationMode = settings.grid_section_navigation;
+  const isLeftNav = settings.left_nav;
+  const showFooter = settings.footer;
   
   // Update a setting
-  const handleModeChange = (mode: 'left-nav' | 'horizontal') => {
-    updateSetting('grid_section_navigation', mode);
+  const handleToggleLeftNav = () => {
+    updateSetting('left_nav', !isLeftNav);
   };
   
   return (
     <div>
-      <p>Current navigation mode: {navigationMode}</p>
-      <button onClick={() => handleModeChange('horizontal')}>
-        Switch to Horizontal
+      <p>Left navigation: {isLeftNav ? 'Enabled' : 'Disabled'}</p>
+      <button onClick={handleToggleLeftNav}>
+        Toggle Left Navigation
       </button>
     </div>
   );
@@ -58,89 +81,58 @@ function MyComponent() {
 import { useFeatureSetting } from '@/hooks/useFeatureSettings';
 
 function MyComponent() {
-  const { setting, updateSetting, isLoading } = useFeatureSetting('grid_section_navigation');
+  const { setting, updateSetting, isLoading } = useFeatureSetting('left_nav');
   
   if (isLoading) return <div>Loading...</div>;
   
   return (
     <div>
-      <p>Navigation mode: {setting}</p>
-      <button onClick={() => updateSetting('horizontal')}>
-        Switch to Horizontal
+      <p>Left navigation: {setting ? 'Enabled' : 'Disabled'}</p>
+      <button onClick={() => updateSetting(!setting)}>
+        Toggle Left Navigation
       </button>
     </div>
   );
 }
 ```
 
+## Migration from String-Based Navigation
+
+The navigation system has been migrated from a string-based approach (`'left-nav' | 'horizontal'`) to a boolean-based approach (`left_nav: boolean`). 
+
+- `left_nav: true` = Left sidebar navigation enabled
+- `left_nav: false` = Horizontal navigation enabled
+
 ## Setup Instructions
 
-### 1. Create the Table
-
-Run the SQL script in your Supabase SQL Editor:
-
-```sql
--- Copy and paste the contents of scripts/run-migration.sql
-```
-
-### 2. Verify Permissions
-
-Ensure the RLS policies are correctly set up to allow authenticated users to read and update settings.
-
-### 3. Test the System
-
-1. Start your development server
-2. Navigate to the application
-3. Change the "Grid Sections Navigation" setting in the New Features dropdown
-4. Refresh the page - the setting should persist
-5. Log out and log back in - the setting should still be applied
-
-## Adding New Settings
-
-### 1. Update TypeScript Types
-
-Add the new setting to `src/types/featureSettings.ts`:
-
-```typescript
-export interface FeatureSettings {
-  // ... existing settings
-  new_setting: string;
-}
-
-export const DEFAULT_FEATURE_SETTINGS: FeatureSettings = {
-  // ... existing defaults
-  new_setting: 'default_value',
-};
-```
-
-### 2. Insert Default Value
-
-Add the default value to the migration script or run manually:
+1. Ensure the `feature_settings` table exists in your Supabase database
+2. Insert default settings:
 
 ```sql
-INSERT INTO feature_settings (setting_key, setting_value, description) VALUES
-    ('new_setting', '"default_value"', 'Description of the new setting')
+INSERT INTO feature_settings (setting_key, setting_value, label, description) VALUES
+('left_nav', 'true', 'Left Navigation', 'Enable left sidebar navigation'),
+('footer', 'true', 'Footer', 'Show application footer')
 ON CONFLICT (setting_key) DO NOTHING;
 ```
 
-### 3. Use in Components
+3. Import and use the `FeatureFlagProvider` in your app root:
 
 ```typescript
-const { settings, updateSetting } = useFeatureSettings();
-const newSetting = settings.new_setting;
+import { FeatureFlagProvider } from '@/contexts/FeatureFlagContext';
+
+function App() {
+  return (
+    <FeatureFlagProvider>
+      {/* Your app components */}
+    </FeatureFlagProvider>
+  );
+}
 ```
 
-## Benefits
+## Best Practices
 
-- **Global Persistence**: Settings persist across all users and sessions
-- **Real-time Updates**: Changes are immediately reflected across all connected clients
-- **Type Safety**: Full TypeScript support with proper typing
-- **Caching**: Efficient caching with React Query
-- **Automatic Sync**: Settings automatically sync when changed by any user
-
-## Security
-
-- Settings are protected by Row Level Security (RLS)
-- Only authenticated users can read and update settings
-- All settings are stored as JSONB for flexibility
-- Audit trail with created_at and updated_at timestamps 
+1. **Use Feature Flag Context**: Prefer `useFeatureFlag()` over `useFeatureSettings()` for better performance and type safety
+2. **Handle Loading States**: Always check `isLoading` before using feature flag values
+3. **Boolean Values Only**: All feature flags should be boolean values for simplicity and consistency
+4. **Descriptive Labels**: Use clear, descriptive labels for feature flags in the database
+5. **Default Values**: Always provide sensible default values for new feature flags 
