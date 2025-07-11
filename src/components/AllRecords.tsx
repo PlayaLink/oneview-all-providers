@@ -200,7 +200,7 @@ const AllRecords: React.FC = () => {
         <div className="flex flex-1">
           <aside
             className={cn(
-              "relative border-r border-gray-300 bg-white transition-all duration-300 flex flex-col",
+              "relative border-r border-gray-300 bg-white transition-all duration-300 flex flex-col h-full min-h-0",
               sidebarCollapsed ? "w-0" : "w-48",
             )}
             role="complementary"
