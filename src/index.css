@@ -35,6 +35,7 @@ body {
 
 .ag-theme-alpine {
   --ag-header-background-color: #fff;
+  --ag-font-family: "Poppins", -apple-system, Roboto, Helvetica, Arial, sans-serif;
 }
 
 @layer base {
