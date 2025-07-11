@@ -42,8 +42,11 @@ const DataGrid: React.FC<DataGridProps> = ({
   const [internalSelectedRowId, setInternalSelectedRowId] = React.useState<string | null>(null);
   const selectedRowId = controlledSelectedRowId !== undefined ? controlledSelectedRowId : internalSelectedRowId;
 
+  // State to toggle floating filters
+  const [showFloatingFilters, setShowFloatingFilters] = React.useState(true);
+
   // Prepare column definitions with optional checkbox column
-  const columnDefs: ColDef[] = [
+  const columnDefs = React.useMemo(() => [
     ...(showCheckboxes
       ? [
           {
@@ -59,11 +62,13 @@ const DataGrid: React.FC<DataGridProps> = ({
             resizable: false,
             cellClass: "ag-cell-no-border",
             headerClass: "ag-header-no-border",
+            floatingFilter: false, // never show floating filter for checkbox column
           },
         ]
       : []),
     ...columns.map((col) => ({
       ...col,
+      floatingFilter: showFloatingFilters,
       cellStyle: (params: any) => {
         const baseCellStyle = {
           color: "#545454",
@@ -89,7 +94,7 @@ const DataGrid: React.FC<DataGridProps> = ({
         return baseCellStyle;
       },
     })),
-  ];
+  ], [columns, showCheckboxes, showFloatingFilters, selectedRowId]);
 
   const handleRowClicked = (event: RowClickedEvent) => {
     // Prevent cell focus on single click
@@ -200,6 +205,19 @@ const DataGrid: React.FC<DataGridProps> = ({
           </div>
         </div>
       </header>
+
+      {/* Toggle Floating Filters Button */}
+      <div className="flex items-center justify-end px-4 py-2 bg-white border-b border-gray-200">
+        <button
+          type="button"
+          onClick={() => setShowFloatingFilters((prev) => !prev)}
+          aria-pressed={showFloatingFilters}
+          className="px-3 py-1 rounded bg-[#008BC9] text-white text-xs font-semibold hover:bg-[#0077B3] focus:outline-none focus:ring-2 focus:ring-[#008BC9] focus:ring-offset-2"
+          data-testid="toggle-floating-filters"
+        >
+          {showFloatingFilters ? 'Hide Filters' : 'Show Filters'}
+        </button>
+      </div>
 
       {/* AG Grid Container */}
       <div
