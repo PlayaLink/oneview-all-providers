@@ -10,7 +10,7 @@ import { getIconByName } from "@/lib/iconMapping";
 import { Provider } from "@/types";
 import providerInfoConfig from "@/data/provider_info_details.json";
 import { useQuery } from '@tanstack/react-query';
-import { fetchProviders, fetchStateLicenses, fetchBirthInfo, fetchAddresses } from '@/lib/supabaseClient';
+import { fetchProviders, fetchStateLicenses, fetchBirthInfo, fetchAddresses, fetchFacilityAffiliations } from '@/lib/supabaseClient';
 import { getTemplateConfigByGrid } from '@/lib/templateConfigs';
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 // Removed: import { providerInfoTemplate, stateLicenseTemplate } from '@/lib/templateConfigs';
@@ -85,6 +85,10 @@ const MainContent: React.FC<MainContentProps> = ({
     queryKey: ['addresses'],
     queryFn: fetchAddresses,
   });
+  const facilityAffiliationsQuery = useQuery({
+    queryKey: ['facility_affiliations'],
+    queryFn: fetchFacilityAffiliations,
+  });
 
   // DRY mapping of grid keys to data sources and mapping logic
   const gridDataSources: Record<string, { query: any, map: (row: any) => any }> = {
@@ -128,6 +132,15 @@ const MainContent: React.FC<MainContentProps> = ({
     },
     Addresses: {
       query: addressesQuery,
+      map: (row) => ({
+        ...row,
+        provider_name: row.provider ? formatProviderName(row.provider.last_name, row.provider.first_name) : '',
+        title: row.provider?.title || '',
+        primary_specialty: row.provider?.primary_specialty || '',
+      }),
+    },
+    Facility_Affiliations: {
+      query: facilityAffiliationsQuery,
       map: (row) => ({
         ...row,
         provider_name: row.provider ? formatProviderName(row.provider.last_name, row.provider.first_name) : '',

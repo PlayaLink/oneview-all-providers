@@ -3,6 +3,7 @@ import { birthInfoTemplate } from '../components/sidepanel-details/BirthInfoDeta
 import { providerInfoTemplate } from '../components/sidepanel-details/ProviderInfoDetails';
 import React from 'react';
 import AddressDetails from '../components/sidepanel-details/AddressDetails';
+import FacilityAffiliationsDetails, { facilityAffiliationsFieldGroups } from '../components/sidepanel-details/FacilityAffiliationsDetails';
 
 // Interfaces (keep if used elsewhere)
 export interface TemplateConfig {
@@ -36,7 +37,8 @@ export const gridToTemplateMap: Record<string, string> = {
   "Provider_Info": "provider_info",
   "State_Licenses": "state_licenses",
   "Birth_Info": "birth_info",
-  "Addresses": "addresses"
+  "Addresses": "addresses",
+  "Facility_Affiliations": "facility_affiliations"
 };
 
 export const addressTemplate: TemplateConfig = {
@@ -67,6 +69,20 @@ export const addressTemplate: TemplateConfig = {
   DetailsComponent: AddressDetails,
 };
 
+export const facilityAffiliationsTemplate: TemplateConfig = {
+  id: 'facility_affiliations',
+  name: 'Facility Affiliations',
+  description: 'Template for editing provider facility affiliations',
+  tabs: [
+    { id: 'details', label: 'Details', icon: 'hospital', enabled: true },
+    { id: 'notes', label: 'Notes', icon: 'note-sticky', enabled: true },
+    { id: 'documents', label: 'Documents', icon: 'folder', enabled: true },
+  ],
+  fieldGroups: facilityAffiliationsFieldGroups,
+  header: ({ row }) => `Facility Affiliation for ${row.provider_name || ''}`,
+  DetailsComponent: FacilityAffiliationsDetails,
+};
+
 // Main function to get the template config for a grid
 export function getTemplateConfigByGrid(gridName: string): TemplateConfig | null {
   if (gridName === "State_Licenses") {
@@ -80,6 +96,9 @@ export function getTemplateConfigByGrid(gridName: string): TemplateConfig | null
   }
   if (gridName === "Addresses") {
     return addressTemplate;
+  }
+  if (gridName === "Facility_Affiliations") {
+    return facilityAffiliationsTemplate;
   }
   return null;
 } 

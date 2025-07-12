@@ -335,3 +335,75 @@ export function fetchAddresses() {
     AddressSchema
   );
 } 
+
+// --- FACILITY AFFILIATIONS HELPERS ---
+
+export const FacilityAffiliationSchema = z.object({
+  id: z.string(),
+  provider_id: z.string(),
+  facility_name: z.string(),
+  staff_category: z.string().nullable().optional(),
+  in_good_standing: z.boolean().nullable().optional(),
+  facility_type: z.string().nullable().optional(),
+  currently_affiliated: z.boolean().nullable().optional(),
+  appt_end_date: z.string().nullable().optional(),
+  start_date: z.string().nullable().optional(),
+  end_date: z.string().nullable().optional(),
+  reason_for_leaving: z.string().nullable().optional(),
+  accepting_new_patients: z.boolean().nullable().optional(),
+  telemedicine: z.boolean().nullable().optional(),
+  takes_calls: z.boolean().nullable().optional(),
+  admitting_privileges: z.boolean().nullable().optional(),
+  primary_affiliation: z.boolean().nullable().optional(),
+  tags: z.array(z.string()).nullable().optional(),
+  last_updated: z.string().nullable().optional(),
+  provider: z.any().optional(),
+});
+
+export function fetchFacilityAffiliations() {
+  return dbFetch(
+    'facility_affiliations',
+    '*,provider:providers(id,first_name,last_name,title,primary_specialty)',
+    FacilityAffiliationSchema
+  );
+}
+
+export function fetchFacilityAffiliationsByProvider(providerId: string) {
+  return dbFetch(
+    'facility_affiliations',
+    '*,provider:providers(id,first_name,last_name,title,primary_specialty)',
+    FacilityAffiliationSchema
+  );
+}
+
+export async function updateFacilityAffiliation(id: string, updates: Record<string, any>) {
+  const updatesCopy = { ...updates };
+  if ('tags' in updatesCopy) updatesCopy.tags = fromIdLabelArray(updatesCopy.tags);
+  const { data, error } = await supabase
+    .from('facility_affiliations')
+    .update(updatesCopy)
+    .eq('id', id)
+    .select();
+  if (error) throw error;
+  return data;
+}
+
+export async function insertFacilityAffiliation(affiliation: Record<string, any>) {
+  const insertCopy = { ...affiliation };
+  if ('tags' in insertCopy) insertCopy.tags = fromIdLabelArray(insertCopy.tags);
+  const { data, error } = await supabase
+    .from('facility_affiliations')
+    .insert([insertCopy])
+    .select();
+  if (error) throw error;
+  return data?.[0];
+}
+
+export async function deleteFacilityAffiliation(id: string) {
+  const { error } = await supabase
+    .from('facility_affiliations')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
+  return true;
+} 
