@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import NavItem from "./NavItem";
-import SettingsDropdown from "./SettingsDropdown";
+import FeatureFlags from "./FeatureFlags";
 import GlobalFeatureToggle from "./GlobalFeatureToggle";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 
@@ -69,7 +69,8 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
             {/* Right Side Links */}
             <nav className="flex items-center gap-4" role="navigation" aria-label="Application navigation">
               {/* New Features Dropdown */}
-              <SettingsDropdown />
+              <FeatureFlags/>
+             
               <a href="#" className="text-white text-center text-xs leading-normal tracking-[0.429px] hover:underline" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
                 Modio U
               </a>
@@ -150,8 +151,8 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            {/* Settings Dropdown */}
-            <SettingsDropdown />
+            {/* Feature Flags Dropdown */}
+            <FeatureFlags />
           </div>
         </div>
       </nav>
