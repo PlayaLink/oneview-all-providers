@@ -56,6 +56,7 @@ const MainContent: React.FC<MainContentProps> = ({
   onCloseSidePanel,
 }) => {
   const { value: showFooter } = useFeatureFlag("footer");
+  const { value: gridScrollArrowsLeft } = useFeatureFlag("grid_scroll_arrows_left");
   const [currentGridIndex, setCurrentGridIndex] = useState(0);
   const [selectedGridName, setSelectedGridName] = useState<string | null>(null);
   // Render the first two grids by default
@@ -552,7 +553,7 @@ const MainContent: React.FC<MainContentProps> = ({
   return (
     <div className="flex-1 flex flex-col min-h-0 h-full" role="region" aria-label="Main Content" data-testid="main-content">
       {/* Main Content Area */}
-      <div ref={containerRef} className="flex flex-1 gap-2 min-h-0 pt-4 pl-4 pr-2">
+      <div ref={containerRef} className={`flex flex-1 gap-2 min-h-0 pt-2 ${gridScrollArrowsLeft ? 'flex-row-reverse pl-2 pr-4' : 'pl-4 pr-2'}`}>
           {/* Grids Container */}
         <div className="flex-1 flex flex-col min-h-0">
           <div 
@@ -595,7 +596,7 @@ const MainContent: React.FC<MainContentProps> = ({
 
         {/* Scroll Navigation - Always Visible */}
         {isMultipleGrids && (
-          <div className="flex flex-col items-center gap-2 pt-2 flex-shrink-0" role="grid-scroll-navigation" aria-label="Grid Scroll Navigation">
+          <div className="flex flex-col items-center gap-2 flex-shrink-0" role="grid-scroll-navigation" aria-label="Grid Scroll Navigation">
             {/* Scroll Arrows */}
             <div
               className="flex flex-col gap-0.5 rounded p-1"
