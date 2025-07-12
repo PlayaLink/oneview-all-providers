@@ -9,18 +9,21 @@ const SettingsDropdown: React.FC = () => {
   const [open, setOpen] = useState(false);
   const { allSettings, updateFlag, isLoading } = useFeatureFlags();
 
+  // Debug logging
+  console.log('SettingsDropdown render:', { allSettings, isLoading, open });
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button 
-          className="flex items-center gap-2 hover:bg-white hover:bg-opacity-10 rounded px-2 py-1 transition-colors"
-          aria-label="Open settings menu"
-          aria-expanded={open}
-          aria-haspopup="true"
-          data-testid="settings-dropdown-trigger"
-        >
-          <FontAwesomeIcon icon={faGear} className="w-4 h-4 text-white" />
-        </button>
+      <button
+                    className="text-white text-center text-xs leading-normal tracking-[0.429px] hover:underline bg-transparent border-none cursor-pointer px-2 py-1 rounded hover:bg-white/10 transition-colors"
+                    style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+                    aria-label="New Features and settings"
+                    aria-haspopup="true"
+                    data-testid="feature-flags-dropdown-header"
+                  >
+                    New Features
+                  </button>
       </PopoverTrigger>
       <PopoverContent
         className="w-64 p-0 border border-gray-200 bg-white shadow-lg"
@@ -29,20 +32,26 @@ const SettingsDropdown: React.FC = () => {
         sideOffset={4}
       >
         <div className="p-4">
-          {allSettings.map(setting => (
-            <div key={setting.setting_key} className="mb-4 flex items-center justify-between">
-              <label className="text-xs font-medium text-gray-700">
-                {setting.label || setting.setting_key}
-              </label>
-              <input
-                type="checkbox"
-                checked={!!setting.setting_value}
-                onChange={e => updateFlag(setting.setting_key as any, e.target.checked)}
-                disabled={isLoading}
-                className="ml-2"
-              />
-            </div>
-          ))}
+          {isLoading ? (
+            <div className="text-sm text-gray-500">Loading settings...</div>
+          ) : allSettings && allSettings.length > 0 ? (
+            allSettings.map(setting => (
+              <div key={setting.setting_key} className="mb-4 flex items-center justify-between">
+                <label className="text-xs font-medium text-gray-700">
+                  {setting.label || setting.setting_key}
+                </label>
+                <input
+                  type="checkbox"
+                  checked={!!setting.setting_value}
+                  onChange={e => updateFlag(setting.setting_key as any, e.target.checked)}
+                  disabled={isLoading}
+                  className="ml-2"
+                />
+              </div>
+            ))
+          ) : (
+            <div className="text-sm text-gray-500">No settings available</div>
+          )}
         </div>
       </PopoverContent>
     </Popover>

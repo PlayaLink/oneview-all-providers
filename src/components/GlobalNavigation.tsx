@@ -69,43 +69,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
             {/* Right Side Links */}
             <nav className="flex items-center gap-4" role="navigation" aria-label="Application navigation">
               {/* New Features Dropdown */}
-              <Popover open={newFeaturesDropdownOpen} onOpenChange={setNewFeaturesDropdownOpen}>
-                <PopoverTrigger asChild>
-                  <button
-                    className="text-white text-center text-xs leading-normal tracking-[0.429px] hover:underline bg-transparent border-none cursor-pointer px-2 py-1 rounded hover:bg-white/10 transition-colors"
-                    style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
-                    aria-label="New Features and settings"
-                    aria-expanded={newFeaturesDropdownOpen}
-                    aria-haspopup="true"
-                    data-testid="feature-flags-dropdown-header"
-                  >
-                    New Features
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-64 p-0 border border-gray-200 bg-white shadow-lg" align="end" side="bottom" sideOffset={4}>
-                  <div className="p-4" role="feature-flags-list" data-testid="feature-flags-list-header">
-                    {/* Settings Section */}
-                    <div className="space-y-4">
-                      <GlobalFeatureToggle
-                        settingKey="footer"
-                        label="Footer"
-                        options={[
-                          { value: "false", label: "No" },
-                          { value: "true", label: "Yes" },
-                        ]}
-                      />
-                      <GlobalFeatureToggle
-                        settingKey="left_nav"
-                        label="Grids Navigation"
-                        options={[
-                          { value: "false", label: "Horizontal" },
-                          { value: "true", label: "Left-nav" },
-                        ]}
-                      />
-                    </div>
-                  </div>
-                </PopoverContent>
-              </Popover>
+              <SettingsDropdown />
               <a href="#" className="text-white text-center text-xs leading-normal tracking-[0.429px] hover:underline" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
                 Modio U
               </a>
@@ -187,6 +151,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
           </div>
           <div className="flex items-center gap-4">
             {/* Settings Dropdown */}
+            <SettingsDropdown />
           </div>
         </div>
       </nav>
