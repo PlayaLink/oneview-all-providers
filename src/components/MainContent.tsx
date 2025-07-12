@@ -117,7 +117,6 @@ const MainContent: React.FC<MainContentProps> = ({
     Birth_Info: {
       query: birthInfoQuery,
       map: (row) => {
-        console.log('Birth Info provider name parts:', row.provider?.last_name, row.provider?.first_name);
         return {
           ...row,
           provider_name: row.provider ? formatProviderName(row.provider.last_name, row.provider.first_name) : '',
