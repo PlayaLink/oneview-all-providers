@@ -168,7 +168,7 @@ const AllRecords: React.FC = () => {
     <>
       {/* All Providers Header */}
       <AllProvidersHeader
-        title={npi ? undefined : "All Records"}
+        title={npi ? undefined : "All Providers"}
         npi={npi}
         providerInfo={selectedProviderInfo}
         onProviderSelect={handleProviderSelect}

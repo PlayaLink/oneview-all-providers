@@ -18,7 +18,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [newFeaturesDropdownOpen, setNewFeaturesDropdownOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
-  const { value: isLeftNav, isLoading: navLoading } = useFeatureFlag("left_nav");
+  const { value: hasAllProviderTab, isLoading: navLoading } = useFeatureFlag("all_providers_tab");
 
   useEffect(() => {
     if (!profileDropdownOpen) return;
@@ -132,7 +132,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
               >
                 Team
               </NavItem>
-              {(navLoading || isLeftNav) && (
+              {(navLoading || hasAllProviderTab) && (
                 <NavItem
                   variant="main"
                   role="menuitem"
@@ -141,7 +141,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
                   onClick={() => navigate("/all-records")}
                   data-testid="nav-item-oneview"
                 >
-                  All Records
+                  All Providers
                 </NavItem>
               )}
               <NavItem variant="main" role="menuitem">Forms</NavItem>
