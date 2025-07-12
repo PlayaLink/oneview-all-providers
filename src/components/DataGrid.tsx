@@ -9,6 +9,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
+import type { ColumnMenuTab } from "ag-grid-community";
 
 // Import AG Grid styles
 import "ag-grid-community/styles/ag-grid.css";
@@ -42,8 +44,8 @@ const DataGrid: React.FC<DataGridProps> = ({
   const [internalSelectedRowId, setInternalSelectedRowId] = React.useState<string | null>(null);
   const selectedRowId = controlledSelectedRowId !== undefined ? controlledSelectedRowId : internalSelectedRowId;
 
-  // State to toggle floating filters
-  const [showFloatingFilters, setShowFloatingFilters] = React.useState(true);
+  // Use feature flag for floating filters
+  const { value: showFloatingFilters } = useFeatureFlag("floating_filters");
 
   // Prepare column definitions with optional checkbox column
   const columnDefs = React.useMemo(() => [
@@ -71,7 +73,11 @@ const DataGrid: React.FC<DataGridProps> = ({
       floatingFilter: showFloatingFilters,
       suppressMenu: false,
       filter: true,
-      menuTabs: ['filterMenuTab', 'generalMenuTab', 'columnsMenuTab'],
+      menuTabs: [
+        'filterMenuTab',
+        'generalMenuTab',
+        'columnsMenuTab',
+      ] as ColumnMenuTab[],
       cellStyle: (params: any) => {
         const baseCellStyle = {
           color: "#545454",
@@ -209,18 +215,6 @@ const DataGrid: React.FC<DataGridProps> = ({
         </div>
       </header>
 
-      {/* Toggle Floating Filters Button */}
-      <div className="flex items-center justify-end px-4 py-2 bg-white border-b border-gray-200">
-        <button
-          type="button"
-          onClick={() => setShowFloatingFilters((prev) => !prev)}
-          aria-pressed={showFloatingFilters}
-          className="px-3 py-1 rounded bg-[#008BC9] text-white text-xs font-semibold hover:bg-[#0077B3] focus:outline-none focus:ring-2 focus:ring-[#008BC9] focus:ring-offset-2"
-          data-testid="toggle-floating-filters"
-        >
-          {showFloatingFilters ? 'Hide Filters' : 'Show Filters'}
-        </button>
-      </div>
 
       {/* AG Grid Container */}
       <div
