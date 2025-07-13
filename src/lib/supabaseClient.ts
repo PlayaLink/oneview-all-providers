@@ -439,3 +439,13 @@ export async function fetchGridFieldGroups(gridId: string) {
   if (error) throw error;
   return data;
 } 
+
+// Fetch all rows from a given table name
+export async function fetchGridData(tableName: string) {
+  if (!tableName) return [];
+  const { data, error } = await supabase
+    .from(tableName)
+    .select('*');
+  if (error) throw error;
+  return data;
+} 
