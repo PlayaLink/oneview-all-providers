@@ -1,26 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faChevronDown,
   faUsers,
   faUserPlus,
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import SideNav from "@/components/SideNav";
 import HorizontalNav from "@/components/HorizontalNav";
 import AllProvidersHeader from "@/components/AllProvidersHeader";
 import MainContent from "@/components/MainContent";
-import MainContentArea from "@/components/MainContentArea";
 
-import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { generateSampleData } from "@/lib/dataGenerator";
+import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from '@tanstack/react-query';
 import { supabase, fetchGridDefinitions, fetchGridSections } from '@/lib/supabaseClient';
-import { useFeatureSettings } from '@/hooks/useFeatureSettings';
 import { useUser } from '@/contexts/UserContext';
 import { useFeatureFlag } from '@/contexts/FeatureFlagContext';
 import GridDataFetcher from "./GridDataFetcher";
@@ -32,23 +26,16 @@ const fetchProviders = async () => {
   return data;
 };
 
-interface AllRecordsProps {
-  // user is now provided by AppLayout, so we don't need it as a prop
-}
-
 const AllRecords: React.FC = () => {
   const { user } = useUser();
   const { npi } = useParams<{ npi?: string }>();
   const navigate = useNavigate();
-  const location = useLocation();
   const { value: isLeftNav, isLoading: navLoading } = useFeatureFlag("left_nav");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [selectedSection, setSelectedSection] = useState<string | null>("provider_info");
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
   const [selectedRow, setSelectedRow] = useState<(any & { gridName: string }) | null>(null);
-  const [sidePanelOpen, setSidePanelOpen] = useState(false);
-  const [activePanelGridName, setActivePanelGridName] = useState<string | null>(null);
 
   const { data: providerInfoData, isLoading, error } = useQuery<any[], Error>({
     queryKey: ["providers"],
@@ -104,29 +91,6 @@ const AllRecords: React.FC = () => {
     }
   }, [isLeftNav, navLoading, selectedSection]);
 
-  useEffect(() => {
-    if (npi) {
-      if (visibleSections.size === 0) {
-        setVisibleSections(new Set());
-      }
-    }
-  }, [npi]);
-
-  useEffect(() => {
-    if (!navLoading && !isLeftNav) {
-      if (visibleSections.size > 0) {
-        const allGroups = getGroups();
-        const visibleGroups = allGroups.filter(group => {
-          const grids = getGridsByGroup(group);
-          return grids.some(grid => visibleSections.has(grid.group));
-        });
-        if (visibleGroups.length === 1 && selectedSection !== visibleGroups[0]) {
-          setSelectedSection(visibleGroups[0]);
-        }
-      }
-    }
-  }, [visibleSections, isLeftNav, navLoading, selectedSection]);
-
   const handleItemSelect = (item: string) => {
     setSelectedItem(item);
     setSelectedSection(null);
@@ -172,16 +136,6 @@ const AllRecords: React.FC = () => {
     setSelectedRow(null);
   };
 
-  const handleUpdateSelectedProvider = (gridName: string, updatedProvider: any) => {
-    // This handler is no longer needed as selectedRow is the single source of truth
-  };
-
-  useEffect(() => {
-    if (error) {
-      console.error('Supabase fetch error:', error);
-    }
-  }, [providerInfoData, error]);
-
   // Helper to determine which grids to show in all-records view (backend-driven)
   const getGridsToShow = () => {
     let gridsToShow: any[] = [];
@@ -212,6 +166,7 @@ const AllRecords: React.FC = () => {
   };
 
   const gridsToShow = getGridsToShow();
+  console.log("gridsToShow", gridsToShow);
 
   return (
     <>
@@ -311,10 +266,9 @@ const AllRecords: React.FC = () => {
                 </div>
               ) : (
                 gridsToShow.map((grid: any) => (
-                  <div key={grid.key || grid.table_name}>
-                    <div>test</div>
+                  <div key={grid.key}>
                     <GridDataFetcher
-                      gridKey={grid.key || grid.table_name}
+                      gridKey={grid.key}
                       titleOverride={grid.display_name}
                       iconOverride={getIconByName(grid.icon)}
                     />
@@ -351,6 +305,7 @@ const AllRecords: React.FC = () => {
               ) : (
                 gridsToShow.map((grid: any) => (
                   <div key={grid.key || grid.table_name}>
+                    <div>test</div>
                     <GridDataFetcher
                       gridKey={grid.key || grid.table_name}
                       titleOverride={grid.display_name}
