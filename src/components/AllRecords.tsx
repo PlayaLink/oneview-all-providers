@@ -185,20 +185,34 @@ const AllRecords: React.FC = () => {
 
   // Helper to determine which grids to show in all-records view (backend-driven)
   const getGridsToShow = () => {
+    let gridsToShow: any[] = [];
+    
     if (selectedItem && selectedItem !== "all-sections") {
-      return gridDefs.filter((g: any) => g.table_name === selectedItem || g.key === selectedItem);
-    }
-    if (selectedSection) {
+      gridsToShow = gridDefs.filter((g: any) => g.table_name === selectedItem || g.key === selectedItem);
+    } else if (selectedSection) {
       const sectionGrids = getGridsByGroup(selectedSection);
-      if (visibleSections.size === 0) return sectionGrids;
-      return sectionGrids.filter((g: any) => visibleSections.has(g.table_name) || visibleSections.has(g.key));
+      if (visibleSections.size === 0) {
+        gridsToShow = sectionGrids;
+      } else {
+        gridsToShow = sectionGrids.filter((g: any) => visibleSections.has(g.table_name) || visibleSections.has(g.key));
+      }
+    } else {
+      if (visibleSections.size === 0) {
+        gridsToShow = gridDefs;
+      } else {
+        gridsToShow = gridDefs.filter((g: any) => visibleSections.has(g.table_name) || visibleSections.has(g.key));
+      }
     }
-    if (visibleSections.size === 0) return gridDefs;
-    return gridDefs.filter((g: any) => visibleSections.has(g.table_name) || visibleSections.has(g.key));
+    
+    // Sort grids by their order property
+    return gridsToShow.sort((a, b) => {
+      const orderA = a.order || 0;
+      const orderB = b.order || 0;
+      return orderA - orderB;
+    });
   };
   const gridsToShow = getGridsToShow();
   
-
 
   return (
     <>
