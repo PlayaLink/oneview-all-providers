@@ -5,7 +5,6 @@ import {
   faEllipsis,
 } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
-import { gridDefinitions, getGroups, getGridsByGroup } from "@/lib/gridDefinitions";
 import { getIconByName } from "@/lib/iconMapping";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 
@@ -15,6 +14,8 @@ interface SideNavProps {
   selectedSection: string | null;
   onItemSelect: (item: string) => void;
   onSectionSelect: (section: string) => void;
+  gridSections: any[];
+  gridDefs: any[];
 }
 
 const SideNav: React.FC<SideNavProps> = ({
@@ -23,8 +24,14 @@ const SideNav: React.FC<SideNavProps> = ({
   selectedSection,
   onItemSelect,
   onSectionSelect,
+  gridSections,
+  gridDefs,
 }) => {
-  // Get groups from gridDefinitions
+  // Helper functions for backend-driven data
+  const getGroups = () => Array.from(new Set(gridDefs.map((g: any) => g.group)));
+  const getGridsByGroup = (group: string) => gridDefs.filter((g: any) => g.group === group);
+  
+  // Get groups from backend grid definitions
   const groups = getGroups();
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
@@ -128,24 +135,24 @@ const SideNav: React.FC<SideNavProps> = ({
                     <div className="pl-3 flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
                       {gridsInGroup.map((grid) => (
                         <button
-                          key={grid.tableName}
+                          key={grid.key || grid.table_name}
                           className={cn(
                             "flex items-center gap-2 p-2 rounded cursor-pointer w-full text-left bg-transparent border-none",
-                            isItemActive(grid.tableName)
+                            isItemActive(grid.key || grid.table_name)
                               ? "bg-[#008BC9] text-white"
                               : "text-[#545454] hover:bg-gray-50",
                           )}
-                          onClick={() => handleItemClick(grid.tableName)}
-                          aria-label={`View ${grid.tableName.replace(/_/g, " ")} grid`}
-                          aria-pressed={isItemActive(grid.tableName)}
-                          data-testid={`grid-button-${grid.tableName.toLowerCase().replace(/_/g, '-')}`}
+                          onClick={() => handleItemClick(grid.key || grid.table_name)}
+                          aria-label={`View ${(grid.display_name || grid.table_name).replace(/_/g, " ")} grid`}
+                          aria-pressed={isItemActive(grid.key || grid.table_name)}
+                          data-testid={`grid-button-${(grid.key || grid.table_name).toLowerCase().replace(/_/g, '-')}`}
                         >
                           <FontAwesomeIcon 
                             icon={getIconByName(grid.icon)} 
                             className="w-4 h-4" 
                           />
                           <span className="text-xs font-semibold">
-                            {grid.tableName.replace(/_/g, " ")}
+                            {(grid.display_name || grid.table_name).replace(/_/g, " ")}
                           </span>
                         </button>
                       ))}

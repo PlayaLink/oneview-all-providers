@@ -252,7 +252,8 @@ const AllRecords: React.FC = () => {
                 selectedSection={selectedSection}
                 onItemSelect={handleItemSelect}
                 onSectionSelect={handleSectionSelect}
-                // Optionally pass gridDefs to SideNav if needed
+                gridSections={gridSections}
+                gridDefs={gridDefs}
               />
               <button
                 onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
