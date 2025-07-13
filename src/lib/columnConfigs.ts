@@ -52,6 +52,25 @@ export function formatProviderName(lastName: string | undefined, firstName: stri
     .join(', ');
 }
 
+// Formatter for boolean columns: Yes/No/empty
+export const booleanValueFormatter = (params: any) => {
+  if (params.value === true) return 'Yes';
+  if (params.value === false) return 'No';
+  return '';
+};
+
+// List of known boolean fields for Facility Affiliations and similar grids
+const BOOLEAN_FIELDS = [
+  'in_good_standing',
+  'currently_affiliated',
+  'accepting_new_patients',
+  'telemedicine',
+  'takes_calls',
+  'admitting_privileges',
+  'primary_affiliation',
+  // Add more as needed
+];
+
 // Generate column definitions for any grid based on its column names
 export const getColumnsForGrid = (gridKey: string): ColDef[] => {
   const grid = gridDefinitions.find(g => g.tableName === gridKey);
@@ -106,6 +125,10 @@ export const getColumnsForGrid = (gridKey: string): ColDef[] => {
       'other_specialties',
     ].includes(columnName)) {
       colDef.valueFormatter = multiSelectValueFormatter;
+    }
+    // Use booleanValueFormatter for known boolean fields
+    if (BOOLEAN_FIELDS.includes(columnName)) {
+      colDef.valueFormatter = booleanValueFormatter;
     }
     return colDef;
   });

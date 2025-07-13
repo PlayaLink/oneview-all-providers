@@ -407,3 +407,35 @@ export async function deleteFacilityAffiliation(id: string) {
   if (error) throw error;
   return true;
 } 
+
+// Fetch all grid definitions
+export async function fetchGridDefinitions() {
+  const { data, error } = await supabase
+    .from('grid_definitions')
+    .select('*')
+    .order('order');
+  if (error) throw error;
+  return data;
+}
+
+// Fetch columns for a grid
+export async function fetchGridColumns(gridId: string) {
+  const { data, error } = await supabase
+    .from('grid_columns')
+    .select('*')
+    .eq('grid_id', gridId)
+    .order('order');
+  if (error) throw error;
+  return data;
+}
+
+// Fetch field groups for a grid
+export async function fetchGridFieldGroups(gridId: string) {
+  const { data, error } = await supabase
+    .from('grid_field_groups')
+    .select('*')
+    .eq('grid_id', gridId)
+    .order('order');
+  if (error) throw error;
+  return data;
+} 
