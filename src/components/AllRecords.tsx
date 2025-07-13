@@ -19,7 +19,7 @@ import MainContentArea from "@/components/MainContentArea";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { generateSampleData } from "@/lib/dataGenerator";
 import { useQuery } from '@tanstack/react-query';
-import { supabase, fetchGridDefinitions } from '@/lib/supabaseClient';
+import { supabase, fetchGridDefinitions, fetchGridSections } from '@/lib/supabaseClient';
 import { useFeatureSettings } from '@/hooks/useFeatureSettings';
 import { useUser } from '@/contexts/UserContext';
 import { useFeatureFlag } from '@/contexts/FeatureFlagContext';
@@ -61,11 +61,18 @@ const AllRecords: React.FC = () => {
     queryFn: fetchGridDefinitions,
     initialData: [],
   });
+
+  // Fetch grid sections from backend
+  const { data: gridSections = [], isLoading: sectionsLoading, error: sectionsError } = useQuery({
+    queryKey: ["grid_sections"],
+    queryFn: fetchGridSections,
+    initialData: [],
+  });
+
   // Helper to get unique groups from backend grid definitions
   const getGroups = () => Array.from(new Set(gridDefs.map((g: any) => g.group)));
   // Helper to get grids by group from backend grid definitions
   const getGridsByGroup = (group: string) => gridDefs.filter((g: any) => g.group === group);
-
 
 
   const providerSearchList = React.useMemo(() => (
@@ -309,6 +316,7 @@ const AllRecords: React.FC = () => {
               onSectionSelect={handleSectionSelect}
               visibleSections={visibleSections}
               onSectionVisibilityChange={handleSectionVisibilityChange}
+              gridSections={gridSections}
             />
             <section className="flex-1 min-h-0" role="region" aria-label="Content area" data-testid="content-area">
               {/* Render a GridDataFetcher for each grid */}

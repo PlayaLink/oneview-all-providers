@@ -449,3 +449,13 @@ export async function fetchGridData(tableName: string) {
   if (error) throw error;
   return data;
 } 
+
+// Fetch all grid sections
+export async function fetchGridSections() {
+  const { data, error } = await supabase
+    .from('grid_sections')
+    .select('*')
+    .order('order');
+  if (error) throw error;
+  return data;
+} 
