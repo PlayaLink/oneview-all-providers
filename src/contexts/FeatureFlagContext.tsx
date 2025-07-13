@@ -59,7 +59,7 @@ export function useFeatureFlags() {
 
 export function useFeatureFlag(key: FeatureSettingKey) {
   const { flags, isLoading, updateFlag } = useFeatureFlags();
-  console.log("flags", flags);
+  
   return {
     value: flags[key],
     isLoading,

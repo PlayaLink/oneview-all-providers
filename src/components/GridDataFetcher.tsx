@@ -53,7 +53,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverrid
     queryFn: fetchGridDefinitions,
     initialData: [],
   });
-  const gridDef = Array.isArray(gridDefs) ? gridDefs.find((g: any) => g.key.toLowerCase() === lowerKey) : undefined;
+  const gridDef = Array.isArray(gridDefs) ? gridDefs.find((g: any) => (g.key || g.table_name)?.toLowerCase() === lowerKey) : undefined;
 
   // Fetch columns for this grid
   const { data: columns = [] } = useQuery({
@@ -93,7 +93,11 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverrid
     }));
   }, [columns]);
 
+
+
   if (!gridDef) return null;
+
+
 
   return (
     <section className="flex-1 min-h-0 flex flex-col pl-3 pr-4 pt-4" role="region" aria-label={`${gridDef.display_name} Data Grid`}>

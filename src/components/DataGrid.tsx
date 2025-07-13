@@ -41,6 +41,7 @@ const DataGrid: React.FC<DataGridProps> = ({
   showStatusBadges = true,
   selectedRowId: controlledSelectedRowId,
 }) => {
+
   const [internalSelectedRowId, setInternalSelectedRowId] = React.useState<string | null>(null);
   const selectedRowId = controlledSelectedRowId !== undefined ? controlledSelectedRowId : internalSelectedRowId;
 
@@ -104,6 +105,8 @@ const DataGrid: React.FC<DataGridProps> = ({
       },
     })),
   ], [columns, showCheckboxes, showFloatingFilters, selectedRowId]);
+
+
 
   const handleRowClicked = (event: RowClickedEvent) => {
     // Prevent cell focus on single click
@@ -219,7 +222,7 @@ const DataGrid: React.FC<DataGridProps> = ({
       {/* AG Grid Container */}
       <div
         className="ag-theme-alpine ag-grid-custom flex-1 min-h-0"
-        style={{ width: "100%", border: "none", borderWidth: "0px", ...(height !== "100%" ? { height } : {}) } as React.CSSProperties}
+        style={{ height: 400, width: '100%', border: "none", borderWidth: "0px", ...(height !== "100%" ? { height } : {}) } as React.CSSProperties}
         role="grid"
         aria-label={`${title} data table`}
         aria-rowcount={data.length}

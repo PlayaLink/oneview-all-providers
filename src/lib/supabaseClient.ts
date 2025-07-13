@@ -413,7 +413,7 @@ export async function fetchGridDefinitions() {
   const { data, error } = await supabase
     .from('grid_definitions')
     .select('*')
-    .order('order');
+    .order('display_name');
   if (error) throw error;
   return data;
 }

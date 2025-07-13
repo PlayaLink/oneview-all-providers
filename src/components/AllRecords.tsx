@@ -16,16 +16,15 @@ import AllProvidersHeader from "@/components/AllProvidersHeader";
 import MainContent from "@/components/MainContent";
 import MainContentArea from "@/components/MainContentArea";
 
-import { getGroups, getGridsByGroup } from "@/lib/gridDefinitions";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { generateSampleData } from "@/lib/dataGenerator";
-import { gridDefinitions } from "@/lib/gridDefinitions";
-import NavItem from "@/components/NavItem";
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase, fetchGridDefinitions } from '@/lib/supabaseClient';
 import { useFeatureSettings } from '@/hooks/useFeatureSettings';
 import { useUser } from '@/contexts/UserContext';
 import { useFeatureFlag } from '@/contexts/FeatureFlagContext';
+import GridDataFetcher from "./GridDataFetcher";
+import { getIconByName } from "@/lib/iconMapping";
 
 const fetchProviders = async () => {
   const { data, error } = await supabase.from('providers').select('*');
@@ -45,7 +44,7 @@ const AllRecords: React.FC = () => {
   const { value: isLeftNav, isLoading: navLoading } = useFeatureFlag("left_nav");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
-  const [selectedSection, setSelectedSection] = useState<string | null>("Provider Info");
+  const [selectedSection, setSelectedSection] = useState<string | null>("provider_info");
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
   const [selectedRow, setSelectedRow] = useState<(any & { gridName: string }) | null>(null);
   const [sidePanelOpen, setSidePanelOpen] = useState(false);
@@ -55,6 +54,19 @@ const AllRecords: React.FC = () => {
     queryKey: ["providers"],
     queryFn: fetchProviders,
   });
+
+  // Fetch grid definitions from backend
+  const { data: gridDefs = [], isLoading: gridsLoading, error: gridsError } = useQuery({
+    queryKey: ["grid_definitions"],
+    queryFn: fetchGridDefinitions,
+    initialData: [],
+  });
+  // Helper to get unique groups from backend grid definitions
+  const getGroups = () => Array.from(new Set(gridDefs.map((g: any) => g.group)));
+  // Helper to get grids by group from backend grid definitions
+  const getGridsByGroup = (group: string) => gridDefs.filter((g: any) => g.group === group);
+
+
 
   const providerSearchList = React.useMemo(() => (
     Array.isArray(providerInfoData)
@@ -76,13 +88,13 @@ const AllRecords: React.FC = () => {
 
   useEffect(() => {
     if (!selectedSection && !selectedItem) {
-      setSelectedSection("Provider Info");
+      setSelectedSection("provider_info");
     }
   }, [selectedSection, selectedItem]);
 
   useEffect(() => {
     if (!navLoading && !isLeftNav && !selectedSection) {
-      setSelectedSection("Provider Info");
+      setSelectedSection("provider_info");
     }
   }, [isLeftNav, navLoading, selectedSection]);
 
@@ -100,7 +112,7 @@ const AllRecords: React.FC = () => {
         const allGroups = getGroups();
         const visibleGroups = allGroups.filter(group => {
           const grids = getGridsByGroup(group);
-          return grids.some(grid => visibleSections.has(grid.tableName));
+          return grids.some(grid => visibleSections.has(grid.group));
         });
         if (visibleGroups.length === 1 && selectedSection !== visibleGroups[0]) {
           setSelectedSection(visibleGroups[0]);
@@ -164,6 +176,23 @@ const AllRecords: React.FC = () => {
     }
   }, [providerInfoData, error]);
 
+  // Helper to determine which grids to show in all-records view (backend-driven)
+  const getGridsToShow = () => {
+    if (selectedItem && selectedItem !== "all-sections") {
+      return gridDefs.filter((g: any) => g.table_name === selectedItem || g.key === selectedItem);
+    }
+    if (selectedSection) {
+      const sectionGrids = getGridsByGroup(selectedSection);
+      if (visibleSections.size === 0) return sectionGrids;
+      return sectionGrids.filter((g: any) => visibleSections.has(g.table_name) || visibleSections.has(g.key));
+    }
+    if (visibleSections.size === 0) return gridDefs;
+    return gridDefs.filter((g: any) => visibleSections.has(g.table_name) || visibleSections.has(g.key));
+  };
+  const gridsToShow = getGridsToShow();
+  
+
+
   return (
     <>
       {/* All Providers Header */}
@@ -185,94 +214,129 @@ const AllRecords: React.FC = () => {
       />
       {/* Main Content */}
       {npi ? (
-        <div className="flex-1 flex flex-col min-h-0 w-full px-4 pt-4 pb-8">
-          <MainContent
-            singleProviderNpi={npi}
-            visibleSections={visibleSections}
-            selectedRow={selectedRow}
-            onRowSelect={handleRowSelect}
-            onCloseSidePanel={handleCloseSidePanel}
-            providerInfoData={providerInfoData}
-            user={user}
-          />
+        <div>
+          <div className="flex-1 flex flex-col min-h-0 w-full px-4 pt-4 pb-8">
+            <MainContent
+              singleProviderNpi={npi}
+              visibleSections={visibleSections}
+              selectedRow={selectedRow}
+              onRowSelect={handleRowSelect}
+              onCloseSidePanel={handleCloseSidePanel}
+              providerInfoData={providerInfoData}
+              user={user}
+            />
+          </div>
         </div>
       ) : navLoading || isLeftNav ? (
-        <div className="flex flex-1">
-          <aside
-            className={cn(
-              "relative border-r border-gray-300 bg-white transition-all duration-300 flex flex-col h-full min-h-0",
-              sidebarCollapsed ? "w-0" : "w-48",
-            )}
-            role="complementary"
-            aria-label="Sidebar navigation"
-            data-testid="sidebar-navigation"
-          >
-            <SideNav
-              collapsed={sidebarCollapsed}
-              selectedItem={selectedItem}
-              selectedSection={selectedSection}
-              onItemSelect={handleItemSelect}
-              onSectionSelect={handleSectionSelect}
-            />
-            <button
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="absolute w-6 h-6 bg-[#545454] text-white rounded-full flex items-center justify-center hover:bg-[#3f3f3f] transition-colors z-20"
-              style={{
-                right: sidebarCollapsed ? "-28px" : "-12px",
-                top: "-12px",
-              }}
-              aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-              aria-expanded={!sidebarCollapsed}
-              data-testid="sidebar-toggle"
-            >
-              {sidebarCollapsed ? (
-                <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" aria-hidden="true" />
-              ) : (
-                <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" aria-hidden="true" />
+        <div>
+          <div className="flex flex-1">
+            <aside
+              className={cn(
+                "relative border-r border-gray-300 bg-white transition-all duration-300 flex flex-col h-full min-h-0",
+                sidebarCollapsed ? "w-0" : "w-48",
               )}
-            </button>
-          </aside>
-          <section
-            className={cn(
-              "flex-1 flex flex-col min-h-0",
-              sidebarCollapsed && "ml-4 border-l border-gray-300",
-            )}
-            role="region"
-            aria-label="Content area"
-            data-testid="content-area"
-          >
-            <MainContent
-              selectedItem={selectedItem}
-              selectedSection={selectedSection}
-              visibleSections={visibleSections}
-              selectedRow={selectedRow}
-              onRowSelect={handleRowSelect}
-              onCloseSidePanel={handleCloseSidePanel}
-              providerInfoData={providerInfoData}
-              user={user}
-            />
-          </section>
+              role="complementary"
+              aria-label="Sidebar navigation"
+              data-testid="sidebar-navigation"
+            >
+              <SideNav
+                collapsed={sidebarCollapsed}
+                selectedItem={selectedItem}
+                selectedSection={selectedSection}
+                onItemSelect={handleItemSelect}
+                onSectionSelect={handleSectionSelect}
+                // Optionally pass gridDefs to SideNav if needed
+              />
+              <button
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                className="absolute w-6 h-6 bg-[#545454] text-white rounded-full flex items-center justify-center hover:bg-[#3f3f3f] transition-colors z-20"
+                style={{
+                  right: sidebarCollapsed ? "-28px" : "-12px",
+                  top: "-12px",
+                }}
+                aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                aria-expanded={!sidebarCollapsed}
+                data-testid="sidebar-toggle"
+              >
+                {sidebarCollapsed ? (
+                  <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" aria-hidden="true" />
+                ) : (
+                  <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" aria-hidden="true" />
+                )}
+              </button>
+            </aside>
+            <section
+              className={cn(
+                "flex-1 flex flex-col min-h-0",
+                sidebarCollapsed && "ml-4 border-l border-gray-300",
+              )}
+              role="region"
+              aria-label="Content area"
+              data-testid="content-area"
+            >
+              {/* Render a GridDataFetcher for each grid */}
+              {gridsLoading ? (
+                <div className="flex-1 flex items-center justify-center pt-4 px-4">
+                  <div className="text-gray-500">Loading grids...</div>
+                </div>
+              ) : gridsError ? (
+                <div className="flex-1 flex items-center justify-center pt-4 px-4">
+                  <div className="text-red-500">Error loading grids: {gridsError.message}</div>
+                </div>
+              ) : gridsToShow.length === 0 ? (
+                <div className="flex-1 flex items-center justify-center pt-4 px-4">
+                  <div className="text-gray-500">No content to display</div>
+                </div>
+              ) : (
+                gridsToShow.map((grid: any) => (
+                  <div key={grid.key || grid.table_name}>
+                    <GridDataFetcher
+                      gridKey={grid.key || grid.table_name}
+                      titleOverride={grid.display_name}
+                      iconOverride={getIconByName(grid.icon)}
+                    />
+                  </div>
+                ))
+              )}
+            </section>
+          </div>
         </div>
       ) : (
-        <div className="flex-1 flex flex-col min-h-0">
-          <HorizontalNav
-            selectedSection={selectedSection}
-            onSectionSelect={handleSectionSelect}
-            visibleSections={visibleSections}
-            onSectionVisibilityChange={handleSectionVisibilityChange}
-          />
-          <section className="flex-1 min-h-0" role="region" aria-label="Content area" data-testid="content-area">
-            <MainContent
-              selectedItem={selectedItem}
+        <div>
+          <div className="flex-1 flex flex-col min-h-0">
+            <HorizontalNav
               selectedSection={selectedSection}
+              onSectionSelect={handleSectionSelect}
               visibleSections={visibleSections}
-              selectedRow={selectedRow}
-              onRowSelect={handleRowSelect}
-              onCloseSidePanel={handleCloseSidePanel}
-              providerInfoData={providerInfoData}
-              user={user}
+              onSectionVisibilityChange={handleSectionVisibilityChange}
             />
-          </section>
+            <section className="flex-1 min-h-0" role="region" aria-label="Content area" data-testid="content-area">
+              {/* Render a GridDataFetcher for each grid */}
+              {gridsLoading ? (
+                <div className="flex-1 flex items-center justify-center pt-4 px-4">
+                  <div className="text-gray-500">Loading grids...</div>
+                </div>
+              ) : gridsError ? (
+                <div className="flex-1 flex items-center justify-center pt-4 px-4">
+                  <div className="text-red-500">Error loading grids: {gridsError.message}</div>
+                </div>
+              ) : gridsToShow.length === 0 ? (
+                <div className="flex-1 flex items-center justify-center pt-4 px-4">
+                  <div className="text-gray-500">No content to display</div>
+                </div>
+              ) : (
+                gridsToShow.map((grid: any) => (
+                  <div key={grid.key || grid.table_name}>
+                    <GridDataFetcher
+                      gridKey={grid.key || grid.table_name}
+                      titleOverride={grid.display_name}
+                      iconOverride={getIconByName(grid.icon)}
+                    />
+                  </div>
+                ))
+              )}
+            </section>
+          </div>
         </div>
       )}
     </>

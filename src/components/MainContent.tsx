@@ -80,7 +80,7 @@ const MainContent: React.FC<MainContentProps> = ({
     queryKey: ['birth_info'],
     queryFn: fetchBirthInfo,
   });
-  console.log("birthInfoQuery state:", birthInfoQuery);
+
   const addressesQuery = useQuery({
     queryKey: ['addresses'],
     queryFn: fetchAddresses,
@@ -110,7 +110,7 @@ const MainContent: React.FC<MainContentProps> = ({
     State_Licenses: {
       query: stateLicensesQuery,
       map: (license) => {
-        console.log('State License provider name parts:', license.provider?.last_name, license.provider?.first_name);
+
         return {
           ...license,
           provider_name: license.provider ? formatProviderName(license.provider.last_name, license.provider.first_name) : '',
@@ -562,7 +562,7 @@ const MainContent: React.FC<MainContentProps> = ({
     );
   }
 
-  console.log("providerInfoData", providerInfoData);
+
   return (
     <div className="flex-1 flex flex-col min-h-0 h-full" role="region" aria-label="Main Content" data-testid="main-content">
       {/* Main Content Area */}
