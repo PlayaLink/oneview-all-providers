@@ -74,7 +74,6 @@ const AllRecords: React.FC = () => {
   // Helper to get grids by group from backend grid definitions
   const getGridsByGroup = (group: string) => gridDefs.filter((g: any) => g.group === group);
 
-
   const providerSearchList = React.useMemo(() => (
     Array.isArray(providerInfoData)
       ? providerInfoData.map(row => ({
@@ -186,7 +185,7 @@ const AllRecords: React.FC = () => {
   // Helper to determine which grids to show in all-records view (backend-driven)
   const getGridsToShow = () => {
     let gridsToShow: any[] = [];
-    
+
     if (selectedItem && selectedItem !== "all-sections") {
       gridsToShow = gridDefs.filter((g: any) => g.table_name === selectedItem || g.key === selectedItem);
     } else if (selectedSection) {
@@ -203,7 +202,7 @@ const AllRecords: React.FC = () => {
         gridsToShow = gridDefs.filter((g: any) => visibleSections.has(g.table_name) || visibleSections.has(g.key));
       }
     }
-    
+
     // Sort grids by their order property
     return gridsToShow.sort((a, b) => {
       const orderA = a.order || 0;
@@ -211,8 +210,8 @@ const AllRecords: React.FC = () => {
       return orderA - orderB;
     });
   };
+
   const gridsToShow = getGridsToShow();
-  
 
   return (
     <>
@@ -233,6 +232,7 @@ const AllRecords: React.FC = () => {
         visibleSections={npi ? visibleSections : undefined}
         onSectionVisibilityChange={npi ? handleSectionVisibilityChange : undefined}
       />
+      
       {/* Main Content */}
       {npi ? (
         <div>
@@ -312,6 +312,7 @@ const AllRecords: React.FC = () => {
               ) : (
                 gridsToShow.map((grid: any) => (
                   <div key={grid.key || grid.table_name}>
+                    <div>test</div>
                     <GridDataFetcher
                       gridKey={grid.key || grid.table_name}
                       titleOverride={grid.display_name}

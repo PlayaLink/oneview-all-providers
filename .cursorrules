@@ -1,0 +1,27 @@
+# Cursor Rules for OneView All Providers
+
+## Git Commit Rules
+- **NEVER commit changes unless the user explicitly asks you to commit**
+- Always wait for the user to say "commit changes" or similar before running git commands
+- If you make changes, inform the user what was changed but don't commit automatically
+
+## Accessibility and Testing Requirements
+- **ALWAYS add semantic accessibility attributes to all new UI components and functionality:**
+  - `data-testid` attributes for testing and DOM inspection
+  - `role` attributes for screen readers and accessibility
+  - `aria-*` attributes (aria-label, aria-labelledby, aria-checked, etc.) as appropriate
+  - Use semantic HTML elements (nav, main, aside, header, footer, section, etc.) instead of generic divs when possible
+
+## Code Quality Standards
+- Follow existing patterns in the codebase
+- Use TypeScript for type safety
+- Add proper error handling
+- Include helpful comments for complex logic
+- Maintain consistent code formatting
+
+## Project-Specific Guidelines
+- This is a React/TypeScript application using Supabase as the backend
+- Use React Query for data fetching
+- Follow the existing component structure and naming conventions
+- Grid tables must include provider_id column linking to providers table
+- Use AG Grid API adjustments when possible instead of custom CSS modifications 

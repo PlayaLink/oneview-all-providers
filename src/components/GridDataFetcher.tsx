@@ -2,6 +2,7 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchGridDefinitions, fetchGridColumns, fetchGridData } from "@/lib/supabaseClient";
 import DataGrid from "@/components/DataGrid";
+import { getIconByName } from "@/lib/iconMapping";
 
 // Example mapping functions for specific grids
 const gridDataMappers: Record<string, (row: any) => any> = {
@@ -62,6 +63,13 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverrid
     enabled: !!gridDef,
     initialData: [],
   });
+  
+  console.log("GridDataFetcher - column details:", columns.map((col: any) => ({
+    name: col.name,
+    display_name: col.display_name,
+    type: col.type,
+    visible: col.visible
+  })));
 
   // Fetch data for this grid
   const { data: gridData = [], isLoading, error } = useQuery({
@@ -70,6 +78,8 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverrid
     enabled: !!(gridDef && gridDef.table_name),
     initialData: [],
   });
+  
+  console.log("GridDataFetcher - gridData sample (first 2 rows):", gridData?.slice(0, 2));
 
   // Apply mapping if needed
   const mappedData = React.useMemo(() => {
@@ -92,6 +102,40 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverrid
       // ...add more as needed
     }));
   }, [columns]);
+  
+
+  
+  // Check for field mismatches
+  if (mappedData.length > 0 && agGridColumns.length > 0) {
+    const columnFields = agGridColumns.map(col => col.field);
+    const dataKeys = Object.keys(mappedData[0]);
+    
+    console.log("GridDataFetcher - FIELD MATCHING ANALYSIS:");
+    console.log("Column fields:", columnFields);
+    console.log("Data keys:", dataKeys);
+    
+    // Find missing fields in data
+    const missingInData = columnFields.filter(field => !dataKeys.includes(field));
+    if (missingInData.length > 0) {
+      console.warn("GridDataFetcher - Fields missing in data:", missingInData);
+    }
+    
+    // Find extra fields in data
+    const extraInData = dataKeys.filter(key => !columnFields.includes(key));
+    if (extraInData.length > 0) {
+      console.log("GridDataFetcher - Extra fields in data (not in columns):", extraInData);
+    }
+    
+    // Check for exact matches
+    const exactMatches = columnFields.filter(field => dataKeys.includes(field));
+    console.log("GridDataFetcher - Exact field matches:", exactMatches);
+    
+    if (missingInData.length === 0) {
+      console.log("GridDataFetcher - ✅ All column fields have matching data properties");
+    } else {
+      console.error("GridDataFetcher - ❌ Column fields missing from data:", missingInData);
+    }
+  }
 
 
 
@@ -103,7 +147,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverrid
     <section className="flex-1 min-h-0 flex flex-col pl-3 pr-4 pt-4" role="region" aria-label={`${gridDef.display_name} Data Grid`}>
       <DataGrid
         title={titleOverride || gridDef.display_name}
-        icon={iconOverride || undefined}
+        icon={iconOverride || getIconByName(gridDef.icon)}
         data={mappedData}
         columns={agGridColumns}
         showCheckboxes={true}
