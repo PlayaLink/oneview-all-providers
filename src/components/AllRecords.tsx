@@ -46,36 +46,12 @@ function GridsSection({
   handleSectionVisibilityChange,
   ...rest
 }: any) {
-  const [currentGridIndex, setCurrentGridIndex] = useState(0);
-  const gridRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const isMultipleGrids = gridsToShow.length > 1;
-
-  const handlePrevious = () => {
-    setCurrentGridIndex((prev) => (prev > 0 ? prev - 1 : gridsToShow.length - 1));
-  };
-
-  const handleNext = () => {
-    setCurrentGridIndex((prev) => (prev < gridsToShow.length - 1 ? prev + 1 : 0));
-  };
-
-  useEffect(() => {
-    // Scroll to the current grid (not strictly needed now, but keep for future)
-    const gridEl = gridRefs.current[currentGridIndex];
-    const container = document.querySelector('[data-testid="grids-list"]');
-    if (gridEl && container) {
-      const containerRect = container.getBoundingClientRect();
-      const gridRect = gridEl.getBoundingClientRect();
-      container.scrollTo({
-        top: container.scrollTop + (gridRect.top - containerRect.top),
-        behavior: "smooth",
-      });
-    }
-  }, [currentGridIndex, gridsToShow.length]);
-
+  // Remove scroll button logic and carousel state
+  // Just render all grids in a scrollable list
   return (
     <section className="flex-1 min-h-0 flex flex-row" role="region" aria-label="Grids list" data-testid="grids-list">
       {/* Grids List */}
-      <div className="flex-1 min-h-0 overflow-y-auto" style={{ scrollBehavior: "smooth" }}>
+      <div className="flex-1 min-h-0 overflow-y-auto">
         {gridsLoading ? (
           <div className="flex-1 flex items-center justify-center pt-4 px-4">
             <div className="text-gray-500">Loading grids...</div>
@@ -89,75 +65,24 @@ function GridsSection({
             <div className="text-gray-500">No content to display</div>
           </div>
         ) : (
-          <div
-            key={gridsToShow[currentGridIndex].key || gridsToShow[currentGridIndex].table_name}
-            ref={el => (gridRefs.current[currentGridIndex] = el)}
-          >
-            <GridDataFetcher
-              gridKey={gridsToShow[currentGridIndex].key || gridsToShow[currentGridIndex].table_name}
-              titleOverride={gridsToShow[currentGridIndex].display_name}
-              iconOverride={getIconByName(gridsToShow[currentGridIndex].icon)}
-              height={gridHeight}
-            />
+          <div>
+            {gridsToShow.map((grid: any, idx: number) => (
+              <div
+                key={grid.key || grid.table_name || idx}
+                style={{ marginBottom: idx < gridsToShow.length - 1 ? 32 : 0 }}
+                data-testid={`grid-container-${grid.key || grid.table_name}`}
+              >
+                <GridDataFetcher
+                  gridKey={grid.key || grid.table_name}
+                  titleOverride={grid.display_name}
+                  iconOverride={getIconByName(grid.icon)}
+                  height={gridHeight}
+                />
+              </div>
+            ))}
           </div>
         )}
       </div>
-      {/* Scroll Navigation */}
-      {isMultipleGrids && (
-        <div className="flex flex-col items-center gap-2 flex-shrink-0" role="grid-scroll-navigation" aria-label="Grid Scroll Navigation">
-          {/* Scroll Arrows */}
-          <div
-            className="flex flex-col gap-0.5 rounded p-1"
-            style={{
-              backgroundColor: "rgba(84, 84, 84, 0.75)",
-              borderRadius: "4px",
-            }}
-          >
-            <button
-              onClick={handlePrevious}
-              className="flex items-center justify-center w-6 h-6 text-white hover:bg-white hover:bg-opacity-10 transition-colors rounded"
-              aria-label="Previous grid"
-              data-testid="previous-grid-button"
-            >
-              <FontAwesomeIcon
-                icon={faChevronUp}
-                className="w-4 h-4 text-white"
-              />
-            </button>
-            <button
-              onClick={handleNext}
-              className="flex items-center justify-center w-6 h-6 text-white hover:bg-white hover:bg-opacity-10 transition-colors rounded"
-              aria-label="Next grid"
-              data-testid="next-grid-button"
-            >
-              <FontAwesomeIcon
-                icon={faChevronDown}
-                className="w-4 h-4 text-white"
-              />
-            </button>
-          </div>
-
-          {/* Scroll Indicator Track */}
-          <div
-            className="w-1 bg-gray-300 rounded-full relative"
-            style={{ height: "200px" }}
-          >
-            {/* Scroll Indicator */}
-            <div
-              className="w-full bg-[#545454] rounded-full transition-all duration-300 ease-out"
-              style={{
-                height: `${Math.max(20, 200 / gridsToShow.length)}px`,
-                transform: `translateY(${(currentGridIndex * (200 - Math.max(20, 200 / gridsToShow.length))) / (gridsToShow.length - 1)}px)`,
-              }}
-            />
-          </div>
-
-          {/* Grid Counter */}
-          <div className="text-xs text-center text-[#545454] bg-white rounded px-2 py-1 shadow-sm border">
-            {currentGridIndex + 1} / {gridsToShow.length}
-          </div>
-        </div>
-      )}
     </section>
   );
 }
@@ -363,8 +288,7 @@ const AllRecords: React.FC = () => {
           </div>
         </div>
       ) : navLoading || isLeftNav ? (
-        <div>
-          <div className="flex flex-1">
+        <div className="flex-1 min-h-0 h-full flex flex-row">
             <aside
               className={cn(
                 "relative border-r border-gray-300 bg-white transition-all duration-300 flex flex-col h-full min-h-0",
@@ -418,11 +342,9 @@ const AllRecords: React.FC = () => {
               visibleSections={visibleSections}
               handleSectionVisibilityChange={handleSectionVisibilityChange}
             />
-          </div>
         </div>
       ) : (
-        <div>
-          <div className="flex-1 flex flex-col min-h-0 vh-80">
+        <div className="flex-1 min-h-0 h-full flex flex-col">
             {/* HorizontalNav (add ref) */}
             <div ref={horizontalNavRef} id="horizontal-nav-ref">
               <HorizontalNav
@@ -450,7 +372,6 @@ const AllRecords: React.FC = () => {
               visibleSections={visibleSections}
               handleSectionVisibilityChange={handleSectionVisibilityChange}
             />
-          </div>
         </div>
       )}
     </>

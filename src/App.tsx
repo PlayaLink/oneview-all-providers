@@ -11,6 +11,7 @@ import TeamPage from "./pages/Team";
 import AppLayout from "./components/AppLayout";
 import { UserProvider } from "./contexts/UserContext";
 import { FeatureFlagProvider } from "./contexts/FeatureFlagContext";
+import MainContent from "./components/MainContent";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,8 @@ const App = () => {
                   <Route path="/all-records" element={<AllRecords />} />
                   {/* New Team route */}
                   <Route path="/team" element={<TeamPage />} />
+                  {/* New MainContent route */}
+                  <Route path="/main-content" element={<MainContent user={user} selectedRow={null} onRowSelect={() => {}} onCloseSidePanel={() => {}} />} />
                   {/* Catch-all route: redirect to /all-records */}
                   <Route path="/*" element={<Navigate to="/all-records" replace />} />
                 </Routes>
