@@ -1,8 +1,8 @@
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
   faUserDoctor,
-  faWeight,
-  faHouse,
+  faWeightScale,
+  faHome,
   faAddressBook,
   faFileMedical,
   faBook,
@@ -40,8 +40,8 @@ import {
 // Icon mapping from string names to FontAwesome icon objects
 const iconMap: Record<string, IconDefinition> = {
   "user-doctor": faUserDoctor,
-  weight: faWeight,
-  "house-chimney": faHouse,
+  weight: faWeightScale,
+  "house-chimney": faHome,
   "address-book": faAddressBook,
   "file-medical": faFileMedical,
   "book-atlas": faBook,

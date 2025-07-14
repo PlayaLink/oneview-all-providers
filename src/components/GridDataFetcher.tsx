@@ -79,7 +79,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverrid
     queryFn: async () => {
       if (!gridDef || !gridDef.table_name) return [];
       if (providerIdFilter) {
-        const filterColumn = gridDef.table_name === "providers" ? "id" : "provider_id";
+        const filterColumn = (gridDef.table_name === "providers" || gridDef.table_name === "providers_with_full_name") ? "id" : "provider_id";
         const { data, error } = await supabase
           .from(gridDef.table_name)
           .select("*")

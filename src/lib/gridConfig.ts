@@ -3,8 +3,8 @@ import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 // Fixed export issues - updated 2025
 import {
   faUserDoctor,
-  faWeight,
-  faHouse,
+  faWeightScale,
+  faHome,
   faAddressBook,
   faPlay,
   faFileMedical,
@@ -203,13 +203,13 @@ const grids: Grid[] = [
   {
     key: "birth-info",
     title: "Birth Info",
-    icon: faWeight,
+    icon: faWeightScale,
     section: "providerInfo",
   },
   {
     key: "addresses",
     title: "Addresses",
-    icon: faHouse,
+    icon: faHome,
     section: "providerInfo",
   },
   {

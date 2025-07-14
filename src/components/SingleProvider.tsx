@@ -65,6 +65,7 @@ const SingleProvider: React.FC = () => {
               titleOverride={grid.display_name || grid.displayName}
               iconOverride={grid.icon}
               providerIdFilter={provider_id}
+              height={300}
             />
           );
         })}
