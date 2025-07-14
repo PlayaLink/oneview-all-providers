@@ -21,6 +21,7 @@ import { useUser } from '@/contexts/UserContext';
 import { useFeatureFlag } from '@/contexts/FeatureFlagContext';
 import GridDataFetcher from "./GridDataFetcher";
 import { getIconByName } from "@/lib/iconMapping";
+import { useVisibleSectionsStore } from "@/lib/useVisibleSectionsStore";
 
 const fetchProviders = async () => {
   const { data, error } = await supabase.from('providers').select('*');
@@ -42,8 +43,6 @@ function GridsSection({
   user,
   selectedProviderInfo,
   handleProviderSelect,
-  visibleSections,
-  handleSectionVisibilityChange,
   ...rest
 }: any) {
   // Add refs for each grid container
@@ -169,7 +168,8 @@ const AllRecords: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [selectedSection, setSelectedSection] = useState<string | null>("provider_info");
-  const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
+  // Remove local visibleSections and setVisibleSections state
+  // const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
   const [selectedRow, setSelectedRow] = useState<(any & { gridName: string }) | null>(null);
 
   const globalNavRef = useRef<HTMLDivElement>(null);
@@ -260,15 +260,15 @@ const AllRecords: React.FC = () => {
     sectionKey: string,
     visible: boolean,
   ) => {
-    setVisibleSections((prev) => {
-      const newSet = new Set(prev);
-      if (visible) {
-        newSet.add(sectionKey);
-      } else {
-        newSet.delete(sectionKey);
-      }
-      return newSet;
-    });
+    // setVisibleSections((prev) => { // This line is removed
+    //   const newSet = new Set(prev);
+    //   if (visible) {
+    //     newSet.add(sectionKey);
+    //   } else {
+    //     newSet.delete(sectionKey);
+    //   }
+    //   return newSet;
+    // });
   };
 
   const handleProviderSelect = (providerNpi: string) => {
@@ -299,17 +299,11 @@ const AllRecords: React.FC = () => {
       gridsToShow = gridDefs.filter((g: any) => g.table_name === selectedItem || g.key === selectedItem);
     } else if (selectedSection) {
       const sectionGrids = getGridsByGroup(selectedSection);
-      if (visibleSections.size === 0) {
-        gridsToShow = sectionGrids;
-      } else {
-        gridsToShow = sectionGrids.filter((g: any) => visibleSections.has(g.table_name) || visibleSections.has(g.key));
-      }
+      // Remove visibleSections.size === 0 check
+      gridsToShow = sectionGrids;
     } else {
-      if (visibleSections.size === 0) {
-        gridsToShow = gridDefs;
-      } else {
-        gridsToShow = gridDefs.filter((g: any) => visibleSections.has(g.table_name) || visibleSections.has(g.key));
-      }
+      // Remove visibleSections.size === 0 check
+      gridsToShow = gridDefs;
     }
 
     // Sort grids by their order property
@@ -321,6 +315,16 @@ const AllRecords: React.FC = () => {
   };
 
   const gridsToShow = getGridsToShow();
+
+  // Remove visibleSections and setVisibleSections from component state
+  // const visibleSections = useVisibleSectionsStore((s) => s.visibleSections);
+  // const setVisibleSections = useVisibleSectionsStore((s) => s.setVisibleSections);
+
+  useEffect(() => {
+    if (gridSections.length > 0) {
+      // setVisibleSections(new Set(gridSections.map((section) => section.key))); // This line is removed
+    }
+  }, [gridSections]);
 
   return (
     <>
@@ -341,8 +345,9 @@ const AllRecords: React.FC = () => {
             // Add Provider functionality
           }}
           buttonClassName="bg-[#79AC48] hover:bg-[#6B9A3F] text-white"
-          visibleSections={npi ? visibleSections : undefined}
-          onSectionVisibilityChange={npi ? handleSectionVisibilityChange : undefined}
+          // Remove visibleSections and onSectionVisibilityChange props
+          // visibleSections={npi ? visibleSections : undefined}
+          // onSectionVisibilityChange={npi ? handleSectionVisibilityChange : undefined}
         />
       </div>
       {/* Main Content */}
@@ -351,7 +356,8 @@ const AllRecords: React.FC = () => {
           <div className="flex-1 flex flex-col min-h-0 w-full px-4 pt-4 pb-8">
             <MainContent
               singleProviderNpi={npi}
-              visibleSections={visibleSections}
+              // Remove visibleSections prop
+              // visibleSections={visibleSections}
               selectedRow={selectedRow}
               onRowSelect={handleRowSelect}
               onCloseSidePanel={handleCloseSidePanel}
@@ -412,8 +418,9 @@ const AllRecords: React.FC = () => {
               user={user}
               selectedProviderInfo={selectedProviderInfo}
               handleProviderSelect={handleProviderSelect}
-              visibleSections={visibleSections}
-              handleSectionVisibilityChange={handleSectionVisibilityChange}
+              // Remove visibleSections and handleSectionVisibilityChange props
+              // visibleSections={visibleSections}
+              // handleSectionVisibilityChange={handleSectionVisibilityChange}
             />
         </div>
       ) : (
@@ -423,8 +430,6 @@ const AllRecords: React.FC = () => {
               <HorizontalNav
                 selectedSection={selectedSection}
                 onSectionSelect={handleSectionSelect}
-                visibleSections={visibleSections}
-                onSectionVisibilityChange={handleSectionVisibilityChange}
                 gridSections={gridSections}
               />
             </div>
@@ -442,8 +447,6 @@ const AllRecords: React.FC = () => {
               user={user}
               selectedProviderInfo={selectedProviderInfo}
               handleProviderSelect={handleProviderSelect}
-              visibleSections={visibleSections}
-              handleSectionVisibilityChange={handleSectionVisibilityChange}
             />
         </div>
       )}
