@@ -92,7 +92,6 @@ function GridsSection({
           <div
             key={gridsToShow[currentGridIndex].key || gridsToShow[currentGridIndex].table_name}
             ref={el => (gridRefs.current[currentGridIndex] = el)}
-            style={{ height: gridHeight }}
           >
             <GridDataFetcher
               gridKey={gridsToShow[currentGridIndex].key || gridsToShow[currentGridIndex].table_name}
@@ -185,7 +184,7 @@ const AllRecords: React.FC = () => {
     const headerHeight = headerRef.current?.offsetHeight || 0;
     const horizontalNavHeight = (!isLeftNav && horizontalNavRef.current) ? horizontalNavRef.current.offsetHeight : 0;
     const totalHeaderHeight = globalNavHeight + headerHeight + horizontalNavHeight;
-    setGridHeight(Math.max(viewportHeight - totalHeaderHeight, 200)); // 200px min height
+    setGridHeight(Math.max(viewportHeight - totalHeaderHeight -175, 200)); // 200px min height
   }, [isLeftNav]);
 
   useEffect(() => {
