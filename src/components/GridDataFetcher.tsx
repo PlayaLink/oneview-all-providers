@@ -16,9 +16,10 @@ const gridDataMappers: Record<string, (row: any) => any> = {
 const getValueFormatterForType = (type: string) => {
   if (type === "boolean") {
     return (params: any) => {
+      console.log('Boolean valueFormatter:', params.value, typeof params.value);
       if (params.value === true) return "Yes";
       if (params.value === false) return "No";
-      return "";
+      return null; // AG Grid will render a truly empty cell
     };
   }
   if (type === "date") {
@@ -37,6 +38,12 @@ const getValueFormatterForType = (type: string) => {
   }
   // Add more as needed (multi-select, etc.)
   return undefined;
+};
+
+const booleanCellRenderer = (params: any) => {
+  if (params.value === true) return "Yes";
+  if (params.value === false) return "No";
+  return ""; // This will render a truly blank cell
 };
 
 interface GridDataFetcherProps {
@@ -65,13 +72,6 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverrid
     initialData: [],
   });
   
-  console.log("GridDataFetcher - column details:", columns.map((col: any) => ({
-    name: col.name,
-    display_name: col.display_name,
-    type: col.type,
-    visible: col.visible
-  })));
-
   // Fetch data for this grid
   const { data: gridData = [], isLoading, error } = useQuery({
     queryKey: gridDef ? ["grid_data", gridDef.table_name] : ["grid_data", "none"],
@@ -79,8 +79,6 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverrid
     enabled: !!(gridDef && gridDef.table_name),
     initialData: [],
   });
-  
-  console.log("GridDataFetcher - gridData sample (first 2 rows):", gridData?.slice(0, 2));
 
   // Apply mapping if needed
   const mappedData = React.useMemo(() => {
@@ -98,7 +96,8 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverrid
       headerName: col.display_name,
       minWidth: col.width || 120,
       flex: 1,
-      valueFormatter: getValueFormatterForType(col.type),
+      valueFormatter: col.type === "boolean" ? undefined : getValueFormatterForType(col.type),
+      cellRenderer: col.type === "boolean" ? booleanCellRenderer : undefined,
       hide: !col.visible,
       // ...add more as needed
     }));
@@ -110,10 +109,6 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverrid
   if (mappedData.length > 0 && agGridColumns.length > 0) {
     const columnFields = agGridColumns.map(col => col.field);
     const dataKeys = Object.keys(mappedData[0]);
-    
-    console.log("GridDataFetcher - FIELD MATCHING ANALYSIS:");
-    console.log("Column fields:", columnFields);
-    console.log("Data keys:", dataKeys);
     
     // Find missing fields in data
     const missingInData = columnFields.filter(field => !dataKeys.includes(field));
@@ -145,7 +140,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverrid
 
 
   return (
-    <section className="flex-1 min-h-0 flex flex-col pl-3 pr-4 pt-4" role="region" aria-label={`${gridDef.display_name} Data Grid`}>
+    <section className="flex-1 min-h-0 flex flex-col pl-3 pr-3 pt-4" role="region" aria-label={`${gridDef.display_name} Data Grid`}>
       <DataGrid
         title={titleOverride || gridDef.display_name}
         icon={iconOverride || getIconByName(gridDef.icon)}
