@@ -55,10 +55,9 @@ function GridsSection({
   const scrollToGrid = (idx: number) => {
     const gridEl = gridRefs.current[idx];
     if (gridEl && scrollContainerRef.current) {
-      // Instead of scrollIntoView (which can scroll the whole page),
-      // use scrollTop to scroll only the grids-scroll-container
       const container = scrollContainerRef.current;
-      const gridTop = gridEl.offsetTop;
+      // Calculate the offset of the grid relative to the scroll container
+      const gridTop = gridEl.offsetTop - container.offsetTop;
       container.scrollTo({ top: gridTop, behavior: "smooth" });
       setCurrentGridIndex(idx);
     }
