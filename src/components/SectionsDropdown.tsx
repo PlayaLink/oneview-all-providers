@@ -3,23 +3,7 @@ import { createPortal } from "react-dom";
 import { createPopper, Instance } from "@popperjs/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import { useQuery } from "@tanstack/react-query";
-import { fetchGridDefinitions, fetchGridSections } from "@/lib/supabaseClient";
-
-interface GridDefinition {
-  table_name: string;
-  display_name: string;
-  group: string;
-  icon?: string;
-  [key: string]: any;
-}
-
-interface GridSection {
-  key: string; // group key
-  name: string; // display name
-  order: number;
-  [key: string]: any;
-}
+import { useGridConfig } from "@/lib/useGridConfig";
 
 interface SectionsDropdownProps {
   visibleSections: Set<string>;
@@ -38,63 +22,36 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
   const menuRef = useRef<HTMLDivElement | null>(null);
   const popperInstance = useRef<Instance | null>(null);
 
-  // Fetch grid definitions from backend
-  const { data: gridDefs = [], isLoading: defsLoading, error: defsError } = useQuery({
-    queryKey: ["grid_definitions"],
-    queryFn: fetchGridDefinitions,
-    initialData: [],
-  });
-  // Fetch grid sections from backend
-  const { data: gridSections = [], isLoading: sectionsLoading, error: sectionsError } = useQuery({
-    queryKey: ["grid_sections"],
-    queryFn: fetchGridSections,
-    initialData: [],
-  });
+  // Use the new useGridConfig hook
+  const {
+    gridDefs,
+    groupKeyToSection,
+    groupKeyToGrids,
+    sortedGroupKeys,
+    isLoading,
+    error,
+  } = useGridConfig();
 
   // Optionally, you can add disabled grids here by tableName
   const disabledGrids = new Set([
     "SAM", "FSMB Actions", "Verifications"
   ]);
 
-  // Build a mapping from group key to section info (name, order)
-  const groupMap = useMemo(() => {
-    const map: Record<string, GridSection> = {};
-    gridSections.forEach((section: any) => {
-      map[section.key] = section;
-    });
-    return map;
-  }, [gridSections]);
-
-  // Compute all groups from backend data, sorted by order from grid_sections
-  const allGroups = useMemo(() => {
-    // Only include groups that exist in gridSections
-    const groupSet = new Set<string>();
-    gridDefs.forEach((g: any) => {
-      if (g.group && groupMap[g.group]) groupSet.add(g.group);
-    });
-    // Sort by order from gridSections
-    return Array.from(groupSet).sort((a, b) => {
-      const orderA = groupMap[a]?.order ?? 9999;
-      const orderB = groupMap[b]?.order ?? 9999;
-      return orderA - orderB;
-    });
-  }, [gridDefs, groupMap]);
-
   // Filtered groups and grids based on search
   const filteredGroups = useMemo(() => {
-    if (!search.trim()) return allGroups;
-    return allGroups.filter(group => {
-      const groupGrids = gridDefs.filter((g: any) => g.group === group);
+    if (!search.trim()) return sortedGroupKeys;
+    return sortedGroupKeys.filter(group => {
+      const groupGrids = groupKeyToGrids[group] || [];
       return (
-        groupMap[group]?.name?.toLowerCase().includes(search.toLowerCase()) ||
+        groupKeyToSection[group]?.name?.toLowerCase().includes(search.toLowerCase()) ||
         group.toLowerCase().includes(search.toLowerCase()) ||
         groupGrids.some(grid => (grid.table_name || grid.tableName || "").replace(/_/g, " ").toLowerCase().includes(search.toLowerCase()))
       );
     });
-  }, [search, allGroups, gridDefs, groupMap]);
+  }, [search, sortedGroupKeys, groupKeyToSection, groupKeyToGrids]);
 
   const filteredGridsByGroup = (group: string) => {
-    const groupGrids = gridDefs.filter((g: any) => g.group === group);
+    const groupGrids = groupKeyToGrids[group] || [];
     if (!search.trim()) return groupGrids;
     return groupGrids.filter(grid =>
       (grid.table_name || grid.tableName || "").replace(/_/g, " ").toLowerCase().includes(search.toLowerCase())
@@ -103,17 +60,17 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
 
   // Group checkbox state: checked if all children are checked, indeterminate if some
   const isGroupChecked = (group: string) => {
-    const grids = gridDefs.filter((g: any) => g.group === group && !disabledGrids.has(g.table_name || g.tableName));
+    const grids = (groupKeyToGrids[group] || []).filter((g: any) => !disabledGrids.has(g.table_name || g.tableName));
     return grids.length > 0 && grids.every(grid => visibleSections.has(grid.table_name || grid.tableName));
   };
   const isGroupIndeterminate = (group: string) => {
-    const grids = gridDefs.filter((g: any) => g.group === group && !disabledGrids.has(g.table_name || g.tableName));
+    const grids = (groupKeyToGrids[group] || []).filter((g: any) => !disabledGrids.has(g.table_name || g.tableName));
     return grids.some(grid => visibleSections.has(grid.table_name || grid.tableName)) && !isGroupChecked(group);
   };
 
   // Group toggle: toggles all children
   const handleGroupToggle = (group: string) => {
-    const grids = gridDefs.filter((g: any) => g.group === group && !disabledGrids.has(g.table_name || g.tableName));
+    const grids = (groupKeyToGrids[group] || []).filter((g: any) => !disabledGrids.has(g.table_name || g.tableName));
     const allChecked = grids.every(grid => visibleSections.has(grid.table_name || grid.tableName));
     grids.forEach(grid => {
       onSectionVisibilityChange(grid.table_name || grid.tableName, !allChecked);
@@ -121,7 +78,7 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
   };
 
   // Grid toggle
-  const handleGridToggle = (grid: GridDefinition) => {
+  const handleGridToggle = (grid: any) => {
     const key = grid.table_name || grid.tableName;
     if (disabledGrids.has(key)) return;
     onSectionVisibilityChange(key, !visibleSections.has(key));
@@ -186,11 +143,11 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
   }, [isOpen]);
 
   // Loading and error states
-  if (defsLoading || sectionsLoading) {
+  if (isLoading) {
     return <div className="text-gray-500 p-4" role="status" data-testid="sections-loading">Loading sections...</div>;
   }
-  if (defsError || sectionsError) {
-    return <div className="text-red-500 p-4" role="alert" data-testid="sections-error">Error loading sections: {(defsError || sectionsError).message}</div>;
+  if (error) {
+    return <div className="text-red-500 p-4" role="alert" data-testid="sections-error">Error loading sections: {error.message}</div>;
   }
 
   // Render dropdown menu in portal
@@ -258,7 +215,7 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
         {groupColumns.map((groups, colIdx) => (
           <div key={colIdx} className="flex-1 min-w-0" role="listitem" data-testid={`sections-group-col-${colIdx}`}> 
             {groups.map(group => (
-              <div key={group} className="mb-4" role="group" aria-label={groupMap[group]?.name || group} data-testid={`sections-group-${group}`}>
+              <div key={group} className="mb-4" role="group" aria-label={groupKeyToSection[group]?.name || group} data-testid={`sections-group-${group}`}>
                 {/* Group Checkbox */}
                 <label className="flex items-center font-semibold text-gray-800 mb-1 cursor-pointer" role="checkbox" aria-checked={isGroupChecked(group)} data-testid={`sections-group-checkbox-${group}`}>
                   <input
@@ -270,12 +227,12 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
                       if (el) el.indeterminate = isGroupIndeterminate(group);
                     }}
                     onChange={() => handleGroupToggle(group)}
-                    aria-label={`Toggle ${groupMap[group]?.name || group} group`}
+                    aria-label={`Toggle ${groupKeyToSection[group]?.name || group} group`}
                     data-testid={`sections-group-toggle-${group}`}
                   />
-                  {groupMap[group]?.name || group}
+                  {groupKeyToSection[group]?.name || group}
                 </label>
-                <div className="pl-6 flex flex-col gap-1" role="list" data-testid={`sections-grid-list-${group}`}>
+                <div className="pl-6 flex flex-col gap-1" role="list" data-testid={`sections-grid-list-${group}`}> 
                   {filteredGridsByGroup(group).map(grid => (
                     <label
                       key={grid.table_name || grid.tableName}
