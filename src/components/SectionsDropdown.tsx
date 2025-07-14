@@ -1,28 +1,29 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { createPopper, Instance } from "@popperjs/core";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { useGridConfig } from "@/lib/useGridConfig";
+import { useVisibleSectionsStore } from "@/lib/useVisibleSectionsStore";
 
 interface SectionsDropdownProps {
-  visibleSections: Set<string>;
-  onSectionVisibilityChange: (sectionKey: string, visible: boolean) => void;
+  trigger: React.ReactElement;
 }
 
-const getGroupKey = (group: string) => group;
-
-const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
-  visibleSections,
-  onSectionVisibilityChange,
-}) => {
+const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const popperInstance = useRef<Instance | null>(null);
 
-  // Use the new useGridConfig hook
+  // Zustand global state
+  const visibleSections = useVisibleSectionsStore((s) => s.visibleSections);
+  const setVisibleSections = useVisibleSectionsStore((s) => s.setVisibleSections);
+  const addVisibleSection = useVisibleSectionsStore((s) => s.addVisibleSection);
+  const removeVisibleSection = useVisibleSectionsStore((s) => s.removeVisibleSection);
+  const clearVisibleSections = useVisibleSectionsStore((s) => s.clearVisibleSections);
+  const toggleVisibleSection = useVisibleSectionsStore((s) => s.toggleVisibleSection);
+
+  // Grid/section config
   const {
     gridDefs,
     groupKeyToSection,
@@ -73,7 +74,12 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
     const grids = (groupKeyToGrids[group] || []).filter((g: any) => !disabledGrids.has(g.table_name || g.tableName));
     const allChecked = grids.every(grid => visibleSections.has(grid.table_name || grid.tableName));
     grids.forEach(grid => {
-      onSectionVisibilityChange(grid.table_name || grid.tableName, !allChecked);
+      const key = grid.table_name || grid.tableName;
+      if (allChecked) {
+        removeVisibleSection(key);
+      } else {
+        addVisibleSection(key);
+      }
     });
   };
 
@@ -81,17 +87,12 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
   const handleGridToggle = (grid: any) => {
     const key = grid.table_name || grid.tableName;
     if (disabledGrids.has(key)) return;
-    onSectionVisibilityChange(key, !visibleSections.has(key));
+    toggleVisibleSection(key);
   };
 
   // Clear all
   const handleClear = () => {
-    gridDefs.forEach(grid => {
-      const key = grid.table_name || grid.tableName;
-      if (!disabledGrids.has(key)) {
-        onSectionVisibilityChange(key, false);
-      }
-    });
+    clearVisibleSections();
   };
 
   // Show in 3 columns
@@ -144,10 +145,10 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
 
   // Loading and error states
   if (isLoading) {
-    return <div className="text-gray-500 p-4" role="status" data-testid="sections-loading">Loading sections...</div>;
+    return null;
   }
   if (error) {
-    return <div className="text-red-500 p-4" role="alert" data-testid="sections-error">Error loading sections: {error.message}</div>;
+    return null;
   }
 
   // Render dropdown menu in portal
@@ -178,7 +179,7 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
                 type="button"
                 className="ml-2 text-white hover:text-gray-200 focus:outline-none"
                 style={{ fontWeight: 'bold', fontSize: '1rem', lineHeight: '1' }}
-                onClick={() => onSectionVisibilityChange(grid.table_name || grid.tableName, false)}
+                onClick={() => removeVisibleSection(grid.table_name || grid.tableName)}
                 aria-label={`Remove ${grid.display_name || grid.table_name || grid.tableName}`}
                 data-testid={`remove-section-${(grid.table_name || grid.tableName).toLowerCase().replace(/_/g, '-')}`}
                 role="button"
@@ -262,23 +263,27 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
     </div>
   );
 
+  // Handler to toggle dropdown
+  const toggleDropdown = () => setIsOpen((prev) => !prev);
+
+  // Clone the trigger and inject onClick
+  const triggerWithProps = React.cloneElement(trigger, {
+    onClick: (e: React.MouseEvent) => {
+      toggleDropdown();
+      if (trigger.props.onClick) trigger.props.onClick(e);
+    },
+    ref: buttonRef,
+    "aria-haspopup": "dialog",
+    "aria-expanded": isOpen,
+    "aria-controls": "sections-dropdown-menu",
+    tabIndex: 0,
+  });
+
   return (
-    <div className="relative" role="presentation" data-testid="sections-dropdown-root">
-      <button
-        ref={buttonRef}
-        className="flex items-center gap-2 px-3 py-2 rounded bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-800 font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-        onClick={() => setIsOpen((open) => !open)}
-        aria-haspopup="dialog"
-        aria-expanded={isOpen}
-        aria-controls="sections-dropdown-menu"
-        data-testid="sections-dropdown-toggle"
-        role="button"
-      >
-        Sections
-        <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" />
-      </button>
+    <>
+      {triggerWithProps}
       {isOpen && createPortal(menu, document.body)}
-    </div>
+    </>
   );
 };
 
