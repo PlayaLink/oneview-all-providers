@@ -21,21 +21,10 @@ export function getGridsByGroup(group: string): GridDefinition[] {
   return gridDefinitions.filter((g) => g.group === group);
 }
 
-export const getVisibleGroups = (visibleSections: Set<string>): string[] => {
-  if (visibleSections.size === 0) {
-    return getGroups();
-  }
+export function getGridByTableName(tableName: string): GridDefinition | undefined {
+  return gridDefinitions.find((g) => g.tableName === tableName);
+}
 
-  const groups: string[] = [];
-  const seenGroups = new Set<string>();
-  
-  // Preserve order as they appear in the JSON
-  gridDefinitions.forEach((grid) => {
-    if (visibleSections.has(grid.tableName) && !seenGroups.has(grid.group)) {
-      groups.push(grid.group);
-      seenGroups.add(grid.group);
-    }
-  });
-
-  return groups;
-};
+export function getAllGrids(): GridDefinition[] {
+  return gridDefinitions;
+}

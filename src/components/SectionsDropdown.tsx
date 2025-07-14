@@ -3,7 +3,23 @@ import { createPortal } from "react-dom";
 import { createPopper, Instance } from "@popperjs/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import { getGroups, getGridsByGroup, gridDefinitions, GridDefinition } from "@/lib/gridDefinitions";
+import { useQuery } from "@tanstack/react-query";
+import { fetchGridDefinitions, fetchGridSections } from "@/lib/supabaseClient";
+
+interface GridDefinition {
+  table_name: string;
+  display_name: string;
+  group: string;
+  icon?: string;
+  [key: string]: any;
+}
+
+interface GridSection {
+  key: string; // group key
+  name: string; // display name
+  order: number;
+  [key: string]: any;
+}
 
 interface SectionsDropdownProps {
   visibleSections: Set<string>;
@@ -21,63 +37,102 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const popperInstance = useRef<Instance | null>(null);
-  const allGroups = getGroups();
+
+  // Fetch grid definitions from backend
+  const { data: gridDefs = [], isLoading: defsLoading, error: defsError } = useQuery({
+    queryKey: ["grid_definitions"],
+    queryFn: fetchGridDefinitions,
+    initialData: [],
+  });
+  // Fetch grid sections from backend
+  const { data: gridSections = [], isLoading: sectionsLoading, error: sectionsError } = useQuery({
+    queryKey: ["grid_sections"],
+    queryFn: fetchGridSections,
+    initialData: [],
+  });
 
   // Optionally, you can add disabled grids here by tableName
   const disabledGrids = new Set([
     "SAM", "FSMB Actions", "Verifications"
   ]);
 
+  // Build a mapping from group key to section info (name, order)
+  const groupMap = useMemo(() => {
+    const map: Record<string, GridSection> = {};
+    gridSections.forEach((section: any) => {
+      map[section.key] = section;
+    });
+    return map;
+  }, [gridSections]);
+
+  // Compute all groups from backend data, sorted by order from grid_sections
+  const allGroups = useMemo(() => {
+    // Only include groups that exist in gridSections
+    const groupSet = new Set<string>();
+    gridDefs.forEach((g: any) => {
+      if (g.group && groupMap[g.group]) groupSet.add(g.group);
+    });
+    // Sort by order from gridSections
+    return Array.from(groupSet).sort((a, b) => {
+      const orderA = groupMap[a]?.order ?? 9999;
+      const orderB = groupMap[b]?.order ?? 9999;
+      return orderA - orderB;
+    });
+  }, [gridDefs, groupMap]);
+
   // Filtered groups and grids based on search
   const filteredGroups = useMemo(() => {
     if (!search.trim()) return allGroups;
     return allGroups.filter(group => {
-      const groupGrids = getGridsByGroup(group);
+      const groupGrids = gridDefs.filter((g: any) => g.group === group);
       return (
+        groupMap[group]?.name?.toLowerCase().includes(search.toLowerCase()) ||
         group.toLowerCase().includes(search.toLowerCase()) ||
-        groupGrids.some(grid => grid.tableName.replace(/_/g, " ").toLowerCase().includes(search.toLowerCase()))
+        groupGrids.some(grid => (grid.table_name || grid.tableName || "").replace(/_/g, " ").toLowerCase().includes(search.toLowerCase()))
       );
     });
-  }, [search, allGroups]);
+  }, [search, allGroups, gridDefs, groupMap]);
 
   const filteredGridsByGroup = (group: string) => {
-    const groupGrids = getGridsByGroup(group);
+    const groupGrids = gridDefs.filter((g: any) => g.group === group);
     if (!search.trim()) return groupGrids;
     return groupGrids.filter(grid =>
-      grid.tableName.replace(/_/g, " ").toLowerCase().includes(search.toLowerCase())
+      (grid.table_name || grid.tableName || "").replace(/_/g, " ").toLowerCase().includes(search.toLowerCase())
     );
   };
 
   // Group checkbox state: checked if all children are checked, indeterminate if some
   const isGroupChecked = (group: string) => {
-    const grids = getGridsByGroup(group).filter(grid => !disabledGrids.has(grid.tableName));
-    return grids.length > 0 && grids.every(grid => visibleSections.has(grid.tableName));
+    const grids = gridDefs.filter((g: any) => g.group === group && !disabledGrids.has(g.table_name || g.tableName));
+    return grids.length > 0 && grids.every(grid => visibleSections.has(grid.table_name || grid.tableName));
   };
   const isGroupIndeterminate = (group: string) => {
-    const grids = getGridsByGroup(group).filter(grid => !disabledGrids.has(grid.tableName));
-    return grids.some(grid => visibleSections.has(grid.tableName)) && !isGroupChecked(group);
+    const grids = gridDefs.filter((g: any) => g.group === group && !disabledGrids.has(g.table_name || g.tableName));
+    return grids.some(grid => visibleSections.has(grid.table_name || grid.tableName)) && !isGroupChecked(group);
   };
 
   // Group toggle: toggles all children
   const handleGroupToggle = (group: string) => {
-    const grids = getGridsByGroup(group).filter(grid => !disabledGrids.has(grid.tableName));
-    const allChecked = grids.every(grid => visibleSections.has(grid.tableName));
+    const grids = gridDefs.filter((g: any) => g.group === group && !disabledGrids.has(g.table_name || g.tableName));
+    const allChecked = grids.every(grid => visibleSections.has(grid.table_name || grid.tableName));
     grids.forEach(grid => {
-      onSectionVisibilityChange(grid.tableName, !allChecked);
+      onSectionVisibilityChange(grid.table_name || grid.tableName, !allChecked);
     });
   };
 
   // Grid toggle
   const handleGridToggle = (grid: GridDefinition) => {
-    if (disabledGrids.has(grid.tableName)) return;
-    onSectionVisibilityChange(grid.tableName, !visibleSections.has(grid.tableName));
+    const key = grid.table_name || grid.tableName;
+    if (disabledGrids.has(key)) return;
+    onSectionVisibilityChange(key, !visibleSections.has(key));
   };
 
   // Clear all
   const handleClear = () => {
-    gridDefinitions.forEach(grid => {
-      if (!disabledGrids.has(grid.tableName)) {
-        onSectionVisibilityChange(grid.tableName, false);
+    gridDefs.forEach(grid => {
+      const key = grid.table_name || grid.tableName;
+      if (!disabledGrids.has(key)) {
+        onSectionVisibilityChange(key, false);
       }
     });
   };
@@ -91,8 +146,8 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
 
   // Compute checked grids for pills
   const checkedGrids = useMemo(() => {
-    return gridDefinitions.filter(grid => visibleSections.has(grid.tableName));
-  }, [visibleSections]);
+    return gridDefs.filter(grid => visibleSections.has(grid.table_name || grid.tableName));
+  }, [visibleSections, gridDefs]);
 
   // Popper.js positioning
   useEffect(() => {
@@ -130,6 +185,14 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
     return () => document.removeEventListener("mousedown", handleClick);
   }, [isOpen]);
 
+  // Loading and error states
+  if (defsLoading || sectionsLoading) {
+    return <div className="text-gray-500 p-4" role="status" data-testid="sections-loading">Loading sections...</div>;
+  }
+  if (defsError || sectionsError) {
+    return <div className="text-red-500 p-4" role="alert" data-testid="sections-error">Error loading sections: {(defsError || sectionsError).message}</div>;
+  }
+
   // Render dropdown menu in portal
   const menu = (
     <div
@@ -142,23 +205,26 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
       data-testid="sections-dropdown-menu"
     >
       {/* Search and Clear */}
-      <div className="flex items-center mb-4">
+      <div className="flex items-center mb-4" role="search" data-testid="sections-search-row">
         {/* Pills and input in a flex container to mimic multi-select */}
-        <div className="flex flex-1 flex-wrap items-center rounded bg-gray-100 px-2 py-1 min-h-[40px] border border-transparent focus-within:border-blue-400">
+        <div className="flex flex-1 flex-wrap items-center rounded bg-gray-100 px-2 py-1 min-h-[40px] border border-transparent focus-within:border-blue-400" role="list" data-testid="sections-pill-list">
           {checkedGrids.map(grid => (
             <span
-              key={grid.tableName}
+              key={grid.table_name || grid.tableName}
               className="flex items-center bg-[#545454] text-white font-bold rounded px-3 py-1 mr-2 mb-1 text-sm"
               style={{ lineHeight: '1.2' }}
+              role="listitem"
+              data-testid={`section-pill-${grid.table_name || grid.tableName}`}
             >
-              {grid.tableName.replace(/_/g, " ")}
+              {grid.display_name || grid.table_name || grid.tableName}
               <button
                 type="button"
                 className="ml-2 text-white hover:text-gray-200 focus:outline-none"
                 style={{ fontWeight: 'bold', fontSize: '1rem', lineHeight: '1' }}
-                onClick={() => onSectionVisibilityChange(grid.tableName, false)}
-                aria-label={`Remove ${grid.tableName.replace(/_/g, ' ')}`}
-                data-testid={`remove-section-${grid.tableName.toLowerCase().replace(/_/g, '-')}`}
+                onClick={() => onSectionVisibilityChange(grid.table_name || grid.tableName, false)}
+                aria-label={`Remove ${grid.display_name || grid.table_name || grid.tableName}`}
+                data-testid={`remove-section-${(grid.table_name || grid.tableName).toLowerCase().replace(/_/g, '-')}`}
+                role="button"
               >
                 ×
               </button>
@@ -173,6 +239,7 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
             style={{ minWidth: '80px' }}
             aria-label="Search sections"
             data-testid="sections-search-input"
+            role="searchbox"
           />
         </div>
         <button
@@ -181,48 +248,52 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
           type="button"
           aria-label="Clear all selected sections"
           data-testid="clear-sections-button"
+          role="button"
         >
           Clear
         </button>
       </div>
       {/* Columns */}
-      <div className="flex gap-8">
+      <div className="flex gap-8" role="list" data-testid="sections-group-list">
         {groupColumns.map((groups, colIdx) => (
-          <div key={colIdx} className="flex-1 min-w-0">
+          <div key={colIdx} className="flex-1 min-w-0" role="listitem" data-testid={`sections-group-col-${colIdx}`}> 
             {groups.map(group => (
-              <div key={group} className="mb-4">
+              <div key={group} className="mb-4" role="group" aria-label={groupMap[group]?.name || group} data-testid={`sections-group-${group}`}>
                 {/* Group Checkbox */}
-                <label className="flex items-center font-semibold text-gray-800 mb-1 cursor-pointer">
+                <label className="flex items-center font-semibold text-gray-800 mb-1 cursor-pointer" role="checkbox" aria-checked={isGroupChecked(group)} data-testid={`sections-group-checkbox-${group}`}>
                   <input
                     type="checkbox"
                     className="mr-2 accent-blue-600 h-4 w-4"
                     checked={isGroupChecked(group)}
                     ref={el => {
+                      // for indeterminate state
                       if (el) el.indeterminate = isGroupIndeterminate(group);
                     }}
                     onChange={() => handleGroupToggle(group)}
-                    aria-label={`Toggle all ${group} sections`}
-                    data-testid={`group-checkbox-${group.toLowerCase().replace(/\s+/g, '-')}`}
+                    aria-label={`Toggle ${groupMap[group]?.name || group} group`}
+                    data-testid={`sections-group-toggle-${group}`}
                   />
-                  {group}
+                  {groupMap[group]?.name || group}
                 </label>
-                {/* Grids */}
-                <div className="pl-6 flex flex-col gap-1">
+                <div className="pl-6 flex flex-col gap-1" role="list" data-testid={`sections-grid-list-${group}`}>
                   {filteredGridsByGroup(group).map(grid => (
                     <label
-                      key={grid.tableName}
-                      className={`flex items-center text-gray-700 font-medium cursor-pointer ${disabledGrids.has(grid.tableName) ? "text-gray-300 cursor-not-allowed" : ""}`}
+                      key={grid.table_name || grid.tableName}
+                      className={`flex items-center text-gray-700 font-medium cursor-pointer ${disabledGrids.has(grid.table_name || grid.tableName) ? "text-gray-300 cursor-not-allowed" : ""}`}
+                      role="checkbox"
+                      aria-checked={visibleSections.has(grid.table_name || grid.tableName)}
+                      data-testid={`grid-checkbox-label-${grid.table_name || grid.tableName}`}
                     >
                       <input
                         type="checkbox"
                         className="mr-2 accent-blue-600 h-4 w-4"
-                        checked={visibleSections.has(grid.tableName)}
-                        disabled={disabledGrids.has(grid.tableName)}
+                        checked={visibleSections.has(grid.table_name || grid.tableName)}
+                        disabled={disabledGrids.has(grid.table_name || grid.tableName)}
                         onChange={() => handleGridToggle(grid)}
-                        aria-label={`Toggle ${grid.tableName.replace(/_/g, ' ')} section`}
-                        data-testid={`grid-checkbox-${grid.tableName.toLowerCase().replace(/_/g, '-')}`}
+                        aria-label={`Toggle ${grid.display_name || grid.table_name || grid.tableName} section`}
+                        data-testid={`grid-checkbox-${(grid.table_name || grid.tableName).toLowerCase().replace(/_/g, '-')}`}
                       />
-                      {grid.tableName.replace(/_/g, " ")}
+                      {grid.display_name || grid.table_name || grid.tableName}
                     </label>
                   ))}
                 </div>
@@ -235,23 +306,21 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({
   );
 
   return (
-    <div className="relative" style={{ display: "inline-block" }} role="group" aria-label="Section visibility controls">
+    <div className="relative" role="presentation" data-testid="sections-dropdown-root">
       <button
         ref={buttonRef}
-        className="flex items-center gap-2 text-xs font-medium tracking-wide border border-gray-300 rounded px-3 py-1 bg-white focus:outline-none focus:ring-0"
+        className="flex items-center gap-2 px-3 py-2 rounded bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-800 font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         onClick={() => setIsOpen((open) => !open)}
-        type="button"
-        aria-haspopup="true"
+        aria-haspopup="dialog"
         aria-expanded={isOpen}
-        aria-label={`Sections dropdown${visibleSections.size > 0 ? ` (${visibleSections.size} selected)` : ""}`}
-        data-testid="sections-dropdown-button"
+        aria-controls="sections-dropdown-menu"
+        data-testid="sections-dropdown-toggle"
+        role="button"
       >
-        Sections{visibleSections.size > 0 ? ` (${visibleSections.size})` : ""}
-        <FontAwesomeIcon icon={faChevronDown} className="w-3 h-3 ml-1" aria-hidden="true" />
+        Sections
+        <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" />
       </button>
-      {isOpen && typeof window !== "undefined"
-        ? createPortal(menu, document.body)
-        : null}
+      {isOpen && createPortal(menu, document.body)}
     </div>
   );
 };
