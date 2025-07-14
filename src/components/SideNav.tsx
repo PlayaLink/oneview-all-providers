@@ -91,6 +91,7 @@ const SideNav: React.FC<SideNavProps> = ({
                 {navLoading || isLeftNav ? 'All Records' : 'All Sections'}
               </span>
               <FontAwesomeIcon
+              data-test="left-nav-options"
                 icon={faEllipsis}
                 className={cn(
                   "w-4 h-4",
