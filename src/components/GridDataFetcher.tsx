@@ -44,9 +44,10 @@ interface GridDataFetcherProps {
   titleOverride?: string;
   iconOverride?: any;
   onRowClicked?: (row: any) => void;
+  height?: number | string;
 }
 
-const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverride, iconOverride, onRowClicked }) => {
+const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverride, iconOverride, onRowClicked, height }) => {
   const lowerKey = gridKey.toLowerCase();
   // Fetch all grid definitions and find the one for this gridKey
   const { data: gridDefs = [] } = useQuery({
@@ -151,7 +152,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverrid
         data={mappedData}
         columns={agGridColumns}
         showCheckboxes={true}
-        height="100%"
+        height={height || '100%'}
         onRowClicked={onRowClicked}
       />
       {isLoading && <div className="text-gray-500 mt-4">Loading...</div>}

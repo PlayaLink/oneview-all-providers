@@ -297,6 +297,7 @@ const AllRecords: React.FC = () => {
                       gridKey={grid.key || grid.table_name}
                       titleOverride={grid.display_name}
                       iconOverride={getIconByName(grid.icon)}
+                      height={gridHeight}
                     />
                   </div>
                 ))
@@ -317,7 +318,7 @@ const AllRecords: React.FC = () => {
                 gridSections={gridSections}
               />
             </div>
-            <section className="flex-1 min-h-0" role="region" aria-label="Content area" data-testid="content-area">
+            <section className="flex-1 min-h-0" role="region" aria-label="Grids list" data-testid="grids-list">
               {/* Render a GridDataFetcher for each grid */}
               {gridsLoading ? (
                 <div className="flex-1 flex items-center justify-center pt-4 px-4">
@@ -341,6 +342,7 @@ const AllRecords: React.FC = () => {
                       gridKey={grid.key || grid.table_name}
                       titleOverride={grid.display_name}
                       iconOverride={getIconByName(grid.icon)}
+                      height={gridHeight}
                     />
                   </div>
                 ))

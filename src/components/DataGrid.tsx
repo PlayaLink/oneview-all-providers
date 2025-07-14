@@ -23,7 +23,7 @@ interface DataGridProps {
   columns: ColDef[];
   onSelectionChanged?: (event: SelectionChangedEvent) => void;
   onRowClicked?: (data: any) => void;
-  height?: string;
+  height?: string | number;
   showCheckboxes?: boolean;
   showStatusBadges?: boolean;
   selectedRowId?: string | null;
@@ -181,6 +181,9 @@ const DataGrid: React.FC<DataGridProps> = ({
     return '';
   };
 
+  // Convert height to string with px if it's a number
+  const computedHeight = typeof height === 'number' ? `${height}px` : height;
+
   return (
     <section className="bg-white flex flex-col flex-1 min-h-0" role="region" aria-label={`${title} data grid`} data-testid="data-grid">
       {/* Grid Header */}
@@ -221,8 +224,8 @@ const DataGrid: React.FC<DataGridProps> = ({
 
       {/* AG Grid Container */}
       <div
-        className="ag-theme-alpine ag-grid-custom flex-1 min-h-0"
-        style={{ height: 400, width: '100%', border: "none", borderWidth: "0px", ...(height !== "100%" ? { height } : {}) } as React.CSSProperties}
+        className="ag-theme-alpine ag-grid-custom"
+        style={{ height: computedHeight, width: '100%', border: "none", borderWidth: "0px" } as React.CSSProperties}
         role="grid"
         aria-label={`${title} data table`}
         aria-rowcount={data.length}
@@ -275,6 +278,7 @@ const DataGrid: React.FC<DataGridProps> = ({
           }} // Sidebar open by default to Columns panel
           suppressMenuHide={true}
           columnMenu="legacy"
+          onGridReady={params => params.api.sizeColumnsToFit()}
         />
       </div>
     </section>
