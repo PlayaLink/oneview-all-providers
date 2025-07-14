@@ -16,6 +16,7 @@ interface ProviderInfo {
 }
 
 interface ProviderSearchItem {
+  provider_id: string;
   fullName: string;
   firstName: string;
   lastName: string;
@@ -33,8 +34,9 @@ interface AllProvidersHeaderProps {
   onButtonClick?: () => void;
   buttonClassName?: string;
   npi?: string;
+  provider_id?: string;
   providerInfo?: ProviderInfo;
-  onProviderSelect?: (npi: string) => void;
+  onProviderSelect?: (provider_id: string) => void;
   providerSearchList?: ProviderSearchItem[];
   // SectionsDropdown props
   visibleSections?: Set<string>;
@@ -83,7 +85,7 @@ const AllProvidersHeader: React.FC<AllProvidersHeaderProps> = ({
   const handleSelect = (provider: ProviderSearchItem) => {
     setSearch(provider.fullName);
     setDropdownOpen(false);
-    if (onProviderSelect) onProviderSelect(provider.npi);
+    if (onProviderSelect) onProviderSelect(provider.provider_id);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -197,20 +199,20 @@ const AllProvidersHeader: React.FC<AllProvidersHeaderProps> = ({
                 {filteredProviders.map((provider, index) => {
                   return (
                     <div
-                      key={provider.npi}
+                      key={provider.provider_id}
                       id={`provider-option-${index}`}
                       className="px-4 py-3 cursor-pointer hover:bg-blue-50 flex flex-col gap-1"
                       onMouseDown={() => handleSelect(provider)}
                       role="option"
                       aria-selected="false"
-                      data-testid={`provider-option-${provider.npi}`}
+                      data-testid={`provider-option-${provider.provider_id}`}
                     >
                       <div className="flex justify-between items-center">
                         <span className="font-semibold text-[#545454]">
                           {provider.fullName} - {provider.title}
                         </span>
                         <span className="text-xs text-gray-500 font-medium">
-                          NPI: {provider.npi}
+                          ID: {provider.provider_id}
                         </span>
                       </div>
                       <span className="font-bold text-[#3BA8D1] text-sm">

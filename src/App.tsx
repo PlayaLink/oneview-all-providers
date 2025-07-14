@@ -12,6 +12,7 @@ import AppLayout from "./components/AppLayout";
 import { UserProvider } from "./contexts/UserContext";
 import { FeatureFlagProvider } from "./contexts/FeatureFlagContext";
 import MainContent from "./components/MainContent";
+import SingleProvider from "./components/SingleProvider";
 
 const queryClient = new QueryClient();
 
@@ -45,8 +46,8 @@ const App = () => {
             <FeatureFlagProvider>
               <AppLayout user={user}>
                 <Routes>
-                  {/* Route for provider detail pages with NPI parameter */}
-                  <Route path="/:npi" element={<AllRecords />} />
+                  {/* Route for provider detail pages with provider_id parameter */}
+                  <Route path="/:provider_id" element={<SingleProvider />} />
                   {/* Route for the main page (all providers view) - now at /all-records */}
                   <Route path="/all-records" element={<AllRecords />} />
                   {/* New Team route */}

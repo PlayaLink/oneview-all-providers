@@ -9,6 +9,7 @@ const gridDataMappers: Record<string, (row: any) => any> = {
   provider_info: (row) => ({
     ...row,
     provider_name: `${row.last_name || ''}, ${row.first_name || ''}`.trim(),
+    id: row.provider_id || row.id, // Ensure id is set for AG Grid selection/navigation
   }),
   // Add more grid-specific mappers as needed
 };
@@ -79,13 +80,8 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverrid
     initialData: [],
   });
 
-  // Apply mapping if needed
-  const mappedData = React.useMemo(() => {
-    const mapper = lowerKey && gridDataMappers[lowerKey];
-    return Array.isArray(gridData)
-      ? (mapper ? gridData.map(mapper) : gridData)
-      : [];
-  }, [gridData, lowerKey]);
+  // Remove mapping logic, use gridData directly
+  const mappedData = gridData;
 
   // Build AG Grid columns dynamically from backend config
   const agGridColumns = React.useMemo(() => {

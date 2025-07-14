@@ -453,4 +453,4 @@ const AllRecords: React.FC = () => {
   );
 };
 
-export default AllRecords;
+export default AllRecords; 

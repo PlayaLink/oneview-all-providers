@@ -1,5 +1,4 @@
 import React from "react";
-import { cn } from "@/lib/utils";
 import SectionsDropdown from "./SectionsDropdown";
 import NavItem from "@/components/NavItem";
 import { useVisibleSectionsStore } from "@/lib/useVisibleSectionsStore";

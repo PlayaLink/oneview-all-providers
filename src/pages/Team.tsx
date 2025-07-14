@@ -10,9 +10,9 @@ const TeamPage: React.FC = () => {
   const navigate = useNavigate();
 
   // Handler for provider search selection (optional, can be customized)
-  const handleProviderSelect = (providerNpi: string) => {
-    if (providerNpi) {
-      navigate(`/${providerNpi}`);
+  const handleProviderSelect = (providerId: string) => {
+    if (providerId) {
+      navigate(`/${providerId}`);
     } else {
       navigate('/all-records');
     }
@@ -20,8 +20,9 @@ const TeamPage: React.FC = () => {
 
   // Handler for DataGrid row clicks - navigate to provider detail page
   const handleRowClick = (rowData: any) => {
-    if (rowData.npi_number) {
-      navigate(`/${rowData.npi_number}`);
+    // Use id as provider_id for routing
+    if (rowData.id) {
+      navigate(`/${rowData.id}`);
     }
   };
 
