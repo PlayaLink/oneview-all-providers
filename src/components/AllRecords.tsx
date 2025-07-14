@@ -211,10 +211,8 @@ const AllRecords: React.FC = () => {
     initialData: [],
   });
 
-  // Helper to get unique groups from backend grid definitions
-  const getGroups = () => Array.from(new Set(gridDefs.map((g: any) => g.group)));
   // Helper to get grids by group from backend grid definitions
-  const getGridsByGroup = (group: string) => gridDefs.filter((g: any) => g.group === group);
+  // const getGridsByGroup = (group: string) => gridDefs.filter((g: any) => g.group === group);
 
   const providerSearchList = React.useMemo(() => (
     Array.isArray(providerInfoData)
@@ -298,9 +296,8 @@ const AllRecords: React.FC = () => {
     if (selectedItem && selectedItem !== "all-sections") {
       gridsToShow = gridDefs.filter((g: any) => g.table_name === selectedItem || g.key === selectedItem);
     } else if (selectedSection) {
-      const sectionGrids = getGridsByGroup(selectedSection);
-      // Remove visibleSections.size === 0 check
-      gridsToShow = sectionGrids;
+      // Inline getGridsByGroup logic
+      gridsToShow = gridDefs.filter((g: any) => g.group === selectedSection);
     } else {
       // Remove visibleSections.size === 0 check
       gridsToShow = gridDefs;
@@ -319,12 +316,13 @@ const AllRecords: React.FC = () => {
   // Remove visibleSections and setVisibleSections from component state
   // const visibleSections = useVisibleSectionsStore((s) => s.visibleSections);
   // const setVisibleSections = useVisibleSectionsStore((s) => s.setVisibleSections);
+  const setVisibleSections = useVisibleSectionsStore((s) => s.setVisibleSections);
 
   useEffect(() => {
-    if (gridSections.length > 0) {
-      // setVisibleSections(new Set(gridSections.map((section) => section.key))); // This line is removed
+    if (gridDefs.length > 0) {
+      setVisibleSections(new Set(gridDefs.map((g) => g.table_name || g.key)));
     }
-  }, [gridSections]);
+  }, [gridDefs, setVisibleSections]);
 
   return (
     <>
