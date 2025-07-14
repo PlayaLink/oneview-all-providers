@@ -7,7 +7,6 @@ export async function dbFetch<T>(table: string, select: string, schema: z.ZodTyp
   if (error) throw error;
   if (!Array.isArray(data)) throw new Error(`${table} data is not an array`);
   if (data.length > 0) {
-    console.log(`[dbFetch] First row for table ${table}:`, data[0]);
   }
   try {
     data.forEach(row => schema.parse(row));

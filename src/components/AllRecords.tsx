@@ -117,7 +117,7 @@ function GridsSection({
                 <div
                   key={grid.key || grid.table_name || idx}
                   ref={el => (gridRefs.current[idx] = el)}
-                  style={{ marginBottom: idx < gridsToShow.length - 1 ? 32 : 0 }}
+                  style={{ marginBottom: idx < gridsToShow.length - 1 ? 0 : 16 }}
                   data-testid={`grid-container-${grid.key || grid.table_name}`}
                 >
                   <GridDataFetcher
@@ -133,7 +133,7 @@ function GridsSection({
         </div>
         {/* Scroll Arrows Group - Vertically Stacked, Right of Grids List */}
         {gridsToShow.length > 1 && (
-          <div className="flex flex-col items-center justify-center gap-2 px-2 py-4 sticky top-0 self-start" style={{ minWidth: 40 }} role="group" aria-label="Scroll controls" data-testid="grids-scroll-arrows">
+          <div className="flex flex-col items-center justify-center gap-2 pr-2 pl-0 py-4 sticky top-0 self-start" style={{ minWidth: 40 }} role="group" aria-label="Scroll controls" data-testid="grids-scroll-arrows">
             <button
               onClick={handleScrollUp}
               disabled={currentGridIndex === 0}
@@ -321,7 +321,6 @@ const AllRecords: React.FC = () => {
   };
 
   const gridsToShow = getGridsToShow();
-  console.log("gridsToShow", gridsToShow);
 
   return (
     <>

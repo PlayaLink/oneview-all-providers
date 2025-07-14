@@ -51,8 +51,6 @@ const App = () => {
                   <Route path="/all-records" element={<AllRecords />} />
                   {/* New Team route */}
                   <Route path="/team" element={<TeamPage />} />
-                  {/* New MainContent route */}
-                  <Route path="/main-content" element={<MainContent user={user} selectedRow={null} onRowSelect={() => {}} onCloseSidePanel={() => {}} />} />
                   {/* Catch-all route: redirect to /all-records */}
                   <Route path="/*" element={<Navigate to="/all-records" replace />} />
                 </Routes>

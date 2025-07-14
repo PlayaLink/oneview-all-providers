@@ -16,7 +16,6 @@ const gridDataMappers: Record<string, (row: any) => any> = {
 const getValueFormatterForType = (type: string) => {
   if (type === "boolean") {
     return (params: any) => {
-      console.log('Boolean valueFormatter:', params.value, typeof params.value);
       if (params.value === true) return "Yes";
       if (params.value === false) return "No";
       return null; // AG Grid will render a truly empty cell
@@ -119,15 +118,12 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverrid
     // Find extra fields in data
     const extraInData = dataKeys.filter(key => !columnFields.includes(key));
     if (extraInData.length > 0) {
-      console.log("GridDataFetcher - Extra fields in data (not in columns):", extraInData);
     }
     
     // Check for exact matches
     const exactMatches = columnFields.filter(field => dataKeys.includes(field));
-    console.log("GridDataFetcher - Exact field matches:", exactMatches);
     
     if (missingInData.length === 0) {
-      console.log("GridDataFetcher - ✅ All column fields have matching data properties");
     } else {
       console.error("GridDataFetcher - ❌ Column fields missing from data:", missingInData);
     }

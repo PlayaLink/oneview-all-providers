@@ -69,7 +69,6 @@ export interface TagProps
  * <Tag
  *   label="Removable"
  *   removable={true}
- *   onRemove={() => console.log('removed')}
  * />
  *
  * // Different variants

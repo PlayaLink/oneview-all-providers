@@ -561,7 +561,6 @@ const MainContent: React.FC<MainContentProps> = ({
       </div>
     );
   }
-  console.log("gridsToShow", gridsToShow);
 
 
   return (

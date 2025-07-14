@@ -145,13 +145,11 @@ export function fetchStateLicenses() {
 }
 
 export function fetchBirthInfo() {
-  console.log("fetchBirthInfo called");
   return dbFetch(
     'birth_info',
     '*,provider:providers(id,first_name,last_name,title,primary_specialty)',
     BirthInfoSchema
   ).then(result => {
-    console.log("fetchBirthInfo result:", result);
     return result;
   });
 }
@@ -446,7 +444,10 @@ export async function fetchGridData(tableName: string) {
   const { data, error } = await supabase
     .from(tableName)
     .select('*');
-  if (error) throw error;
+  if (error) {
+    console.error('[fetchGridData] error:', error);
+    throw error;
+  }
   return data;
 } 
 
