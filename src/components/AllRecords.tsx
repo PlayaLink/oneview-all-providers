@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUsers,
@@ -36,6 +36,26 @@ const AllRecords: React.FC = () => {
   const [selectedSection, setSelectedSection] = useState<string | null>("provider_info");
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
   const [selectedRow, setSelectedRow] = useState<(any & { gridName: string }) | null>(null);
+
+  const globalNavRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const horizontalNavRef = useRef<HTMLDivElement>(null);
+  const [gridHeight, setGridHeight] = useState<number>(400);
+
+  const calculateGridHeight = useCallback(() => {
+    const viewportHeight = window.innerHeight;
+    const globalNavHeight = globalNavRef.current?.offsetHeight || 0;
+    const headerHeight = headerRef.current?.offsetHeight || 0;
+    const horizontalNavHeight = (!isLeftNav && horizontalNavRef.current) ? horizontalNavRef.current.offsetHeight : 0;
+    const totalHeaderHeight = globalNavHeight + headerHeight + horizontalNavHeight;
+    setGridHeight(Math.max(viewportHeight - totalHeaderHeight, 200)); // 200px min height
+  }, [isLeftNav]);
+
+  useEffect(() => {
+    calculateGridHeight();
+    window.addEventListener('resize', calculateGridHeight);
+    return () => window.removeEventListener('resize', calculateGridHeight);
+  }, [calculateGridHeight]);
 
   const { data: providerInfoData, isLoading, error } = useQuery<any[], Error>({
     queryKey: ["providers"],
@@ -170,24 +190,27 @@ const AllRecords: React.FC = () => {
 
   return (
     <>
-      {/* All Providers Header */}
-      <AllProvidersHeader
-        title={npi ? undefined : "All Providers"}
-        npi={npi}
-        providerInfo={selectedProviderInfo}
-        onProviderSelect={handleProviderSelect}
-        providerSearchList={providerSearchList}
-        icon={faUsers}
-        buttonText="Add Provider"
-        buttonIcon={faUserPlus}
-        onButtonClick={() => {
-          // Add Provider functionality
-        }}
-        buttonClassName="bg-[#79AC48] hover:bg-[#6B9A3F] text-white"
-        visibleSections={npi ? visibleSections : undefined}
-        onSectionVisibilityChange={npi ? handleSectionVisibilityChange : undefined}
-      />
-      
+      {/* Global Navigation (add ref) */}
+      <div ref={globalNavRef} id="global-navigation-ref" />
+      {/* All Providers Header (add ref) */}
+      <div ref={headerRef} id="all-providers-header-ref">
+        <AllProvidersHeader
+          title={npi ? undefined : "All Providers"}
+          npi={npi}
+          providerInfo={selectedProviderInfo}
+          onProviderSelect={handleProviderSelect}
+          providerSearchList={providerSearchList}
+          icon={faUsers}
+          buttonText="Add Provider"
+          buttonIcon={faUserPlus}
+          onButtonClick={() => {
+            // Add Provider functionality
+          }}
+          buttonClassName="bg-[#79AC48] hover:bg-[#6B9A3F] text-white"
+          visibleSections={npi ? visibleSections : undefined}
+          onSectionVisibilityChange={npi ? handleSectionVisibilityChange : undefined}
+        />
+      </div>
       {/* Main Content */}
       {npi ? (
         <div>
@@ -265,10 +288,13 @@ const AllRecords: React.FC = () => {
                   <div className="text-gray-500">No content to display</div>
                 </div>
               ) : (
-                gridsToShow.map((grid: any) => (
-                  <div key={grid.key}>
+                gridsToShow.map((grid: any, idx: number) => (
+                  <div
+                    key={grid.key || grid.table_name}
+                    style={{ height: gridHeight, marginBottom: idx !== gridsToShow.length - 1 ? 24 : 0 }}
+                  >
                     <GridDataFetcher
-                      gridKey={grid.key}
+                      gridKey={grid.key || grid.table_name}
                       titleOverride={grid.display_name}
                       iconOverride={getIconByName(grid.icon)}
                     />
@@ -280,14 +306,17 @@ const AllRecords: React.FC = () => {
         </div>
       ) : (
         <div>
-          <div className="flex-1 flex flex-col min-h-0">
-            <HorizontalNav
-              selectedSection={selectedSection}
-              onSectionSelect={handleSectionSelect}
-              visibleSections={visibleSections}
-              onSectionVisibilityChange={handleSectionVisibilityChange}
-              gridSections={gridSections}
-            />
+          <div className="flex-1 flex flex-col min-h-0 vh-80">
+            {/* HorizontalNav (add ref) */}
+            <div ref={horizontalNavRef} id="horizontal-nav-ref">
+              <HorizontalNav
+                selectedSection={selectedSection}
+                onSectionSelect={handleSectionSelect}
+                visibleSections={visibleSections}
+                onSectionVisibilityChange={handleSectionVisibilityChange}
+                gridSections={gridSections}
+              />
+            </div>
             <section className="flex-1 min-h-0" role="region" aria-label="Content area" data-testid="content-area">
               {/* Render a GridDataFetcher for each grid */}
               {gridsLoading ? (
@@ -303,9 +332,11 @@ const AllRecords: React.FC = () => {
                   <div className="text-gray-500">No content to display</div>
                 </div>
               ) : (
-                gridsToShow.map((grid: any) => (
-                  <div key={grid.key || grid.table_name}>
-                    <div>test</div>
+                gridsToShow.map((grid: any, idx: number) => (
+                  <div
+                    key={grid.key || grid.table_name}
+                    style={{ height: gridHeight, marginBottom: idx !== gridsToShow.length - 1 ? 24 : 0 }}
+                  >
                     <GridDataFetcher
                       gridKey={grid.key || grid.table_name}
                       titleOverride={grid.display_name}
