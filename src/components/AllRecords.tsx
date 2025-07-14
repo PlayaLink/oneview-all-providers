@@ -217,7 +217,7 @@ const AllRecords: React.FC = () => {
   const providerSearchList = React.useMemo(() => (
     Array.isArray(providerInfoData)
       ? providerInfoData.map(row => ({
-          provider_id: row.provider_id,
+          provider_id: row.id,
           fullName: `${row.first_name || ""} ${row.last_name || ""}`.trim(),
           firstName: row.first_name || "",
           lastName: row.last_name || "",

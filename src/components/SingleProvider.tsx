@@ -29,7 +29,7 @@ const SingleProvider: React.FC = () => {
     queryFn: fetchProviders,
     initialData: [],
   });
-  const provider = providers.find((p: any) => String(p.provider_id) === String(provider_id));
+  const provider = providers.find((p: any) => String(p.id) === String(provider_id));
 
   // Fetch all grid definitions
   const { data: gridDefs = [] } = useQuery({
