@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchGridDefinitions, fetchGridColumns, fetchGridData } from "@/lib/supabaseClient";
+import { fetchGridDefinitions, fetchGridColumns, fetchGridData, supabase } from "@/lib/supabaseClient";
 import DataGrid from "@/components/DataGrid";
 import { getIconByName } from "@/lib/iconMapping";
 
@@ -52,9 +52,10 @@ interface GridDataFetcherProps {
   iconOverride?: any;
   onRowClicked?: (row: any) => void;
   height?: number | string;
+  providerIdFilter?: string;
 }
 
-const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverride, iconOverride, onRowClicked, height }) => {
+const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverride, iconOverride, onRowClicked, height, providerIdFilter }) => {
   const lowerKey = gridKey.toLowerCase();
   // Fetch all grid definitions and find the one for this gridKey
   const { data: gridDefs = [] } = useQuery({
@@ -72,10 +73,23 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverrid
     initialData: [],
   });
   
-  // Fetch data for this grid
+  // Fetch data for this grid, filtered by providerIdFilter if present
   const { data: gridData = [], isLoading, error } = useQuery({
-    queryKey: gridDef ? ["grid_data", gridDef.table_name] : ["grid_data", "none"],
-    queryFn: () => gridDef && gridDef.table_name ? fetchGridData(gridDef.table_name) : Promise.resolve([]),
+    queryKey: gridDef ? ["grid_data", gridDef.table_name, providerIdFilter] : ["grid_data", "none"],
+    queryFn: async () => {
+      if (!gridDef || !gridDef.table_name) return [];
+      if (providerIdFilter) {
+        // Use Supabase client directly for filtering
+        const { data, error } = await supabase
+          .from(gridDef.table_name)
+          .select("*")
+          .eq("id", providerIdFilter);
+        if (error) throw error;
+        return data;
+      } else {
+        return fetchGridData(gridDef.table_name);
+      }
+    },
     enabled: !!(gridDef && gridDef.table_name),
     initialData: [],
   });

@@ -1,456 +1,81 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUsers,
-  faUserPlus,
-  faChevronLeft,
-  faChevronRight,
-  faChevronUp,
-  faChevronDown,
-} from "@fortawesome/free-solid-svg-icons";
-import { cn } from "@/lib/utils";
-import SideNav from "@/components/SideNav";
-import HorizontalNav from "@/components/HorizontalNav";
+import React from "react";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { fetchGridDefinitions, fetchProviders, supabase } from "@/lib/supabaseClient";
 import AllProvidersHeader from "@/components/AllProvidersHeader";
-import MainContent from "@/components/MainContent";
-
-import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from '@tanstack/react-query';
-import { supabase, fetchGridDefinitions, fetchGridSections } from '@/lib/supabaseClient';
-import { useUser } from '@/contexts/UserContext';
-import { useFeatureFlag } from '@/contexts/FeatureFlagContext';
-import GridDataFetcher from "./GridDataFetcher";
+import DataGrid from "@/components/DataGrid";
 import { getIconByName } from "@/lib/iconMapping";
-import { useVisibleSectionsStore } from "@/lib/useVisibleSectionsStore";
 
-const fetchProviders = async () => {
-  const { data, error } = await supabase.from('providers').select('*');
-  if (error) throw error;
-  return data;
+const fetchAllProviderGrids = async (provider_id: string) => {
+  // Get the current session and access token from Supabase
+  const { data: { session } } = await supabase.auth.getSession();
+  const accessToken = session?.access_token;
+  const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/all-records?provider_id=${provider_id}`;
+  const res = await fetch(url, {
+    headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+  });
+  if (!res.ok) throw new Error(await res.text());
+  const json = await res.json();
+  console.log('all-records edge function result:', json);
+  return json;
 };
 
-// Helper component to render the grids section (DRY)
-function GridsSection({
-  gridsToShow,
-  gridHeight,
-  gridsLoading,
-  gridsError,
-  selectedRow,
-  handleRowSelect,
-  getIconByName,
-  handleCloseSidePanel,
-  providerInfoData,
-  user,
-  selectedProviderInfo,
-  handleProviderSelect,
-  ...rest
-}: any) {
-  // Add refs for each grid container
-  const gridRefs = React.useRef<(HTMLDivElement | null)[]>([]);
-  const scrollContainerRef = React.useRef<HTMLDivElement | null>(null);
-  const [currentGridIndex, setCurrentGridIndex] = React.useState(0);
+const SingleProvider: React.FC = () => {
+  const { provider_id } = useParams<{ provider_id: string }>();
 
-  // Scroll to a specific grid by index
-  const scrollToGrid = (idx: number) => {
-    const gridEl = gridRefs.current[idx];
-    if (gridEl && scrollContainerRef.current) {
-      const container = scrollContainerRef.current;
-      // Calculate the offset of the grid relative to the scroll container
-      const gridTop = gridEl.offsetTop - container.offsetTop;
-      container.scrollTo({ top: gridTop, behavior: "smooth" });
-      setCurrentGridIndex(idx);
-    }
-  };
-
-  // Handlers for arrows
-  const handleScrollUp = () => {
-    if (currentGridIndex > 0) {
-      scrollToGrid(currentGridIndex - 1);
-    }
-  };
-  const handleScrollDown = () => {
-    if (currentGridIndex < gridsToShow.length - 1) {
-      scrollToGrid(currentGridIndex + 1);
-    }
-  };
-
-  // Optionally, update currentGridIndex on manual scroll
-  const handleScroll = () => {
-    if (!scrollContainerRef.current) return;
-    const containerTop = scrollContainerRef.current.getBoundingClientRect().top;
-    let closestIdx = 0;
-    let minDistance = Infinity;
-    gridRefs.current.forEach((el, idx) => {
-      if (el) {
-        const dist = Math.abs(el.getBoundingClientRect().top - containerTop);
-        if (dist < minDistance) {
-          minDistance = dist;
-          closestIdx = idx;
-        }
-      }
-    });
-    setCurrentGridIndex(closestIdx);
-  };
-
-  return (
-    <section className="flex-1 min-h-0 flex flex-row" role="region" aria-label="Grids list" data-testid="grids-list">
-      {/* Grids List and Scroll Arrows Side by Side */}
-      <div className="flex-1 min-h-0 flex flex-row">
-        {/* Grids List */}
-        <div className="flex-1 min-h-0 overflow-y-auto" data-testid="grids-scroll-container" ref={scrollContainerRef} onScroll={handleScroll}>
-          {gridsLoading ? (
-            <div className="flex-1 flex items-center justify-center pt-4 px-4">
-              <div className="text-gray-500">Loading grids...</div>
-            </div>
-          ) : gridsError ? (
-            <div className="flex-1 flex items-center justify-center pt-4 px-4">
-              <div className="text-red-500">Error loading grids: {gridsError.message}</div>
-            </div>
-          ) : gridsToShow.length === 0 ? (
-            <div className="flex-1 flex items-center justify-center pt-4 px-4">
-              <div className="text-gray-500">No content to display</div>
-            </div>
-          ) : (
-            <div>
-              {gridsToShow.map((grid: any, idx: number) => (
-                <div
-                  key={grid.key || grid.table_name || idx}
-                  ref={el => (gridRefs.current[idx] = el)}
-                  style={{ marginBottom: idx < gridsToShow.length - 1 ? 0 : 16 }}
-                  data-testid={`grid-container-${grid.key || grid.table_name}`}
-                >
-                  <GridDataFetcher
-                    gridKey={grid.key || grid.table_name}
-                    titleOverride={grid.display_name}
-                    iconOverride={getIconByName(grid.icon)}
-                    height={gridHeight}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        {/* Scroll Arrows Group - Vertically Stacked, Right of Grids List */}
-        {gridsToShow.length > 1 && (
-          <div className="flex flex-col items-center justify-center gap-2 pr-2 pl-0 py-4 sticky top-0 self-start" style={{ minWidth: 40 }} role="group" aria-label="Scroll controls" data-testid="grids-scroll-arrows">
-            <button
-              onClick={handleScrollUp}
-              disabled={currentGridIndex === 0}
-              aria-label="Scroll to previous grid"
-              data-testid="scroll-up-arrow"
-              className="p-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-              role="button"
-            >
-              <FontAwesomeIcon icon={faChevronUp} />
-            </button>
-            <button
-              onClick={handleScrollDown}
-              disabled={currentGridIndex === gridsToShow.length - 1}
-              aria-label="Scroll to next grid"
-              data-testid="scroll-down-arrow"
-              className="p-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-              role="button"
-            >
-              <FontAwesomeIcon icon={faChevronDown} />
-            </button>
-          </div>
-        )}
-      </div>
-    </section>
-  );
-}
-
-const AllRecords: React.FC = () => {
-  const { user } = useUser();
-  const { provider_id } = useParams<{ provider_id?: string }>();
-  const navigate = useNavigate();
-  const { value: isLeftNav, isLoading: navLoading } = useFeatureFlag("left_nav");
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
-  const [selectedSection, setSelectedSection] = useState<string | null>("provider_info");
-  // Remove local visibleSections and setVisibleSections state
-  // const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
-  const [selectedRow, setSelectedRow] = useState<(any & { gridName: string }) | null>(null);
-
-  const globalNavRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
-  const horizontalNavRef = useRef<HTMLDivElement>(null);
-  const [gridHeight, setGridHeight] = useState<number>(400);
-
-  const calculateGridHeight = useCallback(() => {
-    const viewportHeight = window.innerHeight;
-    const globalNavHeight = globalNavRef.current?.offsetHeight || 0;
-    const headerHeight = headerRef.current?.offsetHeight || 0;
-    const horizontalNavHeight = (!isLeftNav && horizontalNavRef.current) ? horizontalNavRef.current.offsetHeight : 0;
-    const totalHeaderHeight = globalNavHeight + headerHeight + horizontalNavHeight;
-    setGridHeight(Math.max(viewportHeight - totalHeaderHeight -175, 200)); // 200px min height
-  }, [isLeftNav]);
-
-  useEffect(() => {
-    calculateGridHeight();
-    window.addEventListener('resize', calculateGridHeight);
-    return () => window.removeEventListener('resize', calculateGridHeight);
-  }, [calculateGridHeight]);
-
-  const { data: providerInfoData, isLoading, error } = useQuery<any[], Error>({
+  // Fetch provider info for header
+  const { data: providers = [] } = useQuery({
     queryKey: ["providers"],
     queryFn: fetchProviders,
+    initialData: [],
   });
+  const provider = providers.find((p: any) => String(p.provider_id) === String(provider_id));
 
-  // Fetch grid definitions from backend
-  const { data: gridDefs = [], isLoading: gridsLoading, error: gridsError } = useQuery({
+  // Fetch all grid definitions
+  const { data: gridDefs = [] } = useQuery({
     queryKey: ["grid_definitions"],
     queryFn: fetchGridDefinitions,
     initialData: [],
   });
 
-  // Fetch grid sections from backend
-  const { data: gridSections = [], isLoading: sectionsLoading, error: sectionsError } = useQuery({
-    queryKey: ["grid_sections"],
-    queryFn: fetchGridSections,
-    initialData: [],
+  // Fetch all grid data for this provider from the edge function
+  const { data: allGrids, isLoading, error } = useQuery({
+    queryKey: ["all-provider-grids", provider_id],
+    queryFn: () => fetchAllProviderGrids(provider_id!),
+    enabled: !!provider_id,
   });
 
-  // Helper to get grids by group from backend grid definitions
-  // const getGridsByGroup = (group: string) => gridDefs.filter((g: any) => g.group === group);
-
-  const providerSearchList = React.useMemo(() => (
-    Array.isArray(providerInfoData)
-      ? providerInfoData.map(row => ({
-          provider_id: row.provider_id,
-          fullName: `${row.first_name || ""} ${row.last_name || ""}`.trim(),
-          firstName: row.first_name || "",
-          lastName: row.last_name || "",
-          title: row.title || "",
-          npi: row.npi_number || "",
-          specialty: row.primary_specialty || "",
-          email: row.work_email || row.personal_email || "",
-        }))
-      : []
-  ), [providerInfoData]);
-
-  const selectedProviderInfo = provider_id
-    ? providerSearchList.find(p => String(p.provider_id) === String(provider_id))
-    : undefined;
-
-  useEffect(() => {
-    if (!selectedSection && !selectedItem) {
-      setSelectedSection("provider_info");
-    }
-  }, [selectedSection, selectedItem]);
-
-  useEffect(() => {
-    if (!navLoading && !isLeftNav && !selectedSection) {
-      setSelectedSection("provider_info");
-    }
-  }, [isLeftNav, navLoading, selectedSection]);
-
-  const handleItemSelect = (item: string) => {
-    setSelectedItem(item);
-    setSelectedSection(null);
-  };
-
-  const handleSectionSelect = (section: string) => {
-    setSelectedSection(section);
-    setSelectedItem(null);
-  };
-
-  const handleSectionVisibilityChange = (
-    sectionKey: string,
-    visible: boolean,
-  ) => {
-    // setVisibleSections((prev) => { // This line is removed
-    //   const newSet = new Set(prev);
-    //   if (visible) {
-    //     newSet.add(sectionKey);
-    //   } else {
-    //     newSet.delete(sectionKey);
-    //   }
-    //   return newSet;
-    // });
-  };
-
-  const handleProviderSelect = (providerId: string) => {
-    if (providerId) {
-      navigate(`/${providerId}`);
-    } else {
-      navigate("/");
-    }
-  };
-
-  const handleRowSelect = (row: any | null, gridName?: string) => {
-    if (row && gridName) {
-      setSelectedRow({ ...row, gridName });
-    } else {
-      setSelectedRow(null);
-    }
-  };
-
-  const handleCloseSidePanel = () => {
-    setSelectedRow(null);
-  };
-
-  // Helper to determine which grids to show in all-records view (backend-driven)
-  const getGridsToShow = () => {
-    let gridsToShow: any[] = [];
-
-    if (selectedItem && selectedItem !== "all-sections") {
-      gridsToShow = gridDefs.filter((g: any) => g.table_name === selectedItem || g.key === selectedItem);
-    } else if (selectedSection) {
-      // Inline getGridsByGroup logic
-      gridsToShow = gridDefs.filter((g: any) => g.group === selectedSection);
-    } else {
-      // Remove visibleSections.size === 0 check
-      gridsToShow = gridDefs;
-    }
-
-    // Sort grids by their order property
-    return gridsToShow.sort((a, b) => {
-      const orderA = a.order || 0;
-      const orderB = b.order || 0;
-      return orderA - orderB;
-    });
-  };
-
-  const gridsToShow = getGridsToShow();
-
-  // Remove visibleSections and setVisibleSections from component state
-  // const visibleSections = useVisibleSectionsStore((s) => s.visibleSections);
-  // const setVisibleSections = useVisibleSectionsStore((s) => s.setVisibleSections);
-  const setVisibleSections = useVisibleSectionsStore((s) => s.setVisibleSections);
-
-  useEffect(() => {
-    if (gridDefs.length > 0) {
-      setVisibleSections(new Set(gridDefs.map((g) => g.table_name || g.key)));
-    }
-  }, [gridDefs, setVisibleSections]);
-
   return (
-    <>
-      {/* Global Navigation (add ref) */}
-      <div ref={globalNavRef} id="global-navigation-ref" />
-      {/* All Providers Header (add ref) */}
-      <div ref={headerRef} id="all-providers-header-ref">
-        <AllProvidersHeader
-          title={provider_id ? undefined : "All Providers"}
-          provider_id={provider_id}
-          providerInfo={selectedProviderInfo}
-          onProviderSelect={handleProviderSelect}
-          providerSearchList={providerSearchList}
-          icon={faUsers}
-          buttonText="Add Provider"
-          buttonIcon={faUserPlus}
-          onButtonClick={() => {
-            // Add Provider functionality
-          }}
-          buttonClassName="bg-[#79AC48] hover:bg-[#6B9A3F] text-white"
-          // Remove visibleSections and onSectionVisibilityChange props
-          // visibleSections={npi ? visibleSections : undefined}
-          // onSectionVisibilityChange={npi ? handleSectionVisibilityChange : undefined}
-        />
-      </div>
-      {/* Main Content */}
-      {provider_id ? (
-        <div>
-          <div className="flex-1 flex flex-col min-h-0 w-full px-4 pt-4 pb-8">
-            <MainContent
-              singleProviderNpi={provider_id}
-              // Remove visibleSections prop
-              // visibleSections={visibleSections}
-              selectedRow={selectedRow}
-              onRowSelect={handleRowSelect}
-              onCloseSidePanel={handleCloseSidePanel}
-              providerInfoData={providerInfoData}
-              user={user}
-            />
-          </div>
-        </div>
-      ) : navLoading || isLeftNav ? (
-        <div className="flex-1 min-h-0 h-full flex flex-row">
-            <aside
-              className={cn(
-                "relative border-r border-gray-300 bg-white transition-all duration-300 flex flex-col h-full min-h-0",
-                sidebarCollapsed ? "w-0" : "w-48",
-              )}
-              role="complementary"
-              aria-label="Sidebar navigation"
-              data-testid="sidebar-navigation"
-            >
-              <SideNav
-                collapsed={sidebarCollapsed}
-                selectedItem={selectedItem}
-                selectedSection={selectedSection}
-                onItemSelect={handleItemSelect}
-                onSectionSelect={handleSectionSelect}
-                gridSections={gridSections}
-                gridDefs={gridDefs}
-              />
-              <button
-                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                className="absolute w-6 h-6 bg-[#545454] text-white rounded-full flex items-center justify-center hover:bg-[#3f3f3f] transition-colors z-20"
-                style={{
-                  right: sidebarCollapsed ? "-28px" : "-12px",
-                  top: "-12px",
-                }}
-                aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-                aria-expanded={!sidebarCollapsed}
-                data-testid="sidebar-toggle"
-              >
-                {sidebarCollapsed ? (
-                  <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" aria-hidden="true" />
-                ) : (
-                  <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" aria-hidden="true" />
-                )}
-              </button>
-            </aside>
-            {/* Use GridsSection for DRY rendering */}
-            <GridsSection
-              gridsToShow={gridsToShow}
-              gridHeight={gridHeight}
-              gridsLoading={gridsLoading}
-              gridsError={gridsError}
-              selectedRow={selectedRow}
-              handleRowSelect={handleRowSelect}
-              getIconByName={getIconByName}
-              handleCloseSidePanel={handleCloseSidePanel}
-              providerInfoData={providerInfoData}
-              user={user}
-              selectedProviderInfo={selectedProviderInfo}
-              handleProviderSelect={handleProviderSelect}
-              // Remove visibleSections and handleSectionVisibilityChange props
-              // visibleSections={visibleSections}
-              // handleSectionVisibilityChange={handleSectionVisibilityChange}
-            />
-        </div>
-      ) : (
-        <div className="flex-1 min-h-0 h-full flex flex-col">
-            {/* HorizontalNav (add ref) */}
-            <div ref={horizontalNavRef} id="horizontal-nav-ref">
-              <HorizontalNav
-                selectedSection={selectedSection}
-                onSectionSelect={handleSectionSelect}
-                gridSections={gridSections}
+    <div className="flex flex-col min-h-0 w-full px-4 pt-4 pb-8">
+      <AllProvidersHeader
+        title={provider?.fullName || "Provider"}
+        provider_id={provider_id}
+        providerInfo={provider}
+        providerSearchList={[]}
+      />
+      {isLoading && <div>Loading all provider data...</div>}
+      {error && <div className="text-red-500">Error: {String(error)}</div>}
+      <div className="flex flex-col gap-8 mt-4">
+        {gridDefs.map((grid: any) => {
+          const table = grid.table_name || grid.tableName;
+          const gridData = Array.isArray(allGrids?.[table]) ? allGrids[table] : [];
+          const gridError = !Array.isArray(allGrids?.[table]) && allGrids?.[table]?.error;
+          return (
+            <div key={table}>
+              {gridError && <div className="text-red-500 mb-2">Error loading {table}: {gridError}</div>}
+              <DataGrid
+                title={grid.display_name || grid.displayName}
+                icon={getIconByName(grid.icon)}
+                data={gridData}
+                columns={grid.columns?.map((col: string) => ({ field: col, headerName: col, flex: 1 })) || []}
+                showCheckboxes={true}
               />
             </div>
-            {/* Use GridsSection for DRY rendering */}
-            <GridsSection
-              gridsToShow={gridsToShow}
-              gridHeight={gridHeight}
-              gridsLoading={gridsLoading}
-              gridsError={gridsError}
-              selectedRow={selectedRow}
-              handleRowSelect={handleRowSelect}
-              getIconByName={getIconByName}
-              handleCloseSidePanel={handleCloseSidePanel}
-              providerInfoData={providerInfoData}
-              user={user}
-              selectedProviderInfo={selectedProviderInfo}
-              handleProviderSelect={handleProviderSelect}
-            />
-        </div>
-      )}
-    </>
+          );
+        })}
+      </div>
+    </div>
   );
 };
 
-export default AllRecords; 
+export default SingleProvider; 
