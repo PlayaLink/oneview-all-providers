@@ -26,6 +26,57 @@ const fetchProviders = async () => {
   return data;
 };
 
+// Helper component to render the grids section (DRY)
+function GridsSection({
+  gridsToShow,
+  gridHeight,
+  gridsLoading,
+  gridsError,
+  selectedRow,
+  handleRowSelect,
+  getIconByName,
+  handleCloseSidePanel,
+  providerInfoData,
+  user,
+  selectedProviderInfo,
+  handleProviderSelect,
+  visibleSections,
+  handleSectionVisibilityChange,
+  ...rest
+}: any) {
+  return (
+    <section className="flex-1 min-h-0" role="region" aria-label="Grids list" data-testid="grids-list">
+      {gridsLoading ? (
+        <div className="flex-1 flex items-center justify-center pt-4 px-4">
+          <div className="text-gray-500">Loading grids...</div>
+        </div>
+      ) : gridsError ? (
+        <div className="flex-1 flex items-center justify-center pt-4 px-4">
+          <div className="text-red-500">Error loading grids: {gridsError.message}</div>
+        </div>
+      ) : gridsToShow.length === 0 ? (
+        <div className="flex-1 flex items-center justify-center pt-4 px-4">
+          <div className="text-gray-500">No content to display</div>
+        </div>
+      ) : (
+        gridsToShow.map((grid: any, idx: number) => (
+          <div
+            key={grid.key || grid.table_name}
+            style={{ height: gridHeight, marginBottom: idx !== gridsToShow.length - 1 ? 24 : 0 }}
+          >
+            <GridDataFetcher
+              gridKey={grid.key || grid.table_name}
+              titleOverride={grid.display_name}
+              iconOverride={getIconByName(grid.icon)}
+              height={gridHeight}
+            />
+          </div>
+        ))
+      )}
+    </section>
+  );
+}
+
 const AllRecords: React.FC = () => {
   const { user } = useUser();
   const { npi } = useParams<{ npi?: string }>();
@@ -265,44 +316,23 @@ const AllRecords: React.FC = () => {
                 )}
               </button>
             </aside>
-            <section
-              className={cn(
-                "flex-1 flex flex-col min-h-0",
-                sidebarCollapsed && "ml-4 border-l border-gray-300",
-              )}
-              role="region"
-              aria-label="Content area"
-              data-testid="content-area"
-            >
-              {/* Render a GridDataFetcher for each grid */}
-              {gridsLoading ? (
-                <div className="flex-1 flex items-center justify-center pt-4 px-4">
-                  <div className="text-gray-500">Loading grids...</div>
-                </div>
-              ) : gridsError ? (
-                <div className="flex-1 flex items-center justify-center pt-4 px-4">
-                  <div className="text-red-500">Error loading grids: {gridsError.message}</div>
-                </div>
-              ) : gridsToShow.length === 0 ? (
-                <div className="flex-1 flex items-center justify-center pt-4 px-4">
-                  <div className="text-gray-500">No content to display</div>
-                </div>
-              ) : (
-                gridsToShow.map((grid: any, idx: number) => (
-                  <div
-                    key={grid.key || grid.table_name}
-                    style={{ height: gridHeight, marginBottom: idx !== gridsToShow.length - 1 ? 24 : 0 }}
-                  >
-                    <GridDataFetcher
-                      gridKey={grid.key || grid.table_name}
-                      titleOverride={grid.display_name}
-                      iconOverride={getIconByName(grid.icon)}
-                      height={gridHeight}
-                    />
-                  </div>
-                ))
-              )}
-            </section>
+            {/* Use GridsSection for DRY rendering */}
+            <GridsSection
+              gridsToShow={gridsToShow}
+              gridHeight={gridHeight}
+              gridsLoading={gridsLoading}
+              gridsError={gridsError}
+              selectedRow={selectedRow}
+              handleRowSelect={handleRowSelect}
+              getIconByName={getIconByName}
+              handleCloseSidePanel={handleCloseSidePanel}
+              providerInfoData={providerInfoData}
+              user={user}
+              selectedProviderInfo={selectedProviderInfo}
+              handleProviderSelect={handleProviderSelect}
+              visibleSections={visibleSections}
+              handleSectionVisibilityChange={handleSectionVisibilityChange}
+            />
           </div>
         </div>
       ) : (
@@ -318,36 +348,23 @@ const AllRecords: React.FC = () => {
                 gridSections={gridSections}
               />
             </div>
-            <section className="flex-1 min-h-0" role="region" aria-label="Grids list" data-testid="grids-list">
-              {/* Render a GridDataFetcher for each grid */}
-              {gridsLoading ? (
-                <div className="flex-1 flex items-center justify-center pt-4 px-4">
-                  <div className="text-gray-500">Loading grids...</div>
-                </div>
-              ) : gridsError ? (
-                <div className="flex-1 flex items-center justify-center pt-4 px-4">
-                  <div className="text-red-500">Error loading grids: {gridsError.message}</div>
-                </div>
-              ) : gridsToShow.length === 0 ? (
-                <div className="flex-1 flex items-center justify-center pt-4 px-4">
-                  <div className="text-gray-500">No content to display</div>
-                </div>
-              ) : (
-                gridsToShow.map((grid: any, idx: number) => (
-                  <div
-                    key={grid.key || grid.table_name}
-                    style={{ height: gridHeight, marginBottom: idx !== gridsToShow.length - 1 ? 24 : 0 }}
-                  >
-                    <GridDataFetcher
-                      gridKey={grid.key || grid.table_name}
-                      titleOverride={grid.display_name}
-                      iconOverride={getIconByName(grid.icon)}
-                      height={gridHeight}
-                    />
-                  </div>
-                ))
-              )}
-            </section>
+            {/* Use GridsSection for DRY rendering */}
+            <GridsSection
+              gridsToShow={gridsToShow}
+              gridHeight={gridHeight}
+              gridsLoading={gridsLoading}
+              gridsError={gridsError}
+              selectedRow={selectedRow}
+              handleRowSelect={handleRowSelect}
+              getIconByName={getIconByName}
+              handleCloseSidePanel={handleCloseSidePanel}
+              providerInfoData={providerInfoData}
+              user={user}
+              selectedProviderInfo={selectedProviderInfo}
+              handleProviderSelect={handleProviderSelect}
+              visibleSections={visibleSections}
+              handleSectionVisibilityChange={handleSectionVisibilityChange}
+            />
           </div>
         </div>
       )}
