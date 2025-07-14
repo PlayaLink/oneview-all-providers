@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchGridDefinitions, fetchProviders, supabase } from "@/lib/supabaseClient";
 import AllProvidersHeader from "@/components/AllProvidersHeader";
-import DataGrid from "@/components/DataGrid";
+import GridDataFetcher from "./GridDataFetcher";
 import { getIconByName } from "@/lib/iconMapping";
 
 const fetchAllProviderGrids = async (provider_id: string) => {
@@ -57,31 +57,15 @@ const SingleProvider: React.FC = () => {
       {error && <div className="text-red-500">Error: {String(error)}</div>}
       <div className="flex flex-col gap-8 mt-4 max-h-[70vh] overflow-y-auto" data-testid="single-provider-grids-list">
         {gridDefs.map((grid: any) => {
-          const table = grid.table_name || grid.tableName;
-          const gridData = Array.isArray(allGrids?.[table]) ? allGrids[table] : [];
-          const gridError = !Array.isArray(allGrids?.[table]) && allGrids?.[table]?.error;
-          // Step 1: Debug log
-          console.log('Grid:', table, 'Data:', gridData, 'Columns:', grid.columns);
-          // Step 2: Ensure columns match data keys
-          let columns = grid.columns?.map((col: string) => ({ field: col, headerName: col, flex: 1 })) || [];
-          if (gridData.length > 0) {
-            const dataKeys = Object.keys(gridData[0]);
-            // If columns are missing or don't match, use data keys
-            if (columns.length === 0 || !columns.some(col => dataKeys.includes(col.field))) {
-              columns = dataKeys.map(key => ({ field: key, headerName: key, flex: 1 }));
-            }
-          }
+          const gridKey = grid.key || grid.table_name || grid.tableName;
           return (
-            <div key={table}>
-              {gridError && <div className="text-red-500 mb-2">Error loading {table}: {gridError}</div>}
-              <DataGrid
-                title={grid.display_name || grid.displayName}
-                icon={getIconByName(grid.icon)}
-                data={gridData}
-                columns={columns}
-                showCheckboxes={true}
-              />
-            </div>
+            <GridDataFetcher
+              key={gridKey}
+              gridKey={gridKey}
+              titleOverride={grid.display_name || grid.displayName}
+              iconOverride={grid.icon}
+              providerIdFilter={provider_id}
+            />
           );
         })}
       </div>

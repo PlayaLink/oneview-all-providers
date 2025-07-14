@@ -52,7 +52,7 @@ interface GridDataFetcherProps {
   iconOverride?: any;
   onRowClicked?: (row: any) => void;
   height?: number | string;
-  providerIdFilter?: string;
+  providerIdFilter?: string; // Optional filter
 }
 
 const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverride, iconOverride, onRowClicked, height, providerIdFilter }) => {
@@ -79,11 +79,11 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverrid
     queryFn: async () => {
       if (!gridDef || !gridDef.table_name) return [];
       if (providerIdFilter) {
-        // Use Supabase client directly for filtering
+        const filterColumn = gridDef.table_name === "providers" ? "id" : "provider_id";
         const { data, error } = await supabase
           .from(gridDef.table_name)
           .select("*")
-          .eq("id", providerIdFilter);
+          .eq(filterColumn, providerIdFilter);
         if (error) throw error;
         return data;
       } else {
