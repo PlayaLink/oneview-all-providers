@@ -55,11 +55,22 @@ const SingleProvider: React.FC = () => {
       />
       {isLoading && <div>Loading all provider data...</div>}
       {error && <div className="text-red-500">Error: {String(error)}</div>}
-      <div className="flex flex-col gap-8 mt-4">
+      <div className="flex flex-col gap-8 mt-4 max-h-[70vh] overflow-y-auto" data-testid="single-provider-grids-list">
         {gridDefs.map((grid: any) => {
           const table = grid.table_name || grid.tableName;
           const gridData = Array.isArray(allGrids?.[table]) ? allGrids[table] : [];
           const gridError = !Array.isArray(allGrids?.[table]) && allGrids?.[table]?.error;
+          // Step 1: Debug log
+          console.log('Grid:', table, 'Data:', gridData, 'Columns:', grid.columns);
+          // Step 2: Ensure columns match data keys
+          let columns = grid.columns?.map((col: string) => ({ field: col, headerName: col, flex: 1 })) || [];
+          if (gridData.length > 0) {
+            const dataKeys = Object.keys(gridData[0]);
+            // If columns are missing or don't match, use data keys
+            if (columns.length === 0 || !columns.some(col => dataKeys.includes(col.field))) {
+              columns = dataKeys.map(key => ({ field: key, headerName: key, flex: 1 }));
+            }
+          }
           return (
             <div key={table}>
               {gridError && <div className="text-red-500 mb-2">Error loading {table}: {gridError}</div>}
@@ -67,7 +78,7 @@ const SingleProvider: React.FC = () => {
                 title={grid.display_name || grid.displayName}
                 icon={getIconByName(grid.icon)}
                 data={gridData}
-                columns={grid.columns?.map((col: string) => ({ field: col, headerName: col, flex: 1 })) || []}
+                columns={columns}
                 showCheckboxes={true}
               />
             </div>
