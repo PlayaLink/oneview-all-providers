@@ -46,40 +46,115 @@ function GridsSection({
   handleSectionVisibilityChange,
   ...rest
 }: any) {
-  // Remove scroll button logic and carousel state
-  // Just render all grids in a scrollable list
+  // Add refs for each grid container
+  const gridRefs = React.useRef<(HTMLDivElement | null)[]>([]);
+  const scrollContainerRef = React.useRef<HTMLDivElement | null>(null);
+  const [currentGridIndex, setCurrentGridIndex] = React.useState(0);
+
+  // Scroll to a specific grid by index
+  const scrollToGrid = (idx: number) => {
+    const gridEl = gridRefs.current[idx];
+    if (gridEl && scrollContainerRef.current) {
+      // Instead of scrollIntoView (which can scroll the whole page),
+      // use scrollTop to scroll only the grids-scroll-container
+      const container = scrollContainerRef.current;
+      const gridTop = gridEl.offsetTop;
+      container.scrollTo({ top: gridTop, behavior: "smooth" });
+      setCurrentGridIndex(idx);
+    }
+  };
+
+  // Handlers for arrows
+  const handleScrollUp = () => {
+    if (currentGridIndex > 0) {
+      scrollToGrid(currentGridIndex - 1);
+    }
+  };
+  const handleScrollDown = () => {
+    if (currentGridIndex < gridsToShow.length - 1) {
+      scrollToGrid(currentGridIndex + 1);
+    }
+  };
+
+  // Optionally, update currentGridIndex on manual scroll
+  const handleScroll = () => {
+    if (!scrollContainerRef.current) return;
+    const containerTop = scrollContainerRef.current.getBoundingClientRect().top;
+    let closestIdx = 0;
+    let minDistance = Infinity;
+    gridRefs.current.forEach((el, idx) => {
+      if (el) {
+        const dist = Math.abs(el.getBoundingClientRect().top - containerTop);
+        if (dist < minDistance) {
+          minDistance = dist;
+          closestIdx = idx;
+        }
+      }
+    });
+    setCurrentGridIndex(closestIdx);
+  };
+
   return (
     <section className="flex-1 min-h-0 flex flex-row" role="region" aria-label="Grids list" data-testid="grids-list">
-      {/* Grids List */}
-      <div className="flex-1 min-h-0 overflow-y-auto">
-        {gridsLoading ? (
-          <div className="flex-1 flex items-center justify-center pt-4 px-4">
-            <div className="text-gray-500">Loading grids...</div>
-          </div>
-        ) : gridsError ? (
-          <div className="flex-1 flex items-center justify-center pt-4 px-4">
-            <div className="text-red-500">Error loading grids: {gridsError.message}</div>
-          </div>
-        ) : gridsToShow.length === 0 ? (
-          <div className="flex-1 flex items-center justify-center pt-4 px-4">
-            <div className="text-gray-500">No content to display</div>
-          </div>
-        ) : (
-          <div>
-            {gridsToShow.map((grid: any, idx: number) => (
-              <div
-                key={grid.key || grid.table_name || idx}
-                style={{ marginBottom: idx < gridsToShow.length - 1 ? 32 : 0 }}
-                data-testid={`grid-container-${grid.key || grid.table_name}`}
-              >
-                <GridDataFetcher
-                  gridKey={grid.key || grid.table_name}
-                  titleOverride={grid.display_name}
-                  iconOverride={getIconByName(grid.icon)}
-                  height={gridHeight}
-                />
-              </div>
-            ))}
+      {/* Grids List and Scroll Arrows Side by Side */}
+      <div className="flex-1 min-h-0 flex flex-row">
+        {/* Grids List */}
+        <div className="flex-1 min-h-0 overflow-y-auto" data-testid="grids-scroll-container" ref={scrollContainerRef} onScroll={handleScroll}>
+          {gridsLoading ? (
+            <div className="flex-1 flex items-center justify-center pt-4 px-4">
+              <div className="text-gray-500">Loading grids...</div>
+            </div>
+          ) : gridsError ? (
+            <div className="flex-1 flex items-center justify-center pt-4 px-4">
+              <div className="text-red-500">Error loading grids: {gridsError.message}</div>
+            </div>
+          ) : gridsToShow.length === 0 ? (
+            <div className="flex-1 flex items-center justify-center pt-4 px-4">
+              <div className="text-gray-500">No content to display</div>
+            </div>
+          ) : (
+            <div>
+              {gridsToShow.map((grid: any, idx: number) => (
+                <div
+                  key={grid.key || grid.table_name || idx}
+                  ref={el => (gridRefs.current[idx] = el)}
+                  style={{ marginBottom: idx < gridsToShow.length - 1 ? 32 : 0 }}
+                  data-testid={`grid-container-${grid.key || grid.table_name}`}
+                >
+                  <GridDataFetcher
+                    gridKey={grid.key || grid.table_name}
+                    titleOverride={grid.display_name}
+                    iconOverride={getIconByName(grid.icon)}
+                    height={gridHeight}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        {/* Scroll Arrows Group - Vertically Stacked, Right of Grids List */}
+        {gridsToShow.length > 1 && (
+          <div className="flex flex-col items-center justify-center gap-2 px-2 py-4 sticky top-0 self-start" style={{ minWidth: 40 }} role="group" aria-label="Scroll controls" data-testid="grids-scroll-arrows">
+            <button
+              onClick={handleScrollUp}
+              disabled={currentGridIndex === 0}
+              aria-label="Scroll to previous grid"
+              data-testid="scroll-up-arrow"
+              className="p-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+              role="button"
+            >
+              <FontAwesomeIcon icon={faChevronUp} />
+            </button>
+            <button
+              onClick={handleScrollDown}
+              disabled={currentGridIndex === gridsToShow.length - 1}
+              aria-label="Scroll to next grid"
+              data-testid="scroll-down-arrow"
+              className="p-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+              role="button"
+            >
+              <FontAwesomeIcon icon={faChevronDown} />
+            </button>
           </div>
         )}
       </div>
