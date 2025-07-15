@@ -141,7 +141,9 @@ export function fetchStateLicenses() {
     'state_licenses',
     '*,provider:providers(id,first_name,last_name,title,primary_specialty)',
     StateLicenseSchema
-  );
+  ).then((result) => {
+    return result;
+  });
 }
 
 export function fetchBirthInfo() {
@@ -168,6 +170,7 @@ export async function fetchStateLicensesByProvider(providerId: string) {
       )
     `)
     .eq('provider_id', providerId);
+
   if (error) throw error;
   return data;
 }
@@ -361,7 +364,7 @@ export const FacilityAffiliationSchema = z.object({
 export function fetchFacilityAffiliations() {
   return dbFetch(
     'facility_affiliations',
-    '*,provider:providers(id,first_name,last_name,title,primary_specialty)',
+    '*,provider:providers_with_full_name(provider_id,first_name,last_name,title,primary_specialty)',
     FacilityAffiliationSchema
   );
 }
@@ -445,7 +448,6 @@ export async function fetchGridData(tableName: string) {
     .from(tableName)
     .select('*');
   if (error) {
-    console.error('[fetchGridData] error:', error);
     throw error;
   }
   return data;

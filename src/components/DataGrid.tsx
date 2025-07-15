@@ -30,9 +30,6 @@ interface DataGridProps {
 }
 
 const DataGrid: React.FC<DataGridProps> = (props) => {
-  // Log all props for debugging
-  console.log('[DEBUG] DataGrid props:', props);
-
   const {
     title,
     icon,

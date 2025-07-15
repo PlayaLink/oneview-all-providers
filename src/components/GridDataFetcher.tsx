@@ -118,19 +118,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverrid
       })
     : [];
   
-  // Debug: Log the final data being passed to DataGrid
-  // console.log('📊 GridDataFetcher Final Data:', {
-  //   gridKey,
-  //   table_name: gridDef?.table_name,
-  //   display_name: gridDef?.display_name,
-  //   mappedDataCount: mappedData?.length || 0,
-  //   mappedDataSample: mappedData?.[0] ? mappedData[0] : null,
-  //   allMappedData: mappedData || []
-  // });
-
-  // Debug: Log gridDef.id and columns fetched
-  console.log('[DEBUG] GridDataFetcher gridDef:', gridDef?.id, gridDef?.table_name);
-  console.log('[DEBUG] GridDataFetcher columns:', columns);
+  // Remove all console.log statements
 
   // Build AG Grid columns dynamically from backend config
   const agGridColumns = React.useMemo(() => {
