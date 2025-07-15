@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { faUsers, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
@@ -8,6 +8,10 @@ import GridDataFetcher from "@/components/GridDataFetcher";
 const TeamPage: React.FC = () => {
   const { user } = useUser();
   const navigate = useNavigate();
+
+  // Ref for measuring header height
+  const headerRef = useRef<HTMLElement>(null);
+  const [gridHeight, setGridHeight] = useState<number | undefined>(undefined);
 
   // Handler for provider search selection (optional, can be customized)
   const handleProviderSelect = (providerId: string) => {
@@ -26,10 +30,21 @@ const TeamPage: React.FC = () => {
     }
   };
 
+  // Effect to calculate grid height
+  useEffect(() => {
+    function updateHeight() {
+      const headerHeight = headerRef.current?.offsetHeight || 0;
+      setGridHeight(window.innerHeight - headerHeight - 32); // 32px for padding/margin
+    }
+    updateHeight();
+    window.addEventListener('resize', updateHeight);
+    return () => window.removeEventListener('resize', updateHeight);
+  }, []);
+
   return (
     <>
-      {/* All Providers Header */}
       <AllProvidersHeader
+        ref={headerRef}
         title="Team"
         npi={undefined}
         onProviderSelect={handleProviderSelect}
@@ -42,12 +57,15 @@ const TeamPage: React.FC = () => {
         }}
         buttonClassName="bg-[#79AC48] hover:bg-[#6B9A3F] text-white"
       />
-      <GridDataFetcher
-        gridKey="provider_info"
-        titleOverride="Team"
-        iconOverride={faUsers}
-        onRowClicked={handleRowClick}
-      />
+      <div className='px-4 pt-4'>
+        <GridDataFetcher
+          gridKey="provider_info"
+          titleOverride="Team"
+          iconOverride={faUsers}
+          onRowClicked={handleRowClick}
+          height={gridHeight}
+        />
+      </div>
     </>
   );
 };

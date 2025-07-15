@@ -43,7 +43,7 @@ interface AllProvidersHeaderProps {
   onSectionVisibilityChange?: (sectionKey: string, visible: boolean) => void;
 }
 
-const AllProvidersHeader: React.FC<AllProvidersHeaderProps> = ({
+const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps>(({
   title,
   icon,
   buttonText,
@@ -56,7 +56,7 @@ const AllProvidersHeader: React.FC<AllProvidersHeaderProps> = ({
   providerSearchList = [],
   visibleSections,
   onSectionVisibilityChange,
-}) => {
+}, ref) => {
   const [search, setSearch] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -129,7 +129,7 @@ const AllProvidersHeader: React.FC<AllProvidersHeaderProps> = ({
   }, [dropdownOpen]);
 
   return (
-    <header className="bg-white text-[#545454] px-4 py-4 border-b border-gray-300 relative z-10" role="banner" aria-label="All Providers Header" data-testid="all-providers-header">
+    <header ref={ref} className="bg-white text-[#545454] px-4 py-4 border-b border-gray-300 relative z-10" role="banner" aria-label="All Providers Header" data-testid="all-providers-header">
       <div className="flex items-center justify-between">
         {/* Left: Icon and Title or Provider Info */}
         <div className="flex items-center gap-2 min-w-0">
@@ -270,6 +270,6 @@ const AllProvidersHeader: React.FC<AllProvidersHeaderProps> = ({
       </div>
     </header>
   );
-};
+});
 
 export default AllProvidersHeader; 

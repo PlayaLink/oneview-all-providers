@@ -226,7 +226,8 @@ const DataGrid: React.FC<DataGridProps> = ({
       <div
         className="ag-theme-alpine ag-grid-custom"
         style={{ 
-          width: '100%'
+          width: '100%',
+          ...(height ? { height: computedHeight } : {})
         } as React.CSSProperties}
         role="grid"
         aria-label={`${title} data table`}
@@ -248,7 +249,7 @@ const DataGrid: React.FC<DataGridProps> = ({
           rowHeight={42}
           suppressRowClickSelection={true}
           suppressCellFocus={true}
-          domLayout="autoHeight"
+          {...(!height ? { domLayout: "autoHeight" } : {})}
           getRowStyle={getRowStyle}
           getRowClass={getRowClass}
           defaultColDef={{
