@@ -7,6 +7,8 @@ import {
 import { cn } from "@/lib/utils";
 import { getIconByName } from "@/lib/iconMapping";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
+import SectionsDropdown from "@/components/SectionsDropdown";
+import { useSectionFilterStore } from "@/lib/useVisibleSectionsStore";
 
 interface SideNavProps {
   collapsed: boolean;
@@ -43,6 +45,9 @@ const SideNav: React.FC<SideNavProps> = ({
 
   const { value: isLeftNav, isLoading: navLoading } = useFeatureFlag("left_nav");
 
+  // Use sectionFilters from Zustand store
+  const sectionFilters = useSectionFilterStore((s) => s.sectionFilters);
+
   const toggleSection = (sectionKey: string) => {
     setExpandedSections((prev) => ({
       ...prev,
@@ -67,44 +72,56 @@ const SideNav: React.FC<SideNavProps> = ({
         {!collapsed && (
           <>
             {/* All Sections Header */}
-            <button
-              className={cn(
-                "flex items-center justify-between p-2 rounded cursor-pointer w-full text-left bg-transparent border-none",
-                isItemActive("all-sections")
-                  ? "bg-[#008BC9] text-white"
-                  : "hover:bg-gray-50",
-              )}
-              onClick={() => handleItemClick("all-sections")}
-              aria-label="View all sections"
-              aria-pressed={isItemActive("all-sections")}
-              data-testid="all-sections-button"
-            >
-              <span
-                className={cn(
-                  "font-bold text-sm tracking-wide",
-                  isItemActive("all-sections")
-                    ? "text-white"
-                    : "text-[#545454]",
-                )}
-                role="all-sections-button-text"
-              >
-                {navLoading || isLeftNav ? 'All Records' : 'All Sections'}
-              </span>
-              <FontAwesomeIcon
-              data-test="left-nav-options"
-                icon={faEllipsis}
-                className={cn(
-                  "w-4 h-4",
-                  isItemActive("all-sections")
-                    ? "text-white"
-                    : "text-[#545454]",
-                )}
+            <div style={{ position: 'relative', width: '100%' }}>
+              <SectionsDropdown
+                trigger={
+                  <button
+                    className={cn(
+                      "flex items-center justify-between p-2 rounded cursor-pointer w-full text-left bg-transparent border-none",
+                      isItemActive("all-sections")
+                        ? "bg-[#008BC9] text-white"
+                        : "hover:bg-gray-50",
+                    )}
+                    onClick={() => handleItemClick("all-sections")}
+                    aria-label="View all sections"
+                    aria-pressed={isItemActive("all-sections")}
+                    data-testid="all-sections-button"
+                  >
+                    <span
+                      className={cn(
+                        "font-bold text-sm tracking-wide",
+                        isItemActive("all-sections")
+                          ? "text-white"
+                          : "text-[#545454]",
+                      )}
+                      role="all-sections-button-text"
+                    >
+                      {navLoading || isLeftNav ? 'All Records' : 'All Sections'}
+                    </span>
+                    <FontAwesomeIcon
+                      data-test="left-nav-sections-dropdown-trigger"
+                      icon={faEllipsis}
+                      className={cn(
+                        "w-4 h-4",
+                        isItemActive("all-sections")
+                          ? "text-white"
+                          : "text-[#545454]",
+                      )}
+                    />
+                  </button>
+                }
               />
-            </button>
+            </div>
 
             {/* Dynamic Sections based on gridDefinitions */}
+            {/* Only show groups and grids matching the current filter (if any) */}
             {groups.map((group) => {
-              const gridsInGroup = getGridsByGroup(group);
+              // Only show group if at least one grid in group matches filter (or no filter)
+              let gridsInGroup = getGridsByGroup(group);
+              if (sectionFilters && sectionFilters.size > 0) {
+                gridsInGroup = gridsInGroup.filter((g: any) => sectionFilters.has(g.table_name || g.key));
+                if (gridsInGroup.length === 0) return null;
+              }
               return (
                 <div key={group} className="flex flex-col">
                   <div
