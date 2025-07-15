@@ -305,13 +305,20 @@ const AllRecords: React.FC = () => {
   const getGridsToShow = () => {
     let gridsToShow: any[] = [];
 
-    if (selectedItem && selectedItem !== "all-sections") {
+    if (selectedItem === "all-sections") {
+      // Show all visible grids (filtered by sectionFilters if any)
+      if (!sectionFilters || sectionFilters.size === 0) {
+        gridsToShow = gridDefs;
+      } else {
+        gridsToShow = gridDefs.filter((g: any) => sectionFilters.has(g.table_name || g.key));
+      }
+    } else if (selectedItem) {
       gridsToShow = gridDefs.filter((g: any) => g.table_name === selectedItem || g.key === selectedItem);
     } else if (selectedSection) {
       // Inline getGridsByGroup logic
       gridsToShow = gridDefs.filter((g: any) => g.group === selectedSection);
     } else {
-      // Filter by sectionFilters: if empty, show all; if not, show only filtered
+      // Fallback: show all visible grids
       if (!sectionFilters || sectionFilters.size === 0) {
         gridsToShow = gridDefs;
       } else {
