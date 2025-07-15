@@ -23,6 +23,7 @@ import GridDataFetcher from "./GridDataFetcher";
 import { getIconByName } from "@/lib/iconMapping";
 import { useVisibleSectionsStore } from "@/lib/useVisibleSectionsStore";
 import SidePanel from "@/components/SidePanel";
+import { getTemplateConfigByGrid } from "@/lib/templateConfigs";
 
 const fetchProviders = async () => {
   const { data, error } = await supabase.from('providers').select('*');
@@ -118,17 +119,17 @@ function GridsSection({
             <div>
               {gridsToShow.map((grid: any, idx: number) => (
                 <div
-                  key={grid.key || grid.table_name || idx}
+                  key={grid.key}
                   ref={el => (gridRefs.current[idx] = el)}
                   style={{ marginBottom: 16 }}
-                  data-testid={`grid-container-${grid.key || grid.table_name}`}
+                  data-testid={`grid-container-${grid.key}`}
                 >
                   <GridDataFetcher
-                    gridKey={grid.key || grid.table_name}
+                    gridKey={grid.key}
                     titleOverride={grid.display_name}
                     iconOverride={getIconByName(grid.icon)}
                     height={gridHeight}
-                    onRowClicked={(row: any) => handleRowSelect(row, grid.key || grid.table_name)}
+                    onRowClicked={(row: any) => handleRowSelect(row, grid.key)}
                   />
                 </div>
               ))}
@@ -332,13 +333,29 @@ const AllRecords: React.FC = () => {
     }
   }, [gridDefs, setVisibleSections]);
 
+  // Remove normalizeGridName and use selectedRow?.gridName directly
+  const templateConfig = selectedRow?.gridName
+    ? getTemplateConfigByGrid(selectedRow.gridName)
+    : null;
+
+  const inputConfig = templateConfig
+    ? templateConfig.fieldGroups.flatMap(group =>
+        group.fields.map(field => ({
+          ...field,
+          group: group.title, // Add group title for collapsible sections if needed
+        }))
+      )
+    : [];
+
+  // Remove all debug console.log statements
+
   return (
     <>
       {/* Render SidePanel overlay if a row is selected */}
       <SidePanel
         isOpen={!!selectedRow}
         selectedRow={selectedRow}
-        inputConfig={[]}
+        inputConfig={inputConfig}
         onClose={handleCloseSidePanel}
         user={user}
       />

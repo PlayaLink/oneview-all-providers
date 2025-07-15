@@ -52,9 +52,9 @@ export const birthInfoTemplate = {
     return `${gridName} for ${name} ${title}`.trim();
   },
   tabs: [
-    'details', // local tab, metadata defined here if needed
-    'notes',   // shared tab, metadata from tabsRegistry
-    'documents', // shared tab, metadata from tabsRegistry
+    { id: 'details', label: 'Details', icon: 'bars-staggered', enabled: true },
+    { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true },
+    { id: 'documents', label: 'Documents', icon: 'folder', enabled: true },
   ],
   fieldGroups: [birthInfoFieldGroup],
   DetailsComponent: BirthInfoDetails,

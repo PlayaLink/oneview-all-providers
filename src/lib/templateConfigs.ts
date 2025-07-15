@@ -34,11 +34,11 @@ export interface FieldGroup {
 
 // Mapping from grid table names to template IDs
 export const gridToTemplateMap: Record<string, string> = {
-  "Provider_Info": "provider_info",
-  "State_Licenses": "state_licenses",
-  "Birth_Info": "birth_info",
-  "Addresses": "addresses",
-  "Facility_Affiliations": "facility_affiliations"
+  "provider_info": "provider_info",
+  "state_licenses": "state_licenses",
+  "birth_info": "birth_info",
+  "addresses": "addresses",
+  "facility_affiliations": "facility_affiliations"
 };
 
 export const addressTemplate: TemplateConfig = {
@@ -52,7 +52,7 @@ export const addressTemplate: TemplateConfig = {
   ],
   fieldGroups: [
     {
-      id: 'address-info',
+      id: 'address_info',
       title: 'Address Information',
       fields: [
         { key: 'type', label: 'Type', type: 'text' },
@@ -84,21 +84,13 @@ export const facilityAffiliationsTemplate: TemplateConfig = {
 };
 
 // Main function to get the template config for a grid
-export function getTemplateConfigByGrid(gridName: string): TemplateConfig | null {
-  if (gridName === "State_Licenses") {
-    return stateLicenseTemplate;
+export function getTemplateConfigByGrid(gridKey: string): TemplateConfig | null {
+  switch (gridKey) {
+    case "provider_info": return providerInfoTemplate;
+    case "state_licenses": return stateLicenseTemplate;
+    case "birth_info": return birthInfoTemplate;
+    case "addresses": return addressTemplate;
+    case "facility_affiliations": return facilityAffiliationsTemplate;
+    default: return null;
   }
-  if (gridName === "Birth_Info") {
-    return birthInfoTemplate;
-  }
-  if (gridName === "Provider_Info") {
-    return providerInfoTemplate;
-  }
-  if (gridName === "Addresses") {
-    return addressTemplate;
-  }
-  if (gridName === "Facility_Affiliations") {
-    return facilityAffiliationsTemplate;
-  }
-  return null;
 } 
