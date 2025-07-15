@@ -1,7 +1,7 @@
 import React from "react";
 import SectionsDropdown from "./SectionsDropdown";
 import NavItem from "@/components/NavItem";
-import { useVisibleSectionsStore } from "@/lib/useVisibleSectionsStore";
+import { useSectionFilterStore } from "@/lib/useVisibleSectionsStore";
 import { useGridConfig } from "@/lib/useGridConfig";
 
 interface GridSection {
@@ -24,15 +24,22 @@ const HorizontalNav: React.FC<HorizontalNavProps> = ({
   selectedSection,
   onSectionSelect,
 }) => {
-  // Use global Zustand store for visibleSections
-  const visibleSections = useVisibleSectionsStore((s) => s.visibleSections);
+  // Use global Zustand store for sectionFilters
+  const sectionFilters = useSectionFilterStore((s) => s.sectionFilters);
   const { groupKeyToGrids } = useGridConfig();
 
-  // Only show tabs for groups with at least one visible grid
-  const visibleSectionList = gridSections.filter(section => {
-    const grids = groupKeyToGrids[section.key] || [];
-    return grids.some(grid => visibleSections.has(grid.table_name || grid.key));
-  });
+  // Only show tabs for groups with at least one grid matching the filter
+  const visibleSectionList = React.useMemo(() => {
+    if (!sectionFilters || sectionFilters.size === 0) {
+      // No filters: show all sections
+      return gridSections;
+    }
+    // Only show sections with at least one grid in the filter set
+    return gridSections.filter(section => {
+      const grids = groupKeyToGrids[section.key] || [];
+      return grids.some(grid => sectionFilters.has(grid.table_name || grid.key));
+    });
+  }, [sectionFilters, gridSections, groupKeyToGrids]);
 
   return (
     <nav className="bg-white border-b border-gray-300" role="navigation" aria-label="Section navigation" data-testid="horizontal-nav">

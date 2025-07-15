@@ -21,7 +21,7 @@ import { useUser } from '@/contexts/UserContext';
 import { useFeatureFlag } from '@/contexts/FeatureFlagContext';
 import GridDataFetcher from "./GridDataFetcher";
 import { getIconByName } from "@/lib/iconMapping";
-import { useVisibleSectionsStore } from "@/lib/useVisibleSectionsStore";
+import { useSectionFilterStore } from "@/lib/useVisibleSectionsStore";
 import SidePanel from "@/components/SidePanel";
 import { getTemplateConfigByGrid } from "@/lib/templateConfigs";
 
@@ -298,6 +298,9 @@ const AllRecords: React.FC = () => {
     setSelectedRow(null);
   };
 
+  // Use sectionFilters for filtering
+  const sectionFilters = useSectionFilterStore((s) => s.sectionFilters);
+
   // Helper to determine which grids to show in all-records view (backend-driven)
   const getGridsToShow = () => {
     let gridsToShow: any[] = [];
@@ -308,8 +311,12 @@ const AllRecords: React.FC = () => {
       // Inline getGridsByGroup logic
       gridsToShow = gridDefs.filter((g: any) => g.group === selectedSection);
     } else {
-      // Remove visibleSections.size === 0 check
-      gridsToShow = gridDefs;
+      // Filter by sectionFilters: if empty, show all; if not, show only filtered
+      if (!sectionFilters || sectionFilters.size === 0) {
+        gridsToShow = gridDefs;
+      } else {
+        gridsToShow = gridDefs.filter((g: any) => sectionFilters.has(g.table_name || g.key));
+      }
     }
 
     // Sort grids by their order property
@@ -321,17 +328,6 @@ const AllRecords: React.FC = () => {
   };
 
   const gridsToShow = getGridsToShow();
-
-  // Remove visibleSections and setVisibleSections from component state
-  // const visibleSections = useVisibleSectionsStore((s) => s.visibleSections);
-  // const setVisibleSections = useVisibleSectionsStore((s) => s.setVisibleSections);
-  const setVisibleSections = useVisibleSectionsStore((s) => s.setVisibleSections);
-
-  useEffect(() => {
-    if (gridDefs.length > 0) {
-      setVisibleSections(new Set(gridDefs.map((g) => g.table_name || g.key)));
-    }
-  }, [gridDefs, setVisibleSections]);
 
   // Remove normalizeGridName and use selectedRow?.gridName directly
   const templateConfig = selectedRow?.gridName

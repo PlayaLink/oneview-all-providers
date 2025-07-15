@@ -1,45 +1,49 @@
 import { create } from 'zustand';
 
-interface VisibleSectionsState {
-  visibleSections: Set<string>;
-  setVisibleSections: (sections: Set<string>) => void;
-  addVisibleSection: (section: string) => void;
-  removeVisibleSection: (section: string) => void;
-  clearVisibleSections: () => void;
-  toggleVisibleSection: (section: string) => void;
+interface SectionFilterState {
+  /**
+   * If sectionFilters is empty, show all grids (no filters applied).
+   * If non-empty, only show grids whose section/table_name is in the set.
+   */
+  sectionFilters: Set<string>;
+  setSectionFilters: (sections: Set<string>) => void;
+  addSectionFilter: (section: string) => void;
+  removeSectionFilter: (section: string) => void;
+  clearSectionFilters: () => void;
+  toggleSectionFilter: (section: string) => void;
 }
 
-export const useVisibleSectionsStore = create<VisibleSectionsState>((set, get) => ({
-  visibleSections: new Set<string>(),
-  setVisibleSections: (sections) => {
+export const useSectionFilterStore = create<SectionFilterState>((set, get) => ({
+  sectionFilters: new Set<string>(),
+  setSectionFilters: (sections) => {
     const newSet = new Set(sections);
-    console.log('[visibleSections] setVisibleSections:', [...newSet]);
-    set({ visibleSections: newSet });
+    console.log('[sectionFilters] setSectionFilters:', [...newSet]);
+    set({ sectionFilters: newSet });
   },
-  addVisibleSection: (section) => set((state) => {
-    const updated = new Set(state.visibleSections);
+  addSectionFilter: (section) => set((state) => {
+    const updated = new Set(state.sectionFilters);
     updated.add(section);
-    console.log('[visibleSections] addVisibleSection:', [...updated]);
-    return { visibleSections: updated };
+    console.log('[sectionFilters] addSectionFilter:', [...updated]);
+    return { sectionFilters: updated };
   }),
-  removeVisibleSection: (section) => set((state) => {
-    const updated = new Set(state.visibleSections);
+  removeSectionFilter: (section) => set((state) => {
+    const updated = new Set(state.sectionFilters);
     updated.delete(section);
-    console.log('[visibleSections] removeVisibleSection:', [...updated]);
-    return { visibleSections: updated };
+    console.log('[sectionFilters] removeSectionFilter:', [...updated]);
+    return { sectionFilters: updated };
   }),
-  clearVisibleSections: () => {
-    console.log('[visibleSections] clearVisibleSections: []');
-    set({ visibleSections: new Set() });
+  clearSectionFilters: () => {
+    console.log('[sectionFilters] clearSectionFilters: []');
+    set({ sectionFilters: new Set() });
   },
-  toggleVisibleSection: (section) => set((state) => {
-    const updated = new Set(state.visibleSections);
+  toggleSectionFilter: (section) => set((state) => {
+    const updated = new Set(state.sectionFilters);
     if (updated.has(section)) {
       updated.delete(section);
     } else {
       updated.add(section);
     }
-    console.log('[visibleSections] toggleVisibleSection:', [...updated]);
-    return { visibleSections: updated };
+    console.log('[sectionFilters] toggleSectionFilter:', [...updated]);
+    return { sectionFilters: updated };
   }),
 })); 

@@ -2,7 +2,7 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { createPopper, Instance } from "@popperjs/core";
 import { useGridConfig } from "@/lib/useGridConfig";
-import { useVisibleSectionsStore } from "@/lib/useVisibleSectionsStore";
+import { useSectionFilterStore } from "@/lib/useVisibleSectionsStore";
 
 interface SectionsDropdownProps {
   trigger: React.ReactElement;
@@ -15,13 +15,13 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger }) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const popperInstance = useRef<Instance | null>(null);
 
-  // Zustand global state
-  const visibleSections = useVisibleSectionsStore((s) => s.visibleSections);
-  const setVisibleSections = useVisibleSectionsStore((s) => s.setVisibleSections);
-  const addVisibleSection = useVisibleSectionsStore((s) => s.addVisibleSection);
-  const removeVisibleSection = useVisibleSectionsStore((s) => s.removeVisibleSection);
-  const clearVisibleSections = useVisibleSectionsStore((s) => s.clearVisibleSections);
-  const toggleVisibleSection = useVisibleSectionsStore((s) => s.toggleVisibleSection);
+  // Zustand global state (filter semantics)
+  const sectionFilters = useSectionFilterStore((s) => s.sectionFilters);
+  const setSectionFilters = useSectionFilterStore((s) => s.setSectionFilters);
+  const addSectionFilter = useSectionFilterStore((s) => s.addSectionFilter);
+  const removeSectionFilter = useSectionFilterStore((s) => s.removeSectionFilter);
+  const clearSectionFilters = useSectionFilterStore((s) => s.clearSectionFilters);
+  const toggleSectionFilter = useSectionFilterStore((s) => s.toggleSectionFilter);
 
   // Grid/section config
   const {
@@ -60,25 +60,26 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger }) => {
   };
 
   // Group checkbox state: checked if all children are checked, indeterminate if some
+  // In filter mode: checked if all grids in group are in filter set, indeterminate if some
   const isGroupChecked = (group: string) => {
     const grids = (groupKeyToGrids[group] || []).filter((g: any) => !disabledGrids.has(g.table_name || g.tableName));
-    return grids.length > 0 && grids.every(grid => visibleSections.has(grid.table_name || grid.tableName));
+    return grids.length > 0 && grids.every(grid => sectionFilters.has(grid.table_name || grid.tableName));
   };
   const isGroupIndeterminate = (group: string) => {
     const grids = (groupKeyToGrids[group] || []).filter((g: any) => !disabledGrids.has(g.table_name || g.tableName));
-    return grids.some(grid => visibleSections.has(grid.table_name || grid.tableName)) && !isGroupChecked(group);
+    return grids.some(grid => sectionFilters.has(grid.table_name || grid.tableName)) && !isGroupChecked(group);
   };
 
   // Group toggle: toggles all children
   const handleGroupToggle = (group: string) => {
     const grids = (groupKeyToGrids[group] || []).filter((g: any) => !disabledGrids.has(g.table_name || g.tableName));
-    const allChecked = grids.every(grid => visibleSections.has(grid.table_name || grid.tableName));
+    const allChecked = grids.every(grid => sectionFilters.has(grid.table_name || grid.tableName));
     grids.forEach(grid => {
       const key = grid.table_name || grid.tableName;
       if (allChecked) {
-        removeVisibleSection(key);
+        removeSectionFilter(key);
       } else {
-        addVisibleSection(key);
+        addSectionFilter(key);
       }
     });
   };
@@ -87,12 +88,12 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger }) => {
   const handleGridToggle = (grid: any) => {
     const key = grid.table_name || grid.tableName;
     if (disabledGrids.has(key)) return;
-    toggleVisibleSection(key);
+    toggleSectionFilter(key);
   };
 
   // Clear all
   const handleClear = () => {
-    clearVisibleSections();
+    clearSectionFilters();
   };
 
   // Show in 3 columns
@@ -104,8 +105,8 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger }) => {
 
   // Compute checked grids for pills
   const checkedGrids = useMemo(() => {
-    return gridDefs.filter(grid => visibleSections.has(grid.table_name || grid.tableName));
-  }, [visibleSections, gridDefs]);
+    return gridDefs.filter(grid => sectionFilters.has(grid.table_name || grid.tableName));
+  }, [sectionFilters, gridDefs]);
 
   // Popper.js positioning
   useEffect(() => {
@@ -179,7 +180,7 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger }) => {
                 type="button"
                 className="ml-2 text-white hover:text-gray-200 focus:outline-none"
                 style={{ fontWeight: 'bold', fontSize: '1rem', lineHeight: '1' }}
-                onClick={() => removeVisibleSection(grid.table_name || grid.tableName)}
+                onClick={() => removeSectionFilter(grid.table_name || grid.tableName)}
                 aria-label={`Remove ${grid.display_name || grid.table_name || grid.tableName}`}
                 data-testid={`remove-section-${(grid.table_name || grid.tableName).toLowerCase().replace(/_/g, '-')}`}
                 role="button"
@@ -216,7 +217,7 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger }) => {
         {groupColumns.map((groups, colIdx) => (
           <div key={colIdx} className="flex-1 min-w-0" role="listitem" data-testid={`sections-group-col-${colIdx}`}> 
             {groups.map(group => (
-              <div key={group} className="mb-4" role="group" aria-label={groupKeyToSection[group]?.name || group} data-testid={`sections-group-${group}`}>
+              <div key={group} className="mb-4" role="group" aria-label={groupKeyToSection[group]?.name || group} data-testid={`sections-group-${group}`}> 
                 {/* Group Checkbox */}
                 <label className="flex items-center font-semibold text-gray-800 mb-1 cursor-pointer" role="checkbox" aria-checked={isGroupChecked(group)} data-testid={`sections-group-checkbox-${group}`}>
                   <input
@@ -239,13 +240,13 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger }) => {
                       key={grid.table_name || grid.tableName}
                       className={`flex items-center text-gray-700 font-medium cursor-pointer ${disabledGrids.has(grid.table_name || grid.tableName) ? "text-gray-300 cursor-not-allowed" : ""}`}
                       role="checkbox"
-                      aria-checked={visibleSections.has(grid.table_name || grid.tableName)}
+                      aria-checked={sectionFilters.has(grid.table_name || grid.tableName)}
                       data-testid={`grid-checkbox-label-${grid.table_name || grid.tableName}`}
                     >
                       <input
                         type="checkbox"
                         className="mr-2 accent-blue-600 h-4 w-4"
-                        checked={visibleSections.has(grid.table_name || grid.tableName)}
+                        checked={sectionFilters.has(grid.table_name || grid.tableName)}
                         disabled={disabledGrids.has(grid.table_name || grid.tableName)}
                         onChange={() => handleGridToggle(grid)}
                         aria-label={`Toggle ${grid.display_name || grid.table_name || grid.tableName} section`}
