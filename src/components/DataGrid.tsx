@@ -29,18 +29,22 @@ interface DataGridProps {
   selectedRowId?: string | null;
 }
 
-const DataGrid: React.FC<DataGridProps> = ({
-  title,
-  icon,
-  data,
-  columns,
-  onSelectionChanged,
-  onRowClicked,
-  height, // removed = "400px"
-  showCheckboxes = true,
-  showStatusBadges = true,
-  selectedRowId: controlledSelectedRowId,
-}) => {
+const DataGrid: React.FC<DataGridProps> = (props) => {
+  // Log all props for debugging
+  console.log('[DEBUG] DataGrid props:', props);
+
+  const {
+    title,
+    icon,
+    data,
+    columns,
+    onSelectionChanged,
+    onRowClicked,
+    height, // removed = "400px"
+    showCheckboxes = true,
+    showStatusBadges = true,
+    selectedRowId: controlledSelectedRowId,
+  } = props;
 
   const [internalSelectedRowId, setInternalSelectedRowId] = React.useState<string | null>(null);
   const selectedRowId = controlledSelectedRowId !== undefined ? controlledSelectedRowId : internalSelectedRowId;
