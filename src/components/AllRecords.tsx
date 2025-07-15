@@ -22,6 +22,7 @@ import { useFeatureFlag } from '@/contexts/FeatureFlagContext';
 import GridDataFetcher from "./GridDataFetcher";
 import { getIconByName } from "@/lib/iconMapping";
 import { useVisibleSectionsStore } from "@/lib/useVisibleSectionsStore";
+import SidePanel from "@/components/SidePanel";
 
 const fetchProviders = async () => {
   const { data, error } = await supabase.from('providers').select('*');
@@ -127,6 +128,7 @@ function GridsSection({
                     titleOverride={grid.display_name}
                     iconOverride={getIconByName(grid.icon)}
                     height={gridHeight}
+                    onRowClicked={(row: any) => handleRowSelect(row, grid.key || grid.table_name)}
                   />
                 </div>
               ))}
@@ -282,6 +284,8 @@ const AllRecords: React.FC = () => {
   };
 
   const handleRowSelect = (row: any | null, gridName?: string) => {
+    // Debug: Log handleRowSelect call
+    console.log('[AllRecords] handleRowSelect called:', { row, gridName });
     if (row && gridName) {
       setSelectedRow({ ...row, gridName });
     } else {
@@ -330,6 +334,14 @@ const AllRecords: React.FC = () => {
 
   return (
     <>
+      {/* Render SidePanel overlay if a row is selected */}
+      <SidePanel
+        isOpen={!!selectedRow}
+        selectedRow={selectedRow}
+        inputConfig={[]}
+        onClose={handleCloseSidePanel}
+        user={user}
+      />
       {/* Global Navigation (add ref) */}
       <div ref={globalNavRef} id="global-navigation-ref" />
       {/* All Providers Header (add ref) */}
