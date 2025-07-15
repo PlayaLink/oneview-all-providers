@@ -36,7 +36,7 @@ const DataGrid: React.FC<DataGridProps> = ({
   columns,
   onSelectionChanged,
   onRowClicked,
-  height = "400px",
+  height, // removed = "400px"
   showCheckboxes = true,
   showStatusBadges = true,
   selectedRowId: controlledSelectedRowId,
@@ -185,7 +185,7 @@ const DataGrid: React.FC<DataGridProps> = ({
   const computedHeight = typeof height === 'number' ? `${height}px` : height;
 
   return (
-    <section className="bg-white flex flex-col flex-1 min-h-0" role="region" aria-label={`${title} data grid`} data-testid="data-grid">
+    <section className="bg-white" role="region" aria-label={`${title} data grid`} data-testid="data-grid">
       {/* Grid Header */}
       <header className="flex items-center justify-between pl-1 pr-3 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 rounded-t overflow-hidden" role="grid-header" aria-label="Grid header" data-testid="grid-header">
         <div className="flex items-center gap-2 pl-4">
@@ -225,12 +225,17 @@ const DataGrid: React.FC<DataGridProps> = ({
       {/* AG Grid Container */}
       <div
         className="ag-theme-alpine ag-grid-custom"
-        style={{ height: computedHeight, width: '100%', border: "none", borderWidth: "0px" } as React.CSSProperties}
+        style={{ 
+          width: '100%'
+        } as React.CSSProperties}
         role="grid"
         aria-label={`${title} data table`}
         aria-rowcount={data.length}
         aria-colcount={columnDefs.length}
         data-testid="ag-grid-container"
+        data-debug-height={computedHeight}
+        data-debug-rowcount={data.length}
+        data-debug-colcount={columnDefs.length}
       >
         <AgGridReact
           rowData={data}
@@ -243,7 +248,7 @@ const DataGrid: React.FC<DataGridProps> = ({
           rowHeight={42}
           suppressRowClickSelection={true}
           suppressCellFocus={true}
-          domLayout="normal"
+          domLayout="autoHeight"
           getRowStyle={getRowStyle}
           getRowClass={getRowClass}
           defaultColDef={{
