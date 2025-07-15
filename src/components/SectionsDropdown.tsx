@@ -1,14 +1,15 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { createPopper, Instance } from "@popperjs/core";
+import { createPopper, Instance, Placement } from "@popperjs/core";
 import { useGridConfig } from "@/lib/useGridConfig";
 import { useSectionFilterStore } from "@/lib/useVisibleSectionsStore";
 
 interface SectionsDropdownProps {
   trigger: React.ReactElement;
+  placement?: Placement;
 }
 
-const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger }) => {
+const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger, placement = "bottom-start" }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const buttonRef = useRef<HTMLButtonElement | null>(null);
@@ -120,7 +121,7 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger }) => {
   useEffect(() => {
     if (isOpen && buttonRef.current && menuRef.current) {
       popperInstance.current = createPopper(buttonRef.current, menuRef.current, {
-        placement: "bottom-start",
+        placement,
         modifiers: [
           { name: "offset", options: { offset: [0, 4] } },
           { name: "preventOverflow", options: { padding: 8 } },
@@ -133,7 +134,7 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger }) => {
         popperInstance.current = null;
       }
     };
-  }, [isOpen]);
+  }, [isOpen, placement]);
 
   // Click-away listener
   useEffect(() => {

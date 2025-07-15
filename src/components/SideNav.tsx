@@ -74,6 +74,7 @@ const SideNav: React.FC<SideNavProps> = ({
             {/* All Sections Header */}
             <div style={{ position: 'relative', width: '100%' }}>
               <SectionsDropdown
+                placement="right-start"
                 trigger={
                   <button
                     className={cn(
