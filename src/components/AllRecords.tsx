@@ -50,6 +50,9 @@ function GridsSection({
   const scrollContainerRef = React.useRef<HTMLDivElement | null>(null);
   const [currentGridIndex, setCurrentGridIndex] = React.useState(0);
 
+  // Debug: Log gridsToShow
+  console.log('[DEBUG] GridsSection gridsToShow:', gridsToShow.map(g => g.key || g.table_name));
+
   // Scroll to a specific grid by index
   const scrollToGrid = (idx: number) => {
     const gridEl = gridRefs.current[idx];
@@ -95,7 +98,7 @@ function GridsSection({
   return (
     <section className="flex-1 min-h-0 flex flex-row" role="region" aria-label="Grids list" data-testid="grids-list">
       {/* Grids List and Scroll Arrows Side by Side */}
-      <div className="flex-1 min-h-0 flex flex-row">
+      <div className="flex-1 min-h-0 flex flex-row pl-4 pt-4">
         {/* Grids List */}
         <div className="flex-1 min-h-0 overflow-y-auto" data-testid="grids-scroll-container" ref={scrollContainerRef} onScroll={handleScroll}>
           {gridsLoading ? (
@@ -116,7 +119,7 @@ function GridsSection({
                 <div
                   key={grid.key || grid.table_name || idx}
                   ref={el => (gridRefs.current[idx] = el)}
-                  style={{ marginBottom: idx < gridsToShow.length - 1 ? 0 : 16 }}
+                  style={{ marginBottom: 16 }}
                   data-testid={`grid-container-${grid.key || grid.table_name}`}
                 >
                   <GridDataFetcher
@@ -132,7 +135,7 @@ function GridsSection({
         </div>
         {/* Scroll Arrows Group - Vertically Stacked, Right of Grids List */}
         {gridsToShow.length > 1 && (
-          <div className="flex flex-col items-center justify-center gap-2 pr-2 pl-0 py-4 sticky top-0 self-start" style={{ minWidth: 40 }} role="group" aria-label="Scroll controls" data-testid="grids-scroll-arrows">
+          <div className="flex flex-col items-center justify-center gap-2 pl-0 sticky top-0 self-start" style={{ minWidth: 40 }} role="group" aria-label="Scroll controls" data-testid="grids-scroll-arrows">
             <button
               onClick={handleScrollUp}
               disabled={currentGridIndex === 0}
@@ -350,22 +353,7 @@ const AllRecords: React.FC = () => {
         />
       </div>
       {/* Main Content */}
-      {provider_id ? (
-        <div>
-          <div className="flex-1 flex flex-col min-h-0 w-full px-4 pt-4 pb-8">
-            <MainContent
-              singleProviderNpi={provider_id}
-              // Remove visibleSections prop
-              // visibleSections={visibleSections}
-              selectedRow={selectedRow}
-              onRowSelect={handleRowSelect}
-              onCloseSidePanel={handleCloseSidePanel}
-              providerInfoData={providerInfoData}
-              user={user}
-            />
-          </div>
-        </div>
-      ) : navLoading || isLeftNav ? (
+      {navLoading || isLeftNav ? (
         <div className="flex-1 min-h-0 h-full flex flex-row">
             <aside
               className={cn(
