@@ -43,6 +43,7 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger }) => {
     if (!search.trim()) return sortedGroupKeys;
     return sortedGroupKeys.filter(group => {
       const groupGrids = groupKeyToGrids[group] || [];
+      console.log('[SectionsDropdown] groupGrids for group', group, groupGrids);
       return (
         groupKeyToSection[group]?.name?.toLowerCase().includes(search.toLowerCase()) ||
         group.toLowerCase().includes(search.toLowerCase()) ||
@@ -52,11 +53,18 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger }) => {
   }, [search, sortedGroupKeys, groupKeyToSection, groupKeyToGrids]);
 
   const filteredGridsByGroup = (group: string) => {
-    const groupGrids = groupKeyToGrids[group] || [];
-    if (!search.trim()) return groupGrids;
-    return groupGrids.filter(grid =>
+    let groupGrids = groupKeyToGrids[group] || [];
+    console.log('[SectionsDropdown] filteredGridsByGroup for group', group, groupGrids);
+    if (!search.trim()) {
+      // Sort by order property if present
+      groupGrids = [...groupGrids].sort((a, b) => (a.order || 0) - (b.order || 0));
+      return groupGrids;
+    }
+    const filtered = groupGrids.filter(grid =>
       (grid.table_name || grid.tableName || "").replace(/_/g, " ").toLowerCase().includes(search.toLowerCase())
     );
+    // Sort filtered by order property
+    return filtered.sort((a, b) => (a.order || 0) - (b.order || 0));
   };
 
   // Group checkbox state: checked if all children are checked, indeterminate if some
