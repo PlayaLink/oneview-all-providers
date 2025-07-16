@@ -10,6 +10,7 @@ import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import SectionsDropdown from "@/components/SectionsDropdown";
 import { useSectionFilterStore } from "@/lib/useVisibleSectionsStore";
 import NavItem from "@/components/NavItem";
+import CollapsibleSideNavItem from "@/components/CollapsibleSideNavItem";
 
 interface SideNavProps {
   collapsed: boolean;
@@ -69,7 +70,7 @@ const SideNav: React.FC<SideNavProps> = (props) => {
 
   return (
     <div className="flex flex-col h-full min-h-0" role="navigation" aria-label="Sidebar Navigation" data-testid="side-nav">
-      <div className="flex-1 min-h-0 px-2 pt-4 flex flex-col gap-2 overflow-y-scroll max-h-screen pb-20">
+      <div className="flex-1 min-h-0 px-2 pt-4 flex flex-col gap-4 overflow-y-scroll max-h-screen pb-20">
         {!collapsed && (
           <>
             {/* All Sections Header */}
@@ -118,27 +119,21 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                 if (gridsInGroup.length === 0) return null;
               }
               return (
-                <div key={section.key} className="flex flex-col">
-                  <NavItem
+                <div key={section.key} className="flex flex-col gap-1">
+                  <CollapsibleSideNavItem
                     active={isSectionActive(section.key)}
+                    expanded={!!expandedSections[section.key]}
                     onClick={() => handleSectionClick(section.key)}
+                    onToggle={() => toggleSection(section.key)}
                     aria-label={`Select ${section.name} section`}
                     aria-pressed={isSectionActive(section.key)}
                     data-testid={`section-button-${section.key.toLowerCase().replace(/\s+/g, '-')}`}
-                    variant="main"
-                    className={cn(
-                      "w-full text-left p-2 flex items-center justify-between rounded cursor-pointer",
-                      isSectionActive(section.key)
-                        ? "font-bold bg-[#008BC9] text-white"
-                        : "font-normal hover:bg-gray-50 text-[#545454]"
-                    )}
-                    uppercase
-                    size="sm"
+                    
                   >
                     {section.name}
-                  </NavItem>
+                  </CollapsibleSideNavItem>
                   {expandedSections[section.key] && (
-                    <div className="pl-3 flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
+                    <div className="pl-3 flex flex-col gap-1 overflow-hidden transition-all duration-200">
                       {gridsInGroup.map((grid) => (
                         <NavItem
                           key={grid.key || grid.table_name}
