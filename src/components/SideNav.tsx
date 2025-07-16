@@ -11,6 +11,7 @@ import SectionsDropdown from "@/components/SectionsDropdown";
 import { useSectionFilterStore } from "@/lib/useVisibleSectionsStore";
 import NavItem from "@/components/NavItem";
 import CollapsibleSideNavItem from "@/components/CollapsibleSideNavItem";
+import { getOrderedSectionsAndGrids } from "@/lib/gridOrdering";
 
 interface SideNavProps {
   collapsed: boolean;
@@ -49,6 +50,9 @@ const SideNav: React.FC<SideNavProps> = (props) => {
 
   // Use sectionFilters from Zustand store
   const sectionFilters = useSectionFilterStore((s) => s.sectionFilters);
+
+  // Use shared utility for grouping/ordering
+  const { grouped } = React.useMemo(() => getOrderedSectionsAndGrids(gridSections, gridDefs, sectionFilters), [gridSections, gridDefs, sectionFilters]);
 
   const toggleSection = (sectionKey: string) => {
     setExpandedSections((prev) => ({
@@ -118,15 +122,8 @@ const SideNav: React.FC<SideNavProps> = (props) => {
             </NavItem>
 
             {/* Dynamic Sections based on gridDefinitions */}
-            {/* Only show groups and grids matching the current filter (if any) */}
-            {orderedSections.map((section) => {
-              // Only show group if at least one grid in group matches filter (or no filter)
-              console.log('Rendering group:', section.key);
-              let gridsInGroup = gridDefs.filter((g: any) => g.group === section.key);
-              if (sectionFilters && sectionFilters.size > 0) {
-                gridsInGroup = gridsInGroup.filter((g: any) => sectionFilters.has(g.table_name || g.key));
-                if (gridsInGroup.length === 0) return null;
-              }
+            {grouped.map(({ section, grids }) => {
+              if (!grids.length) return null;
               return (
                 <div key={section.key} className="flex flex-col gap-1">
                   <CollapsibleSideNavItem
@@ -138,13 +135,12 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                     aria-pressed={isSectionActive(section.key)}
                     data-testid={`section-button-${section.key.toLowerCase().replace(/\s+/g, '-')}`}
                     uppercase
-                    
                   >
                     {section.name}
                   </CollapsibleSideNavItem>
                   {expandedSections[section.key] && (
                     <div className="pl-3 flex flex-col gap-1 overflow-hidden transition-all duration-200">
-                      {gridsInGroup.map((grid) => (
+                      {grids.map((grid) => (
                         <NavItem
                           key={grid.key || grid.table_name}
                           active={isItemActive(grid.key || grid.table_name)}
@@ -154,7 +150,7 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                           data-testid={`grid-button-${(grid.key || grid.table_name).toLowerCase().replace(/_/g, '-')}`}
                           variant="sidenav"
                           className={cn(
-                            "w-full text-left py-2 px-4 gap-2", // Remove bold, set font-normal
+                            "w-full text-left py-2 px-4 gap-2",
                             isItemActive(grid.key || grid.table_name)
                               ? "bg-[#008BC9] text-white"
                               : "text-[#545454] hover:bg-gray-50"

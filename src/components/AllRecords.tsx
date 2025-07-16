@@ -24,6 +24,7 @@ import { getIconByName } from "@/lib/iconMapping";
 import { useSectionFilterStore } from "@/lib/useVisibleSectionsStore";
 import SidePanel from "@/components/SidePanel";
 import { getTemplateConfigByGrid } from "@/lib/templateConfigs";
+import { getOrderedSectionsAndGrids } from "@/lib/gridOrdering";
 
 const fetchProviders = async () => {
   const { data, error } = await supabase.from('providers').select('*');
@@ -97,6 +98,9 @@ function GridsSection({
     setCurrentGridIndex(closestIdx);
   };
 
+  // Helper to get only grid items for refs
+  const gridItems = gridsToShow;
+
   return (
     <section className="flex-1 min-h-0 flex flex-row" role="region" aria-label="Grids list" data-testid="grids-list">
       {/* Grids List and Scroll Arrows Side by Side */}
@@ -117,27 +121,26 @@ function GridsSection({
             </div>
           ) : (
             <div>
-              {gridsToShow.map((grid: any, idx: number) => (
+              {gridsToShow.map((item: any, idx: number) => (
                 <div
-                  key={grid.key}
+                  key={item.grid.key}
                   ref={el => (gridRefs.current[idx] = el)}
                   style={{ marginBottom: 16 }}
-                  data-testid={`grid-container-${grid.key}`}
+                  data-testid={`grid-container-${item.grid.key}`}
                 >
                   <GridDataFetcher
-                    gridKey={grid.key}
-                    titleOverride={grid.display_name}
-                    iconOverride={getIconByName(grid.icon)}
+                    gridKey={item.grid.key}
+                    titleOverride={item.grid.display_name}
+                    iconOverride={getIconByName(item.grid.icon)}
                     height={gridHeight}
-                    onRowClicked={(row: any) => handleRowSelect(row, grid.key)}
+                    onRowClicked={(row: any) => handleRowSelect(row, item.grid.key)}
                   />
                 </div>
               ))}
             </div>
           )}
         </div>
-        {/* Scroll Arrows Group - Vertically Stacked, Right of Grids List */}
-        {gridsToShow.length > 1 && (
+        {gridItems.length > 1 && (
           <div className="flex flex-col items-center justify-center gap-2 pl-0 sticky top-0 self-start" style={{ minWidth: 40 }} role="group" aria-label="Scroll controls" data-testid="grids-scroll-arrows">
             <button
               onClick={handleScrollUp}
@@ -151,7 +154,7 @@ function GridsSection({
             </button>
             <button
               onClick={handleScrollDown}
-              disabled={currentGridIndex === gridsToShow.length - 1}
+              disabled={currentGridIndex === gridItems.length - 1}
               aria-label="Scroll to next grid"
               data-testid="scroll-down-arrow"
               className="p-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
@@ -301,37 +304,31 @@ const AllRecords: React.FC = () => {
   // Use sectionFilters for filtering
   const sectionFilters = useSectionFilterStore((s) => s.sectionFilters);
 
+  // Use shared utility for grouping/ordering
+  const { grouped, flat } = React.useMemo(() => getOrderedSectionsAndGrids(gridSections, gridDefs, sectionFilters), [gridSections, gridDefs, sectionFilters]);
+
   // Helper to determine which grids to show in all-records view (backend-driven)
   const getGridsToShow = () => {
-    let gridsToShow: any[] = [];
-
     if (selectedItem === "all-sections") {
-      // Show all visible grids (filtered by sectionFilters if any)
-      if (!sectionFilters || sectionFilters.size === 0) {
-        gridsToShow = gridDefs;
-      } else {
-        gridsToShow = gridDefs.filter((g: any) => sectionFilters.has(g.table_name || g.key));
-      }
+      // Show all visible grids, grouped and ordered, flat list
+      return flat.filter(item => item.type === 'grid');
     } else if (selectedItem) {
-      gridsToShow = gridDefs.filter((g: any) => g.table_name === selectedItem || g.key === selectedItem);
+      // Single grid selected
+      const grid = gridDefs.find((g: any) => g.table_name === selectedItem || g.key === selectedItem);
+      if (!grid) return [];
+      // Find the section for this grid
+      const section = gridSections.find((s: any) => s.key === grid.group);
+      return [{ type: 'grid', grid, section }];
     } else if (selectedSection) {
-      // Inline getGridsByGroup logic
-      gridsToShow = gridDefs.filter((g: any) => g.group === selectedSection);
+      // Grids in a section
+      const group = grouped.find(g => g.section.key === selectedSection);
+      if (!group || !group.grids.length) return [];
+      // Just return grid items for this section
+      return group.grids.map(grid => ({ type: 'grid', grid, section: group.section }));
     } else {
       // Fallback: show all visible grids
-      if (!sectionFilters || sectionFilters.size === 0) {
-        gridsToShow = gridDefs;
-      } else {
-        gridsToShow = gridDefs.filter((g: any) => sectionFilters.has(g.table_name || g.key));
-      }
+      return flat.filter(item => item.type === 'grid');
     }
-
-    // Sort grids by their order property
-    return gridsToShow.sort((a, b) => {
-      const orderA = a.order || 0;
-      const orderB = b.order || 0;
-      return orderA - orderB;
-    });
   };
 
   const gridsToShow = getGridsToShow();
