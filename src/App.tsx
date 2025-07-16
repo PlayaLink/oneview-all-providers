@@ -92,13 +92,13 @@ const App = () => {
     (async () => {
       const { data } = await supabase.auth.getSession();
       if (isMounted) {
-        setUser(data.session?.user ?? null);
-        setLoading(false);
+      setUser(data.session?.user ?? null);
+      setLoading(false);
       }
     })();
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (isMounted) {
-        setUser(session?.user ?? null);
+      setUser(session?.user ?? null);
       }
     });
     return () => {
