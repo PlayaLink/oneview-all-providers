@@ -5,7 +5,7 @@ import { getIconByName } from "@/lib/iconMapping";
 
 interface NavItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   active?: boolean;
-  variant?: "main" | "horizontal";
+  variant?: "global" | "horizontal" | "sidenav";
   size?: "md" | "sm";
   children: React.ReactNode;
   className?: string;
@@ -15,9 +15,30 @@ interface NavItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   centered?: boolean; // Optional prop to center content
 }
 
+const NAVITEM_VARIANTS = {
+  global: {
+    base: "font-bold rounded transition-colors select-none px-4 py-2 text-sm w-full flex items-center gap-2",
+    active: "bg-white text-[#3BA8D1]",
+    inactive: "text-white hover:bg-[#5CB9DA]",
+    alignment: "justify-start",
+  },
+  horizontal: {
+    base: "font-bold rounded transition-colors select-none px-4 py-2 text-sm w-full flex items-center gap-2",
+    active: "bg-[#008BC9] text-white",
+    inactive: "text-[#545454] hover:bg-[#E0F2FB]",
+    alignment: "justify-center",
+  },
+  sidenav: {
+    base: "font-bold rounded transition-colors select-none px-4 py-2 text-sm w-full flex items-center gap-2",
+    active: "bg-[#008BC9] text-white",
+    inactive: "text-[#545454] hover:bg-gray-50",
+    alignment: "justify-start",
+  },
+};
+
 const NavItem: React.FC<NavItemProps> = ({
   active = false,
-  variant = "main",
+  variant = "sidenav",
   size = "md",
   children,
   className = "",
@@ -27,21 +48,14 @@ const NavItem: React.FC<NavItemProps> = ({
   centered = false, // Default to false
   ...props
 }) => {
-  let baseStyles = "font-semibold rounded transition-colors";
-  let variantStyles = "";
-  let sizeStyles = "";
-
-  if (variant === "main") {
-    variantStyles = active
-      ? "bg-white text-[#3BA8D1]"
-      : "text-white hover:bg-[#ffffff22]";
-    sizeStyles = size === "sm" ? "text-xs px-2 py-1" : "text-sm px-2 py-1";
-  } else if (variant === "horizontal") {
-    variantStyles = active
-      ? "bg-[#008BC9] text-white"
-      : "text-[#545454] hover:bg-[#E0F2FB]";
-    sizeStyles = size === "sm" ? "text-xs px-3 py-1.5" : "text-sm px-4 py-2";
+  let variantStyles = NAVITEM_VARIANTS[variant];
+  if (!variantStyles) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`Unknown NavItem variant: ${variant}, defaulting to 'sidenav'`);
+    }
+    variantStyles = NAVITEM_VARIANTS.sidenav;
   }
+  const stateStyles = active ? variantStyles.active : variantStyles.inactive;
 
   // Always render CAQH in all caps
   let content = children;
@@ -55,10 +69,9 @@ const NavItem: React.FC<NavItemProps> = ({
   return (
     <button
       className={cn(
-        baseStyles,
-        variantStyles,
-        sizeStyles,
-        "w-full flex items-center justify-between gap-2", // Ensure flex layout for alignment
+        variantStyles.base,
+        stateStyles,
+        variantStyles.alignment,
         className
       )}
       aria-current={active ? "page" : undefined}
@@ -66,8 +79,8 @@ const NavItem: React.FC<NavItemProps> = ({
       data-testid={`nav-item-${typeof children === 'string' ? children.toLowerCase().replace(/\s+/g, '-') : 'default'}`}
       {...props}
     >
-      <span className={cn("flex items-center min-w-0", centered && "justify-center w-full")}>
-        {icon && (
+      <span className={cn("flex items-center min-w-0", variantStyles.alignment)}>
+        {icon && variant === "sidenav" && (
           <span
             className="mr-2 flex items-center"
             role="img"
