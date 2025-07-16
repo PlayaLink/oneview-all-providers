@@ -1,0 +1,184 @@
+---
+description: This file includes all the database schemas for the project. This context is helpful whenever we are creating new objects in the database or are touching files that reference our supabaseClient file or otherwise communicate with the database. If I ask for you to create a new table in the database, this file should be referenced. It should also be referenced when I ask about seeding the database or creating dummy data. 
+alwaysApply: false
+---
+create table public.feature_settings (
+  id uuid not null default gen_random_uuid (),
+  setting_key text not null,
+  setting_value boolean not null,
+  description text null,
+  created_at timestamp with time zone null default now(),
+  updated_at timestamp with time zone null default now(),
+  label text null,
+  constraint feature_settings_pkey primary key (id),
+  constraint feature_settings_setting_key_key unique (setting_key)
+) TABLESPACE pg_default;
+
+create index IF not exists idx_feature_settings_key on public.feature_settings using btree (setting_key) TABLESPACE pg_default;
+
+create trigger update_feature_settings_updated_at BEFORE
+update on feature_settings for EACH row
+execute FUNCTION update_updated_at_column ();
+
+
+
+create table public.grid_sections (
+  id uuid not null default gen_random_uuid (),
+  key text not null,
+  name text not null,
+  "order" integer not null default 0,
+  constraint grid_sections_pkey primary key (id),
+  constraint grid_sections_key_key unique (key)
+) TABLESPACE pg_default;
+
+
+
+create table public.grid_definitions (
+  id uuid not null default gen_random_uuid (),
+  key text not null,
+  display_name text not null,
+  "group" text not null,
+  icon text null,
+  description text null,
+  default_visible boolean not null default true,
+  table_name text not null default ''::text,
+  section_id uuid null,
+  "order" integer not null default 0,
+  constraint grid_definitions_pkey primary key (id),
+  constraint grid_definitions_key_key unique (key),
+  constraint grid_definitions_section_id_fkey foreign KEY (section_id) references grid_sections (id)
+) TABLESPACE pg_default;
+
+
+
+create table public.grid_columns (
+  id uuid not null default gen_random_uuid (),
+  grid_id uuid not null,
+  name text not null,
+  display_name text not null,
+  type text not null,
+  "order" integer not null default 0,
+  visible boolean not null default true,
+  width integer null,
+  options jsonb null,
+  required boolean null default false,
+  "group" text null,
+  description text null,
+  constraint grid_columns_pkey primary key (id),
+  constraint grid_columns_grid_id_fkey foreign KEY (grid_id) references grid_definitions (id) on delete CASCADE
+) TABLESPACE pg_default;
+
+create unique INDEX IF not exists idx_grid_columns_gridid_name on public.grid_columns using btree (grid_id, name) TABLESPACE pg_default;
+
+create index IF not exists idx_grid_columns_gridid on public.grid_columns using btree (grid_id) TABLESPACE pg_default;
+
+
+
+create table public.grid_field_groups (
+  id uuid not null default gen_random_uuid (),
+  grid_id uuid not null,
+  name text not null,
+  "order" integer not null default 0,
+  constraint grid_field_groups_pkey primary key (id),
+  constraint grid_field_groups_grid_id_fkey foreign KEY (grid_id) references grid_definitions (id) on delete CASCADE
+) TABLESPACE pg_default;
+
+
+
+create table public.providers (
+  id uuid not null default gen_random_uuid (),
+  created_at timestamp with time zone null default timezone ('utc'::text, now()),
+  prefix text null,
+  first_name text null,
+  middle_name text null,
+  last_name text null,
+  suffix text null,
+  pronouns text null,
+  title text null,
+  primary_specialty text null,
+  classifications text[] null,
+  taxonomy_codes text[] null,
+  clinical_services text[] null,
+  marital_status text null,
+  telemed_exp text null,
+  fluent_languages text[] null,
+  cms_medicare_specialty_codes text[] null,
+  work_email text null,
+  personal_email text null,
+  mobile_phone_number text null,
+  mobile_phone_carrier_name text null,
+  pager_number text null,
+  fax_number text null,
+  emergency_contact_name text null,
+  emergency_contact_email text null,
+  emergency_contact_phone text null,
+  emergency_contact_relationship text null,
+  social_security_number text null,
+  npi_number text null,
+  last_updated date null,
+  enumeration_date date null,
+  driver_license_or_id_number text null,
+  state_issued text null,
+  issue_date date null,
+  expiration_date date null,
+  tags text[] null,
+  other_specialties text[] null,
+  constraint providers_pkey primary key (id)
+) TABLESPACE pg_default;
+
+
+
+create table public.birth_info (
+  id uuid not null default gen_random_uuid (),
+  provider_id uuid not null,
+  date_of_birth date null,
+  country_of_citizenship text null,
+  citizenship_work_auth text null,
+  us_work_auth text null,
+  tags text[] null,
+  last_updated timestamp with time zone null default now(),
+  birth_city text null,
+  birth_state_province text null,
+  birth_county text null,
+  birth_country text null,
+  gender text null,
+  identifies_transgender boolean null,
+  hair_color text null,
+  eye_color text null,
+  height_ft integer null,
+  height_in integer null,
+  weight_lbs integer null,
+  ethnicity text null,
+  constraint birth_info_pkey primary key (id),
+  constraint birth_info_provider_id_fkey foreign KEY (provider_id) references providers (id) on delete CASCADE
+) TABLESPACE pg_default;
+
+create index IF not exists idx_birth_info_provider_id on public.birth_info using btree (provider_id) TABLESPACE pg_default;
+
+
+
+create table public.addresses (
+  id uuid not null default gen_random_uuid (),
+  provider_id uuid not null,
+  type text null,
+  address text null,
+  address_2 text null,
+  city text null,
+  state text null,
+  zip_postal_code text null,
+  phone_number text null,
+  email text null,
+  start_date date null,
+  end_date date null,
+  county text null,
+  country text null,
+  tags text[] null,
+  last_updated timestamp with time zone null default now(),
+  constraint addresses_pkey primary key (id),
+  constraint addresses_provider_id_fkey foreign KEY (provider_id) references providers (id) on delete CASCADE
+) TABLESPACE pg_default;
+
+create index IF not exists idx_addresses_provider_id on public.addresses using btree (provider_id) TABLESPACE pg_default;
+
+
+

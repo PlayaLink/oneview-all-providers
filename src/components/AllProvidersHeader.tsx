@@ -130,7 +130,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
 
   return (
     <header ref={ref} className="bg-white text-[#545454] px-4 py-4 border-b border-gray-300 relative z-10" role="banner" aria-label="All Providers Header" data-testid="all-providers-header">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between px-1">
         {/* Left: Icon and Title or Provider Info */}
         <div className="flex items-center gap-2 min-w-0">
           {!npi && title && (

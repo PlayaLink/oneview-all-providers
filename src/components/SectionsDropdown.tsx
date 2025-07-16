@@ -165,7 +165,7 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger, placement 
   const menu = (
     <div
       ref={menuRef}
-      className="z-[1000] border border-gray-200 rounded shadow-lg p-4 bg-white w-[700px] min-w-[300px]"
+      className="z-[10000] border border-gray-200 rounded shadow-lg p-4 bg-white w-[700px] min-w-[300px]"
       style={{ display: isOpen ? undefined : "none" }}
       role="dialog"
       aria-label="Section visibility settings"

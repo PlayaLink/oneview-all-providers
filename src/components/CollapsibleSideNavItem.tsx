@@ -29,7 +29,7 @@ const CollapsibleSideNavItem: React.FC<CollapsibleSideNavItemProps> = ({
       type="button"
       className={cn(
         "w-full text-left p-2 flex items-center justify-between rounded cursor-pointer transition-colors",
-        active ? "font-bold bg-[#008BC9] text-white" : "font-normal hover:bg-gray-50 text-[#545454]",
+        active ? "bg-[#008BC9] text-white" : "font-normal hover:bg-gray-50 text-[#545454]",
         className
       )}
       aria-current={active ? "page" : undefined}

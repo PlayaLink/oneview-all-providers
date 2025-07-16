@@ -123,7 +123,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
           <div className="flex items-center gap-5 flex-1 self-stretch">
             <div className="flex items-center gap-2 self-stretch" role="menubar" aria-label="Main application sections">
               <NavItem
-                variant="main"
+                variant="global"
                 role="menuitem"
                 aria-current={location.pathname === "/team" ? "page" : undefined}
                 active={location.pathname === "/team"}
@@ -134,7 +134,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
               </NavItem>
               {(navLoading || hasAllProviderTab) && (
                 <NavItem
-                  variant="main"
+                  variant="global"
                   role="menuitem"
                   aria-current={location.pathname === "/all-records" ? "page" : undefined}
                   active={location.pathname === "/all-records"}
@@ -144,10 +144,10 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
                   All Providers
                 </NavItem>
               )}
-              <NavItem variant="main" role="menuitem">Forms</NavItem>
-              <NavItem variant="main" role="menuitem">Tracking</NavItem>
-              <NavItem variant="main" role="menuitem">Logins</NavItem>
-              <NavItem variant="main" role="menuitem">Tasks</NavItem>
+              <NavItem variant="global" role="menuitem">Forms</NavItem>
+              <NavItem variant="global" role="menuitem">Tracking</NavItem>
+              <NavItem variant="global" role="menuitem">Logins</NavItem>
+              <NavItem variant="global" role="menuitem">Tasks</NavItem>
             </div>
           </div>
           <div className="flex items-center gap-4">
