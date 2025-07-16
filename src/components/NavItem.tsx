@@ -13,6 +13,7 @@ interface NavItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   settingsIcon?: React.ReactNode | false; // Optional settings icon prop, can be false
   uppercase?: boolean; // Optional prop to make text uppercase
   centered?: boolean; // Optional prop to center content
+  settingsDropdown?: React.ReactNode; // Optional custom settings dropdown/menu
 }
 
 const NAVITEM_VARIANTS = {
@@ -46,6 +47,7 @@ const NavItem: React.FC<NavItemProps> = ({
   settingsIcon = false, // Default to false
   uppercase = false, // Default to false
   centered = false, // Default to false
+  settingsDropdown,
   ...props
 }) => {
   let variantStyles = NAVITEM_VARIANTS[variant];
@@ -92,6 +94,11 @@ const NavItem: React.FC<NavItemProps> = ({
         )}
         <span className={`truncate${uppercase ? ' uppercase' : ''}`} data-testid="nav-item-content">{content}</span>
       </span>
+      {settingsDropdown && (
+        <span className="ml-auto flex items-center" data-testid="nav-item-settings-dropdown">
+          {settingsDropdown}
+        </span>
+      )}
       {settingsIcon !== false && settingsIcon !== undefined && (
         <span
           className="ml-auto flex items-center"

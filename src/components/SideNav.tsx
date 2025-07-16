@@ -74,39 +74,42 @@ const SideNav: React.FC<SideNavProps> = (props) => {
         {!collapsed && (
           <>
             {/* All Sections Header */}
-            <div style={{ position: 'relative', width: '100%' }}>
-              <SectionsDropdown
-                placement="right-start"
-                trigger={
-                  <NavItem
-                    active={isItemActive("all-sections")}
-                    onClick={() => handleItemClick("all-sections")}
-                    aria-label="View all sections"
-                    aria-pressed={isItemActive("all-sections")}
-                    data-testid="all-sections-button"
-                    variant="main"
-                    className={cn(
-                      "w-full text-left p-2",
-                      isItemActive("all-sections")
-                        ? "bg-[#008BC9] text-white"
-                        : "hover:bg-gray-50"
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "font-bold text-sm tracking-wide",
-                        isItemActive("all-sections")
-                          ? "text-white"
-                          : "text-[#545454]",
-                      )}
-                      role="all-sections-button-text"
-                    >
-                      {navLoading || isLeftNav ? 'All Records' : 'All Sections'}
+            <NavItem
+              active={isItemActive("all-sections")}
+              onClick={() => handleItemClick("all-sections")}
+              aria-label="View all sections"
+              aria-pressed={isItemActive("all-sections")}
+              data-testid="all-sections-button"
+              variant="global"
+              className={cn(
+                "w-full text-left p-2",
+                isItemActive("all-sections")
+                  ? "bg-[#008BC9] text-white"
+                  : "hover:bg-gray-50"
+              )}
+              settingsDropdown={
+                <SectionsDropdown
+                  placement="right-start"
+                  trigger={
+                    <span className="flex items-center cursor-pointer" role="button" aria-label="Open sections dropdown">
+                      <FontAwesomeIcon icon={faEllipsis} className="w-4 h-4" />
                     </span>
-                  </NavItem>
-                }
-              />
-            </div>
+                  }
+                />
+              }
+            >
+              <span
+                className={cn(
+                  "font-bold text-sm tracking-wide",
+                  isItemActive("all-sections")
+                    ? "text-white"
+                    : "text-[#545454]",
+                )}
+                role="all-sections-button-text"
+              >
+                {navLoading || isLeftNav ? 'All Records' : 'All Sections'}
+              </span>
+            </NavItem>
 
             {/* Dynamic Sections based on gridDefinitions */}
             {/* Only show groups and grids matching the current filter (if any) */}
@@ -128,6 +131,7 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                     aria-label={`Select ${section.name} section`}
                     aria-pressed={isSectionActive(section.key)}
                     data-testid={`section-button-${section.key.toLowerCase().replace(/\s+/g, '-')}`}
+                    uppercase
                     
                   >
                     {section.name}
@@ -142,9 +146,9 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                           aria-label={`View ${(grid.display_name || grid.table_name).replace(/_/g, " ")} grid`}
                           aria-pressed={isItemActive(grid.key || grid.table_name)}
                           data-testid={`grid-button-${(grid.key || grid.table_name).toLowerCase().replace(/_/g, '-')}`}
-                          variant="main"
+                          variant="sidenav"
                           className={cn(
-                            "w-full text-left p-2 gap-2 font-normal", // Remove bold, set font-normal
+                            "w-full text-left py-2 px-4 gap-2", // Remove bold, set font-normal
                             isItemActive(grid.key || grid.table_name)
                               ? "bg-[#008BC9] text-white"
                               : "text-[#545454] hover:bg-gray-50"
