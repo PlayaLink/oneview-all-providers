@@ -35,6 +35,7 @@ import {
   faVolumeHigh,
   faClock,
   faBarsStaggered,
+  faEllipsis,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Icon mapping from string names to FontAwesome icon objects
@@ -74,6 +75,7 @@ const iconMap: Record<string, IconDefinition> = {
   "siren-on": faVolumeHigh, // Using faVolumeHigh as alternative
   "clock": faClock,
   "bars-staggered": faBarsStaggered,
+  "ellipsis": faEllipsis,
 };
 
 // Function to get FontAwesome icon from icon name

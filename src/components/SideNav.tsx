@@ -9,6 +9,7 @@ import { getIconByName } from "@/lib/iconMapping";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import SectionsDropdown from "@/components/SectionsDropdown";
 import { useSectionFilterStore } from "@/lib/useVisibleSectionsStore";
+import NavItem from "@/components/NavItem";
 
 interface SideNavProps {
   collapsed: boolean;
@@ -20,25 +21,25 @@ interface SideNavProps {
   gridDefs: any[];
 }
 
-const SideNav: React.FC<SideNavProps> = ({
-  collapsed,
-  selectedItem,
-  selectedSection,
-  onItemSelect,
-  onSectionSelect,
-  gridSections,
-  gridDefs,
-}) => {
-  // Helper functions for backend-driven data
-  const getGroups = () => Array.from(new Set(gridDefs.map((g: any) => g.group)));
-  const getGridsByGroup = (group: string) => gridDefs.filter((g: any) => g.group === group);
-  
-  // Get groups from backend grid definitions
-  const groups = getGroups();
+const SideNav: React.FC<SideNavProps> = (props) => {
+  console.log('[SideNav] props:', props);
+  const {
+    collapsed,
+    selectedItem,
+    selectedSection,
+    onItemSelect,
+    onSectionSelect,
+    gridSections,
+    gridDefs,
+  } = props;
+  // Use gridSections for ordering and display
+  const orderedSections = React.useMemo(() => {
+    return [...(gridSections || [])].sort((a, b) => (a.order ?? 9999) - (b.order ?? 9999));
+  }, [gridSections]);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
-    groups.forEach(group => {
-      initial[group] = true;
+    (gridSections || []).forEach(section => {
+      initial[section.key] = true;
     });
     return initial;
   });
@@ -76,17 +77,19 @@ const SideNav: React.FC<SideNavProps> = ({
               <SectionsDropdown
                 placement="right-start"
                 trigger={
-                  <button
-                    className={cn(
-                      "flex items-center justify-between p-2 rounded cursor-pointer w-full text-left bg-transparent border-none",
-                      isItemActive("all-sections")
-                        ? "bg-[#008BC9] text-white"
-                        : "hover:bg-gray-50",
-                    )}
+                  <NavItem
+                    active={isItemActive("all-sections")}
                     onClick={() => handleItemClick("all-sections")}
                     aria-label="View all sections"
                     aria-pressed={isItemActive("all-sections")}
                     data-testid="all-sections-button"
+                    variant="main"
+                    className={cn(
+                      "w-full text-left p-2",
+                      isItemActive("all-sections")
+                        ? "bg-[#008BC9] text-white"
+                        : "hover:bg-gray-50"
+                    )}
                   >
                     <span
                       className={cn(
@@ -99,81 +102,67 @@ const SideNav: React.FC<SideNavProps> = ({
                     >
                       {navLoading || isLeftNav ? 'All Records' : 'All Sections'}
                     </span>
-                    <FontAwesomeIcon
-                      data-test="left-nav-sections-dropdown-trigger"
-                      icon={faEllipsis}
-                      className={cn(
-                        "w-4 h-4",
-                        isItemActive("all-sections")
-                          ? "text-white"
-                          : "text-[#545454]",
-                      )}
-                    />
-                  </button>
+                  </NavItem>
                 }
               />
             </div>
 
             {/* Dynamic Sections based on gridDefinitions */}
             {/* Only show groups and grids matching the current filter (if any) */}
-            {groups.map((group) => {
+            {orderedSections.map((section) => {
               // Only show group if at least one grid in group matches filter (or no filter)
-              let gridsInGroup = getGridsByGroup(group);
+              console.log('Rendering group:', section.key);
+              let gridsInGroup = gridDefs.filter((g: any) => g.group === section.key);
               if (sectionFilters && sectionFilters.size > 0) {
                 gridsInGroup = gridsInGroup.filter((g: any) => sectionFilters.has(g.table_name || g.key));
                 if (gridsInGroup.length === 0) return null;
               }
               return (
-                <div key={group} className="flex flex-col">
-                  <div
+                <div key={section.key} className="flex flex-col">
+                  <NavItem
+                    active={isSectionActive(section.key)}
+                    onClick={() => handleSectionClick(section.key)}
+                    aria-label={`Select ${section.name} section`}
+                    aria-pressed={isSectionActive(section.key)}
+                    data-testid={`section-button-${section.key.toLowerCase().replace(/\s+/g, '-')}`}
+                    variant="main"
                     className={cn(
-                      "flex items-center justify-between p-2 rounded cursor-pointer",
-                      isSectionActive(group)
+                      "w-full text-left p-2 flex items-center justify-between rounded cursor-pointer",
+                      isSectionActive(section.key)
                         ? "bg-[#008BC9] text-white"
                         : "hover:bg-gray-50",
+                      isSectionActive(section.key)
+                        ? "text-white"
+                        : "text-[#545454]"
                     )}
-                    role="group"
-                    aria-label={`${group} section`}
+                    uppercase
+                    size="sm"
                   >
-                    <button
-                      className={cn(
-                        "text-xs uppercase font-medium tracking-wide flex-1 text-left bg-transparent border-none cursor-pointer",
-                        isSectionActive(group)
-                          ? "text-white"
-                          : "text-[#545454]",
-                      )}
-                      onClick={() => handleSectionClick(group)}
-                      aria-label={`Select ${group} section`}
-                      aria-pressed={isSectionActive(group)}
-                      data-testid={`section-button-${group.toLowerCase().replace(/\s+/g, '-')}`}
-                    >
-                      {group}
-                    </button>
-                  </div>
-                  {expandedSections[group] && (
+                    {section.name}
+                  </NavItem>
+                  {expandedSections[section.key] && (
                     <div className="pl-3 flex flex-col gap-0.5 overflow-hidden transition-all duration-200">
                       {gridsInGroup.map((grid) => (
-                        <button
+                        <NavItem
                           key={grid.key || grid.table_name}
-                          className={cn(
-                            "flex items-center gap-2 p-2 rounded cursor-pointer w-full text-left bg-transparent border-none",
-                            isItemActive(grid.key || grid.table_name)
-                              ? "bg-[#008BC9] text-white"
-                              : "text-[#545454] hover:bg-gray-50",
-                          )}
+                          active={isItemActive(grid.key || grid.table_name)}
                           onClick={() => handleItemClick(grid.key || grid.table_name)}
                           aria-label={`View ${(grid.display_name || grid.table_name).replace(/_/g, " ")} grid`}
                           aria-pressed={isItemActive(grid.key || grid.table_name)}
                           data-testid={`grid-button-${(grid.key || grid.table_name).toLowerCase().replace(/_/g, '-')}`}
+                          variant="main"
+                          className={cn(
+                            "w-full text-left p-2 gap-2 font-normal", // Remove bold, set font-normal
+                            isItemActive(grid.key || grid.table_name)
+                              ? "bg-[#008BC9] text-white"
+                              : "text-[#545454] hover:bg-gray-50"
+                          )}
+                          icon={<FontAwesomeIcon icon={getIconByName(grid.icon)} className="w-4 h-4" />}
                         >
-                          <FontAwesomeIcon 
-                            icon={getIconByName(grid.icon)} 
-                            className="w-4 h-4" 
-                          />
-                          <span className="text-xs font-semibold">
+                          <span className="text-xs">
                             {(grid.display_name || grid.table_name).replace(/_/g, " ")}
                           </span>
-                        </button>
+                        </NavItem>
                       ))}
                     </div>
                   )}
