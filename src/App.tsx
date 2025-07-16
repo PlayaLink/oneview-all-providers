@@ -10,31 +10,57 @@ import AuthPage from "./pages/Auth";
 import TeamPage from "./pages/Team";
 import AppLayout from "./components/AppLayout";
 import { UserProvider } from "./contexts/UserContext";
-import { FeatureFlagProvider } from "./contexts/FeatureFlagContext";
+import { FeatureFlagProvider, useFeatureFlag } from "./contexts/FeatureFlagContext";
 import MainContent from "./components/MainContent";
 import SingleProvider from "./components/SingleProvider";
 
 const queryClient = new QueryClient();
+
+const AuthWrapper = ({ user, loading }: { user: any, loading: boolean }) => {
+  const { value: requireAuth, isLoading: flagLoading } = useFeatureFlag("user_authentication");
+
+  if (loading || flagLoading) return <div>Loading...</div>;
+  if (requireAuth && !user) return <AuthPage />;
+
+  return (
+    <AppLayout user={user}>
+      <Routes>
+        {/* Route for provider detail pages with provider_id parameter */}
+        <Route path="/:provider_id" element={<SingleProvider />} />
+        {/* Route for the main page (all providers view) - now at /all-records */}
+        <Route path="/all-records" element={<AllRecords />} />
+        {/* New Team route */}
+        <Route path="/team" element={<TeamPage />} />
+        {/* Catch-all route: redirect to /all-records */}
+        <Route path="/*" element={<Navigate to="/all-records" replace />} />
+      </Routes>
+    </AppLayout>
+  );
+};
 
 const App = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const session = supabase.auth.getSession().then(({ data }) => {
-      setUser(data.session?.user ?? null);
-      setLoading(false);
-    });
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+    let isMounted = true;
+    (async () => {
+      const { data } = await supabase.auth.getSession();
+      if (isMounted) {
+        setUser(data.session?.user ?? null);
+        setLoading(false);
+      }
+    })();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (isMounted) {
+        setUser(session?.user ?? null);
+      }
     });
     return () => {
-      listener?.subscription.unsubscribe();
+      isMounted = false;
+      subscription?.unsubscribe();
     };
   }, []);
-
-  if (loading) return <div>Loading...</div>;
-  if (!user) return <AuthPage />;
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -44,18 +70,7 @@ const App = () => {
         <BrowserRouter>
           <UserProvider user={user}>
             <FeatureFlagProvider>
-              <AppLayout user={user}>
-                <Routes>
-                  {/* Route for provider detail pages with provider_id parameter */}
-                  <Route path="/:provider_id" element={<SingleProvider />} />
-                  {/* Route for the main page (all providers view) - now at /all-records */}
-                  <Route path="/all-records" element={<AllRecords />} />
-                  {/* New Team route */}
-                  <Route path="/team" element={<TeamPage />} />
-                  {/* Catch-all route: redirect to /all-records */}
-                  <Route path="/*" element={<Navigate to="/all-records" replace />} />
-                </Routes>
-              </AppLayout>
+              <AuthWrapper user={user} loading={loading} />
             </FeatureFlagProvider>
           </UserProvider>
         </BrowserRouter>
