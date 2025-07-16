@@ -57,6 +57,7 @@ const HorizontalNav: React.FC<HorizontalNavProps> = ({
                 aria-selected={selectedSection === section.key}
                 aria-controls={`${section.key}-panel`}
                 data-testid={`nav-item-${section.key}`}
+                centered={true}
               >
                 {section.name}
               </NavItem>

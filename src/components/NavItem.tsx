@@ -12,6 +12,7 @@ interface NavItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: React.ReactNode; // Optional icon prop
   settingsIcon?: React.ReactNode | false; // Optional settings icon prop, can be false
   uppercase?: boolean; // Optional prop to make text uppercase
+  centered?: boolean; // Optional prop to center content
 }
 
 const NavItem: React.FC<NavItemProps> = ({
@@ -23,6 +24,7 @@ const NavItem: React.FC<NavItemProps> = ({
   icon, // Destructure icon
   settingsIcon = false, // Default to false
   uppercase = false, // Default to false
+  centered = false, // Default to false
   ...props
 }) => {
   let baseStyles = "font-semibold rounded transition-colors";
@@ -64,7 +66,7 @@ const NavItem: React.FC<NavItemProps> = ({
       data-testid={`nav-item-${typeof children === 'string' ? children.toLowerCase().replace(/\s+/g, '-') : 'default'}`}
       {...props}
     >
-      <span className="flex items-center min-w-0" style={{flex: 1}}>
+      <span className={cn("flex items-center min-w-0", centered && "justify-center w-full")}>
         {icon && (
           <span
             className="mr-2 flex items-center"
