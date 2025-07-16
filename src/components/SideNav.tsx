@@ -129,11 +129,8 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                     className={cn(
                       "w-full text-left p-2 flex items-center justify-between rounded cursor-pointer",
                       isSectionActive(section.key)
-                        ? "bg-[#008BC9] text-white"
-                        : "hover:bg-gray-50",
-                      isSectionActive(section.key)
-                        ? "text-white"
-                        : "text-[#545454]"
+                        ? "font-bold bg-[#008BC9] text-white"
+                        : "font-normal hover:bg-gray-50 text-[#545454]"
                     )}
                     uppercase
                     size="sm"
