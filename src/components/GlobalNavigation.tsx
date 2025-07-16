@@ -96,7 +96,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
                 aria-haspopup="true"
                 data-testid="user-profile-toggle"
               >
-                {user?.full_name || user?.email || 'User'}
+                {user?.user_metadata?.full_name || user?.full_name || user?.email || 'User'}
               </button>
               <div className="flex justify-center items-center w-[10px]">
                 <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" aria-hidden="true" />

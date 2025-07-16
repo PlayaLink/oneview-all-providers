@@ -67,6 +67,25 @@ const AuthWrapper = ({ user, loading }: { user: any, loading: boolean }) => {
 const App = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [requireAuth, setRequireAuth] = useState(true);
+  const [flagLoading, setFlagLoading] = useState(true);
+
+  // Helper to get or create a dummy user for the session
+  function getOrCreateDummyUser() {
+    const key = 'oneview_dummy_user';
+    const existing = sessionStorage.getItem(key);
+    if (existing) return JSON.parse(existing);
+    const firstName = faker.person.firstName();
+    const lastName = faker.person.lastName();
+    const email = faker.internet.email({ firstName, lastName, provider: 'oneview.local' });
+    const dummy = {
+      id: faker.string.uuid(),
+      email,
+      user_metadata: { full_name: `${firstName} ${lastName}` }
+    };
+    sessionStorage.setItem(key, JSON.stringify(dummy));
+    return dummy;
+  }
 
   useEffect(() => {
     let isMounted = true;
@@ -88,15 +107,44 @@ const App = () => {
     };
   }, []);
 
+  // Fetch the user_authentication feature flag at the top level
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchFlag() {
+      setFlagLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('feature_settings')
+          .select('setting_value')
+          .eq('setting_key', 'user_authentication')
+          .single();
+        if (!cancelled) {
+          setRequireAuth(data ? data.setting_value : true);
+        }
+      } catch {
+        if (!cancelled) setRequireAuth(true);
+      } finally {
+        if (!cancelled) setFlagLoading(false);
+      }
+    }
+    fetchFlag();
+    return () => { cancelled = true; };
+  }, []);
+
+  // Inject dummy user if auth is off and no real user
+  const effectiveUser = (!requireAuth && !user) ? getOrCreateDummyUser() : user;
+
+  if (loading || flagLoading) return <div>Loading...</div>;
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <UserProvider user={user}>
+          <UserProvider user={effectiveUser}>
             <FeatureFlagProvider>
-              <AuthWrapper user={user} loading={loading} />
+              <AuthWrapper user={effectiveUser} loading={false} />
             </FeatureFlagProvider>
           </UserProvider>
         </BrowserRouter>
