@@ -21,7 +21,7 @@ const SidePanelTab: React.FC<SidePanelTabProps> = ({
 }) => {
   return (
     <div 
-      className={`flex flex-col items-center py-6 px-1 w-full transition-colors rounded ${
+      className={`flex flex-col items-center gap-1 py-6 px-2 w-full transition-colors rounded ${
         isActive 
           ? 'bg-[#008BC9] text-white hover:bg-[#0077B3]' 
           : 'text-[#545454] hover:bg-gray-100'

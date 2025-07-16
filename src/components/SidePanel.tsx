@@ -657,12 +657,12 @@ if (template?.DetailsComponent) {
       {/* Tabs and Content */}
       <div className="flex-1 min-h-0 flex flex-col">
         <Tabs value={tab} onValueChange={setTab} className="flex flex-1 min-h-0" data-testid="side-panel-tabs">
-          <TabsList className="flex flex-col w-16 pt-4 pb-2 px-2 p-2 gap-1 border-r border-gray-200 items-center justify-start" data-testid="side-panel-tabs-list">
+          <TabsList className="flex flex-col w-20 pt-4 pb-2 px-2 p-2 gap-2 border-r border-gray-200 items-center justify-start" data-testid="side-panel-tabs-list">
             {tabs.map((tabConfig) => (
               <TabsTrigger
                 key={tabConfig.id}
                 value={tabConfig.id}
-                className="p-0 border-0 bg-transparent"
+                className="p-0 border-0 bg-transparent w-full"
               >
                 <SidePanelTab
                   rowKey={tabConfig.id}
