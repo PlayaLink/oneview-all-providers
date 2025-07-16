@@ -7,6 +7,7 @@ import NavItem from "./NavItem";
 import FeatureFlags from "./FeatureFlags";
 import GlobalFeatureToggle from "./GlobalFeatureToggle";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
+import { supabase } from "@/lib/supabaseClient";
 
 interface GlobalNavigationProps {
   user: any;
@@ -32,7 +33,8 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
   }, [profileDropdownOpen]);
 
   const handleLogout = async () => {
-    // ... existing logout logic ...
+    await supabase.auth.signOut();
+    window.location.href = "/"; // Redirect to home or login page after logout
   };
 
   return (

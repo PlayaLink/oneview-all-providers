@@ -20,21 +20,26 @@ const AuthWrapper = ({ user, loading }: { user: any, loading: boolean }) => {
   const { value: requireAuth, isLoading: flagLoading } = useFeatureFlag("user_authentication");
 
   if (loading || flagLoading) return <div>Loading...</div>;
-  if (requireAuth && !user) return <AuthPage />;
 
   return (
-    <AppLayout user={user}>
-      <Routes>
-        {/* Route for provider detail pages with provider_id parameter */}
-        <Route path="/:provider_id" element={<SingleProvider />} />
-        {/* Route for the main page (all providers view) - now at /all-records */}
+    <Routes>
+      {/* Login route always accessible */}
+      <Route path="/login" element={<AuthPage />} />
+      {/* Redirect home to /team */}
+      <Route path="/" element={<Navigate to="/team" replace />} />
+      {/* Main app layout and routes */}
+      <Route element={<AppLayout user={user} />}>
+        <Route path=":provider_id" element={<SingleProvider />} />
         <Route path="/all-records" element={<AllRecords />} />
-        {/* New Team route */}
         <Route path="/team" element={<TeamPage />} />
         {/* Catch-all route: redirect to /all-records */}
         <Route path="/*" element={<Navigate to="/all-records" replace />} />
-      </Routes>
-    </AppLayout>
+      </Route>
+      {/* If auth is required and not logged in, redirect to /login */}
+      {requireAuth && !user && (
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      )}
+    </Routes>
   );
 };
 
