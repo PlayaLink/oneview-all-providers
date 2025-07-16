@@ -8,6 +8,7 @@ import FeatureFlags from "./FeatureFlags";
 import GlobalFeatureToggle from "./GlobalFeatureToggle";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import { supabase } from "@/lib/supabaseClient";
+import { faker } from '@faker-js/faker';
 
 interface GlobalNavigationProps {
   user: any;
@@ -33,8 +34,23 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
   }, [profileDropdownOpen]);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    window.location.href = "/"; // Redirect to home or login page after logout
+    // Check if the user is a dummy user (by email domain)
+    if (user?.email && user.email.endsWith('@oneview.local')) {
+      // Generate a new dummy user and store in sessionStorage
+      const firstName = faker.person.firstName();
+      const lastName = faker.person.lastName();
+      const email = faker.internet.email({ firstName, lastName, provider: 'oneview.local' });
+      const dummy = {
+        id: faker.string.uuid(),
+        email,
+        user_metadata: { full_name: `${firstName} ${lastName}` }
+      };
+      sessionStorage.setItem('oneview_dummy_user', JSON.stringify(dummy));
+      window.location.reload();
+    } else {
+      await supabase.auth.signOut();
+      window.location.href = "/";
+    }
   };
 
   return (
