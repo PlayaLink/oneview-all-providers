@@ -92,7 +92,13 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                   placement="right-start"
                   trigger={
                     <span className="flex items-center cursor-pointer" role="button" aria-label="Open sections dropdown">
-                      <FontAwesomeIcon icon={faEllipsis} className="w-4 h-4" />
+                      <FontAwesomeIcon
+                        icon={faEllipsis}
+                        className={cn(
+                          "w-4 h-4",
+                          isItemActive("all-sections") ? "text-white" : "text-[#545454]"
+                        )}
+                      />
                     </span>
                   }
                 />
