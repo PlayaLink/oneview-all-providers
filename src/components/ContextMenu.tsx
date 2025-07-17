@@ -1,16 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import {
-  Plus,
-  ExternalLink,
-  IdCard,
-  FilterX,
-  RotateCcw,
-  Unlock,
-  Bell,
-  BellRing,
-  BellOff,
-  Copy,
-} from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { getIconByName } from "@/lib/iconMapping";
 import { cn } from "@/lib/utils";
 
 interface ContextMenuProps {
@@ -24,7 +15,7 @@ interface ContextMenuProps {
 interface MenuItem {
   id: string;
   label?: string;
-  icon?: React.ComponentType<{ className?: string }>;
+  icon?: string;
   action?: string;
   enabled?: boolean;
   shortcut?: string;
@@ -71,35 +62,35 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
     {
       id: "add",
       label: "Add",
-      icon: Plus,
+      icon: "plus",
       action: "add",
       enabled: true,
     },
     {
       id: "open-single-provider",
       label: "Open Single Provider View",
-      icon: ExternalLink,
+      icon: "external-link-alt",
       action: "open-single-provider",
       enabled: true,
     },
     {
       id: "open-prior-version",
       label: "Open in Prior Version",
-      icon: ExternalLink,
+      icon: "external-link-alt",
       action: "open-prior-version",
       enabled: true,
     },
     {
       id: "show-board-details",
       label: "Show Board Details",
-      icon: IdCard,
+      icon: "id-card",
       action: "show-board-details",
       enabled: true,
     },
     {
       id: "clear-filters",
       label: "Clear All Filters",
-      icon: FilterX,
+      icon: "filter-circle-xmark",
       action: "clear-filters",
       enabled: true,
     },
@@ -110,35 +101,35 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
     {
       id: "update-licenses",
       label: "Update Selected Licenses",
-      icon: RotateCcw,
+      icon: "rotate",
       action: "update-licenses",
       enabled: false,
     },
     {
       id: "unlock-record",
       label: "Unlock Selected Record",
-      icon: Unlock,
+      icon: "unlock",
       action: "unlock-record",
       enabled: false,
     },
     {
       id: "toggle-alerts",
       label: "Enable/Disable Selected Alerts",
-      icon: BellRing,
+      icon: "bell",
       action: "toggle-alerts",
       enabled: false,
     },
     {
       id: "enable-alerts",
       label: "Enable Selected Alerts",
-      icon: Bell,
+      icon: "bell",
       action: "enable-alerts",
       enabled: false,
     },
     {
       id: "disable-alerts",
       label: "Disable Selected Alerts",
-      icon: BellOff,
+      icon: "bell-slash",
       action: "disable-alerts",
       enabled: false,
     },
@@ -149,7 +140,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
     {
       id: "copy",
       label: "Copy",
-      icon: Copy,
+      icon: "copy",
       action: "copy",
       enabled: true,
       shortcut: "Ctrl+C",
@@ -157,7 +148,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
     {
       id: "copy-with-headers",
       label: "Copy with Headers",
-      icon: Copy,
+      icon: "copy",
       action: "copy-with-headers",
       enabled: true,
     },
@@ -188,7 +179,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
           );
         }
 
-        const IconComponent = item.icon;
+        const IconComponent = getIconByName(item.icon!);
         const isEnabled = item.enabled;
 
         return (
@@ -207,7 +198,8 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
           >
             <div className="flex w-5 h-4 justify-center items-center">
               {IconComponent && (
-                <IconComponent
+                <FontAwesomeIcon
+                  icon={IconComponent}
                   className={cn(
                     "w-4 h-4",
                     isEnabled ? "text-[#545454]" : "text-[#BABABA]",
