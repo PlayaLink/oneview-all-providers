@@ -11,6 +11,7 @@ import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import type { ColumnMenuTab } from "ag-grid-community";
+import ContextMenu from "./ContextMenu";
 
 // Import AG Grid styles
 import "ag-grid-community/styles/ag-grid.css";
@@ -45,6 +46,14 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
   const [internalSelectedRowId, setInternalSelectedRowId] = React.useState<string | null>(null);
   const selectedRowId = controlledSelectedRowId !== undefined ? controlledSelectedRowId : internalSelectedRowId;
+
+  // Context menu state
+  const [contextMenu, setContextMenu] = React.useState<{
+    show: boolean;
+    x: number;
+    y: number;
+    rowData: any;
+  } | null>(null);
 
   // Use feature flag for floating filters
   const { value: showFloatingFilters } = useFeatureFlag("floating_filters");
@@ -137,6 +146,27 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   const handleRowDoubleClicked = (event: RowDoubleClickedEvent) => {
     // Allow cell focus only on double click
     // This will let AG Grid handle cell focus naturally
+  };
+
+  const handleCellContextMenu = (event: any) => {
+    // Prevent default browser context menu
+    event.event.preventDefault();
+    
+    // Get the row data
+    const rowData = event.data;
+    if (!rowData) return;
+    
+    // Set context menu position and data
+    setContextMenu({
+      show: true,
+      x: event.event.clientX,
+      y: event.event.clientY,
+      rowData: rowData
+    });
+  };
+
+  const handleContextMenuClose = () => {
+    setContextMenu(null);
   };
 
   const getRowStyle = (params: any) => {
@@ -245,6 +275,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           onSelectionChanged={handleSelectionChanged}
           onRowClicked={handleRowClicked}
           onRowDoubleClicked={handleRowDoubleClicked}
+          onCellContextMenu={handleCellContextMenu}
           rowSelection={showCheckboxes ? "multiple" : "single"}
           headerHeight={40}
           rowHeight={42}
@@ -288,6 +319,15 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           onGridReady={params => params.api.sizeColumnsToFit()}
         />
       </div>
+      {contextMenu && (
+        <ContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          rowData={contextMenu.rowData}
+          gridName={title}
+          onClose={handleContextMenuClose}
+        />
+      )}
     </section>
   );
 };
