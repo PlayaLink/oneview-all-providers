@@ -26,11 +26,11 @@ interface SideNavProps {
 const SideNav: React.FC<SideNavProps> = (props) => {
   console.log('[SideNav] props:', props);
   const {
-    collapsed,
-    selectedItem,
-    selectedSection,
-    onItemSelect,
-    onSectionSelect,
+  collapsed,
+  selectedItem,
+  selectedSection,
+  onItemSelect,
+  onSectionSelect,
     gridSections,
     gridDefs,
   } = props;
@@ -149,20 +149,20 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                           aria-pressed={isItemActive(grid.key || grid.table_name)}
                           data-testid={`grid-button-${(grid.key || grid.table_name).toLowerCase().replace(/_/g, '-')}`}
                           variant="sidenav"
-                          className={cn(
+                    className={cn(
                             "w-full text-left py-2 px-4 gap-2",
                             isItemActive(grid.key || grid.table_name)
-                              ? "bg-[#008BC9] text-white"
+                        ? "bg-[#008BC9] text-white"
                               : "text-[#545454] hover:bg-gray-50"
                           )}
                           icon={<FontAwesomeIcon icon={getIconByName(grid.icon)} className="w-4 h-4" />}
                         >
                           <span className="text-xs">
                             {(grid.display_name || grid.table_name).replace(/_/g, " ")}
-                          </span>
+                    </span>
                         </NavItem>
                       ))}
-                    </div>
+            </div>
                   )}
                 </div>
               );

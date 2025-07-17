@@ -617,13 +617,13 @@ if (template?.DetailsComponent) {
       aria-modal="true"
       aria-label={headerText}
       data-testid="side-panel"
-      style={{
+        style={{
         width: `${panelWidth}px`,
-        boxShadow: isOpen
-          ? "-8px 0 24px -2px rgba(0, 0, 0, 0.12), -4px 0 8px -2px rgba(0, 0, 0, 0.08)"
-          : "none",
-      }}
-    >
+          boxShadow: isOpen
+            ? "-8px 0 24px -2px rgba(0, 0, 0, 0.12), -4px 0 8px -2px rgba(0, 0, 0, 0.08)"
+            : "none",
+        }}
+      >
       {/* Resize Handle */}
       <div
         ref={resizeRef}
@@ -641,19 +641,19 @@ if (template?.DetailsComponent) {
         data-testid="side-panel-resize-handle"
       />
       
-      {/* Header */}
+        {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-[#008BC9] text-white" data-testid="side-panel-header">
-        <div className="flex-1">
+          <div className="flex-1">
           <h2 className="text-lg font-semibold">{headerText}</h2>
-        </div>
-        <button
-          onClick={onClose}
-          className="ml-4 p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors"
+          </div>
+          <button
+            onClick={onClose}
+            className="ml-4 p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors"
           aria-label="Close side panel"
-        >
-          <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
-        </button>
-      </div>
+          >
+            <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
+          </button>
+        </div>
       {/* Tabs and Content */}
       <div className="flex-1 min-h-0 flex flex-col">
         <Tabs value={tab} onValueChange={setTab} className="flex flex-1 min-h-0" data-testid="side-panel-tabs">
@@ -747,7 +747,7 @@ if (template?.DetailsComponent) {
             )}
           </div>
         </Tabs>
-      </div>
+        </div>
       {/* Footer Actions - Animated slide from bottom */}
       <div 
         className={`border-t border-gray-200 p-4 transition-all duration-300 ease-in-out transform ${
@@ -765,7 +765,7 @@ if (template?.DetailsComponent) {
           zIndex: 10
         }}
       >
-        <div className="flex gap-3">
+          <div className="flex gap-3">
           <button 
             className="flex-1 bg-gray-100 text-[#545454] py-2 px-4 rounded text-sm font-medium hover:bg-gray-200 transition-colors"
             aria-label="Discard Changes"
@@ -773,7 +773,7 @@ if (template?.DetailsComponent) {
             onClick={handleDiscardChanges}
           >
             Discard Changes
-          </button>
+            </button>
           <button
             className={`flex-1 py-2 px-4 rounded text-sm font-medium transition-colors ${
               isSaving 
@@ -792,10 +792,10 @@ if (template?.DetailsComponent) {
           >
             {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save'}
             {isSaving && <span id="saving-status" className="sr-only">Saving changes to database</span>}
-          </button>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
   );
 };
 

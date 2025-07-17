@@ -7,6 +7,8 @@ import NavItem from "./NavItem";
 import FeatureFlags from "./FeatureFlags";
 import GlobalFeatureToggle from "./GlobalFeatureToggle";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
+import { supabase } from "@/lib/supabaseClient";
+import { faker } from '@faker-js/faker';
 
 interface GlobalNavigationProps {
   user: any;
@@ -19,6 +21,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
   const [newFeaturesDropdownOpen, setNewFeaturesDropdownOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
   const { value: hasAllProviderTab, isLoading: navLoading } = useFeatureFlag("all_providers_tab");
+  const { value: requireAuth } = useFeatureFlag("user_authentication");
 
   useEffect(() => {
     if (!profileDropdownOpen) return;
@@ -32,7 +35,31 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
   }, [profileDropdownOpen]);
 
   const handleLogout = async () => {
-    // ... existing logout logic ...
+    // Check if the user is a dummy user (by email domain)
+    if (user?.email && user.email.endsWith('@oneview.local')) {
+      // Clear the dummy user from sessionStorage
+      sessionStorage.removeItem('oneview_dummy_user');
+      
+      if (requireAuth) {
+        // If auth is required, redirect to login
+        window.location.href = "/login";
+      } else {
+        // If auth is not required, generate a new dummy user
+        const firstName = faker.person.firstName();
+        const lastName = faker.person.lastName();
+        const email = faker.internet.email({ firstName, lastName, provider: 'oneview.local' });
+        const dummy = {
+          id: faker.string.uuid(),
+          email,
+          user_metadata: { full_name: `${firstName} ${lastName}` }
+        };
+        sessionStorage.setItem('oneview_dummy_user', JSON.stringify(dummy));
+        window.location.reload();
+      }
+    } else {
+      await supabase.auth.signOut();
+      window.location.href = "/";
+    }
   };
 
   return (
@@ -94,7 +121,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
                 aria-haspopup="true"
                 data-testid="user-profile-toggle"
               >
-                {user?.full_name || user?.email || 'User'}
+                {user?.user_metadata?.full_name || user?.full_name || user?.email || 'User'}
               </button>
               <div className="flex justify-center items-center w-[10px]">
                 <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" aria-hidden="true" />

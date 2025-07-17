@@ -10,7 +10,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@faker-js/faker": "^9.8.0",
+    "@faker-js/faker": "^9.9.0",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
@@ -48,7 +48,7 @@
     "@react-three/fiber": "^8.18.0",
     "@supabase/auth-ui-react": "^0.4.7",
     "@supabase/auth-ui-shared": "^0.1.8",
-    "@supabase/supabase-js": "^2.50.3",
+    "@supabase/supabase-js": "^2.51.0",
     "@swc/core": "^1.11.24",
     "@tanstack/react-query": "^5.81.5",
     "@types/three": "^0.176.0",

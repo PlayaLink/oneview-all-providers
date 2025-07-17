@@ -4,10 +4,11 @@ import PageContainer from "@/components/PageContainer";
 import MainContentArea from "@/components/MainContentArea";
 import ApplicationFooter from "@/components/ApplicationFooter";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
+import { Outlet } from "react-router-dom";
 
 interface AppLayoutProps {
   user: any;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   showFooter?: boolean;
 }
 
@@ -25,7 +26,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({ user, children, showFooter = true
       <GlobalNavigation user={user} />
       <PageContainer>
         <MainContentArea>
-          {children}
+          {/* Render nested routes here */}
+          <Outlet />
         </MainContentArea>
       </PageContainer>
       <ApplicationFooter showFooter={shouldShowFooter} />

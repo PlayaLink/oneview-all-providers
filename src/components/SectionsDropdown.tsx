@@ -220,7 +220,7 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger, placement 
         >
           Clear
         </button>
-      </div>
+            </div>
       {/* Columns */}
       <div className="flex gap-8" role="list" data-testid="sections-group-list">
         {groupColumns.map((groups, colIdx) => (
@@ -252,8 +252,8 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger, placement 
                       aria-checked={sectionFilters.has(grid.table_name || grid.tableName)}
                       data-testid={`grid-checkbox-label-${grid.table_name || grid.tableName}`}
                     >
-                      <input
-                        type="checkbox"
+                        <input
+                          type="checkbox"
                         className="mr-2 accent-blue-600 h-4 w-4"
                         checked={sectionFilters.has(grid.table_name || grid.tableName)}
                         disabled={disabledGrids.has(grid.table_name || grid.tableName)}
@@ -263,14 +263,14 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger, placement 
                       />
                       {grid.display_name || grid.table_name || grid.tableName}
                     </label>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+              </div>
+            ))}
               </div>
             ))}
           </div>
-        ))}
-      </div>
-    </div>
+        </div>
   );
 
   // Handler to toggle dropdown
