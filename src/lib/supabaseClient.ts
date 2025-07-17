@@ -368,6 +368,7 @@ export const FacilityAffiliationSchema = z.object({
   primary_affiliation: z.boolean().nullable().optional(),
   tags: z.array(z.string()).nullable().optional(),
   last_updated: z.string().nullable().optional(),
+  requirements: z.array(z.string()).optional(),
   provider: z.any().optional(),
 });
 
@@ -390,6 +391,9 @@ export function fetchFacilityAffiliationsByProvider(providerId: string) {
 export async function updateFacilityAffiliation(id: string, updates: Record<string, any>) {
   const updatesCopy = { ...updates };
   if ('tags' in updatesCopy) updatesCopy.tags = fromIdLabelArray(updatesCopy.tags);
+  if ('requirements' in updatesCopy && typeof updatesCopy.requirements === 'string') {
+    updatesCopy.requirements = updatesCopy.requirements.split(',').map((s: string) => s.trim());
+  }
   const { data, error } = await supabase
     .from('facility_affiliations')
     .update(updatesCopy)
@@ -402,6 +406,9 @@ export async function updateFacilityAffiliation(id: string, updates: Record<stri
 export async function insertFacilityAffiliation(affiliation: Record<string, any>) {
   const insertCopy = { ...affiliation };
   if ('tags' in insertCopy) insertCopy.tags = fromIdLabelArray(insertCopy.tags);
+  if ('requirements' in insertCopy && typeof insertCopy.requirements === 'string') {
+    insertCopy.requirements = insertCopy.requirements.split(',').map((s: string) => s.trim());
+  }
   const { data, error } = await supabase
     .from('facility_affiliations')
     .insert([insertCopy])
@@ -471,4 +478,233 @@ export async function fetchGridSections() {
     .order('order');
   if (error) throw error;
   return data;
+} 
+
+// --- REQUIREMENTS HELPERS ---
+
+export const RequirementDataSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  value: z.string().nullable().optional(),
+  data_type: z.enum(['text', 'number', 'boolean', 'date', 'email', 'url', 'phone', 'single-select', 'multi-select', 'file', 'oneview_record']),
+  key: z.string(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export const RequirementSchema = z.object({
+  id: z.string(),
+  type: z.enum(['facility', 'board']),
+  key: z.string(),
+  group: z.string(),
+  label: z.string(),
+  note: z.string().nullable().optional(),
+  visible: z.boolean(),
+  credentialing_entity: z.string().nullable().optional(),
+  data: z.array(z.string()),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export function fetchRequirementData() {
+  return dbFetch('requirement_data', '*', RequirementDataSchema);
+}
+
+export async function fetchRequirementDataById(id: string) {
+  const { data, error } = await supabase
+    .from('requirement_data')
+    .select('*')
+    .eq('id', id)
+    .single();
+  if (error) throw error;
+  return RequirementDataSchema.parse(data);
+}
+
+export async function fetchRequirementDataByKey(key: string) {
+  const { data, error } = await supabase
+    .from('requirement_data')
+    .select('*')
+    .eq('key', key);
+  if (error) throw error;
+  return RequirementDataSchema.array().parse(data);
+}
+
+export function createRequirementData(data: {
+  label: string;
+  value?: string;
+  data_type?: 'text' | 'number' | 'boolean' | 'date' | 'email' | 'url' | 'phone' | 'single-select' | 'multi-select' | 'file' | 'oneview_record';
+  key: string;
+}) {
+  return dbInsert('requirement_data', [data], RequirementDataSchema);
+}
+
+export function updateRequirementData(id: string, data: {
+  label?: string;
+  value?: string;
+  data_type?: 'text' | 'number' | 'boolean' | 'date' | 'email' | 'url' | 'phone' | 'single-select' | 'multi-select' | 'file' | 'oneview_record';
+  key?: string;
+}) {
+  return dbUpdate('requirement_data', id, data, RequirementDataSchema);
+}
+
+export function deleteRequirementData(id: string) {
+  return dbDelete('requirement_data', id);
+}
+
+export function fetchRequirements() {
+  return dbFetch('requirements', '*', RequirementSchema);
+}
+
+export async function fetchRequirementsWithData() {
+  const { data, error } = await supabase
+    .from('requirements_with_data')
+    .select('*');
+  if (error) throw error;
+  return RequirementSchema.extend({
+    requirement_data_items: z.array(RequirementDataSchema)
+  }).array().parse(data);
+}
+
+export async function fetchRequirementById(id: string) {
+  const { data, error } = await supabase
+    .from('requirements')
+    .select('*')
+    .eq('id', id)
+    .single();
+  if (error) throw error;
+  return RequirementSchema.parse(data);
+}
+
+export async function fetchRequirementByKey(key: string) {
+  const { data, error } = await supabase
+    .from('requirements')
+    .select('*')
+    .eq('key', key);
+  if (error) throw error;
+  return RequirementSchema.array().parse(data);
+}
+
+export async function fetchRequirementsByGroup(groupName: string) {
+  const { data, error } = await supabase
+    .from('requirements')
+    .select('*')
+    .eq('group', groupName);
+  if (error) throw error;
+  return RequirementSchema.array().parse(data);
+}
+
+export async function fetchRequirementsByType(type: string) {
+  const { data, error } = await supabase
+    .from('requirements')
+    .select('*')
+    .eq('type', type);
+  if (error) throw error;
+  return RequirementSchema.array().parse(data);
+}
+
+export function createRequirement(data: {
+  type: 'facility' | 'board';
+  key: string;
+  group: string;
+  label: string;
+  note?: string;
+  visible?: boolean;
+  credentialing_entity?: string;
+  data?: string[];
+}) {
+  return dbInsert('requirements', [data], RequirementSchema);
+}
+
+export function updateRequirement(id: string, data: {
+  type?: 'facility' | 'board';
+  key?: string;
+  group?: string;
+  label?: string;
+  note?: string;
+  visible?: boolean;
+  credentialing_entity?: string;
+  data?: string[];
+}) {
+  return dbUpdate('requirements', id, data, RequirementSchema);
+}
+
+export function deleteRequirement(id: string) {
+  return dbDelete('requirements', id);
+}
+
+// Helper function to get requirement data items by IDs
+export async function fetchRequirementDataByIds(ids: string[]) {
+  if (!ids.length) return [];
+  
+  const { data, error } = await supabase
+    .from('requirement_data')
+    .select('*')
+    .in('id', ids);
+  
+  if (error) throw error;
+  return RequirementDataSchema.array().parse(data);
+}
+
+// Helper function to search requirements
+export async function searchRequirements(searchTerm: string, filters?: {
+  type?: string;
+  group?: string;
+  visible?: boolean;
+  credentialing_entity?: string;
+}) {
+  let query = supabase
+    .from('requirements')
+    .select('*')
+    .or(`label.ilike.%${searchTerm}%,key.ilike.%${searchTerm}%,note.ilike.%${searchTerm}%`);
+  
+  if (filters?.type) {
+    query = query.eq('type', filters.type);
+  }
+  
+  if (filters?.group) {
+    query = query.eq('group', filters.group);
+  }
+  
+  if (filters?.visible !== undefined) {
+    query = query.eq('visible', filters.visible);
+  }
+  
+  if (filters?.credentialing_entity) {
+    query = query.eq('credentialing_entity', filters.credentialing_entity);
+  }
+  
+  const { data, error } = await query;
+  if (error) throw error;
+  return RequirementSchema.array().parse(data);
+}
+
+// Helper function to get requirements by credentialing entity
+export async function fetchRequirementsByCredentialingEntity(credentialingEntityId: string) {
+  const { data, error } = await supabase
+    .from('requirements')
+    .select('*')
+    .eq('credentialing_entity', credentialingEntityId);
+  if (error) throw error;
+  return RequirementSchema.array().parse(data);
+}
+
+// Helper function to get visible requirements only
+export async function fetchVisibleRequirements() {
+  const { data, error } = await supabase
+    .from('requirements')
+    .select('*')
+    .eq('visible', true);
+  if (error) throw error;
+  return RequirementSchema.array().parse(data);
+}
+
+// Helper function to get requirements by type and credentialing entity
+export async function fetchRequirementsByTypeAndEntity(type: string, credentialingEntityId: string) {
+  const { data, error } = await supabase
+    .from('requirements')
+    .select('*')
+    .eq('type', type)
+    .eq('credentialing_entity', credentialingEntityId);
+  if (error) throw error;
+  return RequirementSchema.array().parse(data);
 } 
