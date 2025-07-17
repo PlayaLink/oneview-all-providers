@@ -8,13 +8,10 @@ import { getColumnsForGrid, getColumnsForSingleProviderView, formatProviderName 
 import { gridDefinitions, getGridsByGroup } from "@/lib/gridDefinitions";
 import { getIconByName } from "@/lib/iconMapping";
 import { Provider } from "@/types";
-import providerInfoConfig from "@/data/provider_info_details.json";
 import { useQuery } from '@tanstack/react-query';
 import { fetchProviders, fetchStateLicenses, fetchBirthInfo, fetchAddresses, fetchFacilityAffiliations } from '@/lib/supabaseClient';
 import { getTemplateConfigByGrid } from '@/lib/templateConfigs';
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
-// Removed: import { providerInfoTemplate, stateLicenseTemplate } from '@/lib/templateConfigs';
-// Removed: import { useGridData } from '@/hooks/useGridData';
 
 interface MainContentProps {
   selectedItem?: string | null;
@@ -30,10 +27,10 @@ interface MainContentProps {
   setSidePanelOpen?: (open: boolean) => void;
   activePanelGridName?: string | null;
   providerInfoData?: any[];
-  user: any;
-  selectedRow: (any & { gridName: string }) | null;
-  onRowSelect: (row: any | null, gridName?: string) => void;
-  onCloseSidePanel: () => void;
+  user?: any;
+  selectedRow?: (any & { gridName: string }) | null;
+  onRowSelect?: (row: any | null, gridName?: string) => void;
+  onCloseSidePanel?: () => void;
 }
 
 const MainContent: React.FC<MainContentProps> = ({
@@ -241,7 +238,7 @@ const MainContent: React.FC<MainContentProps> = ({
 
   // Function to transform provider-specific state licenses data
   const getProviderStateLicensesData = () => {
-    if (!stateLicensesQuery.data) return [];
+    if (!stateLicensesQuery.data || !Array.isArray(stateLicensesQuery.data)) return [];
     
     return stateLicensesQuery.data.map((license) => ({
       id: license.id,
@@ -266,7 +263,7 @@ const MainContent: React.FC<MainContentProps> = ({
     setCurrentGridIndex(newIndex);
     
     // Add the new grid to visible grids for lazy loading
-    setVisibleGrids(prev => new Set([...prev, newIndex]));
+    setVisibleGrids(prev => new Set(Array.from(prev).concat([newIndex])));
     
     // Smooth scroll within the grid container
     setTimeout(() => {
@@ -290,7 +287,7 @@ const MainContent: React.FC<MainContentProps> = ({
     setCurrentGridIndex(newIndex);
     
     // Add the new grid to visible grids for lazy loading
-    setVisibleGrids(prev => new Set([...prev, newIndex]));
+    setVisibleGrids(prev => new Set(Array.from(prev).concat([newIndex])));
     
     // Smooth scroll within the grid container
     setTimeout(() => {
@@ -309,10 +306,9 @@ const MainContent: React.FC<MainContentProps> = ({
     }, 100);
   };
 
-  // Handler for row click in main (All Providers) view
-  const handleProviderSelect = (row: any) => {
-    if (!currentGrid || !onGridRowSelect) return;
-    const gridName = currentGrid.tableName;
+  // Handler for row click in main (All Providers) view - now handled by handleRowClick
+  const handleProviderSelect = (row: any, gridName: string) => {
+    if (!onGridRowSelect) return;
     // If clicking the already selected row, unselect and close side panel
     if (selectedRowsByGrid[gridName] === row.id) {
       onGridRowSelect(gridName, null, null);
@@ -342,8 +338,8 @@ const MainContent: React.FC<MainContentProps> = ({
     // Always clear selection for the active panel grid
     if (activePanelGridName && onClearGridRowSelect) {
       onClearGridRowSelect(activePanelGridName);
-    } else if (currentGrid && onClearGridRowSelect) {
-      onClearGridRowSelect(currentGrid.tableName);
+    } else if (activePanelGridName && onClearGridRowSelect) {
+      onClearGridRowSelect(activePanelGridName);
     }
   };
 
@@ -359,7 +355,7 @@ const MainContent: React.FC<MainContentProps> = ({
     }
     
     // fallback to providerInfoConfig or an empty array
-    return providerInfoConfig;
+    return []; // Changed from providerInfoConfig to an empty array
   };
 
   // Memoize inputConfig for SidePanel
@@ -367,17 +363,23 @@ const MainContent: React.FC<MainContentProps> = ({
 
   // Define handleRowClick before usage
   const handleRowClick = (row: any, gridName: string) => {
-    if (selectedRow && selectedRow.id === row.id && selectedRow.gridName === gridName) {
-      onRowSelect(null);
-    } else {
-      onRowSelect(row, gridName);
+    if (onRowSelect) {
+      // New interface for AllRecords component
+      if (selectedRow && selectedRow.id === row.id && selectedRow.gridName === gridName) {
+        onRowSelect(null);
+      } else {
+        onRowSelect(row, gridName);
+      }
+    } else if (onGridRowSelect) {
+      // Legacy interface for SingleProvider component
+      handleProviderSelect(row, gridName);
     }
   };
 
   const handleGridInView = useCallback((index: number) => {
     setVisibleGrids(prev => {
       if (!prev.has(index)) {
-        return new Set([...prev, index]);
+        return new Set(Array.from(prev).concat([index]));
       }
       return prev;
     });
@@ -666,7 +668,7 @@ const MainContent: React.FC<MainContentProps> = ({
       </div>
 
       {/* Side Panel */}
-      {selectedRow && (
+      {selectedRow && onCloseSidePanel && (
         <SidePanel
           isOpen={!!selectedRow}
           selectedRow={selectedRow}

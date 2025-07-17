@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import SideNav from "@/components/SideNav";
 import HorizontalNav from "@/components/HorizontalNav";
 import AllProvidersHeader from "@/components/AllProvidersHeader";
-import MainContent from "@/components/MainContent";
+// import MainContent from "@/components/MainContent"; // Currently unused
 
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from '@tanstack/react-query';

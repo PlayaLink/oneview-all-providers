@@ -5,6 +5,16 @@ import { dbFetch, dbInsert, dbUpdate, dbDelete } from './dbClient';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://nsqushsijqnlstgwgkzx.supabase.co';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zcXVzaHNpanFubHN0Z3dna3p4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NTA2OTksImV4cCI6MjA2NzEyNjY5OX0.v0zmEJ83t1tI9Obt-ofjk6SJ3VxynkOoKJIwpDGLc5g';
 
+// Ensure we have a valid URL for edge function calls
+export const getSupabaseUrl = () => {
+  const url = import.meta.env.VITE_SUPABASE_URL || 'https://nsqushsijqnlstgwgkzx.supabase.co';
+  if (!url || url === 'undefined') {
+    console.warn('VITE_SUPABASE_URL is not set, using fallback URL');
+    return 'https://nsqushsijqnlstgwgkzx.supabase.co';
+  }
+  return url;
+};
+
 
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {

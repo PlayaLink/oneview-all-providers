@@ -33,7 +33,45 @@ serve(async (req) => {
     });
   }
 
-  // Set up Supabase client with service role key
+  // Check for authentication header
+  const authHeader = req.headers.get("authorization");
+  let isAuthenticated = false;
+  let user = null;
+
+  // Try to verify JWT if authorization header is present
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    const token = authHeader.replace("Bearer ", "");
+    
+    // Check if this is a dummy token for development
+    if (token === "dummy-token-for-development") {
+      console.log("Using dummy token for development, proceeding without authentication");
+      isAuthenticated = false;
+      user = null;
+    } else {
+      try {
+        // Set up Supabase client with anon key for JWT verification
+        const supabaseAnon = createClient(
+          Deno.env.get("SUPABASE_URL")!,
+          Deno.env.get("SUPABASE_ANON_KEY")!
+        );
+        
+        const { data: { user: authUser }, error: authError } = await supabaseAnon.auth.getUser(token);
+        if (!authError && authUser) {
+          isAuthenticated = true;
+          user = authUser;
+          console.log("Authenticated user:", user.email);
+        } else {
+          console.log("Invalid JWT token, proceeding without authentication");
+        }
+      } catch (error) {
+        console.log("JWT verification failed, proceeding without authentication:", error);
+      }
+    }
+  } else {
+    console.log("No authorization header, proceeding without authentication");
+  }
+
+  // Set up Supabase client with service role key for database access
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
