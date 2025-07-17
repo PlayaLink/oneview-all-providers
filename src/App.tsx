@@ -42,6 +42,16 @@ const AuthWrapper = ({ user, loading }: { user: any, loading: boolean }) => {
 
   if (loading || flagLoading) return <div>Loading...</div>;
 
+  // If authentication is required and user is not authenticated, redirect to login
+  if (requireAuth && !effectiveUser) {
+    return (
+      <Routes>
+        <Route path="/login" element={<AuthPage />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    );
+  }
+
   return (
     <Routes>
       {/* Login route always accessible */}
@@ -56,10 +66,6 @@ const AuthWrapper = ({ user, loading }: { user: any, loading: boolean }) => {
         {/* Catch-all route: redirect to /all-records */}
         <Route path="/*" element={<Navigate to="/all-records" replace />} />
       </Route>
-      {/* If auth is required and not logged in, redirect to /login */}
-      {requireAuth && !effectiveUser && (
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      )}
     </Routes>
   );
 };
@@ -119,7 +125,13 @@ const App = () => {
           .eq('setting_key', 'user_authentication')
           .single();
         if (!cancelled) {
-          setRequireAuth(data ? data.setting_value : true);
+          const newRequireAuth = data ? data.setting_value : true;
+          setRequireAuth(newRequireAuth);
+          
+          // If authentication is now required, clear any dummy user
+          if (newRequireAuth) {
+            sessionStorage.removeItem('oneview_dummy_user');
+          }
         }
       } catch {
         if (!cancelled) setRequireAuth(true);

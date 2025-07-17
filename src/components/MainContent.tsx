@@ -584,12 +584,12 @@ const MainContent: React.FC<MainContentProps> = ({
               >
                 {/* Only render DataGrid if it's been visited or is the current grid */}
                 {visibleGrids.has(index) ? (
-                  <DataGrid
+          <DataGrid
                     title={grid.tableName.replace(/_/g, " ")}
                     icon={getIconByName(grid.icon)}
                     data={getDataForGrid(grid.tableName)}
                     columns={getColumnsForGrid(grid.tableName)}
-                    height="100%"
+            height="100%"
                     onRowClicked={(row) => handleRowClick(row, grid.tableName)}
                     selectedRowId={selectedRow && selectedRow.gridName === grid.tableName ? selectedRow.id : null}
                   />
@@ -669,7 +669,7 @@ const MainContent: React.FC<MainContentProps> = ({
 
       {/* Side Panel */}
       {selectedRow && onCloseSidePanel && (
-        <SidePanel
+      <SidePanel
           isOpen={!!selectedRow}
           selectedRow={selectedRow}
           inputConfig={getTemplateConfigForActiveGrid()}

@@ -8,7 +8,7 @@ import { Outlet } from "react-router-dom";
 
 interface AppLayoutProps {
   user: any;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   showFooter?: boolean;
 }
 

@@ -36,17 +36,27 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
   const handleLogout = async () => {
     // Check if the user is a dummy user (by email domain)
     if (user?.email && user.email.endsWith('@oneview.local')) {
-      // Generate a new dummy user and store in sessionStorage
-      const firstName = faker.person.firstName();
-      const lastName = faker.person.lastName();
-      const email = faker.internet.email({ firstName, lastName, provider: 'oneview.local' });
-      const dummy = {
-        id: faker.string.uuid(),
-        email,
-        user_metadata: { full_name: `${firstName} ${lastName}` }
-      };
-      sessionStorage.setItem('oneview_dummy_user', JSON.stringify(dummy));
-      window.location.reload();
+      // Clear the dummy user from sessionStorage
+      sessionStorage.removeItem('oneview_dummy_user');
+      
+      // Check if authentication is required
+      const { value: requireAuth } = useFeatureFlag("user_authentication");
+      if (requireAuth) {
+        // If auth is required, redirect to login
+        window.location.href = "/login";
+      } else {
+        // If auth is not required, generate a new dummy user
+        const firstName = faker.person.firstName();
+        const lastName = faker.person.lastName();
+        const email = faker.internet.email({ firstName, lastName, provider: 'oneview.local' });
+        const dummy = {
+          id: faker.string.uuid(),
+          email,
+          user_metadata: { full_name: `${firstName} ${lastName}` }
+        };
+        sessionStorage.setItem('oneview_dummy_user', JSON.stringify(dummy));
+        window.location.reload();
+      }
     } else {
       await supabase.auth.signOut();
       window.location.href = "/";

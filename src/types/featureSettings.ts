@@ -14,6 +14,7 @@ export interface FeatureSettings {
   floating_filters: boolean; // Feature flag for floating filters
   grid_scroll_arrows_left: boolean; // Feature flag for grid scroll arrows direction
   user_authentication: boolean; // Feature flag for user authentication
+  all_providers_tab: boolean; // Feature flag for all providers tab
 }
 
 export type FeatureSettingKey = keyof FeatureSettings;
@@ -24,4 +25,5 @@ export const DEFAULT_FEATURE_SETTINGS: FeatureSettings = {
   floating_filters: false, // Default to false (off)
   grid_scroll_arrows_left: false, // Default to false (right direction)
   user_authentication: true, // Default to true (auth required)
+  all_providers_tab: true, // Default to true (tab visible)
 }; 
