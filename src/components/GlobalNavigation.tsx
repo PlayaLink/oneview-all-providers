@@ -21,6 +21,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
   const [newFeaturesDropdownOpen, setNewFeaturesDropdownOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
   const { value: hasAllProviderTab, isLoading: navLoading } = useFeatureFlag("all_providers_tab");
+  const { value: requireAuth } = useFeatureFlag("user_authentication");
 
   useEffect(() => {
     if (!profileDropdownOpen) return;
@@ -39,8 +40,6 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
       // Clear the dummy user from sessionStorage
       sessionStorage.removeItem('oneview_dummy_user');
       
-      // Check if authentication is required
-      const { value: requireAuth } = useFeatureFlag("user_authentication");
       if (requireAuth) {
         // If auth is required, redirect to login
         window.location.href = "/login";
