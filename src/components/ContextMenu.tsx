@@ -1,6 +1,17 @@
-import React, { useEffect, useRef } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash, faCopy, faEye, faDownload } from '@fortawesome/free-solid-svg-icons';
+import React, { useEffect, useRef } from "react";
+import {
+  Plus,
+  ExternalLink,
+  IdCard,
+  FilterX,
+  RotateCcw,
+  Unlock,
+  Bell,
+  BellRing,
+  BellOff,
+  Copy,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface ContextMenuProps {
   x: number;
@@ -10,7 +21,23 @@ interface ContextMenuProps {
   gridName?: string;
 }
 
-const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, onClose, rowData, gridName }) => {
+interface MenuItem {
+  id: string;
+  label?: string;
+  icon?: React.ComponentType<{ className?: string }>;
+  action?: string;
+  enabled?: boolean;
+  shortcut?: string;
+  type?: "separator";
+}
+
+const ContextMenu: React.FC<ContextMenuProps> = ({
+  x,
+  y,
+  onClose,
+  rowData,
+  gridName,
+}) => {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -21,17 +48,17 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, onClose, rowData, gridN
     };
 
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         onClose();
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleEscape);
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
     };
   }, [onClose]);
 
@@ -40,112 +67,190 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, onClose, rowData, gridN
     onClose();
   };
 
-  const menuItems = [
+  const menuItems: MenuItem[] = [
     {
-      id: 'view',
-      label: 'View Details',
-      icon: faEye,
-      action: 'view',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+      id: "add",
+      label: "Add",
+      icon: Plus,
+      action: "add",
+      enabled: true,
     },
     {
-      id: 'edit',
-      label: 'Edit Record',
-      icon: faEdit,
-      action: 'edit',
-      description: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+      id: "open-single-provider",
+      label: "Open Single Provider View",
+      icon: ExternalLink,
+      action: "open-single-provider",
+      enabled: true,
     },
     {
-      id: 'copy',
-      label: 'Copy Record',
-      icon: faCopy,
-      action: 'copy',
-      description: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco.'
+      id: "open-prior-version",
+      label: "Open in Prior Version",
+      icon: ExternalLink,
+      action: "open-prior-version",
+      enabled: true,
     },
     {
-      id: 'download',
-      label: 'Download Data',
-      icon: faDownload,
-      action: 'download',
-      description: 'Laboris nisi ut aliquip ex ea commodo consequat.'
+      id: "show-board-details",
+      label: "Show Board Details",
+      icon: IdCard,
+      action: "show-board-details",
+      enabled: true,
     },
     {
-      id: 'delete',
-      label: 'Delete Record',
-      icon: faTrash,
-      action: 'delete',
-      description: 'Duis aute irure dolor in reprehenderit in voluptate velit.'
-    }
+      id: "clear-filters",
+      label: "Clear All Filters",
+      icon: FilterX,
+      action: "clear-filters",
+      enabled: true,
+    },
+    {
+      id: "separator-1",
+      type: "separator",
+    },
+    {
+      id: "update-licenses",
+      label: "Update Selected Licenses",
+      icon: RotateCcw,
+      action: "update-licenses",
+      enabled: false,
+    },
+    {
+      id: "unlock-record",
+      label: "Unlock Selected Record",
+      icon: Unlock,
+      action: "unlock-record",
+      enabled: false,
+    },
+    {
+      id: "toggle-alerts",
+      label: "Enable/Disable Selected Alerts",
+      icon: BellRing,
+      action: "toggle-alerts",
+      enabled: false,
+    },
+    {
+      id: "enable-alerts",
+      label: "Enable Selected Alerts",
+      icon: Bell,
+      action: "enable-alerts",
+      enabled: false,
+    },
+    {
+      id: "disable-alerts",
+      label: "Disable Selected Alerts",
+      icon: BellOff,
+      action: "disable-alerts",
+      enabled: false,
+    },
+    {
+      id: "separator-2",
+      type: "separator",
+    },
+    {
+      id: "copy",
+      label: "Copy",
+      icon: Copy,
+      action: "copy",
+      enabled: true,
+      shortcut: "Ctrl+C",
+    },
+    {
+      id: "copy-with-headers",
+      label: "Copy with Headers",
+      icon: Copy,
+      action: "copy-with-headers",
+      enabled: true,
+    },
   ];
 
   return (
     <div
       ref={menuRef}
-      className="fixed z-50 bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-64"
+      className="fixed z-50 w-[285px] bg-white rounded-lg shadow-[0_0_25px_rgba(0,0,0,0.15)] py-1"
       style={{
         left: x,
         top: y,
-        maxHeight: '400px',
-        overflowY: 'auto'
       }}
       role="menu"
       aria-label="Row context menu"
       data-testid="context-menu"
       data-referenceid="context-menu"
     >
-      {/* Header */}
-      <div className="px-4 py-2 border-b border-gray-100 bg-gray-50 rounded-t-lg">
-        <h3 className="text-sm font-semibold text-gray-700" data-testid="context-menu-title">
-          {gridName ? `${gridName} Actions` : 'Row Actions'}
-        </h3>
-        {rowData?.provider_name && (
-          <p className="text-xs text-gray-500 mt-1" data-testid="context-menu-subtitle">
-            {rowData.provider_name}
-          </p>
-        )}
-      </div>
+      {menuItems.map((item) => {
+        if (item.type === "separator") {
+          return (
+            <div
+              key={item.id}
+              className="flex justify-center items-center py-1"
+            >
+              <div className="w-full h-px bg-[#EAECEF]" />
+            </div>
+          );
+        }
 
-      {/* Menu Items */}
-      <div className="py-1">
-        {menuItems.map((item) => (
+        const IconComponent = item.icon;
+        const isEnabled = item.enabled;
+
+        return (
           <button
             key={item.id}
-            className="w-full px-4 py-3 text-left hover:bg-blue-50 focus:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset transition-colors duration-150"
-            onClick={() => handleMenuItemClick(item.action)}
+            className={cn(
+              "w-full flex items-center justify-end gap-2 px-2 py-1 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition-colors duration-150",
+              !isEnabled && "cursor-not-allowed",
+            )}
+            onClick={() => isEnabled && handleMenuItemClick(item.action!)}
+            disabled={!isEnabled}
             role="menuitem"
             aria-label={item.label}
             data-testid={`context-menu-item-${item.id}`}
             data-referenceid={`context-menu-${item.id}`}
           >
-            <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 mt-0.5">
-                <FontAwesomeIcon 
-                  icon={item.icon} 
-                  className="w-4 h-4 text-gray-500" 
+            <div className="flex w-5 h-4 justify-center items-center">
+              {IconComponent && (
+                <IconComponent
+                  className={cn(
+                    "w-4 h-4",
+                    isEnabled ? "text-[#545454]" : "text-[#BABABA]",
+                  )}
                   aria-hidden="true"
                 />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium text-gray-900">
-                  {item.label}
-                </div>
-                <div className="text-xs text-gray-500 mt-1 leading-relaxed">
-                  {item.description}
-                </div>
-              </div>
+              )}
             </div>
-          </button>
-        ))}
-      </div>
 
-      {/* Footer */}
-      <div className="px-4 py-2 border-t border-gray-100 bg-gray-50 rounded-b-lg">
-        <p className="text-xs text-gray-400 text-center">
-          Right-click to close • ESC to cancel
-        </p>
-      </div>
+            <div className="flex items-center gap-2 flex-1">
+              <span
+                className={cn(
+                  "text-xs font-medium tracking-[0.429px]",
+                  isEnabled ? "text-[#545454]" : "text-[#BABABA]",
+                )}
+                style={{
+                  fontFamily:
+                    "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
+                }}
+              >
+                {item.label}
+              </span>
+            </div>
+
+            {item.shortcut && (
+              <span
+                className={cn(
+                  "text-xs font-medium tracking-[0.429px] text-right flex-1",
+                  isEnabled ? "text-[#545454]" : "text-[#BABABA]",
+                )}
+                style={{
+                  fontFamily:
+                    "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
+                }}
+              >
+                {item.shortcut}
+              </span>
+            )}
+          </button>
+        );
+      })}
     </div>
   );
 };
 
-export default ContextMenu; 
+export default ContextMenu;
