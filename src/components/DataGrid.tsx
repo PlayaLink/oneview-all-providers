@@ -268,6 +268,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         data-debug-height={computedHeight}
         data-debug-rowcount={data.length}
         data-debug-colcount={columnDefs.length}
+        onContextMenu={(e) => e.preventDefault()}
       >
         <AgGridReact
           rowData={data}
