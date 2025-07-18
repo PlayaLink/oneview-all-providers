@@ -36,7 +36,7 @@ export interface Requirement {
   note: string | null;
   visible: boolean;
   required: boolean;
-  credentialing_entity: string | null;
+  credentialing_entities: string[]; // Array of facility IDs
   data: string[]; // Array of requirement_data UUIDs
   created_at: string;
   updated_at: string;
@@ -63,7 +63,7 @@ export interface CreateRequirement {
   note?: string;
   visible?: boolean;
   required?: boolean;
-  credentialing_entity?: string;
+  credentialing_entities?: string[];
   data?: string[];
 }
 
@@ -81,7 +81,7 @@ export interface UpdateRequirement {
   label?: string;
   note?: string;
   visible?: boolean;
-  credentialing_entity?: string;
+  credentialing_entities?: string[];
   data?: string[];
 }
 
@@ -92,7 +92,7 @@ export interface RequirementFilters {
   key?: string;
   search?: string;
   visible?: boolean;
-  credentialing_entity?: string;
+  credentialing_entities?: string[];
 }
 
 export interface RequirementDataFilters {

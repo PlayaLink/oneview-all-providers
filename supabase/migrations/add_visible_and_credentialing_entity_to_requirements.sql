@@ -25,7 +25,7 @@ SELECT
   r.label,
   r.note,
   r.visible,
-  r.credentialing_entity,
+  r.credentialing_entities,
   r.data,
   r.created_at,
   r.updated_at,

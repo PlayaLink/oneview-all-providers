@@ -32,7 +32,7 @@ Stores requirement definitions with references to requirement_data items.
 | `note` | TEXT | Additional notes or description |
 | `visible` | BOOLEAN | Whether the requirement is visible in the UI |
 | `required` | BOOLEAN | Whether this requirement is mandatory for compliance |
-| `credentialing_entity` | UUID | Reference to the credentialing entity (e.g., facility affiliation ID) |
+| `credentialing_entities` | UUID[] | Array of facility IDs that this requirement applies to |
 | `data` | UUID[] | Array of requirement_data IDs |
 | `created_at` | TIMESTAMP | Creation timestamp |
 | `updated_at` | TIMESTAMP | Last update timestamp |
@@ -72,7 +72,7 @@ const validationRequirement = await createRequirement({
   label: 'Facility Licensing Validation Rules',
   note: 'Validation rules for facility licensing',
   visible: true,
-  credentialing_entity: 'facility-affiliation-uuid-here',
+  credentialing_entities: ['facility-uuid-1', 'facility-uuid-2'],
   data: [emailValidationData[0].id, ageValidationData[0].id]
 });
 ```
@@ -107,7 +107,7 @@ const licensingReqs = await searchRequirements('licensing', {
   group: 'licensing',
   type: 'facility',
   visible: true,
-  credentialing_entity: 'facility-affiliation-uuid'
+  credentialing_entities: ['facility-uuid-1', 'facility-uuid-2']
 });
 ```
 
@@ -172,7 +172,7 @@ const requirement: Requirement = {
   note: 'Validates facility requirements',
   visible: true,
   required: true,
-  credentialing_entity: 'facility-affiliation-uuid',
+  credentialing_entities: ['facility-uuid-1', 'facility-uuid-2'],
   data: ['data-uuid-1', 'data-uuid-2'],
   created_at: '2024-01-01T00:00:00Z',
   updated_at: '2024-01-01T00:00:00Z'
@@ -207,9 +207,11 @@ console.log(REQUIREMENT_TYPE_LABELS[requirement.type]); // "Validation"
 - `fetchRequirementByKey(key)` - Get requirement by key
 - `fetchRequirementsByGroup(groupName)` - Get requirements by group
 - `fetchRequirementsByType(type)` - Get requirements by type
-- `fetchRequirementsByCredentialingEntity(entityId)` - Get requirements by credentialing entity
+- `fetchRequirementsByCredentialingEntities(entityIds)` - Get requirements by credentialing entities
+- `fetchRequirementsByCredentialingEntity(entityId)` - Get requirements by a single credentialing entity (backward compatibility)
 - `fetchVisibleRequirements()` - Get only visible requirements
-- `fetchRequirementsByTypeAndEntity(type, entityId)` - Get requirements by type and entity
+- `fetchRequirementsByTypeAndEntities(type, entityIds)` - Get requirements by type and credentialing entities
+- `fetchRequirementsByTypeAndEntity(type, entityId)` - Get requirements by type and a single credentialing entity (backward compatibility)
 - `createRequirement(data)` - Create new requirement
 - `updateRequirement(id, data)` - Update existing requirement
 - `deleteRequirement(id)` - Delete requirement

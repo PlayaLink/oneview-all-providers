@@ -23,7 +23,7 @@ SELECT
         'label', r.label,
         'note', r.note,
         'visible', r.visible,
-        'credentialing_entity', r.credentialing_entity
+        'credentialing_entities', r.credentialing_entities
       )
     ) FROM requirements r WHERE r.id = ANY(fa.requirements)),
     '[]'::json

@@ -5,294 +5,23 @@ const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1N
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-async function seedFacilityProperties() {
-  console.log('🌱 Seeding facility_properties table...');
+async function seedFacilities() {
+  console.log('🌱 Seeding facilities table...');
 
-  const facilityProperties = [
-    // General Section
-    {
-      key: 'facility_name',
-      label: 'Facility Name',
-      group: 'general',
-      value: 'Charlotte Mecklenburg Hospital Authority',
-      type: 'text'
-    },
-    {
-      key: 'abbreviation',
-      label: 'Abbreviation',
-      group: 'general',
-      value: 'CMHA',
-      type: 'text'
-    },
-    {
-      key: 'facility_type',
-      label: 'Facility Type',
-      group: 'general',
-      value: 'acute_care',
-      type: 'single-select'
-    },
-    {
-      key: 'facility_id',
-      label: 'Facility ID',
-      group: 'general',
-      value: '123456',
-      type: 'text'
-    },
-    {
-      key: 'cmc_id',
-      label: 'CMC ID',
-      group: 'general',
-      value: '345677',
-      type: 'text'
-    },
-    {
-      key: 'npi_number',
-      label: 'NPI #',
-      group: 'identification',
-      value: '1234567890',
-      type: 'text'
-    },
-    {
-      key: 'clia_number',
-      label: 'CLIA #',
-      group: 'identification',
-      value: '12D1234567',
-      type: 'text'
-    },
-    {
-      key: 'tax_id',
-      label: 'Tax ID #',
-      group: 'identification',
-      value: '12-3456789',
-      type: 'text'
-    },
-    {
-      key: 'group_medicare',
-      label: 'Group Medicare #',
-      group: 'identification',
-      value: '1234567890A',
-      type: 'text'
-    },
-    // Address Section
-    {
-      key: 'address_line1',
-      label: 'Address',
-      group: 'address',
-      value: '920 John Paul Jones Cir',
-      type: 'text'
-    },
-    {
-      key: 'city',
-      label: 'City',
-      group: 'address',
-      value: 'Portsmouth',
-      type: 'text'
-    },
-    {
-      key: 'state',
-      label: 'State',
-      group: 'address',
-      value: 'Oregon',
-      type: 'text'
-    },
-    {
-      key: 'country',
-      label: 'Country',
-      group: 'address',
-      value: 'United States of America',
-      type: 'text'
-    },
-    {
-      key: 'zip_code',
-      label: 'Zip/Postal Code',
-      group: 'address',
-      value: '23708',
-      type: 'text'
-    },
-    {
-      key: 'phone',
-      label: 'Phone #',
-      group: 'address',
-      value: '(757) 953-1640',
-      type: 'phone'
-    },
-    {
-      key: 'fax',
-      label: 'Fax #',
-      group: 'address',
-      value: '(757) 988-5103',
-      type: 'phone'
-    },
-    {
-      key: 'website',
-      label: 'Website',
-      group: 'address',
-      value: 'www.charlottemecklen.org',
-      type: 'url'
-    },
-    {
-      key: 'near_public_transportation',
-      label: 'Near Public Transportation',
-      group: 'address',
-      value: 'Yes',
-      type: 'boolean'
-    },
-    {
-      key: 'handicap_access',
-      label: 'Handicap Access',
-      group: 'address',
-      value: 'Yes',
-      type: 'boolean'
-    },
-    // Credentialing Section
-    {
-      key: 'credentialing_contact_name',
-      label: 'Contact Name',
-      group: 'credentialing',
-      value: 'Brooke Nuñez',
-      type: 'text'
-    },
-    {
-      key: 'credentialing_contact_title',
-      label: 'Contact Title',
-      group: 'credentialing',
-      value: 'Registration Program Specialist',
-      type: 'text'
-    },
-    {
-      key: 'credentialing_contact_phone',
-      label: 'Contact Phone #',
-      group: 'credentialing',
-      value: '(757) 953-1640',
-      type: 'phone'
-    },
-    {
-      key: 'credentialing_contact_email',
-      label: 'Contact Email',
-      group: 'credentialing',
-      value: 'brooke.nunez@blueridgehospital.com',
-      type: 'email'
-    },
-    // Billing Section
-    {
-      key: 'billing_name',
-      label: 'Billing Name',
-      group: 'billing',
-      value: 'Charlotte Mecklenburg Hospital Authority',
-      type: 'text'
-    },
-    {
-      key: 'billing_phone',
-      label: 'Billing Phone #',
-      group: 'billing',
-      value: '(757) 953-1640',
-      type: 'phone'
-    },
-    // Payment Details Section
-    {
-      key: 'payee',
-      label: 'Payee',
-      group: 'payment',
-      value: 'Medical Board of California',
-      type: 'text'
-    },
-    {
-      key: 'supplier_number',
-      label: 'Supplier Number',
-      group: 'payment',
-      value: '4279-12312-12',
-      type: 'text'
-    },
-    // Approval Process Section
-    {
-      key: 'time_to_complete',
-      label: 'Time Required to Complete',
-      group: 'approval_process',
-      value: '90-120 Days from when Application is Submitted',
-      type: 'text'
-    },
-    {
-      key: 'approval_method',
-      label: 'Approval Method',
-      group: 'approval_process',
-      value: 'Signature',
-      type: 'single-select'
-    },
-    {
-      key: 'license_pending_meetings',
-      label: 'File can go to meetings with License Pending',
-      group: 'approval_process',
-      value: 'No',
-      type: 'boolean'
-    },
-    {
-      key: 'dea_pending_meetings',
-      label: 'File can go to meetings with DEA Pending',
-      group: 'approval_process',
-      value: 'Yes',
-      type: 'boolean'
-    },
-    {
-      key: 'payor_enrollment_required',
-      label: 'Does Payor Enrollment need to be completed prior to approval?',
-      group: 'approval_process',
-      value: 'Yes',
-      type: 'boolean'
-    },
-    {
-      key: 'primary_source_verification',
-      label: 'Primary Source Verification Required',
-      group: 'approval_process',
-      value: 'Yes',
-      type: 'boolean'
-    },
-    {
-      key: 'application_type',
-      label: 'Application Type',
-      group: 'approval_process',
-      value: 'Mapped',
-      type: 'single-select'
-    },
-    {
-      key: 'orientation_required',
-      label: 'Orientation Required Prior to Privileges Granted',
-      group: 'approval_process',
-      value: 'Yes',
-      type: 'boolean'
-    },
-    {
-      key: 'pay_application_fee',
-      label: 'Do we pay Application Fee?',
-      group: 'approval_process',
-      value: 'No',
-      type: 'boolean'
-    },
-    // Fees Section
-    {
-      key: 'hospital_privilege_fee',
-      label: 'Hospital Privilege Fee',
-      group: 'fees',
-      value: '20.00',
-      type: 'number'
-    }
-  ];
-
-  const { data: insertedProperties, error: propertiesError } = await supabase
+  // Get existing facility properties from the database
+  const { data: facilityProperties, error: propertiesError } = await supabase
     .from('facility_properties')
-    .insert(facilityProperties)
-    .select();
+    .select('id');
 
   if (propertiesError) {
-    console.error('❌ Error seeding facility_properties:', propertiesError);
+    console.error('❌ Error fetching facility_properties:', propertiesError);
     return;
   }
 
-  console.log(`✅ Inserted ${insertedProperties.length} facility properties`);
-  return insertedProperties;
-}
-
-async function seedFacilities(facilityProperties: any[]) {
-  console.log('🌱 Seeding facilities table...');
+  if (!facilityProperties || facilityProperties.length === 0) {
+    console.error('❌ No facility properties found. Please run the facility properties seeding script first.');
+    return;
+  }
 
   // Get some existing requirements and providers for references
   const { data: requirements } = await supabase
@@ -308,96 +37,42 @@ async function seedFacilities(facilityProperties: any[]) {
   const requirementIds = requirements?.map(r => r.id) || [];
   const providerIds = providers?.map(p => p.id) || [];
 
+  // Get all facility property IDs
+  const allPropertyIds = facilityProperties.map(prop => prop.id);
+
   const facilities = [
     {
-      label: 'General Medical Center',
+      label: 'Charlotte Mecklenburg Hospital Authority',
       icon: 'hospital',
-      facility_properties: [
-        facilityProperties[0].id, // facility_type
-        facilityProperties[1].id, // bed_count
-        facilityProperties[2].id, // accreditation_status
-        facilityProperties[3].id, // emergency_services
-        facilityProperties[4].id, // specialties
-        facilityProperties[5].id, // address
-        facilityProperties[6].id, // phone
-        facilityProperties[7].id, // email
-        facilityProperties[8].id, // website
-        facilityProperties[9].id  // operating_hours
-      ],
+      facility_properties: allPropertyIds,
       requirements: requirementIds.slice(0, 3),
       providers: providerIds.slice(0, 5)
     },
     {
       label: 'Cardiac Care Institute',
       icon: 'heart',
-      facility_properties: [
-        facilityProperties[0].id, // facility_type
-        facilityProperties[1].id, // bed_count
-        facilityProperties[2].id, // accreditation_status
-        facilityProperties[4].id, // specialties
-        facilityProperties[5].id, // address
-        facilityProperties[6].id, // phone
-        facilityProperties[7].id, // email
-        facilityProperties[8].id, // website
-        facilityProperties[9].id, // operating_hours
-        facilityProperties[13].id // trauma_level
-      ],
+      facility_properties: allPropertyIds,
       requirements: requirementIds.slice(1, 4),
       providers: providerIds.slice(2, 7)
     },
     {
       label: 'Children\'s Hospital',
       icon: 'baby',
-      facility_properties: [
-        facilityProperties[0].id, // facility_type
-        facilityProperties[1].id, // bed_count
-        facilityProperties[2].id, // accreditation_status
-        facilityProperties[3].id, // emergency_services
-        facilityProperties[4].id, // specialties
-        facilityProperties[5].id, // address
-        facilityProperties[6].id, // phone
-        facilityProperties[7].id, // email
-        facilityProperties[8].id, // website
-        facilityProperties[9].id, // operating_hours
-        facilityProperties[14].id // icu_beds
-      ],
+      facility_properties: allPropertyIds,
       requirements: requirementIds.slice(0, 2),
       providers: providerIds.slice(5, 10)
     },
     {
       label: 'Rehabilitation Center',
       icon: 'wheelchair',
-      facility_properties: [
-        facilityProperties[0].id, // facility_type
-        facilityProperties[1].id, // bed_count
-        facilityProperties[2].id, // accreditation_status
-        facilityProperties[4].id, // specialties
-        facilityProperties[5].id, // address
-        facilityProperties[6].id, // phone
-        facilityProperties[7].id, // email
-        facilityProperties[8].id, // website
-        facilityProperties[9].id  // operating_hours
-      ],
+      facility_properties: allPropertyIds,
       requirements: requirementIds.slice(2, 4),
       providers: providerIds.slice(0, 3)
     },
     {
       label: 'Emergency Trauma Center',
       icon: 'ambulance',
-      facility_properties: [
-        facilityProperties[0].id, // facility_type
-        facilityProperties[1].id, // bed_count
-        facilityProperties[2].id, // accreditation_status
-        facilityProperties[3].id, // emergency_services
-        facilityProperties[4].id, // specialties
-        facilityProperties[5].id, // address
-        facilityProperties[6].id, // phone
-        facilityProperties[7].id, // email
-        facilityProperties[8].id, // website
-        facilityProperties[9].id, // operating_hours
-        facilityProperties[13].id, // trauma_level
-        facilityProperties[14].id  // icu_beds
-      ],
+      facility_properties: allPropertyIds,
       requirements: requirementIds.slice(1, 3),
       providers: providerIds.slice(3, 8)
     }
@@ -421,15 +96,8 @@ async function main() {
   try {
     console.log('🚀 Starting facilities seeding...');
 
-    // First seed facility_properties
-    const facilityProperties = await seedFacilityProperties();
-    if (!facilityProperties) {
-      console.error('❌ Failed to seed facility_properties, aborting...');
-      return;
-    }
-
-    // Then seed facilities with references to facility_properties
-    await seedFacilities(facilityProperties);
+    // Seed facilities with references to existing facility_properties
+    await seedFacilities();
 
     console.log('🎉 Facilities seeding completed successfully!');
 

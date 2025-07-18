@@ -97,7 +97,7 @@ async function seedRequirements(requirementDataItems: any[]) {
       note: 'Requirements for facility licensing and certification',
       visible: true,
       required: true,
-      credentialing_entity: null, // Will be set when linked to actual facility affiliations
+      credentialing_entities: [], // Will be set when linked to actual facility affiliations
       data: [requirementDataItems[0].id, requirementDataItems[1].id, requirementDataItems[2].id, requirementDataItems[3].id]
     },
     {
@@ -108,7 +108,7 @@ async function seedRequirements(requirementDataItems: any[]) {
       note: 'Safety and compliance standards for healthcare facilities',
       visible: true,
       required: true,
-      credentialing_entity: null,
+      credentialing_entities: [],
       data: [requirementDataItems[4].id]
     },
     {
@@ -119,7 +119,7 @@ async function seedRequirements(requirementDataItems: any[]) {
       note: 'Required equipment and technology for facilities',
       visible: true,
       required: false,
-      credentialing_entity: null,
+      credentialing_entities: [],
       data: [requirementDataItems[5].id]
     },
     {
@@ -130,7 +130,7 @@ async function seedRequirements(requirementDataItems: any[]) {
       note: 'Requirements for board certification of medical professionals',
       visible: true,
       required: true,
-      credentialing_entity: null,
+      credentialing_entities: [],
       data: [requirementDataItems[6].id]
     },
     {
@@ -141,7 +141,7 @@ async function seedRequirements(requirementDataItems: any[]) {
       note: 'Continuing education requirements for board certification',
       visible: true,
       required: true,
-      credentialing_entity: null,
+      credentialing_entities: [],
       data: [requirementDataItems[7].id]
     },
     {
@@ -152,7 +152,7 @@ async function seedRequirements(requirementDataItems: any[]) {
       note: 'Standards and requirements for board examinations',
       visible: true,
       required: true,
-      credentialing_entity: null,
+      credentialing_entities: [],
       data: [requirementDataItems[8].id]
     },
     {
@@ -163,7 +163,7 @@ async function seedRequirements(requirementDataItems: any[]) {
       note: 'Staffing and personnel requirements for facilities',
       visible: true,
       required: false,
-      credentialing_entity: null,
+      credentialing_entities: [],
       data: [requirementDataItems[9].id]
     },
     {
@@ -174,7 +174,7 @@ async function seedRequirements(requirementDataItems: any[]) {
       note: 'Process and requirements for board recertification',
       visible: true,
       required: false,
-      credentialing_entity: null,
+      credentialing_entities: [],
       data: [requirementDataItems[0].id, requirementDataItems[1].id, requirementDataItems[4].id]
     }
   ];

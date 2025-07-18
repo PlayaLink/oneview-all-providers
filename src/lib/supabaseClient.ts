@@ -501,7 +501,7 @@ export const RequirementSchema = z.object({
   note: z.string().nullable().optional(),
   visible: z.boolean(),
   required: z.boolean(),
-  credentialing_entity: z.string().nullable().optional(),
+  credentialing_entities: z.array(z.string()),
   data: z.array(z.string()),
   created_at: z.string(),
   updated_at: z.string(),
@@ -611,7 +611,7 @@ export function createRequirement(data: {
   note?: string;
   visible?: boolean;
   required?: boolean;
-  credentialing_entity?: string;
+  credentialing_entities?: string[];
   data?: string[];
 }) {
   return dbInsert('requirements', [data], RequirementSchema);
@@ -625,7 +625,7 @@ export function updateRequirement(id: string, data: {
   note?: string;
   visible?: boolean;
   required?: boolean;
-  credentialing_entity?: string;
+  credentialing_entities?: string[];
   data?: string[];
 }) {
   return dbUpdate('requirements', id, data, RequirementSchema);
@@ -653,7 +653,7 @@ export async function searchRequirements(searchTerm: string, filters?: {
   type?: string;
   group?: string;
   visible?: boolean;
-  credentialing_entity?: string;
+  credentialing_entities?: string[];
 }) {
   let query = supabase
     .from('requirements')
@@ -672,8 +672,8 @@ export async function searchRequirements(searchTerm: string, filters?: {
     query = query.eq('visible', filters.visible);
   }
   
-  if (filters?.credentialing_entity) {
-    query = query.eq('credentialing_entity', filters.credentialing_entity);
+  if (filters?.credentialing_entities && filters.credentialing_entities.length > 0) {
+    query = query.overlaps('credentialing_entities', filters.credentialing_entities);
   }
   
   const { data, error } = await query;
@@ -681,14 +681,21 @@ export async function searchRequirements(searchTerm: string, filters?: {
   return RequirementSchema.array().parse(data);
 }
 
-// Helper function to get requirements by credentialing entity
-export async function fetchRequirementsByCredentialingEntity(credentialingEntityId: string) {
+// Helper function to get requirements by credentialing entities
+export async function fetchRequirementsByCredentialingEntities(credentialingEntityIds: string[]) {
+  if (!credentialingEntityIds.length) return [];
+  
   const { data, error } = await supabase
     .from('requirements')
     .select('*')
-    .eq('credentialing_entity', credentialingEntityId);
+    .overlaps('credentialing_entities', credentialingEntityIds);
   if (error) throw error;
   return RequirementSchema.array().parse(data);
+}
+
+// Helper function to get requirements by a single credentialing entity (for backward compatibility)
+export async function fetchRequirementsByCredentialingEntity(credentialingEntityId: string) {
+  return fetchRequirementsByCredentialingEntities([credentialingEntityId]);
 }
 
 // Helper function to get visible requirements only
@@ -701,15 +708,22 @@ export async function fetchVisibleRequirements() {
   return RequirementSchema.array().parse(data);
 }
 
-// Helper function to get requirements by type and credentialing entity
-export async function fetchRequirementsByTypeAndEntity(type: string, credentialingEntityId: string) {
+// Helper function to get requirements by type and credentialing entities
+export async function fetchRequirementsByTypeAndEntities(type: string, credentialingEntityIds: string[]) {
+  if (!credentialingEntityIds.length) return [];
+  
   const { data, error } = await supabase
     .from('requirements')
     .select('*')
     .eq('type', type)
-    .eq('credentialing_entity', credentialingEntityId);
+    .overlaps('credentialing_entities', credentialingEntityIds);
   if (error) throw error;
   return RequirementSchema.array().parse(data);
+}
+
+// Helper function to get requirements by type and a single credentialing entity (for backward compatibility)
+export async function fetchRequirementsByTypeAndEntity(type: string, credentialingEntityId: string) {
+  return fetchRequirementsByTypeAndEntities(type, [credentialingEntityId]);
 } 
 
 // --- FACILITIES HELPERS ---
@@ -725,11 +739,19 @@ export const FacilityPropertySchema = z.object({
   updated_at: z.string(),
 });
 
+export const FacilityPropertyValueSchema = z.object({
+  id: z.string(),
+  facility_id: z.string(),
+  facility_property_id: z.string(),
+  value: z.any(), // JSONB can store any JSON value
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
 export const FacilitySchema = z.object({
   id: z.string(),
   label: z.string(),
   icon: z.string().nullable().optional(),
-  facility_properties: z.array(z.string()),
   requirements: z.array(z.string()),
   providers: z.array(z.string()),
   created_at: z.string(),
@@ -855,7 +877,6 @@ export async function fetchFacilitiesByLabel(label: string) {
 export function createFacility(data: {
   label: string;
   icon?: string;
-  facility_properties?: string[];
   requirements?: string[];
   providers?: string[];
 }) {
@@ -865,7 +886,6 @@ export function createFacility(data: {
 export function updateFacility(id: string, data: {
   label?: string;
   icon?: string;
-  facility_properties?: string[];
   requirements?: string[];
   providers?: string[];
 }) {
@@ -1071,4 +1091,204 @@ export async function searchContacts(searchTerm: string, filters?: {
   const { data, error } = await query;
   if (error) throw error;
   return ContactSchema.array().parse(data);
+} 
+
+// --- FACILITY PROPERTY VALUES HELPERS ---
+
+export function fetchFacilityPropertyValues() {
+  return dbFetch('facility_property_values', '*', FacilityPropertyValueSchema);
+}
+
+export async function fetchFacilityPropertyValuesByFacility(facilityId: string) {
+  const { data, error } = await supabase
+    .from('facility_property_values')
+    .select('*')
+    .eq('facility_id', facilityId);
+  if (error) throw error;
+  return FacilityPropertyValueSchema.array().parse(data);
+}
+
+export async function fetchFacilityPropertyValuesByProperty(propertyId: string) {
+  const { data, error } = await supabase
+    .from('facility_property_values')
+    .select('*')
+    .eq('facility_property_id', propertyId);
+  if (error) throw error;
+  return FacilityPropertyValueSchema.array().parse(data);
+}
+
+export function createFacilityPropertyValue(data: {
+  facility_id: string;
+  facility_property_id: string;
+  value?: any; // Can be string, number, boolean, array, object, null
+}) {
+  return dbInsert('facility_property_values', [data], FacilityPropertyValueSchema);
+}
+
+export function updateFacilityPropertyValue(id: string, data: {
+  value?: any; // Can be string, number, boolean, array, object, null
+}) {
+  return dbUpdate('facility_property_values', id, data, FacilityPropertyValueSchema);
+}
+
+export function deleteFacilityPropertyValue(id: string) {
+  return dbDelete('facility_property_values', id);
+}
+
+export async function fetchFacilitiesWithPropertyValues() {
+  const { data, error } = await supabase
+    .from('facilities_with_property_values')
+    .select('*');
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchFacilitiesWithPropertyValuesJson() {
+  const { data, error } = await supabase
+    .from('facilities_with_property_values_json')
+    .select('*');
+  if (error) throw error;
+  return data;
+} 
+
+// Helper function to convert property value based on type
+export function convertPropertyValue(value: any, propertyType: string): any {
+  switch (propertyType) {
+    case 'number':
+      return typeof value === 'number' ? value : parseFloat(value?.toString() || '0');
+    case 'boolean':
+      if (typeof value === 'boolean') return value;
+      if (typeof value === 'string') {
+        return value.toLowerCase() === 'yes' || value.toLowerCase() === 'true';
+      }
+      return false;
+    case 'multi-select':
+      if (Array.isArray(value)) return value;
+      if (typeof value === 'string') {
+        return value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+      }
+      return [];
+    case 'single-select':
+    case 'text':
+    case 'email':
+    case 'url':
+    case 'phone':
+    default:
+      // For JSONB storage, return the actual value, not a string
+      return value || '';
+  }
+}
+
+// Helper function to get facility property value with proper typing
+export async function getFacilityPropertyValue(facilityId: string, propertyKey: string) {
+  const { data, error } = await supabase
+    .from('facility_property_values')
+    .select(`
+      *,
+      facility_property:facility_properties(key, label, type, group)
+    `)
+    .eq('facility_id', facilityId)
+    .eq('facility_property.key', propertyKey)
+    .single();
+  
+  if (error) throw error;
+  
+  if (data) {
+    const convertedValue = convertPropertyValue(data.value, data.facility_property.type);
+    return {
+      ...data,
+      converted_value: convertedValue
+    };
+  }
+  
+  return null;
+}
+
+// Helper function to get all property values for a facility with proper typing
+export async function getFacilityPropertyValues(facilityId: string) {
+  const { data, error } = await supabase
+    .from('facility_property_values')
+    .select(`
+      *,
+      facility_property:facility_properties(key, label, type, group)
+    `)
+    .eq('facility_id', facilityId);
+  
+  if (error) throw error;
+  
+  return data?.map(item => ({
+    ...item,
+    converted_value: convertPropertyValue(item.value, item.facility_property.type)
+  })) || [];
+}
+
+// Helper function to get facility properties grouped by category
+export async function getFacilityPropertiesGrouped(facilityId: string) {
+  const propertyValues = await getFacilityPropertyValues(facilityId);
+  
+  const grouped = propertyValues.reduce((acc, item) => {
+    const group = item.facility_property.group;
+    if (!acc[group]) {
+      acc[group] = [];
+    }
+    acc[group].push({
+      id: item.id,
+      key: item.facility_property.key,
+      label: item.facility_property.label,
+      type: item.facility_property.type,
+      value: item.converted_value,
+      raw_value: item.value
+    });
+    return acc;
+  }, {} as Record<string, Array<{
+    id: string;
+    key: string;
+    label: string;
+    type: string;
+    value: any;
+    raw_value: any;
+  }>>);
+  
+  return grouped;
+}
+
+// Helper function to update facility property value with proper type conversion
+export async function updateFacilityPropertyValueByKey(
+  facilityId: string, 
+  propertyKey: string, 
+  value: any
+) {
+  // First get the property definition to know the type
+  const { data: propertyDef, error: propError } = await supabase
+    .from('facility_properties')
+    .select('id, type')
+    .eq('key', propertyKey)
+    .single();
+  
+  if (propError) throw propError;
+  
+  // Convert the value based on the property type
+  const convertedValue = convertPropertyValue(value, propertyDef.type);
+  
+  // Check if value already exists
+  const { data: existingValue, error: checkError } = await supabase
+    .from('facility_property_values')
+    .select('id')
+    .eq('facility_id', facilityId)
+    .eq('facility_property_id', propertyDef.id)
+    .single();
+  
+  if (checkError && checkError.code !== 'PGRST116') throw checkError; // PGRST116 = no rows returned
+  
+  if (existingValue) {
+    // Update existing value
+    return updateFacilityPropertyValue(existingValue.id, { value: convertedValue });
+  } else {
+    // Create new value
+    return createFacilityPropertyValue({
+      facility_id: facilityId,
+      facility_property_id: propertyDef.id,
+      value: convertedValue
+    });
+  }
 } 

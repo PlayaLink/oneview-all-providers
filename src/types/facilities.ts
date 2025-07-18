@@ -47,6 +47,50 @@ export interface FacilityWithAllData extends Omit<Facility, 'facility_properties
   }>;
 }
 
+export interface FacilityPropertyValue {
+  id: string;
+  facility_id: string;
+  facility_property_id: string;
+  value: any; // JSONB can store string, number, boolean, array, object, null
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FacilityWithPropertyValues {
+  facility_id: string;
+  facility_label: string;
+  facility_icon: string | null;
+  facility_requirements: string[];
+  facility_providers: string[];
+  facility_created_at: string;
+  facility_updated_at: string;
+  property_id: string;
+  property_key: string;
+  property_label: string;
+  property_group: string;
+  property_type: string;
+  property_value: string | null;
+  value_created_at: string;
+  value_updated_at: string;
+}
+
+export interface FacilityWithPropertyValuesJson {
+  id: string;
+  label: string;
+  icon: string | null;
+  requirements: string[];
+  providers: string[];
+  created_at: string;
+  updated_at: string;
+  properties_by_group: Record<string, Array<{
+    id: string;
+    key: string;
+    label: string;
+    type: string;
+    value: any; // JSONB can store string, number, boolean, array, object, null
+  }>>;
+}
+
 // Form interfaces for creating/updating
 export interface CreateFacilityProperty {
   key: string;
