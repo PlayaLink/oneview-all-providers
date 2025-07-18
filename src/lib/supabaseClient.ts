@@ -500,6 +500,7 @@ export const RequirementSchema = z.object({
   label: z.string(),
   note: z.string().nullable().optional(),
   visible: z.boolean(),
+  required: z.boolean(),
   credentialing_entity: z.string().nullable().optional(),
   data: z.array(z.string()),
   created_at: z.string(),
@@ -609,6 +610,7 @@ export function createRequirement(data: {
   label: string;
   note?: string;
   visible?: boolean;
+  required?: boolean;
   credentialing_entity?: string;
   data?: string[];
 }) {
@@ -622,6 +624,7 @@ export function updateRequirement(id: string, data: {
   label?: string;
   note?: string;
   visible?: boolean;
+  required?: boolean;
   credentialing_entity?: string;
   data?: string[];
 }) {
@@ -707,4 +710,365 @@ export async function fetchRequirementsByTypeAndEntity(type: string, credentiali
     .eq('credentialing_entity', credentialingEntityId);
   if (error) throw error;
   return RequirementSchema.array().parse(data);
+} 
+
+// --- FACILITIES HELPERS ---
+
+export const FacilityPropertySchema = z.object({
+  id: z.string(),
+  key: z.string(),
+  label: z.string(),
+  group: z.string(),
+  value: z.string().nullable().optional(),
+  type: z.string(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export const FacilitySchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  icon: z.string().nullable().optional(),
+  facility_properties: z.array(z.string()),
+  requirements: z.array(z.string()),
+  providers: z.array(z.string()),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export function fetchFacilityProperties() {
+  return dbFetch('facility_properties', '*', FacilityPropertySchema);
+}
+
+export async function fetchFacilityPropertyById(id: string) {
+  const { data, error } = await supabase
+    .from('facility_properties')
+    .select('*')
+    .eq('id', id)
+    .single();
+  if (error) throw error;
+  return FacilityPropertySchema.parse(data);
+}
+
+export async function fetchFacilityPropertyByKey(key: string) {
+  const { data, error } = await supabase
+    .from('facility_properties')
+    .select('*')
+    .eq('key', key);
+  if (error) throw error;
+  return FacilityPropertySchema.array().parse(data);
+}
+
+export async function fetchFacilityPropertiesByGroup(groupName: string) {
+  const { data, error } = await supabase
+    .from('facility_properties')
+    .select('*')
+    .eq('group', groupName);
+  if (error) throw error;
+  return FacilityPropertySchema.array().parse(data);
+}
+
+export function createFacilityProperty(data: {
+  key: string;
+  label: string;
+  group: string;
+  value?: string;
+  type?: string;
+}) {
+  return dbInsert('facility_properties', [data], FacilityPropertySchema);
+}
+
+export function updateFacilityProperty(id: string, data: {
+  key?: string;
+  label?: string;
+  group?: string;
+  value?: string;
+  type?: string;
+}) {
+  return dbUpdate('facility_properties', id, data, FacilityPropertySchema);
+}
+
+export function deleteFacilityProperty(id: string) {
+  return dbDelete('facility_properties', id);
+}
+
+export function fetchFacilities() {
+  return dbFetch('facilities', '*', FacilitySchema);
+}
+
+export async function fetchFacilitiesWithProperties() {
+  const { data, error } = await supabase
+    .from('facilities_with_properties')
+    .select('*');
+  if (error) throw error;
+  return FacilitySchema.extend({
+    facility_property_details: z.array(FacilityPropertySchema)
+  }).array().parse(data);
+}
+
+export async function fetchFacilitiesWithAllData() {
+  const { data, error } = await supabase
+    .from('facilities_with_all_data')
+    .select('*');
+  if (error) throw error;
+  return FacilitySchema.extend({
+    facility_property_details: z.array(FacilityPropertySchema),
+    requirement_details: z.array(z.object({
+      id: z.string(),
+      type: z.string(),
+      key: z.string(),
+      group: z.string(),
+      label: z.string(),
+      note: z.string().nullable(),
+      visible: z.boolean()
+    })),
+    provider_details: z.array(z.object({
+      id: z.string(),
+      first_name: z.string().nullable(),
+      last_name: z.string().nullable(),
+      npi_number: z.string().nullable(),
+      title: z.string().nullable(),
+      primary_specialty: z.string().nullable()
+    }))
+  }).array().parse(data);
+}
+
+export async function fetchFacilityById(id: string) {
+  const { data, error } = await supabase
+    .from('facilities')
+    .select('*')
+    .eq('id', id)
+    .single();
+  if (error) throw error;
+  return FacilitySchema.parse(data);
+}
+
+export async function fetchFacilitiesByLabel(label: string) {
+  const { data, error } = await supabase
+    .from('facilities')
+    .select('*')
+    .ilike('label', `%${label}%`);
+  if (error) throw error;
+  return FacilitySchema.array().parse(data);
+}
+
+export function createFacility(data: {
+  label: string;
+  icon?: string;
+  facility_properties?: string[];
+  requirements?: string[];
+  providers?: string[];
+}) {
+  return dbInsert('facilities', [data], FacilitySchema);
+}
+
+export function updateFacility(id: string, data: {
+  label?: string;
+  icon?: string;
+  facility_properties?: string[];
+  requirements?: string[];
+  providers?: string[];
+}) {
+  return dbUpdate('facilities', id, data, FacilitySchema);
+}
+
+export function deleteFacility(id: string) {
+  return dbDelete('facilities', id);
+}
+
+// Helper function to get facility properties by IDs
+export async function fetchFacilityPropertiesByIds(ids: string[]) {
+  if (!ids.length) return [];
+  
+  const { data, error } = await supabase
+    .from('facility_properties')
+    .select('*')
+    .in('id', ids);
+  
+  if (error) throw error;
+  return FacilityPropertySchema.array().parse(data);
+}
+
+// Helper function to search facilities
+export async function searchFacilities(searchTerm: string, filters?: {
+  label?: string;
+  icon?: string;
+}) {
+  let query = supabase
+    .from('facilities')
+    .select('*')
+    .or(`label.ilike.%${searchTerm}%`);
+  
+  if (filters?.label) {
+    query = query.ilike('label', `%${filters.label}%`);
+  }
+  
+  if (filters?.icon) {
+    query = query.eq('icon', filters.icon);
+  }
+  
+  const { data, error } = await query;
+  if (error) throw error;
+  return FacilitySchema.array().parse(data);
+}
+
+// Helper function to search facility properties
+export async function searchFacilityProperties(searchTerm: string, filters?: {
+  key?: string;
+  group?: string;
+  type?: string;
+}) {
+  let query = supabase
+    .from('facility_properties')
+    .select('*')
+    .or(`label.ilike.%${searchTerm}%,key.ilike.%${searchTerm}%,value.ilike.%${searchTerm}%`);
+  
+  if (filters?.key) {
+    query = query.eq('key', filters.key);
+  }
+  
+  if (filters?.group) {
+    query = query.eq('group', filters.group);
+  }
+  
+  if (filters?.type) {
+    query = query.eq('type', filters.type);
+  }
+  
+  const { data, error } = await query;
+  if (error) throw error;
+  return FacilityPropertySchema.array().parse(data);
+}
+
+// --- CONTACTS HELPERS ---
+
+export const ContactSchema = z.object({
+  id: z.string(),
+  facility_id: z.string(),
+  type: z.enum(['general', 'credentialing', 'billing', 'emergency', 'administrative', 'clinical', 'technical']),
+  first_name: z.string(),
+  last_name: z.string(),
+  job_title: z.string().nullable().optional(),
+  department: z.string().nullable().optional(),
+  restrictions: z.string().nullable().optional(),
+  preferred_contact_method: z.enum(['email', 'phone', 'fax']),
+  email: z.string().nullable().optional(),
+  phone: z.string().nullable().optional(),
+  fax: z.string().nullable().optional(),
+  notes: z.string().nullable().optional(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export function fetchContacts() {
+  return dbFetch('contacts', '*', ContactSchema);
+}
+
+export async function fetchContactsWithFacility() {
+  const { data, error } = await supabase
+    .from('contacts')
+    .select(`
+      *,
+      facility:facilities(id, label, icon)
+    `);
+  if (error) throw error;
+  return ContactSchema.extend({
+    facility: z.object({
+      id: z.string(),
+      label: z.string(),
+      icon: z.string().nullable()
+    })
+  }).array().parse(data);
+}
+
+export async function fetchContactsByFacility(facilityId: string) {
+  const { data, error } = await supabase
+    .from('contacts')
+    .select('*')
+    .eq('facility_id', facilityId);
+  if (error) throw error;
+  return ContactSchema.array().parse(data);
+}
+
+export async function fetchContactsByType(type: string) {
+  const { data, error } = await supabase
+    .from('contacts')
+    .select('*')
+    .eq('type', type);
+  if (error) throw error;
+  return ContactSchema.array().parse(data);
+}
+
+export async function fetchContactById(id: string) {
+  const { data, error } = await supabase
+    .from('contacts')
+    .select('*')
+    .eq('id', id)
+    .single();
+  if (error) throw error;
+  return ContactSchema.parse(data);
+}
+
+export function createContact(data: {
+  facility_id: string;
+  type: 'general' | 'credentialing' | 'billing' | 'emergency' | 'administrative' | 'clinical' | 'technical';
+  first_name: string;
+  last_name: string;
+  job_title?: string;
+  department?: string;
+  restrictions?: string;
+  preferred_contact_method?: 'email' | 'phone' | 'fax';
+  email?: string;
+  phone?: string;
+  fax?: string;
+  notes?: string;
+}) {
+  return dbInsert('contacts', [data], ContactSchema);
+}
+
+export function updateContact(id: string, data: {
+  type?: 'general' | 'credentialing' | 'billing' | 'emergency' | 'administrative' | 'clinical' | 'technical';
+  first_name?: string;
+  last_name?: string;
+  job_title?: string;
+  department?: string;
+  restrictions?: string;
+  preferred_contact_method?: 'email' | 'phone' | 'fax';
+  email?: string;
+  phone?: string;
+  fax?: string;
+  notes?: string;
+}) {
+  return dbUpdate('contacts', id, data, ContactSchema);
+}
+
+export function deleteContact(id: string) {
+  return dbDelete('contacts', id);
+}
+
+export async function searchContacts(searchTerm: string, filters?: {
+  type?: string;
+  department?: string;
+  facility_id?: string;
+}) {
+  let query = supabase
+    .from('contacts')
+    .select('*')
+    .or(`first_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%,job_title.ilike.%${searchTerm}%,department.ilike.%${searchTerm}%`);
+  
+  if (filters?.type) {
+    query = query.eq('type', filters.type);
+  }
+  
+  if (filters?.department) {
+    query = query.eq('department', filters.department);
+  }
+  
+  if (filters?.facility_id) {
+    query = query.eq('facility_id', filters.facility_id);
+  }
+  
+  const { data, error } = await query;
+  if (error) throw error;
+  return ContactSchema.array().parse(data);
 } 

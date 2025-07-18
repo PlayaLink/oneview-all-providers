@@ -34,3 +34,9 @@ export interface FacilityAffiliation {
   requirements?: string[]; // Array of requirement record IDs
   provider?: any;
 }
+
+// Export all types from other modules
+export * from './requirements';
+export * from './facilities';
+export * from './contacts';
+export * from './featureSettings';
