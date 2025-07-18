@@ -81,10 +81,10 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
       enabled: true,
     },
     {
-      id: "show-board-details",
-      label: "Show Board Details",
+      id: "show-facility-details",
+      label: "Show Facility Details",
       icon: "id-card",
-      action: "show-board-details",
+      action: "show-facility-details",
       enabled: true,
     },
     {

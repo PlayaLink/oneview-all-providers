@@ -748,6 +748,16 @@ export const FacilityPropertyValueSchema = z.object({
   updated_at: z.string(),
 });
 
+export const FacilityRequirementValueSchema = z.object({
+  id: z.string(),
+  facility_id: z.string(),
+  requirement_id: z.string(),
+  requirement_data_id: z.string(),
+  value: z.any(), // JSONB can store any JSON value
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
 export const FacilitySchema = z.object({
   id: z.string(),
   label: z.string(),
@@ -1288,6 +1298,216 @@ export async function updateFacilityPropertyValueByKey(
     return createFacilityPropertyValue({
       facility_id: facilityId,
       facility_property_id: propertyDef.id,
+      value: convertedValue
+    });
+  }
+}
+
+// --- FACILITY REQUIREMENT VALUES HELPERS ---
+
+export function fetchFacilityRequirementValues() {
+  return dbFetch('facility_requirement_values', '*', FacilityRequirementValueSchema);
+}
+
+export async function fetchFacilityRequirementValuesByFacility(facilityId: string) {
+  const { data, error } = await supabase
+    .from('facility_requirement_values')
+    .select('*')
+    .eq('facility_id', facilityId);
+  if (error) throw error;
+  return FacilityRequirementValueSchema.array().parse(data);
+}
+
+export async function fetchFacilityRequirementValuesByRequirement(requirementId: string) {
+  const { data, error } = await supabase
+    .from('facility_requirement_values')
+    .select('*')
+    .eq('requirement_id', requirementId);
+  if (error) throw error;
+  return FacilityRequirementValueSchema.array().parse(data);
+}
+
+export function createFacilityRequirementValue(data: {
+  facility_id: string;
+  requirement_id: string;
+  requirement_data_id: string;
+  value?: any; // Can be string, number, boolean, array, object, null
+}) {
+  return dbInsert('facility_requirement_values', [data], FacilityRequirementValueSchema);
+}
+
+export function updateFacilityRequirementValue(id: string, data: {
+  value?: any; // Can be string, number, boolean, array, object, null
+}) {
+  return dbUpdate('facility_requirement_values', id, data, FacilityRequirementValueSchema);
+}
+
+export function deleteFacilityRequirementValue(id: string) {
+  return dbDelete('facility_requirement_values', id);
+}
+
+// Helper function to convert requirement value based on data type
+export function convertRequirementValue(value: any, dataType: string): any {
+  switch (dataType) {
+    case 'number':
+      return typeof value === 'number' ? value : parseFloat(value?.toString() || '0');
+    case 'boolean':
+      if (typeof value === 'boolean') return value;
+      if (typeof value === 'string') {
+        return value.toLowerCase() === 'yes' || value.toLowerCase() === 'true';
+      }
+      return false;
+    case 'multi-select':
+      if (Array.isArray(value)) return value;
+      if (typeof value === 'string') {
+        return value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+      }
+      return [];
+    case 'single-select':
+    case 'text':
+    case 'email':
+    case 'url':
+    case 'phone':
+    case 'oneview_record':
+    default:
+      // For JSONB storage, return the actual value, not a string
+      return value || '';
+  }
+}
+
+// Helper function to get facility requirement value with proper typing
+export async function getFacilityRequirementValue(
+  facilityId: string, 
+  requirementKey: string, 
+  dataKey: string
+) {
+  const { data, error } = await supabase
+    .from('facility_requirement_values')
+    .select(`
+      *,
+      requirement:requirements(key, label, type, group),
+      requirement_data:requirement_data(key, label, data_type)
+    `)
+    .eq('facility_id', facilityId)
+    .eq('requirement.key', requirementKey)
+    .eq('requirement_data.key', dataKey)
+    .single();
+  
+  if (error) throw error;
+  
+  if (data) {
+    const convertedValue = convertRequirementValue(data.value, data.requirement_data.data_type);
+    return {
+      ...data,
+      converted_value: convertedValue
+    };
+  }
+  
+  return null;
+}
+
+// Helper function to get all requirement values for a facility with proper typing
+export async function getFacilityRequirementValues(facilityId: string) {
+  const { data, error } = await supabase
+    .from('facility_requirement_values')
+    .select(`
+      *,
+      requirement:requirements(key, label, type, group),
+      requirement_data:requirement_data(key, label, data_type)
+    `)
+    .eq('facility_id', facilityId);
+  
+  if (error) throw error;
+  
+  return data?.map(item => ({
+    ...item,
+    converted_value: convertRequirementValue(item.value, item.requirement_data.data_type)
+  })) || [];
+}
+
+// Helper function to get facility requirements grouped by requirement
+export async function getFacilityRequirementsGrouped(facilityId: string) {
+  const requirementValues = await getFacilityRequirementValues(facilityId);
+  
+  const grouped = requirementValues.reduce((acc, item) => {
+    const requirementKey = item.requirement.key;
+    if (!acc[requirementKey]) {
+      acc[requirementKey] = {
+        requirement: item.requirement,
+        data: []
+      };
+    }
+    acc[requirementKey].data.push({
+      id: item.id,
+      key: item.requirement_data.key,
+      label: item.requirement_data.label,
+      data_type: item.requirement_data.data_type,
+      value: item.converted_value,
+      raw_value: item.value
+    });
+    return acc;
+  }, {} as Record<string, {
+    requirement: any;
+    data: Array<{
+      id: string;
+      key: string;
+      label: string;
+      data_type: string;
+      value: any;
+      raw_value: any;
+    }>;
+  }>);
+  
+  return grouped;
+}
+
+// Helper function to update facility requirement value with proper type conversion
+export async function updateFacilityRequirementValueByKeys(
+  facilityId: string, 
+  requirementKey: string, 
+  dataKey: string, 
+  value: any
+) {
+  // First get the requirement and data definitions to know the types
+  const { data: requirementDef, error: reqError } = await supabase
+    .from('requirements')
+    .select('id')
+    .eq('key', requirementKey)
+    .single();
+  
+  if (reqError) throw reqError;
+  
+  const { data: dataDef, error: dataError } = await supabase
+    .from('requirement_data')
+    .select('id, data_type')
+    .eq('key', dataKey)
+    .single();
+  
+  if (dataError) throw dataError;
+  
+  // Convert the value based on the data type
+  const convertedValue = convertRequirementValue(value, dataDef.data_type);
+  
+  // Check if value already exists
+  const { data: existingValue, error: checkError } = await supabase
+    .from('facility_requirement_values')
+    .select('id')
+    .eq('facility_id', facilityId)
+    .eq('requirement_id', requirementDef.id)
+    .eq('requirement_data_id', dataDef.id)
+    .single();
+  
+  if (checkError && checkError.code !== 'PGRST116') throw checkError; // PGRST116 = no rows returned
+  
+  if (existingValue) {
+    // Update existing value
+    return updateFacilityRequirementValue(existingValue.id, { value: convertedValue });
+  } else {
+    // Create new value
+    return createFacilityRequirementValue({
+      facility_id: facilityId,
+      requirement_id: requirementDef.id,
+      requirement_data_id: dataDef.id,
       value: convertedValue
     });
   }

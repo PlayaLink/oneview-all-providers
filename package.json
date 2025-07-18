@@ -7,7 +7,13 @@
     "build": "vite build",
     "test": "vitest --run",
     "format.fix": "prettier --write .",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "seed:facility-properties": "tsx scripts/seed-facility-properties.ts",
+    "seed:requirements": "tsx scripts/seed-requirements.ts",
+    "seed:facilities": "tsx scripts/seed-facilities.ts",
+    "seed:facilities-with-values": "tsx scripts/seed-facilities-with-values.ts",
+    "seed:facility-requirement-values": "tsx scripts/seed-facility-requirement-values.ts",
+    "seed:contacts": "tsx scripts/seed-contacts.ts"
   },
   "dependencies": {
     "@faker-js/faker": "^9.9.0",
