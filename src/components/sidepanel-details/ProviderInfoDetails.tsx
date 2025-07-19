@@ -5,7 +5,7 @@ import { SingleSelect } from '../inputs/SingleSelect';
 import TextInputField from '../inputs/TextInputField';
 import { getInputType, renderFieldComponent } from './getInputType';
 
-// Provider Info fieldGroups definition
+// Provider Info fieldGroups definition - Updated to match database schema
 export const providerInfoFieldGroups = [
   // 1. Provider Name
   {
@@ -56,10 +56,10 @@ export const providerInfoFieldGroups = [
     fields: [
       { label: "Work Email", group: "Contact Info", type: "text", placeholder: "Enter work email", rowKey: "work_email" },
       { label: "Personal Email", group: "Contact Info", type: "text", placeholder: "Enter personal email", rowKey: "personal_email" },
-      { label: "Pager #", group: "Contact Info", type: "text", placeholder: "(___) ___-____", rowKey: "pager_number" },
-      { label: "Fax #", group: "Contact Info", type: "text", placeholder: "(___) ___-____", rowKey: "fax_number" },
       { label: "Mobile Phone #", group: "Contact Info", type: "text", placeholder: "(___) ___-____", rowKey: "mobile_phone_number" },
-      { label: "Mobile Phone Carrier Name", group: "Contact Info", type: "single-select", placeholder: "Select Mobile Phone...", options: ["AT&T", "Verizon", "T-Mobile", "Sprint", "Other"], rowKey: "mobile_phone_carrier_name" }
+      { label: "Mobile Phone Carrier Name", group: "Contact Info", type: "single-select", placeholder: "Select Mobile Phone...", options: ["AT&T", "Verizon", "T-Mobile", "Sprint", "Other"], rowKey: "mobile_phone_carrier_name" },
+      { label: "Pager #", group: "Contact Info", type: "text", placeholder: "(___) ___-____", rowKey: "pager_number" },
+      { label: "Fax #", group: "Contact Info", type: "text", placeholder: "(___) ___-____", rowKey: "fax_number" }
     ]
   },
   // 4. Emergency Contact
@@ -88,6 +88,14 @@ export const providerInfoFieldGroups = [
       ], rowKey: "state_issued" },
       { label: "Issue Date", group: "Identification", type: "date", placeholder: "MM/DD/YYYY", rowKey: "issue_date" },
       { label: "Expiration Date", group: "Identification", type: "date", placeholder: "MM/DD/YYYY", rowKey: "expiration_date" }
+    ]
+  },
+  // 6. Tags & Metadata
+  {
+    id: "tags_metadata",
+    title: "Tags & Metadata",
+    fields: [
+      { label: "Tags", group: "Tags & Metadata", type: "multi-select", placeholder: "Select tags", options: ["urgent", "new", "active", "inactive", "pending", "verified", "primary", "secondary"], rowKey: "tags" }
     ]
   }
 ];

@@ -11,6 +11,7 @@ interface TextInputFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>
   placeholder?: string;
   disabled?: boolean;
   className?: string;
+  type?: "text" | "date" | "email" | "url" | "tel";
 }
 
 // Utility: format YYYY-MM-DD or ISO date string as MM/DD/YYYY
@@ -28,6 +29,18 @@ function formatDateForDisplay(val: any): string {
   return val;
 }
 
+// Utility: convert MM/DD/YYYY to YYYY-MM-DD for date inputs
+function formatDateForInput(val: string): string {
+  if (!val) return '';
+  // Match MM/DD/YYYY format
+  const match = val.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (match) {
+    const [, month, day, year] = match;
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  }
+  return val;
+}
+
 export const TextInputField: React.FC<TextInputFieldProps> = ({
   label,
   labelPosition = "top",
@@ -36,6 +49,7 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
   placeholder = "",
   disabled = false,
   className = "",
+  type = "text",
   ...rest
 }) => {
   const [focused, setFocused] = useState(false);
@@ -45,6 +59,21 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
 
   // Only show placeholder when focused
   const showPlaceholder = focused;
+
+  // Only apply date formatting for date type inputs
+  const isDateType = type === "date" || rest.name?.includes('date') || rest.name?.includes('Date');
+  const displayValue = isDateType ? formatDateForDisplay(value) : value;
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    if (isDateType) {
+      // For date inputs, convert MM/DD/YYYY to YYYY-MM-DD for storage
+      const formattedValue = formatDateForInput(newValue);
+      onChange(formattedValue);
+    } else {
+      onChange(newValue);
+    }
+  };
 
   const handleCopy = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -89,25 +118,6 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
     };
   }, []);
 
-  const input = (
-    <input
-      type="text"
-      value={formatDateForDisplay(value)}
-      onChange={e => onChange(e.target.value)}
-      onFocus={() => setFocused(true)}
-      onBlur={() => setFocused(false)}
-      placeholder={showPlaceholder ? placeholder : ""}
-      disabled={disabled}
-      className={cn(
-        "w-full px-2 py-[10px] text-xs font-poppins text-[#4C5564] border border-gray-300 rounded bg-white outline-none transition-colors",
-        "focus:ring-2 focus:ring-blue-200",
-        disabled && "opacity-50 cursor-not-allowed bg-gray-100",
-        className
-      )}
-      {...rest}
-    />
-  );
-
   return (
     <div className={cn(
       labelPosition === "left" ? "flex items-center gap-2 min-w-0" : "flex flex-col gap-1",
@@ -136,9 +146,9 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
         }}
       >
         <input
-          type="text"
-          value={formatDateForDisplay(value)}
-          onChange={e => onChange(e.target.value)}
+          type={type}
+          value={displayValue}
+          onChange={handleChange}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           placeholder={showPlaceholder ? placeholder : ""}

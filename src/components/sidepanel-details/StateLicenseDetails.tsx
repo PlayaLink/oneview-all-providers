@@ -5,7 +5,7 @@ import { SingleSelect } from '../inputs/SingleSelect';
 import TextInputField from '../inputs/TextInputField';
 import { getInputType, renderFieldComponent } from './getInputType';
 
-// State Licenses fieldGroups definition
+// State Licenses fieldGroups definition - Updated to match database schema
 export const stateLicenseFieldGroups = [
   {
     id: "license_details",

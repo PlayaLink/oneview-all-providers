@@ -4,9 +4,16 @@ import { SingleSelect } from '../inputs/SingleSelect';
 import TextInputField from '../inputs/TextInputField';
 
 export function getInputType(field: { options?: any[]; type?: string }) {
-  if (Array.isArray(field.options) && field.options.length > 0) {
-    return field.type === 'multi-select' ? 'multi-select' : 'single-select';
+  // Check if the field has a specific type defined
+  if (field.type) {
+    return field.type;
   }
+  
+  // Fallback: check if field has options to determine type
+  if (Array.isArray(field.options) && field.options.length > 0) {
+    return 'single-select'; // Default to single-select if options exist but no type specified
+  }
+  
   return 'text';
 }
 
@@ -27,12 +34,16 @@ export function renderFieldComponent({ field, formValues, handleChange, classNam
   const inputType = getInputType(field);
   const fieldKey = field.rowKey || field.label;
 
+  console.log('Rendering field:', { fieldKey, inputType, options: field.options, formValue: formValues[fieldKey] });
+
   if (inputType === 'multi-select') {
     const options = field.options?.map((opt) => ({ id: opt, label: opt })) || [];
     const stored = formValues[fieldKey] || [];
     const value = Array.isArray(stored)
       ? stored.map((v) => (typeof v === 'object' && v !== null ? v : options.find((opt) => opt.id === v))).filter(Boolean)
       : [];
+
+    console.log('MultiSelect rendering:', { fieldKey, options, value, stored });
 
     return (
       <MultiSelectInput
@@ -48,6 +59,9 @@ export function renderFieldComponent({ field, formValues, handleChange, classNam
   } else if (inputType === 'single-select') {
     const options = field.options?.map((opt) => ({ id: opt, label: opt })) || [];
     const selectedValue = options.find((opt) => opt.id === formValues[fieldKey]) || null;
+    
+    console.log('SingleSelect rendering:', { fieldKey, options, selectedValue, formValue: formValues[fieldKey] });
+
     return (
       <SingleSelect
         label={field.label}

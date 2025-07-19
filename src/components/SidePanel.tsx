@@ -221,12 +221,16 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
 
   // Handle input change (local only)
   const handleChange = (key: string, value: any) => {
+    console.log('Field changed:', { key, value, originalValue: selectedRow?.[key] });
+    
     setFormValues((prev) => ({ ...prev, [key]: value }));
     
     // Check if this change is different from the original value
     if (selectedRow) {
       const originalValue = selectedRow[key] ?? (inputConfig.find(f => f.rowKey === key)?.type === 'multi-select' ? [] : '');
       const hasChanged = JSON.stringify(value) !== JSON.stringify(originalValue);
+      
+      console.log('Change detection:', { key, hasChanged, value, originalValue });
       
       if (hasChanged) {
         setHasUnsavedChanges(true);
@@ -267,9 +271,15 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
     
     if (!selectedRow || !gridName) {
       console.error('Missing required data for save:', { selectedRow: !!selectedRow, gridName });
+      toast({
+        title: "Save Error",
+        description: "Missing required data for save operation",
+        variant: "destructive",
+      });
       return;
     }
 
+    console.log('Starting save operation:', { gridName, selectedRowId: selectedRow.id, formValues });
     setIsSaving(true);
 
     // Store the previous data for rollback in case of error
@@ -362,8 +372,11 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       // --- DYNAMIC TABLE UPDATE LOGIC ---
       const tableName = gridToTableMap[gridName];
       if (!tableName) {
+        console.error('Available grid mappings:', Object.keys(gridToTableMap));
         throw new Error(`No table mapping found for gridName: ${gridName}`);
       }
+      
+      console.log('Updating record:', { tableName, recordId: selectedRow.id, updates: filteredUpdates });
       const result = await updateRecord(tableName, selectedRow.id, filteredUpdates);
       // Update parent state as well
       if (onUpdateSelectedProvider) {
@@ -385,12 +398,20 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       // Show success feedback
       setSaveSuccess(true);
       setHasUnsavedChanges(false); // Clear unsaved changes state
+      
+      // Show success toast
+      toast({
+        title: "Save Successful",
+        description: "Changes have been saved successfully",
+        variant: "default",
+      });
+      
       setTimeout(() => {
         setSaveSuccess(false);
         // Footer will be hidden by hasUnsavedChanges being false
       }, 1500); // Hide success message after 1.5 seconds
       
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to save:', err);
       
       // Rollback optimistic updates on error
@@ -402,7 +423,16 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       
       // Show error feedback
       setSaveSuccess(false); // Hide success message on error
-      console.error('Save failed:', err.message || 'Unknown error');
+      
+      // Show user-friendly error message
+      const errorMessage = err?.message || err?.error_description || 'Unknown error occurred';
+      toast({
+        title: "Save Failed",
+        description: `Failed to save changes: ${errorMessage}`,
+        variant: "destructive",
+      });
+      
+      console.error('Save failed:', errorMessage);
     } finally {
       setIsSaving(false);
     }
@@ -602,17 +632,49 @@ if (template?.DetailsComponent) {
     }
   }
 
-  // Mapping from gridName to table name
+  // Mapping from gridName to table name - Updated to match all database tables
   const gridToTableMap: Record<string, string> = {
+    // Core provider tables
     Provider_Info: 'providers',
     State_Licenses: 'state_licenses',
     Birth_Info: 'birth_info',
+    Addresses: 'addresses',
+    
+    // Facility system tables
+    Facility_Affiliations: 'facility_affiliations',
+    Facility_Properties: 'facility_properties',
+    Facility_Property_Values: 'facility_property_values',
+    Facility_Requirements: 'facility_requirements',
+    Facility_Requirement_Values: 'facility_requirement_values',
+    Facilities: 'facilities',
+    
+    // Requirements system tables
+    Requirements: 'requirements',
+    Requirement_Data: 'requirement_data',
+    Requirement_Data_Fields: 'requirement_data_fields',
+    
+    // Contact system tables
+    Contacts: 'contacts',
+    
+    // Document and notes tables
+    Notes: 'notes',
+    Documents: 'documents',
+    
+    // Grid system tables
+    Grid_Definitions: 'grid_definitions',
+    Grid_Columns: 'grid_columns',
+    Grid_Field_Groups: 'grid_field_groups',
+    Grid_Sections: 'grid_sections',
+    
+    // Feature settings
+    Feature_Settings: 'feature_settings',
+    
     // Add more as needed
   };
 
   return (
     <div
-      className={`fixed top-0 right-0 h-full bg-white transform transition-transform duration-300 ease-in-out z-[10000] flex flex-col ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+      className={`fixed top-0 right-0 h-full bg-white transform transition-transform duration-300 ease-in-out z-[1000] flex flex-col ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       role="dialog"
       aria-modal="true"
       aria-label={headerText}
