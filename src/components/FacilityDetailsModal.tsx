@@ -97,11 +97,11 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
             <FontAwesomeIcon icon={faTimes} className="w-4 h-4" />
           </button>
         </DialogHeader>
-
+        
         <div
           className="flex-1 overflow-hidden border-t border-gray-200"
-          data-testid="facility-details-tabs"
-        >
+            data-testid="facility-details-tabs"
+          >
           <div className="flex h-full">
             {/* Left sidebar navigation */}
             <div className="w-72 flex-shrink-0 border-r border-gray-200 bg-white">
@@ -122,9 +122,9 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
                       />
                     }
                     className="w-full text-left font-medium"
-                    data-testid="facility-information-tab"
-                  >
-                    Facility Information
+                data-testid="facility-information-tab"
+              >
+                Facility Information
                   </NavItem>
 
                   <NavItem
@@ -151,7 +151,7 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
                       <FontAwesomeIcon icon={faListCheck} className="w-5 h-5" />
                     }
                     className="w-full text-left font-medium"
-                    data-testid="facility-requirements-tab"
+                data-testid="facility-requirements-tab"
                   >
                     Eligibility Criteria
                   </NavItem>
@@ -164,9 +164,9 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
                       <FontAwesomeIcon icon={faUsers} className="w-5 h-5" />
                     }
                     className="w-full text-left font-medium"
-                    data-testid="facility-contacts-tab"
-                  >
-                    Contacts
+                data-testid="facility-contacts-tab"
+              >
+                Contacts
                   </NavItem>
                 </nav>
               </div>
@@ -188,11 +188,22 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
               <div className="flex-1 overflow-auto p-6 pt-4">
                 {activeTab === "information" && (
                   <div data-testid="facility-information-content">
+                    {(() => {
+                      console.log('Facility object being passed to FacilityInformation:', {
+                        facility,
+                        requirementValues,
+                        facilityKeys: Object.keys(facility),
+                        facilityProperties: facility.properties,
+                        facilityRequirements: facility.requirements,
+                        facilityProviders: facility.providers
+                      });
+                      return null;
+                    })()}
                     <FacilityInformation
                       facility={facility}
                       requirementValues={requirementValues}
                     />
-                  </div>
+                    </div>
                 )}
 
                 {activeTab === "credentialing" && (
@@ -207,13 +218,13 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
                       facility={facility}
                       requirementValues={requirementValues}
                     />
-                  </div>
+                </div>
                 )}
 
                 {activeTab === "contacts" && (
                   <div data-testid="facility-contacts-content">
-                    <div className="flex items-center justify-center h-64 text-muted-foreground">
-                      <div className="text-center">
+                <div className="flex items-center justify-center h-64 text-muted-foreground">
+                  <div className="text-center">
                         <div
                           className="text-4xl mb-4"
                           role="img"
@@ -232,11 +243,11 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
                     </div>
                   </div>
                 )}
-              </div>
+                </div>
             </div>
           </div>
         </div>
       </DialogContent>
     </Dialog>
   );
-};
+}; 

@@ -328,6 +328,7 @@ const AllRecords: React.FC = () => {
           id: 'unknown',
           label: facilityAffiliation.facility_name || 'Unknown Facility',
           icon: undefined,
+          properties: [], // Include properties field for consistency
           requirements: [],
           providers: [],
           created_at: new Date().toISOString(),
@@ -356,7 +357,7 @@ const AllRecords: React.FC = () => {
           id: facilityAffiliation.facility_id,
           label: facilityAffiliation.facility_name || 'Unknown Facility',
           icon: undefined,
-          properties: [],
+          properties: [], // Include properties field for consistency
           requirements: [],
           providers: [],
           created_at: new Date().toISOString(),
@@ -377,16 +378,10 @@ const AllRecords: React.FC = () => {
       const requirementValues = await fetchFacilityRequirementValuesByFacility(facility.id);
       console.log('Facility requirement values payload:', requirementValues);
       
-      // Create facility object for the modal
-      const facilityForModal = {
-        id: facility.id,
-        label: facility.label || facilityAffiliation.facility_name || 'Unknown Facility',
-        icon: facility.icon || undefined,
-        requirements: facility.requirements || [],
-        providers: facility.providers || [],
-        created_at: facility.created_at,
-        updated_at: facility.updated_at,
-      };
+      // Pass the complete facility object with all data (including properties)
+      const facilityForModal = facility;
+      
+      console.log('Facility object being passed to modal:', facilityForModal);
       
       setFacilityDetailsModal({
         isOpen: true,
