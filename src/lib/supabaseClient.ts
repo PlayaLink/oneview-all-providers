@@ -352,10 +352,9 @@ export function fetchAddresses() {
 export const FacilityAffiliationSchema = z.object({
   id: z.string(),
   provider_id: z.string(),
-  facility_name: z.string(),
+  facility_id: z.string(),
   staff_category: z.string().nullable().optional(),
   in_good_standing: z.boolean().nullable().optional(),
-  facility_type: z.string().nullable().optional(),
   currently_affiliated: z.boolean().nullable().optional(),
   appt_end_date: z.string().nullable().optional(),
   start_date: z.string().nullable().optional(),
@@ -374,8 +373,8 @@ export const FacilityAffiliationSchema = z.object({
 
 export function fetchFacilityAffiliations() {
   return dbFetch(
-    'facility_affiliations',
-    '*,provider:providers_with_full_name(provider_id,first_name,last_name,title,primary_specialty)',
+    'facility_affiliations_with_provider',
+    '*',
     FacilityAffiliationSchema
   );
 }

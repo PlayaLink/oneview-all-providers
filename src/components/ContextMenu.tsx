@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { getIconByName } from "@/lib/iconMapping";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 interface ContextMenuProps {
   x: number;
@@ -10,6 +11,7 @@ interface ContextMenuProps {
   onClose: () => void;
   rowData?: any;
   gridName?: string;
+  handleShowFacilityDetails?: (facility: any) => void;
 }
 
 interface MenuItem {
@@ -28,8 +30,10 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   onClose,
   rowData,
   gridName,
+  handleShowFacilityDetails,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -55,6 +59,12 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
 
   const handleMenuItemClick = (action: string) => {
     console.log(`Context menu action: ${action}`, { rowData, gridName });
+    
+    if (action === 'show-facility-details' && handleShowFacilityDetails && rowData) {
+      // Call the facility details handler
+      handleShowFacilityDetails(rowData);
+    }
+    
     onClose();
   };
 
@@ -246,3 +256,4 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
 };
 
 export default ContextMenu;
+ 

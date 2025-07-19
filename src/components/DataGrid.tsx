@@ -28,6 +28,7 @@ interface DataGridProps {
   showCheckboxes?: boolean;
   showStatusBadges?: boolean;
   selectedRowId?: string | null;
+  handleShowFacilityDetails?: (facility: any) => void;
 }
 
 const DataGrid: React.FC<DataGridProps> = (props) => {
@@ -42,6 +43,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     showCheckboxes = true,
     showStatusBadges = true,
     selectedRowId: controlledSelectedRowId,
+    handleShowFacilityDetails,
   } = props;
 
   const [internalSelectedRowId, setInternalSelectedRowId] = React.useState<string | null>(null);
@@ -327,6 +329,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           rowData={contextMenu.rowData}
           gridName={title}
           onClose={handleContextMenuClose}
+          handleShowFacilityDetails={handleShowFacilityDetails}
         />
       )}
     </section>
