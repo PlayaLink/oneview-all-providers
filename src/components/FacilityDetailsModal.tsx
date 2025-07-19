@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { FacilityInformation } from './FacilityInformation';
-import { FacilityRequirements } from './FacilityRequirements';
-import { FacilityProperties } from './FacilityProperties';
+import React, { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import { FacilityInformation } from "./FacilityInformation";
+import { FacilityRequirements } from "./FacilityRequirements";
+import { FacilityProperties } from "./FacilityProperties";
+import NavItem from "./NavItem";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCircleInfo,
+  faShieldHalved,
+  faListCheck,
+  faUsers,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
+import { cn } from "@/lib/utils";
 
 interface FacilityProperty {
   id?: string;
@@ -62,13 +71,16 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
   facility,
   requirementValues = [],
 }) => {
-  const [activeTab, setActiveTab] = useState('information');
+  const [activeTab, setActiveTab] = useState("information");
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden" data-testid="facility-details-modal">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl">
+      <DialogContent
+        className="max-w-6xl max-h-[90vh] overflow-hidden"
+        data-testid="facility-details-modal"
+      >
+        <DialogHeader className="flex flex-row items-center justify-between pb-4">
+          <DialogTitle className="flex items-center gap-2 text-sm font-bold text-gray-700 tracking-wider uppercase">
             {facility.icon && (
               <span className="text-2xl" role="img" aria-label="Facility icon">
                 {facility.icon}
@@ -76,94 +88,155 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
             )}
             {facility.label}
           </DialogTitle>
-        </DialogHeader>
-        
-        <div className="flex-1 overflow-hidden">
-          <Tabs 
-            value={activeTab} 
-            onValueChange={setActiveTab}
-            className="h-full flex flex-col"
-            data-testid="facility-details-tabs"
+          <button
+            onClick={onClose}
+            className="flex items-center justify-center w-6 h-6 text-gray-500 hover:text-gray-700 transition-colors"
+            aria-label="Close modal"
+            data-testid="close-modal-button"
           >
-            <TabsList className="grid w-full grid-cols-4 mb-4" data-testid="facility-tabs-list">
-              <TabsTrigger 
-                value="information" 
-                data-testid="facility-information-tab"
-                className="flex items-center gap-2"
-              >
-                <span role="img" aria-label="Information icon">ℹ️</span>
-                Information
-              </TabsTrigger>
-              <TabsTrigger 
-                value="properties" 
-                data-testid="facility-properties-tab"
-                className="flex items-center gap-2"
-              >
-                <span role="img" aria-label="Properties icon">🏢</span>
-                Properties
-              </TabsTrigger>
-              <TabsTrigger 
-                value="requirements" 
-                data-testid="facility-requirements-tab"
-                className="flex items-center gap-2"
-              >
-                <span role="img" aria-label="Requirements icon">📋</span>
-                Requirements
-              </TabsTrigger>
-              <TabsTrigger 
-                value="providers" 
-                data-testid="facility-providers-tab"
-                className="flex items-center gap-2"
-              >
-                <span role="img" aria-label="Providers icon">👨‍⚕️</span>
-                Providers
-              </TabsTrigger>
-            </TabsList>
-            
-            <div className="flex-1 overflow-auto">
-              <TabsContent 
-                value="information" 
-                className="h-full mt-0"
-                data-testid="facility-information-content"
-              >
-                <FacilityInformation facility={facility} requirementValues={requirementValues} />
-              </TabsContent>
-              
-              <TabsContent 
-                value="properties" 
-                className="h-full mt-0"
-                data-testid="facility-properties-content"
-              >
-                <FacilityProperties facility={facility} />
-              </TabsContent>
-              
-              <TabsContent 
-                value="requirements" 
-                className="h-full mt-0"
-                data-testid="facility-requirements-content"
-              >
-                <FacilityRequirements facility={facility} requirementValues={requirementValues} />
-              </TabsContent>
-              
-              <TabsContent 
-                value="providers" 
-                className="h-full mt-0"
-                data-testid="facility-providers-content"
-              >
-                <div className="flex items-center justify-center h-64 text-muted-foreground">
-                  <div className="text-center">
-                    <div className="text-4xl mb-4" role="img" aria-label="Coming soon icon">
-                      🚧
-                    </div>
-                    <h3 className="text-lg font-semibold mb-2">Providers Tab</h3>
-                    <p className="text-sm">This tab will show facility providers and their information.</p>
-                  </div>
-                </div>
-              </TabsContent>
+            <FontAwesomeIcon icon={faTimes} className="w-4 h-4" />
+          </button>
+        </DialogHeader>
+
+        <div
+          className="flex-1 overflow-hidden border-t border-gray-200"
+          data-testid="facility-details-tabs"
+        >
+          <div className="flex h-full">
+            {/* Left sidebar navigation */}
+            <div className="w-72 flex-shrink-0 border-r border-gray-200 bg-white">
+              <div className="p-6 pt-4">
+                <nav
+                  className="space-y-4"
+                  role="navigation"
+                  aria-label="Facility details sections"
+                >
+                  <NavItem
+                    variant="sidenav"
+                    active={activeTab === "information"}
+                    onClick={() => setActiveTab("information")}
+                    icon={
+                      <FontAwesomeIcon
+                        icon={faCircleInfo}
+                        className="w-5 h-5"
+                      />
+                    }
+                    className="w-full text-left font-medium"
+                    data-testid="facility-information-tab"
+                  >
+                    Facility Information
+                  </NavItem>
+
+                  <NavItem
+                    variant="sidenav"
+                    active={activeTab === "credentialing"}
+                    onClick={() => setActiveTab("credentialing")}
+                    icon={
+                      <FontAwesomeIcon
+                        icon={faShieldHalved}
+                        className="w-5 h-5"
+                      />
+                    }
+                    className="w-full text-left font-medium"
+                    data-testid="facility-credentialing-tab"
+                  >
+                    Credentialing Processes
+                  </NavItem>
+
+                  <NavItem
+                    variant="sidenav"
+                    active={activeTab === "requirements"}
+                    onClick={() => setActiveTab("requirements")}
+                    icon={
+                      <FontAwesomeIcon icon={faListCheck} className="w-5 h-5" />
+                    }
+                    className="w-full text-left font-medium"
+                    data-testid="facility-requirements-tab"
+                  >
+                    Eligibility Criteria
+                  </NavItem>
+
+                  <NavItem
+                    variant="sidenav"
+                    active={activeTab === "contacts"}
+                    onClick={() => setActiveTab("contacts")}
+                    icon={
+                      <FontAwesomeIcon icon={faUsers} className="w-5 h-5" />
+                    }
+                    className="w-full text-left font-medium"
+                    data-testid="facility-contacts-tab"
+                  >
+                    Contacts
+                  </NavItem>
+                </nav>
+              </div>
             </div>
-          </Tabs>
+
+            {/* Main content area */}
+            <div className="flex-1 flex flex-col overflow-hidden">
+              {/* Tab header */}
+              <div className="p-6 pb-4 border-b border-gray-100">
+                <h2 className="text-lg font-bold text-gray-700 tracking-wide">
+                  {activeTab === "information" && "Facility Information"}
+                  {activeTab === "credentialing" && "Credentialing Processes"}
+                  {activeTab === "requirements" && "Eligibility Criteria"}
+                  {activeTab === "contacts" && "Contacts"}
+                </h2>
+              </div>
+
+              {/* Tab content */}
+              <div className="flex-1 overflow-auto p-6 pt-4">
+                {activeTab === "information" && (
+                  <div data-testid="facility-information-content">
+                    <FacilityInformation
+                      facility={facility}
+                      requirementValues={requirementValues}
+                    />
+                  </div>
+                )}
+
+                {activeTab === "credentialing" && (
+                  <div data-testid="facility-credentialing-content">
+                    <FacilityProperties facility={facility} />
+                  </div>
+                )}
+
+                {activeTab === "requirements" && (
+                  <div data-testid="facility-requirements-content">
+                    <FacilityRequirements
+                      facility={facility}
+                      requirementValues={requirementValues}
+                    />
+                  </div>
+                )}
+
+                {activeTab === "contacts" && (
+                  <div data-testid="facility-contacts-content">
+                    <div className="flex items-center justify-center h-64 text-muted-foreground">
+                      <div className="text-center">
+                        <div
+                          className="text-4xl mb-4"
+                          role="img"
+                          aria-label="Coming soon icon"
+                        >
+                          🚧
+                        </div>
+                        <h3 className="text-lg font-semibold mb-2">
+                          Contacts Tab
+                        </h3>
+                        <p className="text-sm">
+                          This tab will show facility contacts and their
+                          information.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
   );
-}; 
+};
