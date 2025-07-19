@@ -370,9 +370,11 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
         });
       }
       // --- DYNAMIC TABLE UPDATE LOGIC ---
+      console.log('Save operation grid name:', { gridName, availableMappings: Object.keys(gridToTableMap) });
       const tableName = gridToTableMap[gridName];
       if (!tableName) {
         console.error('Available grid mappings:', Object.keys(gridToTableMap));
+        console.error('Grid name not found in mappings:', gridName);
         throw new Error(`No table mapping found for gridName: ${gridName}`);
       }
       
@@ -636,38 +638,59 @@ if (template?.DetailsComponent) {
   const gridToTableMap: Record<string, string> = {
     // Core provider tables
     Provider_Info: 'providers',
+    provider_info: 'providers', // Handle lowercase version
     State_Licenses: 'state_licenses',
+    state_licenses: 'state_licenses', // Handle lowercase version
     Birth_Info: 'birth_info',
+    birth_info: 'birth_info', // Handle lowercase version
     Addresses: 'addresses',
+    addresses: 'addresses', // Handle lowercase version
     
     // Facility system tables
     Facility_Affiliations: 'facility_affiliations',
+    facility_affiliations: 'facility_affiliations', // Handle lowercase version
     Facility_Properties: 'facility_properties',
+    facility_properties: 'facility_properties', // Handle lowercase version
     Facility_Property_Values: 'facility_property_values',
+    facility_property_values: 'facility_property_values', // Handle lowercase version
     Facility_Requirements: 'facility_requirements',
+    facility_requirements: 'facility_requirements', // Handle lowercase version
     Facility_Requirement_Values: 'facility_requirement_values',
+    facility_requirement_values: 'facility_requirement_values', // Handle lowercase version
     Facilities: 'facilities',
+    facilities: 'facilities', // Handle lowercase version
     
     // Requirements system tables
     Requirements: 'requirements',
+    requirements: 'requirements', // Handle lowercase version
     Requirement_Data: 'requirement_data',
+    requirement_data: 'requirement_data', // Handle lowercase version
     Requirement_Data_Fields: 'requirement_data_fields',
+    requirement_data_fields: 'requirement_data_fields', // Handle lowercase version
     
     // Contact system tables
     Contacts: 'contacts',
+    contacts: 'contacts', // Handle lowercase version
     
     // Document and notes tables
     Notes: 'notes',
+    notes: 'notes', // Handle lowercase version
     Documents: 'documents',
+    documents: 'documents', // Handle lowercase version
     
     // Grid system tables
     Grid_Definitions: 'grid_definitions',
+    grid_definitions: 'grid_definitions', // Handle lowercase version
     Grid_Columns: 'grid_columns',
+    grid_columns: 'grid_columns', // Handle lowercase version
     Grid_Field_Groups: 'grid_field_groups',
+    grid_field_groups: 'grid_field_groups', // Handle lowercase version
     Grid_Sections: 'grid_sections',
+    grid_sections: 'grid_sections', // Handle lowercase version
     
     // Feature settings
     Feature_Settings: 'feature_settings',
+    feature_settings: 'feature_settings', // Handle lowercase version
     
     // Add more as needed
   };
