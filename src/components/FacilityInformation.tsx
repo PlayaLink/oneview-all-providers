@@ -11,8 +11,9 @@ interface FacilityInformationProps {
     id: string;
     label: string;
     icon?: string;
-    requirements: string[];
-    providers: string[];
+    properties?: any[];
+    requirements?: any[];
+    providers?: any[];
     created_at: string;
     updated_at: string;
   };
@@ -103,10 +104,10 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({ facili
         <CardContent>
           <div className="flex items-center gap-2">
             <Badge variant="secondary" data-testid="requirements-count">
-              {facility.requirements.length} Requirements
+              {facility.requirements?.length || 0} Requirements
             </Badge>
             <span className="text-sm text-muted-foreground">
-              This facility has {facility.requirements.length} eligibility requirements configured
+              This facility has {facility.requirements?.length || 0} eligibility requirements configured
             </span>
           </div>
         </CardContent>
@@ -120,13 +121,30 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({ facili
         <CardContent>
           <div className="flex items-center gap-2">
             <Badge variant="outline" data-testid="providers-count">
-              {facility.providers.length} Providers
+              {facility.providers?.length || 0} Providers
             </Badge>
             <span className="text-sm text-muted-foreground">
-              {facility.providers.length === 0 
+              {(facility.providers?.length || 0) === 0 
                 ? 'No providers currently affiliated with this facility'
-                : `${facility.providers.length} provider${facility.providers.length === 1 ? '' : 's'} affiliated with this facility`
+                : `${facility.providers?.length || 0} provider${(facility.providers?.length || 0) === 1 ? '' : 's'} affiliated with this facility`
               }
+            </span>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Properties Summary */}
+      <Card data-testid="facility-properties-summary">
+        <CardHeader>
+          <CardTitle>Properties Summary</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" data-testid="properties-count">
+              {facility.properties?.length || 0} Properties
+            </Badge>
+            <span className="text-sm text-muted-foreground">
+              This facility has {facility.properties?.length || 0} configurable properties
             </span>
           </div>
         </CardContent>

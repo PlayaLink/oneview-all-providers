@@ -2,6 +2,43 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { FacilityInformation } from './FacilityInformation';
+import { FacilityRequirements } from './FacilityRequirements';
+import { FacilityProperties } from './FacilityProperties';
+
+interface FacilityProperty {
+  id?: string;
+  key?: string;
+  label?: string;
+  type?: string;
+  group?: string;
+  value?: any;
+  is_required?: boolean;
+  validation_rules?: any;
+}
+
+interface FacilityRequirement {
+  id?: string;
+  key?: string;
+  label?: string;
+  group?: string;
+  type?: string;
+  note?: string | null;
+  visible?: boolean;
+  required?: boolean;
+}
+
+interface FacilityProvider {
+  id?: string;
+  first_name?: string | null;
+  last_name?: string | null;
+  npi_number?: string | null;
+  title?: string | null;
+  primary_specialty?: string | null;
+  role?: string | null;
+  start_date?: string | null;
+  end_date?: string | null;
+  is_active?: boolean;
+}
 
 interface FacilityDetailsModalProps {
   isOpen: boolean;
@@ -10,10 +47,11 @@ interface FacilityDetailsModalProps {
     id: string;
     label: string;
     icon?: string;
-    requirements: string[];
-    providers: string[];
     created_at: string;
     updated_at: string;
+    properties?: FacilityProperty[];
+    requirements?: FacilityRequirement[];
+    providers?: FacilityProvider[];
   };
   requirementValues?: any[];
 }
@@ -47,14 +85,22 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
             className="h-full flex flex-col"
             data-testid="facility-details-tabs"
           >
-            <TabsList className="grid w-full grid-cols-3 mb-4" data-testid="facility-tabs-list">
+            <TabsList className="grid w-full grid-cols-4 mb-4" data-testid="facility-tabs-list">
               <TabsTrigger 
                 value="information" 
                 data-testid="facility-information-tab"
                 className="flex items-center gap-2"
               >
                 <span role="img" aria-label="Information icon">ℹ️</span>
-                Facility Information
+                Information
+              </TabsTrigger>
+              <TabsTrigger 
+                value="properties" 
+                data-testid="facility-properties-tab"
+                className="flex items-center gap-2"
+              >
+                <span role="img" aria-label="Properties icon">🏢</span>
+                Properties
               </TabsTrigger>
               <TabsTrigger 
                 value="requirements" 
@@ -65,12 +111,12 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
                 Requirements
               </TabsTrigger>
               <TabsTrigger 
-                value="contacts" 
-                data-testid="facility-contacts-tab"
+                value="providers" 
+                data-testid="facility-providers-tab"
                 className="flex items-center gap-2"
               >
-                <span role="img" aria-label="Contacts icon">👥</span>
-                Contacts
+                <span role="img" aria-label="Providers icon">👨‍⚕️</span>
+                Providers
               </TabsTrigger>
             </TabsList>
             
@@ -84,33 +130,33 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
               </TabsContent>
               
               <TabsContent 
+                value="properties" 
+                className="h-full mt-0"
+                data-testid="facility-properties-content"
+              >
+                <FacilityProperties facility={facility} />
+              </TabsContent>
+              
+              <TabsContent 
                 value="requirements" 
                 className="h-full mt-0"
                 data-testid="facility-requirements-content"
               >
-                <div className="flex items-center justify-center h-64 text-muted-foreground">
-                  <div className="text-center">
-                    <div className="text-4xl mb-4" role="img" aria-label="Coming soon icon">
-                      🚧
-                    </div>
-                    <h3 className="text-lg font-semibold mb-2">Requirements Tab</h3>
-                    <p className="text-sm">This tab will show facility requirements and their values.</p>
-                  </div>
-                </div>
+                <FacilityRequirements facility={facility} requirementValues={requirementValues} />
               </TabsContent>
               
               <TabsContent 
-                value="contacts" 
+                value="providers" 
                 className="h-full mt-0"
-                data-testid="facility-contacts-content"
+                data-testid="facility-providers-content"
               >
                 <div className="flex items-center justify-center h-64 text-muted-foreground">
                   <div className="text-center">
                     <div className="text-4xl mb-4" role="img" aria-label="Coming soon icon">
                       🚧
                     </div>
-                    <h3 className="text-lg font-semibold mb-2">Contacts Tab</h3>
-                    <p className="text-sm">This tab will show facility contacts and their information.</p>
+                    <h3 className="text-lg font-semibold mb-2">Providers Tab</h3>
+                    <p className="text-sm">This tab will show facility providers and their information.</p>
                   </div>
                 </div>
               </TabsContent>

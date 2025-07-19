@@ -833,7 +833,16 @@ export async function fetchFacilitiesWithProperties() {
     .select('*');
   if (error) throw error;
   return FacilitySchema.extend({
-    facility_property_details: z.array(FacilityPropertySchema)
+    properties: z.array(z.object({
+      id: z.string(),
+      key: z.string(),
+      label: z.string(),
+      type: z.string(),
+      group: z.string(),
+      value: z.any(),
+      is_required: z.boolean().optional(),
+      validation_rules: z.any().optional()
+    }))
   }).array().parse(data);
 }
 
@@ -843,23 +852,37 @@ export async function fetchFacilitiesWithAllData() {
     .select('*');
   if (error) throw error;
   return FacilitySchema.extend({
-    facility_property_details: z.array(FacilityPropertySchema),
-    requirement_details: z.array(z.object({
+    properties: z.array(z.object({
       id: z.string(),
-      type: z.string(),
       key: z.string(),
-      group: z.string(),
       label: z.string(),
-      note: z.string().nullable(),
-      visible: z.boolean()
+      type: z.string(),
+      group: z.string(),
+      value: z.any(),
+      is_required: z.boolean().optional(),
+      validation_rules: z.any().optional()
     })),
-    provider_details: z.array(z.object({
+    requirements: z.array(z.object({
+      id: z.string(),
+      key: z.string(),
+      label: z.string(),
+      group: z.string(),
+      type: z.string(),
+      note: z.string().nullable(),
+      visible: z.boolean(),
+      required: z.boolean()
+    })),
+    providers: z.array(z.object({
       id: z.string(),
       first_name: z.string().nullable(),
       last_name: z.string().nullable(),
       npi_number: z.string().nullable(),
       title: z.string().nullable(),
-      primary_specialty: z.string().nullable()
+      primary_specialty: z.string().nullable(),
+      role: z.string().nullable(),
+      start_date: z.string().nullable(),
+      end_date: z.string().nullable(),
+      is_active: z.boolean()
     }))
   }).array().parse(data);
 }
@@ -872,6 +895,49 @@ export async function fetchFacilityById(id: string) {
     .single();
   if (error) throw error;
   return FacilitySchema.parse(data);
+}
+
+export async function fetchFacilityWithAllData(id: string) {
+  const { data, error } = await supabase
+    .from('facilities_with_all_data')
+    .select('*')
+    .eq('id', id)
+    .single();
+  if (error) throw error;
+  return FacilitySchema.extend({
+    properties: z.array(z.object({
+      id: z.string(),
+      key: z.string(),
+      label: z.string(),
+      type: z.string(),
+      group: z.string(),
+      value: z.any(),
+      is_required: z.boolean().optional(),
+      validation_rules: z.any().optional()
+    })),
+    requirements: z.array(z.object({
+      id: z.string(),
+      key: z.string(),
+      label: z.string(),
+      group: z.string(),
+      type: z.string(),
+      note: z.string().nullable(),
+      visible: z.boolean(),
+      required: z.boolean()
+    })),
+    providers: z.array(z.object({
+      id: z.string(),
+      first_name: z.string().nullable(),
+      last_name: z.string().nullable(),
+      npi_number: z.string().nullable(),
+      title: z.string().nullable(),
+      primary_specialty: z.string().nullable(),
+      role: z.string().nullable(),
+      start_date: z.string().nullable(),
+      end_date: z.string().nullable(),
+      is_active: z.boolean()
+    }))
+  }).parse(data);
 }
 
 export async function fetchFacilitiesByLabel(label: string) {

@@ -342,9 +342,9 @@ const AllRecords: React.FC = () => {
         return;
       }
       
-      // Fetch facility details directly using facility_id
+      // Fetch facility details with all data using the new view
       const { data: facility, error: facilityError } = await supabase
-        .from('facilities')
+        .from('facilities_with_all_data')
         .select('*')
         .eq('id', facilityAffiliation.facility_id)
         .single();
@@ -356,6 +356,7 @@ const AllRecords: React.FC = () => {
           id: facilityAffiliation.facility_id,
           label: facilityAffiliation.facility_name || 'Unknown Facility',
           icon: undefined,
+          properties: [],
           requirements: [],
           providers: [],
           created_at: new Date().toISOString(),
@@ -370,7 +371,7 @@ const AllRecords: React.FC = () => {
         return;
       }
       
-      console.log('Found facility:', facility);
+      console.log('Found facility with all data:', facility);
       
       // Now fetch facility requirement values for this facility
       const requirementValues = await fetchFacilityRequirementValuesByFacility(facility.id);

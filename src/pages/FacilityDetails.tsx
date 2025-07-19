@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { fetchFacilityById } from '@/lib/supabaseClient';
+import { fetchFacilityWithAllData } from '@/lib/supabaseClient';
 import { FacilityDetailsModal } from '@/components/FacilityDetailsModal';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
@@ -11,10 +11,10 @@ const FacilityDetailsPage: React.FC = () => {
   const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(true);
 
-  // Fetch facility data
+  // Fetch facility data with all related information
   const { data: facility, isLoading, error } = useQuery({
     queryKey: ['facility', facilityId],
-    queryFn: () => fetchFacilityById(facilityId!),
+    queryFn: () => fetchFacilityWithAllData(facilityId!),
     enabled: !!facilityId,
   });
 
@@ -80,6 +80,7 @@ const FacilityDetailsPage: React.FC = () => {
             id: facility.id,
             label: facility.label,
             icon: facility.icon || undefined,
+            properties: facility.properties || [],
             requirements: facility.requirements || [],
             providers: facility.providers || [],
             created_at: facility.created_at,

@@ -5,7 +5,7 @@ const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1N
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Helper function to convert requirement value based on data type (same as in supabaseClient.ts)
+// Helper function to convert requirement value based on data type
 function convertRequirementValue(value: any, dataType: string): any {
   switch (dataType) {
     case 'number':
@@ -29,7 +29,6 @@ function convertRequirementValue(value: any, dataType: string): any {
     case 'phone':
     case 'oneview_record':
     default:
-      // For JSONB storage, return the actual value, not a string
       return value || '';
   }
 }
@@ -67,7 +66,7 @@ async function seedFacilityRequirementValues() {
     return;
   }
 
-  // Get requirement data items separately
+  // Get requirement data items
   const { data: requirementDataItems, error: dataError } = await supabase
     .from('requirement_data')
     .select('id, key, label, data_type');
@@ -88,126 +87,86 @@ async function seedFacilityRequirementValues() {
     return acc;
   }, {} as Record<string, any>);
 
-  if (requirementsError) {
-    console.error('❌ Error fetching requirements:', requirementsError);
-    return;
-  }
-
-  if (!requirements || requirements.length === 0) {
-    console.error('❌ No requirements found. Please run the requirements seeding script first.');
-    return;
-  }
-
   // Sample requirement values for different facilities
-  const requirementValues = [
+  const facilityRequirementValues = [
     // Charlotte Mecklenburg Hospital Authority
     {
       facility_name: 'Charlotte Mecklenburg Hospital Authority',
-      requirements: {
-        'facility_licensing_requirements': {
-          'license_number_format': 'NC-12345',
-          'required_certifications': 'BLS, ACLS, PALS',
-          'facility_size_min_sqft': '5000',
-          'documentation_requirements': 'Complete medical records, incident reports'
-        },
-        'facility_safety_standards': {
-          'safety_equipment_required': 'Fire extinguishers, emergency lighting, AED',
-          'min_staff_count': '15',
-          'medical_equipment_standards': 'FDA approved, regularly calibrated'
-        },
-        'board_certification_requirements': {
-          'board_exam_passing_score': '75',
-          'continuing_education_hours': '50',
-          'recertification_period_years': '10'
-        }
+      values: {
+        'malpractice_history': 'No malpractice claims in the last 5 years',
+        'employment_history': '10+ years of experience in hospital settings',
+        'facility_affiliations_history': 'Previously affiliated with Atrium Health',
+        'peer_references': '3 positive peer references submitted',
+        'cmes_general': 45,
+        'cme_history': 'Completed 45 CME hours in cardiology',
+        'life_support_certification_through_aha': true,
+        'drug_screen_general': true,
+        'drug_screen_type': '10-panel',
+        'background_check': true
       }
     },
     // Cardiac Care Institute
     {
       facility_name: 'Cardiac Care Institute',
-      requirements: {
-        'facility_licensing_requirements': {
-          'license_number_format': 'NC-23456',
-          'required_certifications': 'BLS, ACLS, Cardiac certification',
-          'facility_size_min_sqft': '8000',
-          'documentation_requirements': 'Cardiac protocols, patient outcomes'
-        },
-        'facility_safety_standards': {
-          'safety_equipment_required': 'Cardiac monitors, defibrillators, crash carts',
-          'min_staff_count': '25',
-          'medical_equipment_standards': 'Cardiac-specific equipment, daily checks'
-        },
-        'board_certification_requirements': {
-          'board_exam_passing_score': '80',
-          'continuing_education_hours': '60',
-          'recertification_period_years': '8'
-        }
+      values: {
+        'malpractice_history': 'One minor claim resolved in 2022',
+        'employment_history': '15+ years specializing in cardiac care',
+        'facility_affiliations_history': 'Former director at Duke Heart Center',
+        'peer_references': '5 cardiac specialist references',
+        'cmes_general': 60,
+        'cme_history': 'Advanced cardiac life support certification',
+        'life_support_certification_through_aha': true,
+        'drug_screen_general': true,
+        'drug_screen_type': '12-panel',
+        'background_check': true
       }
     },
     // Children's Hospital
     {
       facility_name: 'Children\'s Hospital',
-      requirements: {
-        'facility_licensing_requirements': {
-          'license_number_format': 'NC-34567',
-          'required_certifications': 'BLS, PALS, Pediatric certification',
-          'facility_size_min_sqft': '12000',
-          'documentation_requirements': 'Pediatric protocols, family consent forms'
-        },
-        'facility_safety_standards': {
-          'safety_equipment_required': 'Pediatric equipment, child-proofing, security',
-          'min_staff_count': '40',
-          'medical_equipment_standards': 'Pediatric-specific, size-appropriate'
-        },
-        'board_certification_requirements': {
-          'board_exam_passing_score': '85',
-          'continuing_education_hours': '75',
-          'recertification_period_years': '7'
-        }
+      values: {
+        'malpractice_history': 'Clean record, pediatric specialist',
+        'employment_history': '8 years in pediatric medicine',
+        'facility_affiliations_history': 'Previous work at UNC Children\'s',
+        'peer_references': '4 pediatrician references',
+        'cmes_general': 75,
+        'cme_history': 'Pediatric advanced life support certified',
+        'life_support_certification_through_aha': true,
+        'drug_screen_general': true,
+        'drug_screen_type': '10-panel',
+        'background_check': true
       }
     },
     // Rehabilitation Center
     {
       facility_name: 'Rehabilitation Center',
-      requirements: {
-        'facility_licensing_requirements': {
-          'license_number_format': 'NC-45678',
-          'required_certifications': 'BLS, Rehabilitation certification',
-          'facility_size_min_sqft': '3000',
-          'documentation_requirements': 'Rehab protocols, progress notes'
-        },
-        'facility_safety_standards': {
-          'safety_equipment_required': 'Mobility aids, safety rails, emergency exits',
-          'min_staff_count': '8',
-          'medical_equipment_standards': 'Rehab equipment, accessibility features'
-        },
-        'board_certification_requirements': {
-          'board_exam_passing_score': '70',
-          'continuing_education_hours': '30',
-          'recertification_period_years': '12'
-        }
+      values: {
+        'malpractice_history': 'No claims, rehabilitation specialist',
+        'employment_history': '12 years in physical therapy',
+        'facility_affiliations_history': 'Former PT director at WakeMed',
+        'peer_references': '3 physical therapist references',
+        'cmes_general': 30,
+        'cme_history': 'Rehabilitation medicine certification',
+        'life_support_certification_through_aha': false,
+        'drug_screen_general': true,
+        'drug_screen_type': '5-panel',
+        'background_check': true
       }
     },
     // Emergency Trauma Center
     {
       facility_name: 'Emergency Trauma Center',
-      requirements: {
-        'facility_licensing_requirements': {
-          'license_number_format': 'NC-56789',
-          'required_certifications': 'BLS, ACLS, ATLS, Trauma certification',
-          'facility_size_min_sqft': '15000',
-          'documentation_requirements': 'Trauma protocols, rapid response documentation'
-        },
-        'facility_safety_standards': {
-          'safety_equipment_required': 'Trauma equipment, emergency response systems',
-          'min_staff_count': '50',
-          'medical_equipment_standards': 'Trauma-specific, 24/7 availability'
-        },
-        'board_certification_requirements': {
-          'board_exam_passing_score': '90',
-          'continuing_education_hours': '100',
-          'recertification_period_years': '5'
-        }
+      values: {
+        'malpractice_history': 'Two claims, both resolved favorably',
+        'employment_history': '20+ years in emergency medicine',
+        'facility_affiliations_history': 'Former chief at UNC Trauma',
+        'peer_references': '6 emergency medicine references',
+        'cmes_general': 100,
+        'cme_history': 'Advanced trauma life support instructor',
+        'life_support_certification_through_aha': true,
+        'drug_screen_general': true,
+        'drug_screen_type': '12-panel',
+        'background_check': true
       }
     }
   ];
@@ -222,34 +181,26 @@ async function seedFacilityRequirementValues() {
   
   for (let i = 0; i < facilities.length; i++) {
     const facility = facilities[i];
-    const facilityValues = requirementValues[i];
+    const facilityValues = facilityRequirementValues[i];
     
     if (!facilityValues) continue;
     
+    // For each requirement, find its data items and create values
     for (const requirement of requirements) {
-      const requirementKey = requirement.key;
-      const facilityRequirementValues = facilityValues.requirements[requirementKey];
-      
-      if (!facilityRequirementValues) continue;
-      
-      // Get the requirement data items for this requirement using the data array
       const requirementDataIds = requirement.data || [];
+      
+      // Find the requirement data items for this requirement
       const requirementDataItemsForRequirement = requirementDataIds
         .map(id => requirementDataItems.find(item => item.id === id))
         .filter(Boolean);
       
       for (const dataItem of requirementDataItemsForRequirement) {
         const dataKey = dataItem.key;
-        const value = facilityRequirementValues[dataKey];
+        const value = facilityValues.values[dataKey];
         
         if (value !== undefined) {
           // Convert value based on data type
           const convertedValue = convertRequirementValue(value, dataItem.data_type);
-          
-          // Log conversion for debugging (only for boolean properties)
-          if (dataItem.data_type === 'boolean') {
-            console.log(`Converting ${requirementKey}.${dataKey}: "${value}" (${typeof value}) -> ${convertedValue} (${typeof convertedValue})`);
-          }
           
           requirementValuesToInsert.push({
             facility_id: facility.id,
@@ -266,6 +217,8 @@ async function seedFacilityRequirementValues() {
     console.log('⚠️ No requirement values to insert');
     return;
   }
+
+  console.log(`📝 Preparing to insert ${requirementValuesToInsert.length} requirement values...`);
 
   const { data: insertedValues, error: valuesError } = await supabase
     .from('facility_requirement_values')

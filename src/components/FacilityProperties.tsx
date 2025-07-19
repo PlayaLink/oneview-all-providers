@@ -1,271 +1,236 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  getFacilityPropertiesGrouped, 
-  updateFacilityPropertyValueByKey,
-  convertPropertyValue 
-} from '../lib/supabaseClient';
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Badge } from './ui/badge';
+import { Label } from './ui/label';
+import { Separator } from './ui/separator';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { getIconByName } from '@/lib/iconMapping';
+
+interface FacilityProperty {
+  id?: string;
+  key?: string;
+  label?: string;
+  type?: string;
+  group?: string;
+  value?: any;
+  is_required?: boolean;
+  validation_rules?: any;
+}
 
 interface FacilityPropertiesProps {
-  facilityId: string;
-  onUpdate?: () => void;
+  facility: {
+    id: string;
+    label: string;
+    icon?: string;
+    properties?: FacilityProperty[];
+  };
 }
 
-interface PropertyValue {
-  id: string;
-  key: string;
-  label: string;
-  type: string;
-  value: any;
-  raw_value: any;
-}
+export const FacilityProperties: React.FC<FacilityPropertiesProps> = ({ facility }) => {
+  const properties = facility.properties || [];
 
-export const FacilityProperties: React.FC<FacilityPropertiesProps> = ({ 
-  facilityId, 
-  onUpdate 
-}) => {
-  const [properties, setProperties] = useState<Record<string, PropertyValue[]>>({});
-  const [loading, setLoading] = useState(true);
-  const [editingKey, setEditingKey] = useState<string | null>(null);
-  const [editValue, setEditValue] = useState<any>('');
-  const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    loadProperties();
-  }, [facilityId]);
-
-  const loadProperties = async () => {
-    try {
-      setLoading(true);
-      const groupedProperties = await getFacilityPropertiesGrouped(facilityId);
-      setProperties(groupedProperties);
-    } catch (error) {
-      console.error('Error loading facility properties:', error);
-    } finally {
-      setLoading(false);
+  // Group properties by their group
+  const groupedProperties = properties.reduce((acc, property) => {
+    const group = property.group || 'general';
+    if (!acc[group]) {
+      acc[group] = [];
     }
-  };
+    acc[group].push(property);
+    return acc;
+  }, {} as Record<string, FacilityProperty[]>);
 
-  const handleEdit = (property: PropertyValue) => {
-    setEditingKey(property.key);
-    setEditValue(property.value);
-  };
-
-  const handleSave = async (property: PropertyValue) => {
-    try {
-      setSaving(true);
-      await updateFacilityPropertyValueByKey(facilityId, property.key, editValue);
-      setEditingKey(null);
-      setEditValue('');
-      await loadProperties();
-      onUpdate?.();
-    } catch (error) {
-      console.error('Error updating property:', error);
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleCancel = () => {
-    setEditingKey(null);
-    setEditValue('');
-  };
-
-  const renderPropertyValue = (property: PropertyValue) => {
-    if (editingKey === property.key) {
-      return (
-        <div className="flex gap-2 items-center" data-testid={`edit-${property.key}`}>
-          {renderEditInput(property)}
-          <button
-            onClick={() => handleSave(property)}
-            disabled={saving}
-            className="px-2 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600 disabled:opacity-50"
-            data-testid={`save-${property.key}`}
-          >
-            {saving ? 'Saving...' : 'Save'}
-          </button>
-          <button
-            onClick={handleCancel}
-            className="px-2 py-1 bg-gray-500 text-white rounded text-sm hover:bg-gray-600"
-            data-testid={`cancel-${property.key}`}
-          >
-            Cancel
-          </button>
-        </div>
-      );
+  const formatValue = (value: any, type: string) => {
+    if (value === null || value === undefined) {
+      return <span className="text-muted-foreground italic">Not set</span>;
     }
 
-    return (
-      <div className="flex gap-2 items-center" data-testid={`display-${property.key}`}>
-        <span className="text-gray-700">
-          {renderValueDisplay(property.value, property.type)}
-        </span>
-        <button
-          onClick={() => handleEdit(property)}
-          className="px-2 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
-          data-testid={`edit-btn-${property.key}`}
-        >
-          Edit
-        </button>
-      </div>
-    );
-  };
-
-  const renderEditInput = (property: PropertyValue) => {
-    switch (property.type) {
-      case 'boolean':
-        return (
-          <select
-            value={editValue ? 'true' : 'false'}
-            onChange={(e) => setEditValue(e.target.value === 'true')}
-            className="border rounded px-2 py-1"
-            data-testid={`input-${property.key}`}
-          >
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-          </select>
-        );
-      
-      case 'number':
-        return (
-          <input
-            type="number"
-            value={editValue}
-            onChange={(e) => setEditValue(parseFloat(e.target.value) || 0)}
-            className="border rounded px-2 py-1 w-32"
-            data-testid={`input-${property.key}`}
-          />
-        );
-      
-      case 'multi-select':
-        const options = Array.isArray(editValue) ? editValue : [];
-        return (
-          <div className="flex flex-col gap-1">
-            <input
-              type="text"
-              value={options.join(', ')}
-              onChange={(e) => setEditValue(e.target.value.split(',').map(s => s.trim()).filter(s => s.length > 0))}
-              placeholder="Enter options separated by commas"
-              className="border rounded px-2 py-1"
-              data-testid={`input-${property.key}`}
-            />
-            <span className="text-xs text-gray-500">Separate multiple values with commas</span>
-          </div>
-        );
-      
-      case 'email':
-        return (
-          <input
-            type="email"
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            className="border rounded px-2 py-1 w-64"
-            data-testid={`input-${property.key}`}
-          />
-        );
-      
-      case 'url':
-        return (
-          <input
-            type="url"
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            className="border rounded px-2 py-1 w-64"
-            data-testid={`input-${property.key}`}
-          />
-        );
-      
-      case 'phone':
-        return (
-          <input
-            type="tel"
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            className="border rounded px-2 py-1 w-48"
-            data-testid={`input-${property.key}`}
-          />
-        );
-      
-      default:
-        return (
-          <input
-            type="text"
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            className="border rounded px-2 py-1 w-64"
-            data-testid={`input-${property.key}`}
-          />
-        );
-    }
-  };
-
-  const renderValueDisplay = (value: any, type: string) => {
     switch (type) {
       case 'boolean':
-        return value ? 'Yes' : 'No';
+        return (
+          <Badge variant={value ? "default" : "secondary"}>
+            {value ? "Yes" : "No"}
+          </Badge>
+        );
       case 'number':
-        return value?.toString() || '0';
+        return <span className="font-mono">{value}</span>;
+      case 'single-select':
+        return <Badge variant="outline">{value}</Badge>;
       case 'multi-select':
-        return Array.isArray(value) ? value.join(', ') : value?.toString() || '';
-      case 'email':
-        return value ? <a href={`mailto:${value}`} className="text-blue-600 hover:underline">{value}</a> : '';
-      case 'url':
-        return value ? <a href={value} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{value}</a> : '';
+        if (Array.isArray(value)) {
+          return (
+            <div className="flex flex-wrap gap-1">
+              {value.map((item, index) => (
+                <Badge key={index} variant="outline" className="text-xs">
+                  {item}
+                </Badge>
+              ))}
+            </div>
+          );
+        }
+        return <span>{value}</span>;
+      case 'text':
       default:
-        return value?.toString() || '';
+        return <span>{value}</span>;
     }
   };
 
-  if (loading) {
-    return (
-      <div className="p-4" data-testid="facility-properties-loading">
-        <div className="animate-pulse">
-          <div className="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
-          <div className="space-y-3">
-            <div className="h-4 bg-gray-200 rounded"></div>
-            <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-            <div className="h-4 bg-gray-200 rounded w-4/6"></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const getGroupIcon = (group: string) => {
+    const iconMap: Record<string, string> = {
+      'general': '🏢',
+      'capacity': '📊',
+      'contact': '📞',
+      'location': '📍',
+      'settings': '⚙️',
+      'credentials': '🔐',
+      'billing': '💰',
+      'compliance': '✅',
+      'equipment': '🔧',
+      'staffing': '👥'
+    };
+    return iconMap[group] || '📋';
+  };
+
+  const getGroupTitle = (group: string) => {
+    return group.charAt(0).toUpperCase() + group.slice(1).replace(/_/g, ' ');
+  };
 
   return (
-    <div className="p-4" data-testid="facility-properties">
-      <h2 className="text-xl font-semibold mb-4" data-testid="facility-properties-title">
-        Facility Properties
-      </h2>
-      
-      {Object.entries(properties).map(([group, groupProperties]) => (
-        <div key={group} className="mb-6" data-testid={`property-group-${group}`}>
-          <h3 className="text-lg font-medium text-gray-800 mb-3 capitalize" data-testid={`group-title-${group}`}>
-            {group.replace('_', ' ')}
-          </h3>
-          
-          <div className="space-y-3">
-            {groupProperties.map((property) => (
-              <div 
-                key={property.id} 
-                className="flex justify-between items-start p-3 bg-gray-50 rounded-lg"
-                data-testid={`property-item-${property.key}`}
-              >
-                <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1" data-testid={`property-label-${property.key}`}>
-                    {property.label}
-                  </label>
-                  {renderPropertyValue(property)}
-                </div>
-              </div>
-            ))}
+    <div className="space-y-6" data-testid="facility-properties">
+      {/* Header */}
+      <Card data-testid="facility-properties-header">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            {facility.icon && (
+              <FontAwesomeIcon icon={getIconByName(facility.icon)} className="w-5 h-5" />
+            )}
+            {facility.label} - Properties
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary" data-testid="properties-count">
+              {properties.length} Properties
+            </Badge>
+            <span className="text-sm text-muted-foreground">
+              Organized into {Object.keys(groupedProperties).length} groups
+            </span>
           </div>
-        </div>
-      ))}
-      
-      {Object.keys(properties).length === 0 && (
-        <div className="text-center text-gray-500 py-8" data-testid="no-properties">
-          No properties found for this facility.
-        </div>
+        </CardContent>
+      </Card>
+
+      {/* Properties by Group */}
+      {Object.keys(groupedProperties).length > 0 ? (
+        Object.entries(groupedProperties).map(([group, groupProperties]) => (
+          <Card key={group} data-testid={`properties-group-${group}`}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <span role="img" aria-label={`${group} icon`}>
+                  {getGroupIcon(group)}
+                </span>
+                {getGroupTitle(group)}
+                <Badge variant="outline" className="ml-auto">
+                  {groupProperties.length}
+                </Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {groupProperties.map((property) => (
+                  <div 
+                    key={property.id} 
+                    className="border rounded-lg p-4 hover:bg-muted/50 transition-colors"
+                    data-testid={`property-${property.key}`}
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <Label className="text-sm font-medium text-gray-900">
+                          {property.label}
+                        </Label>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge variant="outline" className="text-xs">
+                            {property.type}
+                          </Badge>
+                          {property.is_required && (
+                            <Badge variant="destructive" className="text-xs">
+                              Required
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-3">
+                      <Label className="text-xs text-gray-600">Value</Label>
+                      <div className="mt-1">
+                        {formatValue(property.value, property.type)}
+                      </div>
+                    </div>
+
+                    {property.validation_rules && (
+                      <div className="mt-3">
+                        <Label className="text-xs text-gray-600">Validation Rules</Label>
+                        <div className="mt-1 text-xs text-muted-foreground">
+                          {JSON.stringify(property.validation_rules)}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        ))
+      ) : (
+        <Card data-testid="no-properties">
+          <CardContent className="flex items-center justify-center h-32">
+            <div className="text-center">
+              <div className="text-4xl mb-2" role="img" aria-label="No properties icon">
+                📭
+              </div>
+              <p className="text-muted-foreground">No properties found for this facility.</p>
+            </div>
+          </CardContent>
+        </Card>
       )}
+
+      {/* Quick Actions */}
+      <Card data-testid="facility-properties-actions">
+        <CardHeader>
+          <CardTitle>Quick Actions</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <button 
+              className="flex items-center justify-center gap-2 p-3 border rounded-lg hover:bg-muted transition-colors"
+              data-testid="add-property-btn"
+            >
+              <span role="img" aria-label="Add icon">➕</span>
+              Add Property
+            </button>
+            <button 
+              className="flex items-center justify-center gap-2 p-3 border rounded-lg hover:bg-muted transition-colors"
+              data-testid="edit-properties-btn"
+            >
+              <span role="img" aria-label="Edit icon">✏️</span>
+              Edit Properties
+            </button>
+            <button 
+              className="flex items-center justify-center gap-2 p-3 border rounded-lg hover:bg-muted transition-colors"
+              data-testid="export-properties-btn"
+            >
+              <span role="img" aria-label="Export icon">📤</span>
+              Export Properties
+            </button>
+            <button 
+              className="flex items-center justify-center gap-2 p-3 border rounded-lg hover:bg-muted transition-colors"
+              data-testid="import-properties-btn"
+            >
+              <span role="img" aria-label="Import icon">📥</span>
+              Import Properties
+            </button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }; 
