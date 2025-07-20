@@ -76,10 +76,10 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
-        className="max-w-6xl max-h-[90vh] overflow-hidden"
+        className="max-w-6xl max-h-[90vh] flex flex-col"
         data-testid="facility-details-modal"
       >
-        <DialogHeader className="flex flex-row items-center justify-between pb-4">
+        <DialogHeader className="flex flex-row items-center justify-between pb-4 flex-shrink-0">
           <DialogTitle className="flex items-center gap-2 text-sm font-bold text-gray-700 tracking-wider uppercase">
             {facility.icon && (
               <span className="text-2xl" role="img" aria-label="Facility icon">
@@ -99,13 +99,13 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
         </DialogHeader>
         
         <div
-          className="flex-1 overflow-hidden border-t border-gray-200"
+          className="flex-1 flex flex-col min-h-0 border-t border-gray-200"
             data-testid="facility-details-tabs"
           >
-          <div className="flex h-full">
+          <div className="flex flex-1 min-h-0">
             {/* Left sidebar navigation */}
-            <div className="w-72 flex-shrink-0 border-r border-gray-200 bg-white">
-              <div className="p-6 pt-4">
+            <div className="w-72 flex-shrink-0 border-r border-gray-200 bg-white flex flex-col">
+              <div className="p-6 pt-4 flex-shrink-0">
                 <nav
                   className="space-y-4"
                   role="navigation"
@@ -173,9 +173,9 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
             </div>
 
             {/* Main content area */}
-            <div className="flex-1 flex flex-col overflow-hidden">
+            <div className="flex-1 flex flex-col min-h-0">
               {/* Tab header */}
-              <div className="p-6 pb-4 border-b border-gray-100">
+              <div className="flex-shrink-0 p-6 pb-4 border-b border-gray-100">
                 <h2 className="text-lg font-bold text-gray-700 tracking-wide">
                   {activeTab === "information" && "Facility Information"}
                   {activeTab === "credentialing" && "Credentialing Processes"}
@@ -185,7 +185,7 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
               </div>
 
               {/* Tab content */}
-              <div className="flex-1 overflow-auto p-6 pt-4">
+              <div className="flex-1 overflow-y-auto p-6 pt-4 min-h-0">
                 {activeTab === "information" && (
                   <div data-testid="facility-information-content">
                     {(() => {
