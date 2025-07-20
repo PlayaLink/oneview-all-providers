@@ -190,8 +190,8 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
             console.log("Property changed:", property.key, newValue);
           }}
           placeholder=""
-          disabled={true} // Read-only for now
-          className="w-full bg-gray-100 border-gray-300"
+          // disabled={true} 
+          className="w-full border-gray-300"
           data-testid={`facility-property-${property.key}`}
         />
       </div>
@@ -281,7 +281,7 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
                   value={facility.label || ""}
                   onChange={() => {}}
                   disabled={true}
-                  className="w-full bg-gray-100 border-gray-300"
+                  className="w-full border-gray-300"
                   data-testid="facility-name"
                 />
               </div>
@@ -292,7 +292,7 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
                   value={facility.id || ""}
                   onChange={() => {}}
                   disabled={true}
-                  className="w-full bg-gray-100 border-gray-300"
+                  className="w-full border-gray-300"
                   data-testid="facility-id"
                 />
               </div>
