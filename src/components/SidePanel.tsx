@@ -29,7 +29,7 @@ export interface InputField {
   placeholder?: string;
   options?: string[];
   multi?: boolean;
-  rowKey?: string;
+  key?: string;
   [key: string]: any;
 }
 
@@ -122,7 +122,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       
       const initialValues: Record<string, any> = {};
       inputConfig.forEach(field => {
-        const key = field.rowKey || field.label;
+        const key = field.key || field.label;
         let value = selectedRow[key] ?? (field.type === 'multi-select' ? [] : '');
         // Deserialize multi-select fields: convert array of strings to array of {id, label}
         if (field.type === 'multi-select' && Array.isArray(value) && value.length > 0 && typeof value[0] === 'string') {
@@ -227,7 +227,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
     
     // Check if this change is different from the original value
     if (selectedRow) {
-      const originalValue = selectedRow[key] ?? (inputConfig.find(f => f.rowKey === key)?.type === 'multi-select' ? [] : '');
+      const originalValue = selectedRow[key] ?? (inputConfig.find(f => f.key === key)?.type === 'multi-select' ? [] : '');
       const hasChanged = JSON.stringify(value) !== JSON.stringify(originalValue);
       
       console.log('Change detection:', { key, hasChanged, value, originalValue });
@@ -237,7 +237,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       } else {
         // Check if any other fields have changes
         const anyChanges = Object.entries({ ...formValues, [key]: value }).some(([fieldKey, fieldValue]) => {
-          const fieldOriginalValue = selectedRow[fieldKey] ?? (inputConfig.find(f => f.rowKey === fieldKey)?.type === 'multi-select' ? [] : '');
+          const fieldOriginalValue = selectedRow[fieldKey] ?? (inputConfig.find(f => f.key === fieldKey)?.type === 'multi-select' ? [] : '');
           return JSON.stringify(fieldValue) !== JSON.stringify(fieldOriginalValue);
         });
         setHasUnsavedChanges(anyChanges);
@@ -253,7 +253,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
     // Reset form values to original selectedRow values
     const originalValues: Record<string, any> = {};
     inputConfig.forEach(field => {
-      const key = field.rowKey || field.label;
+      const key = field.key || field.label;
       const value = selectedRow[key] ?? (field.type === 'multi-select' ? [] : '');
       originalValues[key] = value;
     });
@@ -288,14 +288,14 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
 
     try {
       // Only include valid DB columns in the update
-      const validColumns = inputConfig.map(f => f.rowKey).filter(Boolean);
+      const validColumns = inputConfig.map(f => f.key).filter(Boolean);
       
       // Filter and clean the updates
       const filteredUpdates = Object.fromEntries(
         Object.entries(formValues)
           .filter(([key]) => validColumns.includes(key))
           .map(([key, value]) => {
-            const field = inputConfig.find(f => f.rowKey === key);
+            const field = inputConfig.find(f => f.key === key);
             // Serialize multi-select fields: convert array of {id, label} to array of strings
             if (field && field.type === 'multi-select' && Array.isArray(value)) {
               return [key, value.map((v: any) => (typeof v === 'object' && v !== null ? v.id || v.label : v))];

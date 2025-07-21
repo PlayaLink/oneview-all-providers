@@ -20,7 +20,7 @@ export function getInputType(field: { options?: any[]; type?: string }) {
 interface FieldComponentProps {
   field: {
     label: string;
-    rowKey?: string;
+    key?: string;
     options?: any[];
     placeholder?: string;
     type?: string;
@@ -32,7 +32,7 @@ interface FieldComponentProps {
 
 export function renderFieldComponent({ field, formValues, handleChange, className = "flex-1 min-w-0" }: FieldComponentProps): React.ReactElement {
   const inputType = getInputType(field);
-  const fieldKey = field.rowKey || field.label;
+  const fieldKey = field.key || field.label;
 
   console.log('Rendering field:', { fieldKey, inputType, options: field.options, formValue: formValues[fieldKey] });
 
