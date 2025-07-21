@@ -158,12 +158,20 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   const handleRowClicked = (event: RowClickedEvent) => {
     // Prevent cell focus on single click
     event.api.setFocusedCell(null, null);
-    
+    // If the clicked row is already selected, unselect and close side panel
+    if (selectedRowId === event.data.id) {
+      if (controlledSelectedRowId === undefined) {
+        setInternalSelectedRowId(null);
+      }
+      if (onRowClicked) {
+        onRowClicked(null); // Pass null to close side panel
+      }
+      return;
+    }
     // Always set row selection on row click
     if (controlledSelectedRowId === undefined) {
       setInternalSelectedRowId(event.data.id);
     }
-    
     // Call onRowClicked callback
     if (onRowClicked && event.data) {
       onRowClicked(event.data);
