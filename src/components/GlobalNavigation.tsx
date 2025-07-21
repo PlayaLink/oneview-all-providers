@@ -177,10 +177,6 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
               <NavItem variant="global" role="menuitem">Tasks</NavItem>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            {/* Feature Flags Dropdown */}
-            <FeatureFlags />
-          </div>
         </div>
       </nav>
     </>
