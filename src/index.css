@@ -44,6 +44,16 @@ body {
   border-top-right-radius: 0 !important;
 }
 
+/*
+  Force lower z-index for AG Grid header and icons globally to prevent them from appearing above modals and overlays.
+  This targets common parent containers as well as the icon itself.
+*/
+.ag-theme-alpine .ag-header,
+.ag-theme-alpine .ag-header-cell,
+.ag-theme-alpine .ag-header-icon {
+  z-index: 4 !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
