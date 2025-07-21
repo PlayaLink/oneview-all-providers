@@ -459,6 +459,7 @@ export async function fetchGridFieldGroups(gridId: string) {
 
 // Fetch all rows from a given table name
 export async function fetchGridData(tableName: string) {
+  console.log('[fetchGridData] Fetching data for table:', tableName);
   if (!tableName) return [];
   const { data, error } = await supabase
     .from(tableName)

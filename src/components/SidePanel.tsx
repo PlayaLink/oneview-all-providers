@@ -330,10 +330,12 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       // Log fields that are being excluded
       const excludedFields = Object.entries(formValues).filter(([key]) => !validColumns.includes(key));
       if (excludedFields.length > 0) {
+        console.log('Excluded fields from update:', excludedFields);
       }
       
       // Check if there are any updates to save
       if (Object.keys(filteredUpdates).length === 0) {
+        console.log('No updates to save. filteredUpdates:', filteredUpdates);
         return;
       }
 
@@ -379,7 +381,18 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       }
       
       console.log('Updating record:', { tableName, recordId: selectedRow.id, updates: filteredUpdates });
-      const result = await updateRecord(tableName, selectedRow.id, filteredUpdates);
+      // Remove optimistic update: do not call setQueryData for legacy keys
+      // Only refetch the grid_data queries after save
+      let result;
+      try {
+        result = await updateRecord(tableName, selectedRow.id, filteredUpdates);
+        console.log('Supabase updateRecord result:', result);
+        // Refetch all grid data queries so GridDataFetcher and side panel get fresh data
+        await queryClient.refetchQueries({ queryKey: ["grid_data"], exact: false });
+      } catch (updateError) {
+        console.error('Supabase updateRecord error:', updateError);
+        throw updateError;
+      }
       // Update parent state as well
       if (onUpdateSelectedProvider) {
         const updatedProvider = { ...selectedRow, ...filteredUpdates };
