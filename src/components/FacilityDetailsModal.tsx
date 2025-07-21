@@ -13,6 +13,8 @@ import {
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
+import { useQuery } from '@tanstack/react-query';
+import { fetchFacilityWithAllData } from '@/lib/supabaseClient';
 
 interface FacilityProperty {
   id?: string;
@@ -72,6 +74,17 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
   requirementValues = [],
 }) => {
   const [activeTab, setActiveTab] = useState("information");
+
+  // Fetch the latest facility data using React Query (v5 object signature)
+  const {
+    data: facilityData,
+    isLoading: facilityLoading,
+    error: facilityError,
+  } = useQuery({
+    queryKey: ['facility', facility.id],
+    queryFn: () => fetchFacilityWithAllData(facility.id),
+    enabled: !!facility.id,
+  });
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -188,22 +201,26 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
               <div className="flex-1 overflow-y-auto p-6 pt-4 min-h-0">
                 {activeTab === "information" && (
                   <div data-testid="facility-information-content">
-                    {(() => {
-                      console.log('Facility object being passed to FacilityInformation:', {
-                        facility,
-                        requirementValues,
-                        facilityKeys: Object.keys(facility),
-                        facilityProperties: facility.properties,
-                        facilityRequirements: facility.requirements,
-                        facilityProviders: facility.providers
-                      });
-                      return null;
-                    })()}
-                    <FacilityInformation
-                      facility={facility}
-                      requirementValues={requirementValues}
-                    />
-                    </div>
+                    {facilityLoading ? (
+                      <div className="text-center text-gray-500">Loading facility information...</div>
+                    ) : facilityError ? (
+                      <div className="text-center text-red-500">Failed to load facility information.</div>
+                    ) : facilityData && facilityData.id && facilityData.label && facilityData.created_at && facilityData.updated_at ? (
+                      <FacilityInformation
+                        facility={facilityData as {
+                          id: string;
+                          label: string;
+                          icon?: string;
+                          properties?: FacilityProperty[];
+                          requirements?: any[];
+                          providers?: any[];
+                          created_at: string;
+                          updated_at: string;
+                        }}
+                        requirementValues={requirementValues}
+                      />
+                    ) : null}
+                  </div>
                 )}
 
                 {activeTab === "credentialing" && (

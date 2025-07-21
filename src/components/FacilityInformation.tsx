@@ -200,13 +200,14 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
     if (currentRow.length > 0) {
       rows.push(currentRow);
     }
+    const collapsibleProps = {
+      key: groupName,
+      title: groupName,
+      defaultExpanded: true,
+      'data-testid': `facility-section-${groupName.toLowerCase().replace(/\s+/g, "-")}`
+    };
     return (
-      <CollapsibleSection
-        key={groupName}
-        title={groupName}
-        defaultExpanded={true}
-        data-testid={`facility-section-${groupName.toLowerCase().replace(/\s+/g, "-")}`}
-      >
+      <CollapsibleSection {...collapsibleProps}>
         <div className="flex flex-col gap-4 w-full px-2">
           {rows.map((rowProperties, rowIndex) =>
             renderRow(rowProperties, rowIndex),
