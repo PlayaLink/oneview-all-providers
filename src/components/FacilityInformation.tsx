@@ -15,6 +15,7 @@ interface FacilityProperty {
   value?: any;
   is_required?: boolean;
   validation_rules?: any;
+  options?: SingleSelectOption[]; // Added for single-select and multi-select
 }
 
 interface FacilityInformationProps {
@@ -77,8 +78,8 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
 
   // Mock options for dropdown fields (in real implementation, these would come from your data source)
   const createOptions = (values: string[]): SingleSelectOption[] => {
-    return values.map((value, index) => ({
-      id: index,
+    return values.map((value) => ({
+      id: value,
       label: value,
     }));
   };
@@ -103,24 +104,20 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
   const renderProperty = (property: FacilityProperty) => {
     const value = propertyValues[property.key!] ?? "";
     const label = property.label || property.key || "";
-    const fieldType = property.type?.toLowerCase() || "";
-    const fieldName = label.toLowerCase();
-    // No longer disabling input while mutating
+    const type = property.type?.toLowerCase() || "text";
 
-    if (
-      fieldName.includes("transportation") ||
-      fieldName.includes("handicap") ||
-      fieldName.includes("access") ||
-      fieldName.includes("directory")
-    ) {
+    if (type === "single-select") {
+      // Use yesNoOptions or stateOptions as a placeholder; in real use, options should come from property.options
+      // For now, fallback to yesNoOptions if no options provided
+      const options = property.options || yesNoOptions;
       return (
         <div key={property.id || property.key} className="px-2 flex-1">
           <SingleSelect
             label={label}
             labelPosition="top"
             value={value ? { id: value, label: value } : undefined}
-            options={yesNoOptions}
-            onChange={(option) => handlePropertyChange(property.key!, option?.label)}
+            options={options}
+            onChange={(option) => handlePropertyChange(property.key!, option?.id)}
             placeholder=""
             className="w-full"
             data-testid={`facility-property-${property.key}`}
@@ -129,15 +126,17 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
       );
     }
 
-    if (fieldName.includes("state") || fieldName === "billing state") {
+    if (type === "multi-select") {
+      // For now, fallback to yesNoOptions if no options provided
+      const options = property.options || yesNoOptions;
       return (
         <div key={property.id || property.key} className="px-2 flex-1">
-          <SingleSelect
+          <MultiSelectInput
             label={label}
             labelPosition="top"
-            value={value ? { id: value, label: value } : undefined}
-            options={stateOptions}
-            onChange={(option) => handlePropertyChange(property.key!, option?.label)}
+            value={Array.isArray(value) ? value : []}
+            options={options}
+            onChange={(newValue) => handlePropertyChange(property.key!, newValue)}
             placeholder=""
             className="w-full"
             data-testid={`facility-property-${property.key}`}
