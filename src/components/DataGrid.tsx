@@ -61,62 +61,97 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   const { value: showFloatingFilters } = useFeatureFlag("floating_filters");
 
   // Prepare column definitions with optional checkbox column
-  const columnDefs = React.useMemo(() => [
-    ...(showCheckboxes
-      ? [
-          {
-            headerName: "",
-            headerCheckboxSelection: true,
-            checkboxSelection: true,
-            width: 50,
-            pinned: "left" as const,
-            lockPosition: true,
-            suppressMenu: true,
-            sortable: false,
-            filter: false,
-            resizable: false,
-            cellClass: "ag-cell-no-border",
-            headerClass: "ag-header-no-border",
-            floatingFilter: false, // never show floating filter for checkbox column
-          },
-        ]
-      : []),
-    ...columns.map((col) => ({
-      ...col,
-      floatingFilter: showFloatingFilters,
-      suppressMenu: false,
-      filter: true,
-      menuTabs: [
-        'filterMenuTab',
-        'generalMenuTab',
-        'columnsMenuTab',
-      ] as ColumnMenuTab[],
-      cellStyle: (params: any) => {
-        const baseCellStyle = {
-          color: "#545454",
-          fontSize: "12px",
-          display: "flex",
-          alignItems: "center",
-          paddingLeft: "16px",
-          borderRight: "none",
-          ...col.cellStyle,
-        };
-
-        // Check if this is row selection (not checkbox selection)
-        const isRowSelected = selectedRowId === params.data.id;
-        
-        if (isRowSelected) {
-          // White text for row selection
+  const columnDefs = React.useMemo(() => {
+    // Check if any column has sort set
+    const hasSort = columns.some(col => col.sort);
+    return [
+      ...(showCheckboxes
+        ? [
+            {
+              headerName: "",
+              headerCheckboxSelection: true,
+              checkboxSelection: true,
+              width: 50,
+              pinned: "left" as const,
+              lockPosition: true,
+              suppressMenu: true,
+              sortable: false,
+              filter: false,
+              resizable: false,
+              cellClass: "ag-cell-no-border",
+              headerClass: "ag-header-no-border",
+              floatingFilter: false, // never show floating filter for checkbox column
+            },
+          ]
+        : []),
+      ...columns.map((col) => {
+        // If no sort is set anywhere, set provider_name to ascending
+        if (!hasSort && col.field === 'provider_name') {
           return {
-            ...baseCellStyle,
-            color: "white",
+            ...col,
+            sort: 'asc' as 'asc', // Explicitly cast to SortDirection
+            floatingFilter: showFloatingFilters,
+            suppressMenu: false,
+            filter: true,
+            menuTabs: [
+              'filterMenuTab',
+              'generalMenuTab',
+              'columnsMenuTab',
+            ] as ColumnMenuTab[],
+            cellStyle: (params: any) => {
+              const baseCellStyle = {
+                color: "#545454",
+                fontSize: "12px",
+                display: "flex",
+                alignItems: "center",
+                paddingLeft: "16px",
+                borderRight: "none",
+                ...col.cellStyle,
+              };
+              const isRowSelected = selectedRowId === params.data.id;
+              if (isRowSelected) {
+                return {
+                  ...baseCellStyle,
+                  color: "white",
+                };
+              }
+              return baseCellStyle;
+            },
           };
         }
-
-        return baseCellStyle;
-      },
-    })),
-  ], [columns, showCheckboxes, showFloatingFilters, selectedRowId]);
+        return {
+          ...col,
+          floatingFilter: showFloatingFilters,
+          suppressMenu: false,
+          filter: true,
+          menuTabs: [
+            'filterMenuTab',
+            'generalMenuTab',
+            'columnsMenuTab',
+          ] as ColumnMenuTab[],
+          cellStyle: (params: any) => {
+            const baseCellStyle = {
+              color: "#545454",
+              fontSize: "12px",
+              display: "flex",
+              alignItems: "center",
+              paddingLeft: "16px",
+              borderRight: "none",
+              ...col.cellStyle,
+            };
+            const isRowSelected = selectedRowId === params.data.id;
+            if (isRowSelected) {
+              return {
+                ...baseCellStyle,
+                color: "white",
+              };
+            }
+            return baseCellStyle;
+          },
+        };
+      }),
+    ];
+  }, [columns, showCheckboxes, showFloatingFilters, selectedRowId]);
 
 
 
