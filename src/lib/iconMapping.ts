@@ -36,6 +36,15 @@ import {
   faClock,
   faBarsStaggered,
   faEllipsis,
+  faPlus,
+  faExternalLinkAlt,
+  faIdCard,
+  faFilterCircleXmark,
+  faRotate,
+  faUnlock,
+  faBell,
+  faBellSlash,
+  faCopy,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Icon mapping from string names to FontAwesome icon objects
@@ -76,6 +85,16 @@ const iconMap: Record<string, IconDefinition> = {
   "clock": faClock,
   "bars-staggered": faBarsStaggered,
   "ellipsis": faEllipsis,
+  // Context menu icons
+  "plus": faPlus,
+  "external-link-alt": faExternalLinkAlt,
+  "id-card": faIdCard,
+  "filter-circle-xmark": faFilterCircleXmark,
+  "rotate": faRotate,
+  "unlock": faUnlock,
+  "bell": faBell,
+  "bell-slash": faBellSlash,
+  "copy": faCopy,
 };
 
 // Function to get FontAwesome icon from icon name

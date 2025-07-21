@@ -53,9 +53,10 @@ interface GridDataFetcherProps {
   onRowClicked?: (row: any) => void;
   height?: number | string;
   providerIdFilter?: string; // Optional filter
+  handleShowFacilityDetails?: (facility: any) => void;
 }
 
-const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverride, iconOverride, onRowClicked, height, providerIdFilter }) => {
+const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverride, iconOverride, onRowClicked, height, providerIdFilter, handleShowFacilityDetails }) => {
   const lowerKey = gridKey.toLowerCase();
   // Fetch all grid definitions and find the one for this gridKey
   const { data: gridDefs = [] } = useQuery({
@@ -185,6 +186,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({ gridKey, titleOverrid
         showCheckboxes={true}
         height={height || '100%'}
         onRowClicked={onRowClicked}
+        handleShowFacilityDetails={handleShowFacilityDetails}
       />
       {isLoading && <div className="text-gray-500 mt-4">Loading...</div>}
       {error && <div className="text-red-500 mt-4">Error loading data: {error.message}</div>}

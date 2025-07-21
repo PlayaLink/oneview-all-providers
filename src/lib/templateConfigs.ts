@@ -32,13 +32,42 @@ export interface FieldGroup {
   fields: any[];
 }
 
-// Mapping from grid table names to template IDs
+// Mapping from grid table names to template IDs - Updated to match all grids
 export const gridToTemplateMap: Record<string, string> = {
+  // Core provider grids
   "provider_info": "provider_info",
   "state_licenses": "state_licenses",
   "birth_info": "birth_info",
   "addresses": "addresses",
-  "facility_affiliations": "facility_affiliations"
+  
+  // Facility system grids
+  "facility_affiliations": "facility_affiliations",
+  "facility_properties": "facility_properties",
+  "facility_property_values": "facility_property_values",
+  "facility_requirements": "facility_requirements",
+  "facility_requirement_values": "facility_requirement_values",
+  "facilities": "facilities",
+  
+  // Requirements system grids
+  "requirements": "requirements",
+  "requirement_data": "requirement_data",
+  "requirement_data_fields": "requirement_data_fields",
+  
+  // Contact system grids
+  "contacts": "contacts",
+  
+  // Document and notes grids
+  "notes": "notes",
+  "documents": "documents",
+  
+  // Grid system grids
+  "grid_definitions": "grid_definitions",
+  "grid_columns": "grid_columns",
+  "grid_field_groups": "grid_field_groups",
+  "grid_sections": "grid_sections",
+  
+  // Feature settings
+  "feature_settings": "feature_settings"
 };
 
 export const addressTemplate: TemplateConfig = {
@@ -83,14 +112,31 @@ export const facilityAffiliationsTemplate: TemplateConfig = {
   DetailsComponent: FacilityAffiliationsDetails,
 };
 
-// Main function to get the template config for a grid
+// Main function to get the template config for a grid - Updated to handle all grids
 export function getTemplateConfigByGrid(gridKey: string): TemplateConfig | null {
   switch (gridKey) {
+    // Core provider grids
     case "provider_info": return providerInfoTemplate;
     case "state_licenses": return stateLicenseTemplate;
     case "birth_info": return birthInfoTemplate;
     case "addresses": return addressTemplate;
     case "facility_affiliations": return facilityAffiliationsTemplate;
-    default: return null;
+    
+    // For grids without specific templates, return a default template
+    default: {
+      console.warn(`No specific template found for grid: ${gridKey}, using default template`);
+      return {
+        id: gridKey,
+        name: gridKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+        description: `Default template for ${gridKey}`,
+        tabs: [
+          { id: 'details', label: 'Details', icon: 'bars-staggered', enabled: true },
+          { id: 'notes', label: 'Notes', icon: 'note-sticky', enabled: true },
+          { id: 'documents', label: 'Documents', icon: 'folder', enabled: true },
+        ],
+        fieldGroups: [],
+        header: ({ gridName, row }) => `${gridName} for ${row.id || 'Record'}`,
+      };
+    }
   }
 } 

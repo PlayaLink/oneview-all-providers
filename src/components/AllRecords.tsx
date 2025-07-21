@@ -16,7 +16,7 @@ import AllProvidersHeader from "@/components/AllProvidersHeader";
 
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from '@tanstack/react-query';
-import { supabase, fetchGridDefinitions, fetchGridSections } from '@/lib/supabaseClient';
+import { supabase, fetchGridDefinitions, fetchGridSections, fetchFacilityRequirementValuesByFacility } from '@/lib/supabaseClient';
 import { useUser } from '@/contexts/UserContext';
 import { useFeatureFlag } from '@/contexts/FeatureFlagContext';
 import GridDataFetcher from "./GridDataFetcher";
@@ -25,6 +25,7 @@ import { useSectionFilterStore } from "@/lib/useVisibleSectionsStore";
 import SidePanel from "@/components/SidePanel";
 import { getTemplateConfigByGrid } from "@/lib/templateConfigs";
 import { getOrderedSectionsAndGrids } from "@/lib/gridOrdering";
+import { FacilityDetailsModal } from "./FacilityDetailsModal";
 
 const fetchProviders = async () => {
   const { data, error } = await supabase.from('providers').select('*');
@@ -46,6 +47,7 @@ function GridsSection({
   user,
   selectedProviderInfo,
   handleProviderSelect,
+  handleShowFacilityDetails,
   ...rest
 }: any) {
   // Add refs for each grid container
@@ -134,6 +136,7 @@ function GridsSection({
                     iconOverride={getIconByName(item.grid.icon)}
                     height={gridHeight}
                     onRowClicked={(row: any) => handleRowSelect(row, item.grid.key)}
+                    handleShowFacilityDetails={handleShowFacilityDetails}
                   />
                 </div>
               ))}
@@ -180,6 +183,17 @@ const AllRecords: React.FC = () => {
   // Remove local visibleSections and setVisibleSections state
   // const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
   const [selectedRow, setSelectedRow] = useState<(any & { gridName: string }) | null>(null);
+
+  // Facility details modal state
+  const [facilityDetailsModal, setFacilityDetailsModal] = useState<{
+    isOpen: boolean;
+    facility: any | null;
+    requirementValues: any[];
+  }>({
+    isOpen: false,
+    facility: null,
+    requirementValues: [],
+  });
 
   const globalNavRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -299,6 +313,92 @@ const AllRecords: React.FC = () => {
 
   const handleCloseSidePanel = () => {
     setSelectedRow(null);
+  };
+
+  // Handler for showing facility details modal
+  const handleShowFacilityDetails = async (facilityAffiliation: any) => {
+    try {
+      console.log('Facility affiliation data:', facilityAffiliation);
+      
+      // After the database refactor, facility_affiliations now has facility_id
+      if (!facilityAffiliation.facility_id) {
+        console.warn('No facility_id found in facility affiliation:', facilityAffiliation);
+        // Create a facility object with just the name for display
+        const facility = {
+          id: 'unknown',
+          label: facilityAffiliation.facility_name || 'Unknown Facility',
+          icon: undefined,
+          properties: [], // Include properties field for consistency
+          requirements: [],
+          providers: [],
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+        
+        setFacilityDetailsModal({
+          isOpen: true,
+          facility,
+          requirementValues: [],
+        });
+        return;
+      }
+      
+      // Fetch facility details with all data using the new view
+      const { data: facility, error: facilityError } = await supabase
+        .from('facilities_with_all_data')
+        .select('*')
+        .eq('id', facilityAffiliation.facility_id)
+        .single();
+      
+      if (facilityError || !facility) {
+        console.warn('No facility found with id:', facilityAffiliation.facility_id);
+        // Create a facility object with just the name for display
+        const fallbackFacility = {
+          id: facilityAffiliation.facility_id,
+          label: facilityAffiliation.facility_name || 'Unknown Facility',
+          icon: undefined,
+          properties: [], // Include properties field for consistency
+          requirements: [],
+          providers: [],
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+        
+        setFacilityDetailsModal({
+          isOpen: true,
+          facility: fallbackFacility,
+          requirementValues: [],
+        });
+        return;
+      }
+      
+      console.log('Found facility with all data:', facility);
+      
+      // Now fetch facility requirement values for this facility
+      const requirementValues = await fetchFacilityRequirementValuesByFacility(facility.id);
+      console.log('Facility requirement values payload:', requirementValues);
+      
+      // Pass the complete facility object with all data (including properties)
+      const facilityForModal = facility;
+      
+      console.log('Facility object being passed to modal:', facilityForModal);
+      
+      setFacilityDetailsModal({
+        isOpen: true,
+        facility: facilityForModal,
+        requirementValues,
+      });
+    } catch (error) {
+      console.error('Error fetching facility details:', error);
+    }
+  };
+
+  const handleCloseFacilityDetailsModal = () => {
+    setFacilityDetailsModal({
+      isOpen: false,
+      facility: null,
+      requirementValues: [],
+    });
   };
 
   // Use sectionFilters for filtering
@@ -434,6 +534,7 @@ const AllRecords: React.FC = () => {
               user={user}
               selectedProviderInfo={selectedProviderInfo}
               handleProviderSelect={handleProviderSelect}
+              handleShowFacilityDetails={handleShowFacilityDetails}
               // Remove visibleSections and handleSectionVisibilityChange props
               // visibleSections={visibleSections}
               // handleSectionVisibilityChange={handleSectionVisibilityChange}
@@ -463,8 +564,19 @@ const AllRecords: React.FC = () => {
               user={user}
               selectedProviderInfo={selectedProviderInfo}
               handleProviderSelect={handleProviderSelect}
+              handleShowFacilityDetails={handleShowFacilityDetails}
             />
         </div>
+      )}
+      
+      {/* Facility Details Modal */}
+      {facilityDetailsModal.isOpen && facilityDetailsModal.facility && (
+        <FacilityDetailsModal
+          isOpen={facilityDetailsModal.isOpen}
+          onClose={handleCloseFacilityDetailsModal}
+          facility={facilityDetailsModal.facility}
+          requirementValues={facilityDetailsModal.requirementValues}
+        />
       )}
     </>
   );

@@ -45,16 +45,16 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
         window.location.href = "/login";
       } else {
         // If auth is not required, generate a new dummy user
-        const firstName = faker.person.firstName();
-        const lastName = faker.person.lastName();
-        const email = faker.internet.email({ firstName, lastName, provider: 'oneview.local' });
-        const dummy = {
-          id: faker.string.uuid(),
-          email,
-          user_metadata: { full_name: `${firstName} ${lastName}` }
-        };
-        sessionStorage.setItem('oneview_dummy_user', JSON.stringify(dummy));
-        window.location.reload();
+      const firstName = faker.person.firstName();
+      const lastName = faker.person.lastName();
+      const email = faker.internet.email({ firstName, lastName, provider: 'oneview.local' });
+      const dummy = {
+        id: faker.string.uuid(),
+        email,
+        user_metadata: { full_name: `${firstName} ${lastName}` }
+      };
+      sessionStorage.setItem('oneview_dummy_user', JSON.stringify(dummy));
+      window.location.reload();
       }
     } else {
       await supabase.auth.signOut();

@@ -98,6 +98,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
     };
 
     const handleOpenChange = (newOpen: boolean) => {
+      console.log('SingleSelect handleOpenChange:', { newOpen, disabled, label, options: options.length });
       if (disabled) return;
       setOpen(newOpen);
       if (!newOpen) {
@@ -280,7 +281,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
           </PopoverTrigger>
 
           <PopoverContent
-            className="w-auto p-0 border border-gray-200 bg-white shadow-lg"
+            className="w-auto p-0 border border-gray-200 bg-white shadow-lg z-[9999]"
             align="start"
             side="bottom"
             sideOffset={4}

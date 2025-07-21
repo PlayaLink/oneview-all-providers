@@ -9,6 +9,12 @@ interface CollapsibleSectionProps {
   className?: string;
 }
 
+// Helper to convert a string to sentence case
+function toSentenceCase(str: string): string {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
 const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
   title,
   children,
@@ -48,7 +54,7 @@ const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
             id={`${sectionId}-header`}
             className="text-[#545454] text-xs font-bold leading-normal tracking-[0.429px] font-['Poppins',sans-serif]"
           >
-            {title}
+            {toSentenceCase(title)}
           </h3>
         </div>
         <div

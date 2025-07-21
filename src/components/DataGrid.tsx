@@ -11,6 +11,7 @@ import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import type { ColumnMenuTab } from "ag-grid-community";
+import ContextMenu from "./ContextMenu";
 
 // Import AG Grid styles
 import "ag-grid-community/styles/ag-grid.css";
@@ -27,6 +28,7 @@ interface DataGridProps {
   showCheckboxes?: boolean;
   showStatusBadges?: boolean;
   selectedRowId?: string | null;
+  handleShowFacilityDetails?: (facility: any) => void;
 }
 
 const DataGrid: React.FC<DataGridProps> = (props) => {
@@ -41,83 +43,135 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     showCheckboxes = true,
     showStatusBadges = true,
     selectedRowId: controlledSelectedRowId,
+    handleShowFacilityDetails,
   } = props;
 
   const [internalSelectedRowId, setInternalSelectedRowId] = React.useState<string | null>(null);
   const selectedRowId = controlledSelectedRowId !== undefined ? controlledSelectedRowId : internalSelectedRowId;
 
+  // Context menu state
+  const [contextMenu, setContextMenu] = React.useState<{
+    show: boolean;
+    x: number;
+    y: number;
+    rowData: any;
+  } | null>(null);
+
   // Use feature flag for floating filters
   const { value: showFloatingFilters } = useFeatureFlag("floating_filters");
 
   // Prepare column definitions with optional checkbox column
-  const columnDefs = React.useMemo(() => [
-    ...(showCheckboxes
-      ? [
-          {
-            headerName: "",
-            headerCheckboxSelection: true,
-            checkboxSelection: true,
-            width: 50,
-            pinned: "left" as const,
-            lockPosition: true,
-            suppressMenu: true,
-            sortable: false,
-            filter: false,
-            resizable: false,
-            cellClass: "ag-cell-no-border",
-            headerClass: "ag-header-no-border",
-            floatingFilter: false, // never show floating filter for checkbox column
-          },
-        ]
-      : []),
-    ...columns.map((col) => ({
-      ...col,
-      floatingFilter: showFloatingFilters,
-      suppressMenu: false,
-      filter: true,
-      menuTabs: [
-        'filterMenuTab',
-        'generalMenuTab',
-        'columnsMenuTab',
-      ] as ColumnMenuTab[],
-      cellStyle: (params: any) => {
-        const baseCellStyle = {
-          color: "#545454",
-          fontSize: "12px",
-          display: "flex",
-          alignItems: "center",
-          paddingLeft: "16px",
-          borderRight: "none",
-          ...col.cellStyle,
-        };
-
-        // Check if this is row selection (not checkbox selection)
-        const isRowSelected = selectedRowId === params.data.id;
-        
-        if (isRowSelected) {
-          // White text for row selection
+  const columnDefs = React.useMemo(() => {
+    // Check if any column has sort set
+    const hasSort = columns.some(col => col.sort);
+    return [
+      ...(showCheckboxes
+        ? [
+            {
+              headerName: "",
+              headerCheckboxSelection: true,
+              checkboxSelection: true,
+              width: 50,
+              pinned: "left" as const,
+              lockPosition: true,
+              suppressMenu: true,
+              sortable: false,
+              filter: false,
+              resizable: false,
+              cellClass: "ag-cell-no-border",
+              headerClass: "ag-header-no-border",
+              floatingFilter: false, // never show floating filter for checkbox column
+            },
+          ]
+        : []),
+      ...columns.map((col) => {
+        // If no sort is set anywhere, set provider_name to ascending
+        if (!hasSort && col.field === 'provider_name') {
           return {
-            ...baseCellStyle,
-            color: "white",
+            ...col,
+            sort: 'asc' as 'asc', // Explicitly cast to SortDirection
+            floatingFilter: showFloatingFilters,
+            suppressMenu: false,
+            filter: true,
+            menuTabs: [
+              'filterMenuTab',
+              'generalMenuTab',
+              'columnsMenuTab',
+            ] as ColumnMenuTab[],
+            cellStyle: (params: any) => {
+              const baseCellStyle = {
+                color: "#545454",
+                fontSize: "12px",
+                display: "flex",
+                alignItems: "center",
+                paddingLeft: "16px",
+                borderRight: "none",
+                ...col.cellStyle,
+              };
+              const isRowSelected = selectedRowId === params.data.id;
+              if (isRowSelected) {
+                return {
+                  ...baseCellStyle,
+                  color: "white",
+                };
+              }
+              return baseCellStyle;
+            },
           };
         }
-
-        return baseCellStyle;
-      },
-    })),
-  ], [columns, showCheckboxes, showFloatingFilters, selectedRowId]);
+        return {
+          ...col,
+          floatingFilter: showFloatingFilters,
+          suppressMenu: false,
+          filter: true,
+          menuTabs: [
+            'filterMenuTab',
+            'generalMenuTab',
+            'columnsMenuTab',
+          ] as ColumnMenuTab[],
+          cellStyle: (params: any) => {
+            const baseCellStyle = {
+              color: "#545454",
+              fontSize: "12px",
+              display: "flex",
+              alignItems: "center",
+              paddingLeft: "16px",
+              borderRight: "none",
+              ...col.cellStyle,
+            };
+            const isRowSelected = selectedRowId === params.data.id;
+            if (isRowSelected) {
+              return {
+                ...baseCellStyle,
+                color: "white",
+              };
+            }
+            return baseCellStyle;
+          },
+        };
+      }),
+    ];
+  }, [columns, showCheckboxes, showFloatingFilters, selectedRowId]);
 
 
 
   const handleRowClicked = (event: RowClickedEvent) => {
     // Prevent cell focus on single click
     event.api.setFocusedCell(null, null);
-    
+    // If the clicked row is already selected, unselect and close side panel
+    if (selectedRowId === event.data.id) {
+      if (controlledSelectedRowId === undefined) {
+        setInternalSelectedRowId(null);
+      }
+      if (onRowClicked) {
+        onRowClicked(null); // Pass null to close side panel
+      }
+      return;
+    }
     // Always set row selection on row click
     if (controlledSelectedRowId === undefined) {
       setInternalSelectedRowId(event.data.id);
     }
-    
     // Call onRowClicked callback
     if (onRowClicked && event.data) {
       onRowClicked(event.data);
@@ -137,6 +191,27 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   const handleRowDoubleClicked = (event: RowDoubleClickedEvent) => {
     // Allow cell focus only on double click
     // This will let AG Grid handle cell focus naturally
+  };
+
+  const handleCellContextMenu = (event: any) => {
+    // Prevent default browser context menu
+    event.event.preventDefault();
+    
+    // Get the row data
+    const rowData = event.data;
+    if (!rowData) return;
+    
+    // Set context menu position and data
+    setContextMenu({
+      show: true,
+      x: event.event.clientX,
+      y: event.event.clientY,
+      rowData: rowData
+    });
+  };
+
+  const handleContextMenuClose = () => {
+    setContextMenu(null);
   };
 
   const getRowStyle = (params: any) => {
@@ -238,6 +313,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         data-debug-height={computedHeight}
         data-debug-rowcount={data.length}
         data-debug-colcount={columnDefs.length}
+        onContextMenu={(e) => e.preventDefault()}
       >
         <AgGridReact
           rowData={data}
@@ -245,6 +321,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           onSelectionChanged={handleSelectionChanged}
           onRowClicked={handleRowClicked}
           onRowDoubleClicked={handleRowDoubleClicked}
+          onCellContextMenu={handleCellContextMenu}
           rowSelection={showCheckboxes ? "multiple" : "single"}
           headerHeight={40}
           rowHeight={42}
@@ -288,6 +365,16 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           onGridReady={params => params.api.sizeColumnsToFit()}
         />
       </div>
+      {contextMenu && (
+        <ContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          rowData={contextMenu.rowData}
+          gridName={title}
+          onClose={handleContextMenuClose}
+          handleShowFacilityDetails={handleShowFacilityDetails}
+        />
+      )}
     </section>
   );
 };

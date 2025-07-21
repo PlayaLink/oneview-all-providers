@@ -5,7 +5,7 @@ import { SingleSelect } from '../inputs/SingleSelect';
 import TextInputField from '../inputs/TextInputField';
 import { getInputType, renderFieldComponent } from './getInputType';
 
-// State Licenses fieldGroups definition
+// State Licenses fieldGroups definition - Updated to match database schema
 export const stateLicenseFieldGroups = [
   {
     id: "license_details",
@@ -29,7 +29,7 @@ export const stateLicenseFieldGroups = [
           "DDS - Doctor of Dental Surgery",
           "DMD - Doctor of Dental Medicine"
         ],
-        rowKey: "license_type"
+        key: "license_type"
       },
       {
         label: "License Number",
@@ -37,7 +37,7 @@ export const stateLicenseFieldGroups = [
         type: "text",
         placeholder: "Enter license number",
         required: true,
-        rowKey: "license"
+        key: "license"
       },
       {
         label: "Additional Info",
@@ -45,7 +45,7 @@ export const stateLicenseFieldGroups = [
         type: "single-select",
         options: ["Yes", "No"],
         placeholder: "Anything else?",
-        rowKey: "license_additional_info"
+        key: "license_additional_info"
       },
       {
         label: "State",
@@ -60,7 +60,7 @@ export const stateLicenseFieldGroups = [
           "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
           "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"
         ],
-        rowKey: "state"
+        key: "state"
       },
       {
         label: "Status",
@@ -69,7 +69,7 @@ export const stateLicenseFieldGroups = [
         placeholder: "Select status",
         required: true,
         options: ["Active", "Expired", "Pending", "Suspended", "Revoked"],
-        rowKey: "status"
+        key: "status"
       }
     ]
   },
@@ -82,21 +82,21 @@ export const stateLicenseFieldGroups = [
         group: "Important Dates",
         type: "date",
         placeholder: "Select issue date",
-        rowKey: "issue_date"
+        key: "issue_date"
       },
       {
         label: "Expiration Date",
         group: "Important Dates",
         type: "date",
         placeholder: "Select expiration date",
-        rowKey: "expiration_date"
+        key: "expiration_date"
       },
       {
         label: "Expires Within",
         group: "Important Dates",
         type: "text",
         placeholder: "Days until expiration",
-        rowKey: "expires_within"
+        key: "expires_within"
       }
     ]
   },
@@ -110,14 +110,14 @@ export const stateLicenseFieldGroups = [
         type: "multi-select",
         placeholder: "Select tags",
         options: ["urgent", "expiring", "renewal", "compliance", "audit", "pending", "primary", "secondary"],
-        rowKey: "tags"
+        key: "tags"
       },
       {
         label: "Last Updated",
         group: "Metadata",
         type: "date",
         placeholder: "Last updated date",
-        rowKey: "last_updated"
+        key: "last_updated"
       }
     ]
   }
@@ -125,14 +125,14 @@ export const stateLicenseFieldGroups = [
 
 // 1. Define the custom grouping for search criteria fields
 const searchCriteriaFields = [
-  stateLicenseFieldGroups[0].fields.find(f => f.rowKey === 'state'),
-  stateLicenseFieldGroups[0].fields.find(f => f.rowKey === 'license_type'),
-  stateLicenseFieldGroups[0].fields.find(f => f.rowKey === 'license'),
+  stateLicenseFieldGroups[0].fields.find(f => f.key === 'state'),
+  stateLicenseFieldGroups[0].fields.find(f => f.key === 'license_type'),
+  stateLicenseFieldGroups[0].fields.find(f => f.key === 'license'),
 ].filter(Boolean);
 
 // 2. Gather the remaining fields for General Info
 const generalInfoFields = [
-  ...stateLicenseFieldGroups[0].fields.filter(f => !['state', 'license_type', 'license'].includes(f.rowKey)),
+  ...stateLicenseFieldGroups[0].fields.filter(f => !['state', 'license_type', 'license'].includes(f.key)),
   ...stateLicenseFieldGroups[1].fields,
   ...stateLicenseFieldGroups[2].fields,
 ];
@@ -151,7 +151,7 @@ const StateLicenseDetails = ({ formValues, handleChange }) => (
       {/* Form Grid */}
       <div className="flex flex-col gap-4">
       {searchCriteriaFields.map((field) => (
-        <React.Fragment key={field.rowKey || field.label}>
+        <React.Fragment key={field.key || field.label}>
           {renderFieldComponent({ field, formValues, handleChange })}
         </React.Fragment>
       ))}
@@ -161,7 +161,7 @@ const StateLicenseDetails = ({ formValues, handleChange }) => (
     <CollapsibleSection title="General Info">
       <div className="flex flex-col gap-4 self-stretch">
         {generalInfoFields.map((field) => (
-          <React.Fragment key={field.rowKey || field.label}>
+          <React.Fragment key={field.key || field.label}>
             {renderFieldComponent({ field, formValues, handleChange })}
           </React.Fragment>
         ))}

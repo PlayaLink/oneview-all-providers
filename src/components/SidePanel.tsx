@@ -29,7 +29,7 @@ export interface InputField {
   placeholder?: string;
   options?: string[];
   multi?: boolean;
-  rowKey?: string;
+  key?: string;
   [key: string]: any;
 }
 
@@ -122,7 +122,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       
       const initialValues: Record<string, any> = {};
       inputConfig.forEach(field => {
-        const key = field.rowKey || field.label;
+        const key = field.key || field.label;
         let value = selectedRow[key] ?? (field.type === 'multi-select' ? [] : '');
         // Deserialize multi-select fields: convert array of strings to array of {id, label}
         if (field.type === 'multi-select' && Array.isArray(value) && value.length > 0 && typeof value[0] === 'string') {
@@ -221,19 +221,23 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
 
   // Handle input change (local only)
   const handleChange = (key: string, value: any) => {
+    console.log('Field changed:', { key, value, originalValue: selectedRow?.[key] });
+    
     setFormValues((prev) => ({ ...prev, [key]: value }));
     
     // Check if this change is different from the original value
     if (selectedRow) {
-      const originalValue = selectedRow[key] ?? (inputConfig.find(f => f.rowKey === key)?.type === 'multi-select' ? [] : '');
+      const originalValue = selectedRow[key] ?? (inputConfig.find(f => f.key === key)?.type === 'multi-select' ? [] : '');
       const hasChanged = JSON.stringify(value) !== JSON.stringify(originalValue);
+      
+      console.log('Change detection:', { key, hasChanged, value, originalValue });
       
       if (hasChanged) {
         setHasUnsavedChanges(true);
       } else {
         // Check if any other fields have changes
         const anyChanges = Object.entries({ ...formValues, [key]: value }).some(([fieldKey, fieldValue]) => {
-          const fieldOriginalValue = selectedRow[fieldKey] ?? (inputConfig.find(f => f.rowKey === fieldKey)?.type === 'multi-select' ? [] : '');
+          const fieldOriginalValue = selectedRow[fieldKey] ?? (inputConfig.find(f => f.key === fieldKey)?.type === 'multi-select' ? [] : '');
           return JSON.stringify(fieldValue) !== JSON.stringify(fieldOriginalValue);
         });
         setHasUnsavedChanges(anyChanges);
@@ -249,7 +253,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
     // Reset form values to original selectedRow values
     const originalValues: Record<string, any> = {};
     inputConfig.forEach(field => {
-      const key = field.rowKey || field.label;
+      const key = field.key || field.label;
       const value = selectedRow[key] ?? (field.type === 'multi-select' ? [] : '');
       originalValues[key] = value;
     });
@@ -267,9 +271,15 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
     
     if (!selectedRow || !gridName) {
       console.error('Missing required data for save:', { selectedRow: !!selectedRow, gridName });
+      toast({
+        title: "Save Error",
+        description: "Missing required data for save operation",
+        variant: "destructive",
+      });
       return;
     }
 
+    console.log('Starting save operation:', { gridName, selectedRowId: selectedRow.id, formValues });
     setIsSaving(true);
 
     // Store the previous data for rollback in case of error
@@ -278,14 +288,14 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
 
     try {
       // Only include valid DB columns in the update
-      const validColumns = inputConfig.map(f => f.rowKey).filter(Boolean);
+      const validColumns = inputConfig.map(f => f.key).filter(Boolean);
       
       // Filter and clean the updates
       const filteredUpdates = Object.fromEntries(
         Object.entries(formValues)
           .filter(([key]) => validColumns.includes(key))
           .map(([key, value]) => {
-            const field = inputConfig.find(f => f.rowKey === key);
+            const field = inputConfig.find(f => f.key === key);
             // Serialize multi-select fields: convert array of {id, label} to array of strings
             if (field && field.type === 'multi-select' && Array.isArray(value)) {
               return [key, value.map((v: any) => (typeof v === 'object' && v !== null ? v.id || v.label : v))];
@@ -320,10 +330,12 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       // Log fields that are being excluded
       const excludedFields = Object.entries(formValues).filter(([key]) => !validColumns.includes(key));
       if (excludedFields.length > 0) {
+        console.log('Excluded fields from update:', excludedFields);
       }
       
       // Check if there are any updates to save
       if (Object.keys(filteredUpdates).length === 0) {
+        console.log('No updates to save. filteredUpdates:', filteredUpdates);
         return;
       }
 
@@ -360,11 +372,27 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
         });
       }
       // --- DYNAMIC TABLE UPDATE LOGIC ---
+      console.log('Save operation grid name:', { gridName, availableMappings: Object.keys(gridToTableMap) });
       const tableName = gridToTableMap[gridName];
       if (!tableName) {
+        console.error('Available grid mappings:', Object.keys(gridToTableMap));
+        console.error('Grid name not found in mappings:', gridName);
         throw new Error(`No table mapping found for gridName: ${gridName}`);
       }
-      const result = await updateRecord(tableName, selectedRow.id, filteredUpdates);
+      
+      console.log('Updating record:', { tableName, recordId: selectedRow.id, updates: filteredUpdates });
+      // Remove optimistic update: do not call setQueryData for legacy keys
+      // Only refetch the grid_data queries after save
+      let result;
+      try {
+        result = await updateRecord(tableName, selectedRow.id, filteredUpdates);
+        console.log('Supabase updateRecord result:', result);
+        // Refetch all grid data queries so GridDataFetcher and side panel get fresh data
+        await queryClient.refetchQueries({ queryKey: ["grid_data"], exact: false });
+      } catch (updateError) {
+        console.error('Supabase updateRecord error:', updateError);
+        throw updateError;
+      }
       // Update parent state as well
       if (onUpdateSelectedProvider) {
         const updatedProvider = { ...selectedRow, ...filteredUpdates };
@@ -385,12 +413,20 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       // Show success feedback
       setSaveSuccess(true);
       setHasUnsavedChanges(false); // Clear unsaved changes state
+      
+      // Show success toast
+      toast({
+        title: "Save Successful",
+        description: "Changes have been saved successfully",
+        variant: "default",
+      });
+      
       setTimeout(() => {
         setSaveSuccess(false);
         // Footer will be hidden by hasUnsavedChanges being false
       }, 1500); // Hide success message after 1.5 seconds
       
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to save:', err);
       
       // Rollback optimistic updates on error
@@ -402,7 +438,16 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       
       // Show error feedback
       setSaveSuccess(false); // Hide success message on error
-      console.error('Save failed:', err.message || 'Unknown error');
+      
+      // Show user-friendly error message
+      const errorMessage = err?.message || err?.error_description || 'Unknown error occurred';
+      toast({
+        title: "Save Failed",
+        description: `Failed to save changes: ${errorMessage}`,
+        variant: "destructive",
+      });
+      
+      console.error('Save failed:', errorMessage);
     } finally {
       setIsSaving(false);
     }
@@ -602,17 +647,70 @@ if (template?.DetailsComponent) {
     }
   }
 
-  // Mapping from gridName to table name
+  // Mapping from gridName to table name - Updated to match all database tables
   const gridToTableMap: Record<string, string> = {
+    // Core provider tables
     Provider_Info: 'providers',
+    provider_info: 'providers', // Handle lowercase version
     State_Licenses: 'state_licenses',
+    state_licenses: 'state_licenses', // Handle lowercase version
     Birth_Info: 'birth_info',
+    birth_info: 'birth_info', // Handle lowercase version
+    Addresses: 'addresses',
+    addresses: 'addresses', // Handle lowercase version
+    
+    // Facility system tables
+    Facility_Affiliations: 'facility_affiliations',
+    facility_affiliations: 'facility_affiliations', // Handle lowercase version
+    Facility_Properties: 'facility_properties',
+    facility_properties: 'facility_properties', // Handle lowercase version
+    Facility_Property_Values: 'facility_property_values',
+    facility_property_values: 'facility_property_values', // Handle lowercase version
+    Facility_Requirements: 'facility_requirements',
+    facility_requirements: 'facility_requirements', // Handle lowercase version
+    Facility_Requirement_Values: 'facility_requirement_values',
+    facility_requirement_values: 'facility_requirement_values', // Handle lowercase version
+    Facilities: 'facilities',
+    facilities: 'facilities', // Handle lowercase version
+    
+    // Requirements system tables
+    Requirements: 'requirements',
+    requirements: 'requirements', // Handle lowercase version
+    Requirement_Data: 'requirement_data',
+    requirement_data: 'requirement_data', // Handle lowercase version
+    Requirement_Data_Fields: 'requirement_data_fields',
+    requirement_data_fields: 'requirement_data_fields', // Handle lowercase version
+    
+    // Contact system tables
+    Contacts: 'contacts',
+    contacts: 'contacts', // Handle lowercase version
+    
+    // Document and notes tables
+    Notes: 'notes',
+    notes: 'notes', // Handle lowercase version
+    Documents: 'documents',
+    documents: 'documents', // Handle lowercase version
+    
+    // Grid system tables
+    Grid_Definitions: 'grid_definitions',
+    grid_definitions: 'grid_definitions', // Handle lowercase version
+    Grid_Columns: 'grid_columns',
+    grid_columns: 'grid_columns', // Handle lowercase version
+    Grid_Field_Groups: 'grid_field_groups',
+    grid_field_groups: 'grid_field_groups', // Handle lowercase version
+    Grid_Sections: 'grid_sections',
+    grid_sections: 'grid_sections', // Handle lowercase version
+    
+    // Feature settings
+    Feature_Settings: 'feature_settings',
+    feature_settings: 'feature_settings', // Handle lowercase version
+    
     // Add more as needed
   };
 
   return (
     <div
-      className={`fixed top-0 right-0 h-full bg-white transform transition-transform duration-300 ease-in-out z-[10000] flex flex-col ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+      className={`fixed top-0 right-0 h-full bg-white transform transition-transform duration-300 ease-in-out z-[1000] flex flex-col ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       role="dialog"
       aria-modal="true"
       aria-label={headerText}
