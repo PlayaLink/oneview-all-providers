@@ -1,8 +1,10 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import CollapsibleSection from "./CollapsibleSection";
 import TextInputField from "./inputs/TextInputField";
 import { SingleSelect, SingleSelectOption } from "./inputs/SingleSelect";
 import { MultiSelectInput, MultiSelectItem } from "./inputs/MultiSelectInput";
+import { useFacilityPropertyValueMutation } from "@/hooks/useFacilityPropertyValueMutation";
+import { useDebouncedCallback } from "use-debounce";
 
 interface FacilityProperty {
   id?: string;
@@ -33,25 +35,33 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
   facility,
   requirementValues = [],
 }) => {
-  // Console log the facility object received by this component
-  console.log('FacilityInformation component received:', {
-    facility,
-    requirementValues,
-    facilityId: facility?.id,
-    facilityLabel: facility?.label,
-    facilityIcon: facility?.icon,
-    propertiesCount: facility?.properties?.length || 0,
-    requirementsCount: facility?.requirements?.length || 0,
-    providersCount: facility?.providers?.length || 0,
-    facilityKeys: facility ? Object.keys(facility) : [],
-    properties: facility?.properties,
-    requirements: facility?.requirements,
-    providers: facility?.providers
-  });
+  // Local state for all property values
+  const [propertyValues, setPropertyValues] = useState<Record<string, any>>({});
+  const [updatingKey, setUpdatingKey] = useState<string | null>(null);
+  const { mutate: updatePropertyValue } = useFacilityPropertyValueMutation();
+  const lastSentValues = useRef<Record<string, any>>({});
+
+  // Sync local state from props when facility or its properties change, but only if backend value changed
+  useEffect(() => {
+    const initialValues: Record<string, any> = {};
+    (facility.properties || []).forEach((property) => {
+      const key = property.key!;
+      const backendValue = property.value ?? "";
+      // Only update if backend value changed
+      if (lastSentValues.current[key] !== backendValue) {
+        initialValues[key] = backendValue;
+        lastSentValues.current[key] = backendValue;
+      } else {
+        initialValues[key] = propertyValues[key] ?? backendValue;
+      }
+    });
+    setPropertyValues(initialValues);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [facility.id, facility.properties]);
+
   // Group properties by their group field
   const groupedProperties = useMemo(() => {
     if (!facility.properties) return {};
-
     return facility.properties.reduce(
       (acc, property) => {
         const group = property.group || "General";
@@ -75,65 +85,27 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
 
   const yesNoOptions = createOptions(["Yes", "No"]);
   const stateOptions = createOptions([
-    "Alabama",
-    "Alaska",
-    "Arizona",
-    "Arkansas",
-    "California",
-    "Colorado",
-    "Connecticut",
-    "Delaware",
-    "Florida",
-    "Georgia",
-    "Hawaii",
-    "Idaho",
-    "Illinois",
-    "Indiana",
-    "Iowa",
-    "Kansas",
-    "Kentucky",
-    "Louisiana",
-    "Maine",
-    "Maryland",
-    "Massachusetts",
-    "Michigan",
-    "Minnesota",
-    "Mississippi",
-    "Missouri",
-    "Montana",
-    "Nebraska",
-    "Nevada",
-    "New Hampshire",
-    "New Jersey",
-    "New Mexico",
-    "New York",
-    "North Carolina",
-    "North Dakota",
-    "Ohio",
-    "Oklahoma",
-    "Oregon",
-    "Pennsylvania",
-    "Rhode Island",
-    "South Carolina",
-    "South Dakota",
-    "Tennessee",
-    "Texas",
-    "Utah",
-    "Vermont",
-    "Virginia",
-    "Washington",
-    "West Virginia",
-    "Wisconsin",
-    "Wyoming",
+    "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming",
   ]);
 
-  const renderProperty = (property: FacilityProperty) => {
-    const value = property.value || "";
-    const label = property.label || property.key || "";
+  // Debounced mutation for property value updates
+  const debouncedUpdate = useDebouncedCallback((propertyKey: string, value: any) => {
+    updatePropertyValue({ facilityId: facility.id, propertyKey, value });
+    lastSentValues.current[propertyKey] = value;
+  }, 400);
 
-    // Determine input type based on property type or field name
+  const handlePropertyChange = (propertyKey: string, value: any) => {
+    setPropertyValues((prev) => ({ ...prev, [propertyKey]: value }));
+    setUpdatingKey(propertyKey);
+    debouncedUpdate(propertyKey, value);
+  };
+
+  const renderProperty = (property: FacilityProperty) => {
+    const value = propertyValues[property.key!] ?? "";
+    const label = property.label || property.key || "";
     const fieldType = property.type?.toLowerCase() || "";
     const fieldName = label.toLowerCase();
+    // No longer disabling input while mutating
 
     if (
       fieldName.includes("transportation") ||
@@ -148,10 +120,7 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
             labelPosition="top"
             value={value ? { id: value, label: value } : undefined}
             options={yesNoOptions}
-            onChange={(option) => {
-              // In real implementation, this would update the property value
-              console.log("Property changed:", property.key, option?.label);
-            }}
+            onChange={(option) => handlePropertyChange(property.key!, option?.label)}
             placeholder=""
             className="w-full"
             data-testid={`facility-property-${property.key}`}
@@ -168,9 +137,7 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
             labelPosition="top"
             value={value ? { id: value, label: value } : undefined}
             options={stateOptions}
-            onChange={(option) => {
-              console.log("Property changed:", property.key, option?.label);
-            }}
+            onChange={(option) => handlePropertyChange(property.key!, option?.label)}
             placeholder=""
             className="w-full"
             data-testid={`facility-property-${property.key}`}
@@ -186,11 +153,8 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
           label={label}
           labelPosition="top"
           value={value?.toString() || ""}
-          onChange={(newValue) => {
-            console.log("Property changed:", property.key, newValue);
-          }}
+          onChange={(newValue) => handlePropertyChange(property.key!, newValue)}
           placeholder=""
-          // disabled={true} 
           className="w-full border-gray-300"
           data-testid={`facility-property-${property.key}`}
         />
@@ -217,7 +181,6 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
 
     properties.forEach((property, index) => {
       currentRow.push(property);
-
       // Create new row based on field types and layout requirements
       // For now, we'll use a simple 2-3 items per row approach
       if (
@@ -234,12 +197,10 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
         currentRow = [];
       }
     });
-
     // Add any remaining properties
     if (currentRow.length > 0) {
       rows.push(currentRow);
     }
-
     return (
       <CollapsibleSection
         key={groupName}
@@ -264,7 +225,6 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
       {Object.entries(groupedProperties).map(([groupName, properties]) =>
         renderGroup(groupName, properties),
       )}
-
       {/* If no properties exist, show basic facility info */}
       {Object.keys(groupedProperties).length === 0 && (
         <CollapsibleSection
@@ -302,4 +262,4 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
       )}
     </div>
   );
-};
+}; 
