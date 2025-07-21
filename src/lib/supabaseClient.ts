@@ -860,7 +860,11 @@ export async function fetchFacilitiesWithAllData() {
       group: z.string(),
       value: z.any(),
       is_required: z.boolean().optional(),
-      validation_rules: z.any().optional()
+      validation_rules: z.any().optional(),
+      options: z.array(z.object({
+        id: z.string(),
+        label: z.string()
+      })).optional().nullable()
     })),
     requirements: z.array(z.object({
       id: z.string(),
@@ -904,6 +908,7 @@ export async function fetchFacilityWithAllData(id: string) {
     .eq('id', id)
     .single();
   if (error) throw error;
+  + console.log('Raw facility_with_all_data from DB:', data);
   return FacilitySchema.extend({
     properties: z.array(z.object({
       id: z.string(),
@@ -913,7 +918,11 @@ export async function fetchFacilityWithAllData(id: string) {
       group: z.string(),
       value: z.any(),
       is_required: z.boolean().optional(),
-      validation_rules: z.any().optional()
+      validation_rules: z.any().optional(),
+      options: z.array(z.object({
+        id: z.string(),
+        label: z.string()
+      })).optional().nullable()
     })),
     requirements: z.array(z.object({
       id: z.string(),

@@ -76,19 +76,6 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
     );
   }, [facility.properties]);
 
-  // Mock options for dropdown fields (in real implementation, these would come from your data source)
-  const createOptions = (values: string[]): SingleSelectOption[] => {
-    return values.map((value) => ({
-      id: value,
-      label: value,
-    }));
-  };
-
-  const yesNoOptions = createOptions(["Yes", "No"]);
-  const stateOptions = createOptions([
-    "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming",
-  ]);
-
   // Debounced mutation for property value updates
   const debouncedUpdate = useDebouncedCallback((propertyKey: string, value: any) => {
     updatePropertyValue({ facilityId: facility.id, propertyKey, value });
@@ -106,29 +93,33 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
     const label = property.label || property.key || "";
     const type = property.type?.toLowerCase() || "text";
 
-    if (type === "single-select") {
-      // Use yesNoOptions or stateOptions as a placeholder; in real use, options should come from property.options
-      // For now, fallback to yesNoOptions if no options provided
-      const options = property.options || yesNoOptions;
-      return (
-        <div key={property.id || property.key} className="px-2 flex-1">
-          <SingleSelect
-            label={label}
-            labelPosition="top"
-            value={value ? { id: value, label: value } : undefined}
-            options={options}
-            onChange={(option) => handlePropertyChange(property.key!, option?.id)}
-            placeholder=""
-            className="w-full"
-            data-testid={`facility-property-${property.key}`}
-          />
-        </div>
-      );
-    }
-
-    if (type === "multi-select") {
-      // For now, fallback to yesNoOptions if no options provided
-      const options = property.options || yesNoOptions;
+    if (type === "single-select" || type === "multi-select") {
+      console.log("property **********", property);
+      const options = property.options || [];
+      if (options.length === 0) {
+        return (
+          <div key={property.id || property.key} className="px-2 flex-1">
+            <div className="text-red-500 text-xs">No options configured for this field.</div>
+          </div>
+        );
+      }
+      if (type === "single-select") {
+        return (
+          <div key={property.id || property.key} className="px-2 flex-1">
+            <SingleSelect
+              label={label}
+              labelPosition="top"
+              value={value ? { id: value, label: value } : undefined}
+              options={options}
+              onChange={(option) => handlePropertyChange(property.key!, option?.id)}
+              placeholder=""
+              className="w-full"
+              data-testid={`facility-property-${property.key}`}
+            />
+          </div>
+        );
+      }
+      // multi-select
       return (
         <div key={property.id || property.key} className="px-2 flex-1">
           <MultiSelectInput
@@ -206,6 +197,7 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
       defaultExpanded: true,
       'data-testid': `facility-section-${groupName.toLowerCase().replace(/\s+/g, "-")}`
     };
+    console.log(`CollapsibleSection for group: ${groupName}`, properties);
     return (
       <CollapsibleSection {...collapsibleProps}>
         <div className="flex flex-col gap-4 w-full px-2">
