@@ -798,19 +798,17 @@ if (template?.DetailsComponent) {
             <FontAwesomeIcon icon={faUpRightAndDownLeftFromCenter} className="w-5 h-5" />
           </button>
         )}
-        {/* Close icon button */}
-        <button
-          onClick={onClose}
-          className={`ml-4 p-2 rounded-full transition-colors ${
-            context === 'sidepanel' 
-              ? 'hover:bg-white hover:bg-opacity-20' 
-              : 'hover:bg-gray-100'
-          }`}
-          aria-label={`Close ${context}`}
-          data-testid={`close-${context}-button`}
-        >
-          <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
-        </button>
+        {/* Close icon button - only for sidepanel context */}
+        {context === 'sidepanel' && (
+          <button
+            onClick={onClose}
+            className={`ml-4 p-2 rounded-full transition-colors hover:bg-white hover:bg-opacity-20`}
+            aria-label={`Close sidepanel`}
+            data-testid={`close-sidepanel-button`}
+          >
+            <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
       {/* Tabs and Content */}
