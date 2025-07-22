@@ -54,10 +54,23 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
         user_metadata: { full_name: `${firstName} ${lastName}` }
       };
       sessionStorage.setItem('oneview_dummy_user', JSON.stringify(dummy));
-      window.location.reload();
+      // Navigate to home page to trigger a fresh authentication check
+      window.location.href = "/";
       }
     } else {
       await supabase.auth.signOut();
+      // If auth is not required, generate a new dummy user after logout
+      if (!requireAuth) {
+        const firstName = faker.person.firstName();
+        const lastName = faker.person.lastName();
+        const email = faker.internet.email({ firstName, lastName, provider: 'oneview.local' });
+        const dummy = {
+          id: faker.string.uuid(),
+          email,
+          user_metadata: { full_name: `${firstName} ${lastName}` }
+        };
+        sessionStorage.setItem('oneview_dummy_user', JSON.stringify(dummy));
+      }
       window.location.href = "/";
     }
   };
