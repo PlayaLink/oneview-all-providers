@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faTimes, faUser, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProviders } from "@/lib/supabaseClient";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import SectionsDropdown from "@/components/SectionsDropdown";
 
 interface Provider {
@@ -26,6 +26,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Fetch all providers
   const { data: providers = [], isLoading } = useQuery({
@@ -83,10 +84,16 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
     return () => document.removeEventListener("mousedown", handleClick);
   }, [dropdownOpen]);
 
+  // Determine title for non-provider view
+  let headerTitle = "All Providers";
+  if (!provider && location.pathname === "/team") {
+    headerTitle = "Team";
+  }
+
   return (
     <header ref={ref} className="bg-white text-[#545454] py-4 border-b border-gray-300 relative z-10" role="banner" aria-label="All Providers Header" data-testid="all-providers-header">
       <div className="flex items-center gap-2 pl-1 pr-4">
-        {/* Provider Info or All Providers Title */}
+        {/* Provider Info or All Providers/Team Title */}
         {provider ? (
           <div className="flex items-center gap-4 mb-2">
             {/* User Icon in Circle */}
@@ -111,7 +118,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
           </div>
         ) : (
           <h1 className="font-bold text-base tracking-wider capitalize px-4" role="all-providers-header-title">
-            All Providers
+            {headerTitle}
           </h1>
         )}
         {/* Searchbox (always visible) */}
@@ -207,7 +214,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
             />
           ) : (
             <button
-              className="bg-[#79AC48] hover:bg-[#6B9A3F] text-white font-semibold px-4 py-2 rounded flex items-center gap-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#79AC48]"
+              className="bg-[#79AC48] hover:bg-[#6B9A3F] text-white font-semibold h-10 px-4 rounded flex items-center gap-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#79AC48] text-sm"
               type="button"
               aria-label="Add Provider"
               data-testid="add-provider-button"
