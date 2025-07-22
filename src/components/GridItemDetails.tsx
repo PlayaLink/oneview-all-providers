@@ -1,6 +1,13 @@
 import React, { useState, useRef, useEffect, useCallback, Suspense } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark, faUpRightAndDownLeftFromCenter } from "@fortawesome/free-solid-svg-icons";
+import { 
+  faXmark, 
+  faUpRightAndDownLeftFromCenter,
+  faBarsStaggered,
+  faNoteSticky,
+  faFolder,
+  faUsers
+} from "@fortawesome/free-solid-svg-icons";
 import CollapsibleSection from "./CollapsibleSection";
 import { MultiSelectInput } from "./inputs/MultiSelectInput";
 import { SingleSelect } from "./inputs/SingleSelect";
@@ -21,6 +28,7 @@ import { fetchDocumentsForRecord, insertDocument, updateDocument, deleteDocument
 import { toast } from '@/hooks/use-toast';
 import BirthInfoDetails from './sidepanel-details/BirthInfoDetails';
 import { sharedTabsById } from './tabsRegistry';
+import NavItem from './NavItem';
 
 // Types for input fields
 export interface InputField {
@@ -705,7 +713,7 @@ if (template?.DetailsComponent) {
   // Determine header styling based on context
   const headerClassName = context === 'sidepanel' 
     ? "flex items-center justify-between p-4 border-b border-gray-200 bg-[#008BC9] text-white"
-    : "flex flex-row items-center justify-between pb-4 flex-shrink-0";
+    : "flex flex-row items-center justify-between pb-4 flex-shrink-0 border-b border-gray-200";
 
   const headerTitleClassName = context === 'sidepanel'
     ? "text-lg font-semibold"
@@ -809,97 +817,215 @@ if (template?.DetailsComponent) {
 
       {/* Tabs and Content */}
       <div className="flex-1 min-h-0 flex flex-col">
-        <Tabs value={tab} onValueChange={setTab} className="flex flex-1 min-h-0" data-testid={`grid-item-details-tabs-${context}`}>
-          <TabsList className="flex flex-col w-20 pt-4 pb-2 px-2 p-2 gap-2 border-r border-gray-200 items-center justify-start" data-testid={`grid-item-details-tabs-list-${context}`}>
-            {tabs.map((tabConfig) => (
-              <TabsTrigger
-                key={tabConfig.id}
-                value={tabConfig.id}
-                className="p-0 border-0 bg-transparent w-full"
-              >
-                <SidePanelTab
-                  rowKey={tabConfig.id}
-                  fullLabel={tabConfig.label}
-                  iconLabel={tabConfig.label}
-                  icon={tabConfig.icon}
-                  isActive={tab === tabConfig.id}
-                />
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          <div className="flex-1 min-h-0 flex flex-col overflow-y-auto p-2" data-testid={`grid-item-details-tabpanel-container-${context}`}>
-            {/* Tab Title */}
-            {(() => {
-              const activeTab = tabs.find(t => t.id === tab);
-              return activeTab ? (
-                <h2 className="text-lg font-semibold text-[#545454] my-4" data-testid={`grid-item-details-tab-title-${context}`}>
-                  {activeTab.label}
-                </h2>
-              ) : null;
-            })()}
-            
-            {tabs.some((t) => t.id === 'details') && tab === 'details' && (
-              <TabsContent value="details" role="tabpanel" aria-label="Details Tab" data-testid={`grid-item-details-tabpanel-details-${context}`}>
-                {DetailsComponent && (
-                  <Suspense fallback={<div>Loading details...</div>}>
-                    <DetailsComponent
-                      formValues={formValues}
-                      handleChange={handleChange}
-                    />
-                  </Suspense>
-                )}
-              </TabsContent>
-            )}
-            {tabs.some((t) => t.id === tab) && (
-              <TabsContent value={tab} className="flex-1 min-h-0 flex flex-col p-0 m-0" role="tabpanel" aria-label={`${tab.charAt(0).toUpperCase() + tab.slice(1)} Tab`} data-testid={`grid-item-details-tabpanel-${tab}-${context}`}>
-                {(() => {
-                  switch (tab) {
-                    case 'notes': {
-                      const NotesComponent = sharedTabsById['notes']?.Component as React.FC<any>;
-                      return selectedRow && NotesComponent &&
-                        React.createElement(NotesComponent, {
-                          className: "flex-1 min-h-0",
-                          recordId: selectedRow.id,
-                          recordType: gridName || 'Provider_Info',
-                          user: user,
-                        });
+        {context === 'sidepanel' ? (
+          <Tabs value={tab} onValueChange={setTab} className="flex flex-1 min-h-0" data-testid={`grid-item-details-tabs-${context}`}>
+            <TabsList className="flex flex-col w-20 pt-4 pb-2 px-2 p-2 gap-2 border-r border-gray-200 items-center justify-start" data-testid={`grid-item-details-tabs-list-${context}`}>
+              {tabs.map((tabConfig) => (
+                <TabsTrigger
+                  key={tabConfig.id}
+                  value={tabConfig.id}
+                  className="p-0 border-0 bg-transparent w-full"
+                >
+                  <SidePanelTab
+                    rowKey={tabConfig.id}
+                    fullLabel={tabConfig.label}
+                    iconLabel={tabConfig.label}
+                    icon={tabConfig.icon}
+                    isActive={tab === tabConfig.id}
+                  />
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            <div className="flex-1 min-h-0 flex flex-col overflow-y-auto p-2" data-testid={`grid-item-details-tabpanel-container-${context}`}>
+              {/* Tab Title */}
+              {(() => {
+                const activeTab = tabs.find(t => t.id === tab);
+                return activeTab ? (
+                  <h2 className="text-lg font-semibold text-[#545454] my-4" data-testid={`grid-item-details-tab-title-${context}`}>
+                    {activeTab.label}
+                  </h2>
+                ) : null;
+              })()}
+              
+              {tabs.some((t) => t.id === 'details') && tab === 'details' && (
+                <TabsContent value="details" role="tabpanel" aria-label="Details Tab" data-testid={`grid-item-details-tabpanel-details-${context}`}>
+                  {DetailsComponent && (
+                    <Suspense fallback={<div>Loading details...</div>}>
+                      <DetailsComponent
+                        formValues={formValues}
+                        handleChange={handleChange}
+                      />
+                    </Suspense>
+                  )}
+                </TabsContent>
+              )}
+              {tabs.some((t) => t.id === tab) && (
+                <TabsContent value={tab} className="flex-1 min-h-0 flex flex-col p-0 m-0" role="tabpanel" aria-label={`${tab.charAt(0).toUpperCase() + tab.slice(1)} Tab`} data-testid={`grid-item-details-tabpanel-${tab}-${context}`}>
+                  {(() => {
+                    switch (tab) {
+                      case 'notes': {
+                        const NotesComponent = sharedTabsById['notes']?.Component as React.FC<any>;
+                        return selectedRow && NotesComponent &&
+                          React.createElement(NotesComponent, {
+                            className: "flex-1 min-h-0",
+                            recordId: selectedRow.id,
+                            recordType: gridName || 'Provider_Info',
+                            user: user,
+                          });
+                      }
+                      case 'documents': {
+                        const DocumentsComponent = sharedTabsById['documents']?.Component as React.FC<any>;
+                        return (
+                          documents.length > 0 ? (
+                            <>
+                              <div className="flex-1 overflow-y-auto" role="attached-documents-grid">
+                                {DocumentsComponent &&
+                                  React.createElement(DocumentsComponent, {
+                                    documents: documents,
+                                    onEdit: handleEditDocument,
+                                    onDelete: handleDeleteDocument,
+                                  })}
+                                {documentsLoading && <div className="text-gray-500 mt-2">Loading documents...</div>}
+                              </div>
+                              <div className="mt-4 flex-shrink-0">
+                                <FileDropzone onFilesAccepted={handleFilesAccepted} />
+                              </div>
+                            </>
+                          ) : (
+                            <FileDropzone onFilesAccepted={handleFilesAccepted} />
+                          )
+                        );
+                      }
+                      default:
+                        return null;
                     }
-                    case 'documents': {
-                      const DocumentsComponent = sharedTabsById['documents']?.Component as React.FC<any>;
-                      return (
-                        documents.length > 0 ? (
-                          <>
-                            <div className="flex-1 overflow-y-auto" role="attached-documents-grid">
-                              {DocumentsComponent &&
-                                React.createElement(DocumentsComponent, {
-                                  documents: documents,
-                                  onEdit: handleEditDocument,
-                                  onDelete: handleDeleteDocument,
-                                })}
-                              {documentsLoading && <div className="text-gray-500 mt-2">Loading documents...</div>}
-                            </div>
-                            <div className="mt-4 flex-shrink-0">
-                              <FileDropzone onFilesAccepted={handleFilesAccepted} />
-                            </div>
-                          </>
-                        ) : (
-                          <FileDropzone onFilesAccepted={handleFilesAccepted} />
-                        )
-                      );
-                    }
-                    default:
-                      return null;
-                  }
-                })()}
-              </TabsContent>
-            )}
-            {tabs.some((t) => t.id === 'team') && tab === 'team' && (
-              <TabsContent value="team" role="tabpanel" aria-label="Team Tab" data-testid={`grid-item-details-tabpanel-team-${context}`}>
-                <div className="text-gray-500">Team tab content goes here.</div>
-              </TabsContent>
-            )}
+                  })()}
+                </TabsContent>
+              )}
+              {tabs.some((t) => t.id === 'team') && tab === 'team' && (
+                <TabsContent value="team" role="tabpanel" aria-label="Team Tab" data-testid={`grid-item-details-tabpanel-team-${context}`}>
+                  <div className="text-gray-500">Team tab content goes here.</div>
+                </TabsContent>
+              )}
+            </div>
+          </Tabs>
+        ) : (
+          // Modal context - use NavItem-based navigation like FacilityDetailsModal
+          <div className="flex-1 flex flex-col min-h-0" data-testid={`grid-item-details-tabs-${context}`}>
+            <div className="flex flex-1 min-h-0">
+              {/* Left sidebar navigation */}
+              <div className="w-48 flex-shrink-0 border-r border-gray-200 bg-white flex flex-col" data-testid="grid-item-details-sidebar">
+                <div className="pt-5 pr-5 flex-shrink-0">
+                  <nav
+                    className="space-y-4"
+                    role="navigation"
+                    aria-label="Grid item details sections"
+                  >
+                    {tabs.map((tabConfig) => (
+                      <NavItem
+                        key={tabConfig.id}
+                        variant="sidenav"
+                        active={tab === tabConfig.id}
+                        onClick={() => setTab(tabConfig.id)}
+                        icon={
+                          <FontAwesomeIcon
+                            icon={
+                              tabConfig.icon === 'bars-staggered' ? faBarsStaggered :
+                              tabConfig.icon === 'note-sticky' ? faNoteSticky :
+                              tabConfig.icon === 'folder' ? faFolder :
+                              tabConfig.icon === 'users' ? faUsers :
+                              getIconByName(tabConfig.icon)
+                            }
+                            className="w-5 h-5"
+                          />
+                        }
+                        className="w-full text-left font-medium"
+                        data-testid={`grid-item-${tabConfig.id}-tab`}
+                      >
+                        {tabConfig.label}
+                      </NavItem>
+                    ))}
+                  </nav>
+                </div>
+              </div>
+
+              {/* Main content area */}
+              <div className="flex-1 flex flex-col min-h-0" data-testid="grid-item-details-main-content">
+                {/* Tab header */}
+                <div className="flex-shrink-0 p-5 border-b border-gray-100">
+                  <h2 className="text-lg font-bold text-gray-700 tracking-wide">
+                    {tabs.find(t => t.id === tab)?.label || 'Details'}
+                  </h2>
+                </div>
+
+                {/* Tab content */}
+                <div className="flex-1 overflow-y-auto px-5  min-h-0">
+                  {tabs.some((t) => t.id === 'details') && tab === 'details' && (
+                    <div data-testid="grid-item-details-content">
+                      {DetailsComponent && (
+                        <Suspense fallback={<div>Loading details...</div>}>
+                          <DetailsComponent
+                            formValues={formValues}
+                            handleChange={handleChange}
+                          />
+                        </Suspense>
+                      )}
+                    </div>
+                  )}
+                  
+                  {tabs.some((t) => t.id === tab) && tab !== 'details' && (
+                    <div data-testid={`grid-item-${tab}-content`}>
+                      {(() => {
+                        switch (tab) {
+                          case 'notes': {
+                            const NotesComponent = sharedTabsById['notes']?.Component as React.FC<any>;
+                            return selectedRow && NotesComponent &&
+                              React.createElement(NotesComponent, {
+                                className: "flex-1 min-h-0",
+                                recordId: selectedRow.id,
+                                recordType: gridName || 'Provider_Info',
+                                user: user,
+                              });
+                          }
+                          case 'documents': {
+                            const DocumentsComponent = sharedTabsById['documents']?.Component as React.FC<any>;
+                            return (
+                              documents.length > 0 ? (
+                                <>
+                                  <div className="flex-1 overflow-y-auto" role="attached-documents-grid">
+                                    {DocumentsComponent &&
+                                      React.createElement(DocumentsComponent, {
+                                        documents: documents,
+                                        onEdit: handleEditDocument,
+                                        onDelete: handleDeleteDocument,
+                                      })}
+                                    {documentsLoading && <div className="text-gray-500 mt-2">Loading documents...</div>}
+                                  </div>
+                                  <div className="mt-4 flex-shrink-0">
+                                    <FileDropzone onFilesAccepted={handleFilesAccepted} />
+                                  </div>
+                                </>
+                              ) : (
+                                <FileDropzone onFilesAccepted={handleFilesAccepted} />
+                              )
+                            );
+                          }
+                          case 'team': {
+                            return (
+                              <div className="text-gray-500">Team tab content goes here.</div>
+                            );
+                          }
+                          default:
+                            return null;
+                        }
+                      })()}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
-        </Tabs>
+        )}
       </div>
 
       {/* Footer Actions - Animated slide from bottom */}
