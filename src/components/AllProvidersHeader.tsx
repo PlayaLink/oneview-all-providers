@@ -94,14 +94,15 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
             </div>
             <div className="flex flex-col">
               <h1 className="font-bold text-base text-[#545454]">
-                {provider.provider_name} {provider.title ? `- ${provider.title}` : ""} <span className="font-normal">NPI {provider.npi_number}</span>
+                {provider.provider_name} {provider.title ? `- ${provider.title}` : ""} 
               </h1>
               {provider.primary_specialty && (
-                <p className="font-semibold text-[#3BA8D1] text-sm">{provider.primary_specialty}</p>
+                <p className="font-semibold text-[#3BA8D1] text-sm">{provider.primary_specialty}</p> 
               )}
-              {provider.work_email && (
-                <span className="text-xs text-gray-500">{provider.work_email}</span>
+              {provider.npi_number && (
+                <span className="font-normal">NPI {provider.npi_number}</span> 
               )}
+
             </div>
           </div>
         ) : (
@@ -145,7 +146,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
               aria-hidden="true"
             />
             {/* Dropdown */}
-            {dropdownOpen && filteredProviders.length > 0 && (
+            {dropdownOpen && search.trim().length > 0 && filteredProviders.length > 0 && (
               <div
                 id="provider-search-results"
                 className="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded shadow-lg z-50 max-h-60 overflow-y-auto"

@@ -40,7 +40,7 @@ const SingleProvider: React.FC = () => {
       />
       {isLoading && <div>Loading all provider data...</div>}
       {error && <div className="text-red-500">Error: {String(error)}</div>}
-      <div className="flex flex-col gap-8 mt-4 max-h-[70vh] overflow-y-auto" data-testid="single-provider-grids-list">
+      <div className="flex flex-col gap-8 max-h-[70vh] overflow-y-auto" data-testid="single-provider-grids-list">
         {gridDefs.map((grid: any) => {
           const gridKey = grid.key || grid.table_name || grid.tableName;
           return (
