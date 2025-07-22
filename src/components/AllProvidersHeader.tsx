@@ -94,14 +94,17 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
             </div>
             <div className="flex flex-col">
               <h1 className="font-bold text-base text-[#545454]">
-                {provider.provider_name} {provider.title ? `- ${provider.title}` : ""} 
+                {provider.provider_name} 
               </h1>
+              <h2 className="font-normal text-sm">
+                {provider.title}
+              </h2>
               {provider.primary_specialty && (
                 <p className="font-semibold text-[#3BA8D1] text-sm">{provider.primary_specialty}</p> 
               )}
-              {provider.npi_number && (
-                <span className="font-normal">NPI {provider.npi_number}</span> 
-              )}
+              {/* {provider.npi_number && (
+                <span className="text-sm">NPI {provider.npi_number}</span> 
+              )} */}
 
             </div>
           </div>
