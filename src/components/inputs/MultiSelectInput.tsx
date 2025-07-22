@@ -166,7 +166,7 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
         ref={containerRef}
         className={cn(
           labelPosition === "above"
-            ? "flex flex-col items-start gap-2 min-w-0"
+            ? "flex flex-col items-start gap-1 min-w-0"
             : "flex items-start gap-2 min-w-0",
           className
         )}
@@ -174,7 +174,7 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
       >
         {label && (
           <label className={cn(
-            "text-xs font-semibold mb-1",
+            "text-xs font-semibold",
             labelPosition === "left" && "min-w-[120px] max-w-[120px] break-words whitespace-normal mt-3"
           )}>{label}</label>
         )}
