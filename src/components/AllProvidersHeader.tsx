@@ -1,9 +1,10 @@
 import React, { useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faTimes, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faTimes, faUser, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProviders } from "@/lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
+import SectionsDropdown from "@/components/SectionsDropdown";
 
 interface Provider {
   id: string;
@@ -84,7 +85,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
 
   return (
     <header ref={ref} className="bg-white text-[#545454] py-4 border-b border-gray-300 relative z-10" role="banner" aria-label="All Providers Header" data-testid="all-providers-header">
-      <div className="flex items-center gap-2 px-1">
+      <div className="flex items-center gap-2 pl-1 pr-4">
         {/* Provider Info or All Providers Title */}
         {provider ? (
           <div className="flex items-center gap-4 mb-2">
@@ -109,7 +110,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
             </div>
           </div>
         ) : (
-          <h1 className="font-bold text-base tracking-wider capitalize px-4 mb-2" role="all-providers-header-title">
+          <h1 className="font-bold text-base tracking-wider capitalize px-4" role="all-providers-header-title">
             All Providers
           </h1>
         )}
@@ -186,8 +187,37 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
             )}
           </div>
         </div>
-        {/* Right: (Optional) Add Provider Button or other controls can go here */}
-        <div className="flex items-center gap-4"></div>
+        {/* Right: Add Provider Button or SectionsDropdown */}
+        <div className="flex items-center gap-4">
+          {provider ? (
+            <SectionsDropdown
+              trigger={
+                <button
+                  className="flex items-center gap-2 text-xs font-medium tracking-wide border border-gray-300 rounded px-3 py-1 bg-white focus:outline-none focus:ring-0"
+                  type="button"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  aria-label="Sections dropdown"
+                  data-testid="sections-dropdown-button"
+                >
+                  Sections
+                  <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-down" className="svg-inline--fa fa-chevron-down w-3 h-3 ml-1" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"></path></svg>
+                </button>
+              }
+            />
+          ) : (
+            <button
+              className="bg-[#79AC48] hover:bg-[#6B9A3F] text-white font-semibold px-4 py-2 rounded flex items-center gap-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#79AC48]"
+              type="button"
+              aria-label="Add Provider"
+              data-testid="add-provider-button"
+              // onClick={handleAddProvider}
+            >
+              <FontAwesomeIcon icon={faPlus} className="w-4 h-4" aria-hidden="true" />
+              Add Provider
+            </button>
+          )}
+        </div>
       </div>
     </header>
   );
