@@ -4,6 +4,7 @@ import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { useFeatureFlags } from "@/contexts/FeatureFlagContext";
+import { Switch } from "./ui/switch";
 
 const FeatureFlags: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -29,17 +30,19 @@ const FeatureFlags: React.FC = () => {
         sideOffset={4}
       >
         <div className="p-4">
+          <h3 className="text-md font-semibold text-gray-900 mb-4">Feature Flags</h3>
           {allSettings.map(setting => (
             <div key={setting.setting_key} className="mb-4 flex items-center justify-between">
               <label className="text-xs font-medium text-gray-700">
                 {setting.label || setting.setting_key}
               </label>
-              <input
-                type="checkbox"
+              <Switch
                 checked={!!setting.setting_value}
-                onChange={e => updateFlag(setting.setting_key as any, e.target.checked)}
+                onCheckedChange={checked => updateFlag(setting.setting_key as any, checked)}
                 disabled={isLoading}
                 className="ml-2"
+                aria-label={setting.label || setting.setting_key}
+                data-testid={`feature-flag-switch-${setting.setting_key}`}
               />
             </div>
           ))}
