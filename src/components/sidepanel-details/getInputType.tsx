@@ -28,9 +28,10 @@ interface FieldComponentProps {
   formValues: Record<string, any>;
   handleChange: (key: string, value: any) => void;
   className?: string;
+  labelPosition?: 'left' | 'above';
 }
 
-export function renderFieldComponent({ field, formValues, handleChange, className = "flex-1 min-w-0" }: FieldComponentProps): React.ReactElement {
+export function renderFieldComponent({ field, formValues, handleChange, className = "flex-1 min-w-0", labelPosition = 'left' }: FieldComponentProps): React.ReactElement {
   const inputType = getInputType(field);
   const fieldKey = field.key || field.label;
 
@@ -48,7 +49,7 @@ export function renderFieldComponent({ field, formValues, handleChange, classNam
     return (
       <MultiSelectInput
         label={field.label}
-        labelPosition="left"
+        labelPosition={labelPosition}
         value={value}
         options={options}
         onChange={(val) => handleChange(fieldKey, val)}
@@ -58,17 +59,25 @@ export function renderFieldComponent({ field, formValues, handleChange, classNam
     );
   } else if (inputType === 'single-select') {
     const options = field.options?.map((opt) => ({ id: opt, label: opt })) || [];
-    const selectedValue = options.find((opt) => opt.id === formValues[fieldKey]) || null;
+    // Handle both string values and object values from formValues
+    const formValue = formValues[fieldKey];
+    const selectedValue = typeof formValue === 'string' 
+      ? options.find((opt) => opt.id === formValue) || null
+      : formValue || null;
     
-    console.log('SingleSelect rendering:', { fieldKey, options, selectedValue, formValue: formValues[fieldKey] });
+    console.log('SingleSelect rendering:', { fieldKey, options, selectedValue, formValue });
 
     return (
       <SingleSelect
         label={field.label}
-        labelPosition="left"
+        labelPosition={labelPosition}
         value={selectedValue}
         options={options}
-        onChange={(val) => handleChange(fieldKey, val?.id ?? val)}
+        onChange={(val) => {
+          console.log('SingleSelect onChange called:', { fieldKey, val, label: field.label });
+          // Store the id value, not the full object
+          handleChange(fieldKey, val?.id || null);
+        }}
         placeholder={field.placeholder}
         className={className}
       />
@@ -77,7 +86,7 @@ export function renderFieldComponent({ field, formValues, handleChange, classNam
     return (
       <TextInputField
         label={field.label}
-        labelPosition="left"
+        labelPosition={labelPosition}
         value={formValues[fieldKey] || ''}
         onChange={(val) => handleChange(fieldKey, val)}
         placeholder={field.placeholder}

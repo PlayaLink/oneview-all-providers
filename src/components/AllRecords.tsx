@@ -455,8 +455,15 @@ const AllRecords: React.FC = () => {
 
   // Generate inputConfig for modal based on detailModalRow
   const modalTemplateConfig = detailModalRow?.gridName
-    ? getTemplateConfigByGrid(detailModalRow.gridName)
+    ? getTemplateConfigByGrid(detailModalRow.gridName, 'modal')
     : null;
+
+  console.log('Modal template config:', {
+    detailModalRowGridName: detailModalRow?.gridName,
+    modalTemplateConfig: modalTemplateConfig?.id,
+    modalTemplateConfigName: modalTemplateConfig?.name,
+    modalTemplateConfigFieldGroups: modalTemplateConfig?.fieldGroups?.length
+  });
 
   const modalInputConfig = modalTemplateConfig
     ? modalTemplateConfig.fieldGroups.flatMap(group =>
@@ -466,6 +473,11 @@ const AllRecords: React.FC = () => {
         }))
       )
     : [];
+
+  console.log('Modal input config:', {
+    modalInputConfigLength: modalInputConfig.length,
+    modalInputConfigFields: modalInputConfig.map(f => ({ key: f.key, type: f.type, options: f.options?.length }))
+  });
 
   return (
     <>

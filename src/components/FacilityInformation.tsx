@@ -108,7 +108,7 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
           <div key={property.id || property.key} className="px-2 flex-1">
             <SingleSelect
               label={label}
-              labelPosition="top"
+              labelPosition="above"
               value={value ? { id: value, label: value } : undefined}
               options={options}
               onChange={(option) => handlePropertyChange(property.key!, option?.id)}
@@ -124,7 +124,7 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
         <div key={property.id || property.key} className="px-2 flex-1">
           <MultiSelectInput
             label={label}
-            labelPosition="top"
+            labelPosition="above"
             value={Array.isArray(value) ? value : []}
             options={options}
             onChange={(newValue) => handlePropertyChange(property.key!, newValue)}
@@ -141,7 +141,7 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
       <div key={property.id || property.key} className="px-2 flex-1">
         <TextInputField
           label={label}
-          labelPosition="top"
+          labelPosition="above"
           value={value?.toString() || ""}
           onChange={(newValue) => handlePropertyChange(property.key!, newValue)}
           placeholder=""
@@ -229,7 +229,7 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
               <div className="px-2 flex-1">
                 <TextInputField
                   label="Facility Name"
-                  labelPosition="top"
+                  labelPosition="above"
                   value={facility.label || ""}
                   onChange={() => {}}
                   disabled={true}
@@ -240,7 +240,7 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
               <div className="px-2 flex-1">
                 <TextInputField
                   label="Facility ID"
-                  labelPosition="top"
+                  labelPosition="above"
                   value={facility.id || ""}
                   onChange={() => {}}
                   disabled={true}

@@ -107,7 +107,7 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => (
         <div className="flex flex-col gap-4 self-stretch">
           {group.fields.map((field) => (
             <React.Fragment key={field.key || field.label}>
-              {renderFieldComponent({ field, formValues, handleChange })}
+              {renderFieldComponent({ field, formValues, handleChange, labelPosition: "above" })}
             </React.Fragment>
           ))}
         </div>

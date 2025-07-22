@@ -206,19 +206,36 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   // Only reset form values if the selectedRow.id actually changes
   const lastInitializedId = React.useRef<any>(null);
   React.useEffect(() => {
+    console.log('GridItemDetails useEffect - form initialization:', {
+      selectedRowId: selectedRow?.id,
+      lastInitializedId: lastInitializedId.current,
+      context,
+      inputConfigLength: inputConfig?.length,
+      selectedRowKeys: selectedRow ? Object.keys(selectedRow) : []
+    });
+    
     if (selectedRow && selectedRow.id !== lastInitializedId.current) {
       
       const initialValues: Record<string, any> = {};
       inputConfig.forEach(field => {
         const key = field.key || field.label;
         let value = selectedRow[key] ?? (field.type === 'multi-select' ? [] : '');
+        
         // Deserialize multi-select fields: convert array of strings to array of {id, label}
         if (field.type === 'multi-select' && Array.isArray(value) && value.length > 0 && typeof value[0] === 'string') {
           value = value.map(v => ({ id: v, label: v }));
         }
+        
+        // For single-select fields, ensure we have the raw value (string)
+        if (field.type === 'single-select' && value && typeof value === 'object' && value.id) {
+          value = value.id;
+        }
+        
         initialValues[key] = value;
+        console.log('Field initialization:', { key, fieldType: field.type, value, originalValue: selectedRow[key] });
       });
       
+      console.log('Setting initial form values:', initialValues);
       setFormValues(initialValues);
       setHasUnsavedChanges(false); // Reset unsaved changes when new row is selected
       lastInitializedId.current = selectedRow.id;
@@ -226,7 +243,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       setFormValues({});
       lastInitializedId.current = null;
     }
-  }, [selectedRow, inputConfig]);
+  }, [selectedRow, inputConfig, context]);
 
   // Handle mouse down on resize handle (only for sidepanel context)
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
@@ -290,13 +307,20 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
 
   // Handle input change (local only)
   const handleChange = (key: string, value: any) => {
+    console.log('handleChange called:', { key, value, context, selectedRowId: selectedRow?.id });
     
-    setFormValues((prev) => ({ ...prev, [key]: value }));
+    setFormValues((prev) => {
+      const newValues = { ...prev, [key]: value };
+      console.log('Form values updated:', { key, oldValue: prev[key], newValue: value, allValues: newValues });
+      return newValues;
+    });
     
     // Check if this change is different from the original value
     if (selectedRow) {
       const originalValue = selectedRow[key] ?? (inputConfig.find(f => f.key === key)?.type === 'multi-select' ? [] : '');
       const hasChanged = JSON.stringify(value) !== JSON.stringify(originalValue);
+      
+      console.log('Change detection:', { key, value, originalValue, hasChanged });
       
       if (hasChanged) {
         setHasUnsavedChanges(true);

@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 interface TextInputFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange"> {
   label?: string;
-  labelPosition?: "left" | "top";
+  labelPosition?: "left" | "above";
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
@@ -43,7 +43,7 @@ function formatDateForInput(val: string): string {
 
 export const TextInputField: React.FC<TextInputFieldProps> = ({
   label,
-  labelPosition = "top",
+  labelPosition = "left",
   value,
   onChange,
   placeholder = "",
@@ -119,22 +119,16 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
   }, []);
 
   return (
-    <div className={cn(
-      labelPosition === "left" ? "flex items-center gap-2 min-w-0" : "flex flex-col gap-1",
-      className
-    )}>
+    <div className={labelPosition === "above" ? `gap-2 flex flex-col items-start ${className}` : `flex items-center ${className}`}>
       {label && (
-        <label
-          className={cn(
-            "text-xs font-semibold mb-1",
-            labelPosition === "left" && "min-w-[120px] max-w-[120px] break-words whitespace-normal"
-          )}
-        >
+        <label className={labelPosition === "above" 
+          ? "text-xs font-semibold" 
+          : "mr-2 text-xs font-semibold min-w-[120px] max-w-[120px] align-top break-words whitespace-normal"}>
           {label}
         </label>
       )}
       <div
-        className="flex flex-1 items-center h-[38px] relative"
+        className="flex flex-1 items-center h-[38px] relative w-full"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => {
           setIsHovered(false);
