@@ -138,6 +138,8 @@ function GridsSection({
                     height={gridHeight}
                     onRowClicked={(row: any) => handleRowSelect(row, item.grid.key)}
                     handleShowFacilityDetails={handleShowFacilityDetails}
+                    selectedRowId={selectedRow?.id}
+                    selectedGridKey={selectedRow?.gridName}
                   />
                 </div>
               ))}
@@ -319,6 +321,7 @@ const AllRecords: React.FC = () => {
   };
 
   const handleCloseSidePanel = () => {
+    console.log('[DEBUG] handleCloseSidePanel called, clearing selectedRow');
     setSelectedRow(null);
   };
 
@@ -475,6 +478,7 @@ const AllRecords: React.FC = () => {
       <GridItemDetailModal
         isOpen={showDetailModal}
         onClose={() => {
+          console.log('[DEBUG] GridItemDetailModal onClose called, clearing selectedRow');
           setShowDetailModal(false);
           setDetailModalRow(null);
           setSelectedRow(null); // Clear the main selectedRow when modal closes
