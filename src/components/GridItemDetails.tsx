@@ -20,6 +20,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabaseClient';
 import { getTemplateConfigByGrid, gridToTemplateMap } from '@/lib/templateConfigs';
 import ProviderInfoDetails from './sidepanel-details/ProviderInfoDetails';
+import ProviderInfoDetailsWide from './sidepanel-details/ProviderInfoDetailsWide';
 import StateLicenseDetails from './sidepanel-details/StateLicenseDetails';
 import { getIconByName } from "@/lib/iconMapping";
 import SidePanelTab from "./TabTitle";
@@ -85,6 +86,7 @@ function formatGridName(name: string) {
 
 export const detailsComponentMap: Record<string, React.ComponentType<any>> = {
   ProviderInfoDetails,
+  ProviderInfoDetailsWide,
   StateLicenseDetails,
   BirthInfoDetails,
   // Add more as needed
@@ -182,8 +184,8 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   const [documentsLoading, setDocumentsLoading] = useState(false);
   const [editingDocument, setEditingDocument] = useState<any | null>(null);
 
-  // Select template based on gridName
-  const template = gridName ? getTemplateConfigByGrid(gridName) : null;
+  // Select template based on gridName and context
+  const template = gridName ? getTemplateConfigByGrid(gridName, context) : null;
 
   // Fetch provider if selectedRow has provider_id and it's not a provider row itself
   const providerId = selectedRow && selectedRow.provider_id ? selectedRow.provider_id : (selectedRow && selectedRow.id && gridName === 'Provider_Info' ? selectedRow.id : null);
@@ -641,7 +643,10 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
 
   // Select the DetailsComponent from the static map
 let DetailsComponent;
-if (template?.DetailsComponent) {
+if (template?.getDetailsComponent) {
+  // Use context-aware component selection
+  DetailsComponent = template.getDetailsComponent(context);
+} else if (template?.DetailsComponent) {
   if (typeof template.DetailsComponent === 'string') {
     DetailsComponent = detailsComponentMap[template.DetailsComponent];
   } else {
