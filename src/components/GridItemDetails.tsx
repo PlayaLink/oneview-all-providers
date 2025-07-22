@@ -477,12 +477,14 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       setSaveSuccess(true);
       setHasUnsavedChanges(false); // Clear unsaved changes state
       
-      // Show success toast
-      toast({
-        title: "Save Successful",
-        description: "Changes have been saved successfully",
-        variant: "default",
-      });
+      // Show success toast only if not in modal context
+      if (context !== 'modal') {
+        toast({
+          title: "Save Successful",
+          description: "Changes have been saved successfully",
+          variant: "default",
+        });
+      }
       
       setTimeout(() => {
         setSaveSuccess(false);
