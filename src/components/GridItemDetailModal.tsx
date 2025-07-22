@@ -503,7 +503,7 @@ const GridItemDetailModal: React.FC<GridItemDetailModalProps> = (props) => {
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={open => { if (!open) onClose(); }}>
       <DialogContent className="max-w-5xl w-full h-[90vh] flex flex-col" data-testid="grid-item-detail-modal">
         <DialogHeader className="flex flex-row items-center justify-between pb-4 flex-shrink-0">
           <DialogTitle className="flex items-center gap-2 text-lg font-bold text-gray-700 tracking-wider">
