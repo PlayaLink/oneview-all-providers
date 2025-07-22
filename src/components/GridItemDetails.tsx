@@ -477,6 +477,18 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       setSaveSuccess(true);
       setHasUnsavedChanges(false); // Clear unsaved changes state
       
+      // Show success toast
+      toast({
+        title: "Save Successful",
+        description: "Changes have been saved successfully",
+        variant: "default",
+      });
+      
+      setTimeout(() => {
+        setSaveSuccess(false);
+        // Footer will be hidden by hasUnsavedChanges being false
+      }, 1500); // Hide success message after 1.5 seconds
+      
     } catch (err: any) {
       console.error('Failed to save:', err);
       
@@ -490,13 +502,15 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       // Show error feedback
       setSaveSuccess(false); // Hide success message on error
       
-      // Show error toast
+      // Show user-friendly error message
+      const errorMessage = err?.message || err?.error_description || 'Unknown error occurred';
       toast({
-        title: "Save Error",
-        description: err?.message || "Failed to save changes",
+        title: "Save Failed",
+        description: `Failed to save changes: ${errorMessage}`,
         variant: "destructive",
       });
       
+      console.error('Save failed:', errorMessage);
     } finally {
       setIsSaving(false);
     }
@@ -802,7 +816,7 @@ if (template?.DetailsComponent) {
       </div>
 
       {/* Tabs and Content */}
-      <div className="h-full overflow-hidden">
+      <div className="flex-1 min-h-0 flex flex-col">
         {context === 'sidepanel' ? (
           <Tabs value={tab} onValueChange={setTab} className="flex flex-1 min-h-0" data-testid={`grid-item-details-tabs-${context}`}>
             <TabsList className="flex flex-col w-20 pt-4 pb-2 px-2 p-2 gap-2 border-r border-gray-200 items-center justify-start" data-testid={`grid-item-details-tabs-list-${context}`}>
