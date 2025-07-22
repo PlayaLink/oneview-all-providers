@@ -112,32 +112,32 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
                 side="bottom"
                 sideOffset={4}
               >
-                <div className="p-4">
+                <div className="p-4 flex flex-col gap-2 border-b border-gray-200">
                   {/* User Profile */}
-                          <div ref={profileRef} className="flex items-center gap-2 relative" role="button" tabIndex={0} aria-label="User profile menu">
-                <div className="flex items-center justify-center w-6 h-6 aspect-square">
-                  <FontAwesomeIcon 
-                    icon={faUser} 
-                    className="w-5 h-5" 
-                    aria-hidden="true"
-                    role="user-icon"
-                  />
-                </div>
-              <button
-                className="text-center text-xs font-bold leading-normal tracking-[0.429px] bg-transparent border-none cursor-pointer"
-                style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
-                onClick={() => setProfileDropdownOpen((open) => !open)}
-                aria-label="Toggle user profile menu"
-                aria-expanded={profileDropdownOpen}
-                aria-haspopup="true"
-                data-testid="user-profile-toggle"
-              >
-                {user?.user_metadata?.full_name || user?.full_name || user?.email || 'User'}
-              </button>
-       
-            </div>
-                <button
-                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  <div ref={profileRef} className="flex items-center gap-2 relative" role="button" tabIndex={0} aria-label="User profile menu">
+                    <div className="flex items-center justify-center w-6 h-6 aspect-square">
+                      <FontAwesomeIcon
+                        icon={faUser}
+                        className="w-5 h-5"
+                        aria-hidden="true"
+                        role="user-icon"
+                      />
+                    </div>
+                    <button
+                      className="text-center text-xs font-bold leading-normal tracking-[0.429px] bg-transparent border-none cursor-pointer"
+                      style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+                      onClick={() => setProfileDropdownOpen((open) => !open)}
+                      aria-label="Toggle user profile menu"
+                      aria-expanded={profileDropdownOpen}
+                      aria-haspopup="true"
+                      data-testid="user-profile-toggle"
+                    >
+                      {user?.user_metadata?.full_name || user?.full_name || user?.email || 'User'}
+                    </button>
+
+                  </div>
+                  <button
+                    className="w-full text-center px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
                     onClick={handleLogout}
                     aria-label="Logout from application"
                     data-testid="logout-button"
