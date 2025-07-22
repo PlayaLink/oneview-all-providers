@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faGear, faUser } from "@fortawesome/free-solid-svg-icons";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Switch } from "./ui/switch";
 import NavItem from "./NavItem";
 import FeatureFlags from "./FeatureFlags";
 import GlobalFeatureToggle from "./GlobalFeatureToggle";
@@ -112,7 +113,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
                 side="bottom"
                 sideOffset={4}
               >
-                <div className="p-4 flex flex-col gap-2 border-b border-gray-200">
+                <div className="p-4 flex flex-col gap-4 border-b border-gray-200">
                   {/* User Profile */}
                   <div ref={profileRef} className="flex items-center gap-2 relative" role="button" tabIndex={0} aria-label="User profile menu">
                     <div className="flex items-center justify-center w-6 h-6 aspect-square">
@@ -124,7 +125,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
                       />
                     </div>
                     <button
-                      className="text-center text-xs font-bold leading-normal tracking-[0.429px] bg-transparent border-none cursor-pointer"
+                      className="text-center font-bold text-lg leading-normal tracking-[0.429px] bg-transparent border-none cursor-pointer"
                       style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
                       onClick={() => setProfileDropdownOpen((open) => !open)}
                       aria-label="Toggle user profile menu"
@@ -138,25 +139,29 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
                   </div>
                   {}
                   <button
-                    className="w-full text-center px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
+                    className="w-full text-center font-bold px-4 py-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded-md"
                     onClick={handleLogout}
                     aria-label="Logout from application"
                     data-testid="logout-button"
                   >
                     Logout
                   </button>
+                  {/* Divider */}
+                  <div className="border-t border-gray-200 my-3"></div>
                   {/* Feature Flags */}
+                  <div className="pt-2 pb-1">
+                    <h3 className="text-md font-semibold text-gray-900 mb-1">Feature Flags</h3>
+                  </div>
                   {allSettings.map(setting => (
                     <div key={setting.setting_key} className="mb-4 flex items-center justify-between">
-                      <label className="text-xs font-medium text-gray-700">
+                      <label className="font-medium text-gray-700">
                         {setting.label || setting.setting_key}
                       </label>
-                      <input
-                        type="checkbox"
+                      <Switch
                         checked={!!setting.setting_value}
-                        onChange={e => updateFlag(setting.setting_key as any, e.target.checked)}
+                        onCheckedChange={(checked) => updateFlag(setting.setting_key as any, checked)}
                         disabled={isLoading}
-                        className="ml-2"
+                        className={!!setting.setting_value ? "data-[state=checked]:bg-[#3BA8D1]" : ""}
                       />
                     </div>
                   ))}
