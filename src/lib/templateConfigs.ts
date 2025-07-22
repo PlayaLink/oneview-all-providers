@@ -1,6 +1,7 @@
 import { stateLicenseTemplate } from '../components/sidepanel-details/StateLicenseDetails';
 import { birthInfoTemplate } from '../components/sidepanel-details/BirthInfoDetails';
 import { providerInfoTemplate } from '../components/sidepanel-details/ProviderInfoDetails';
+import { providerInfoWideTemplate } from '../components/sidepanel-details/ProviderInfoDetailsWide';
 import React from 'react';
 import AddressDetails from '../components/sidepanel-details/AddressDetails';
 import FacilityAffiliationsDetails, { facilityAffiliationsFieldGroups } from '../components/sidepanel-details/FacilityAffiliationsDetails';
@@ -14,6 +15,8 @@ export interface TemplateConfig {
   fieldGroups: FieldGroup[];
   header?: (args: { gridName: string; row: any; provider?: any }) => string;
   DetailsComponent?: React.ComponentType<any>;
+  // Add support for context-specific components
+  getDetailsComponent?: (context: 'sidepanel' | 'modal') => React.ComponentType<any>;
 }
 
 export interface TabConfig {
@@ -113,10 +116,24 @@ export const facilityAffiliationsTemplate: TemplateConfig = {
 };
 
 // Main function to get the template config for a grid - Updated to handle all grids
-export function getTemplateConfigByGrid(gridKey: string): TemplateConfig | null {
-  switch (gridKey) {
+export function getTemplateConfigByGrid(gridKey: string, context?: 'sidepanel' | 'modal'): TemplateConfig | null {
+  // Normalize the grid key to lowercase for case-insensitive matching
+  const normalizedKey = gridKey.toLowerCase();
+  
+  switch (normalizedKey) {
     // Core provider grids
-    case "provider_info": return providerInfoTemplate;
+    case "provider_info": {
+      // For provider_info, use different components based on context
+      if (context === 'modal') {
+        return {
+          ...providerInfoWideTemplate,
+          getDetailsComponent: (ctx: 'sidepanel' | 'modal') => {
+            return ctx === 'modal' ? providerInfoWideTemplate.DetailsComponent : providerInfoTemplate.DetailsComponent;
+          }
+        };
+      }
+      return providerInfoTemplate;
+    }
     case "state_licenses": return stateLicenseTemplate;
     case "birth_info": return birthInfoTemplate;
     case "addresses": return addressTemplate;
@@ -124,7 +141,7 @@ export function getTemplateConfigByGrid(gridKey: string): TemplateConfig | null 
     
     // For grids without specific templates, return a default template
     default: {
-      console.warn(`No specific template found for grid: ${gridKey}, using default template`);
+      console.warn(`No specific template found for grid: ${gridKey} (normalized: ${normalizedKey}), using default template`);
       return {
         id: gridKey,
         name: gridKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),

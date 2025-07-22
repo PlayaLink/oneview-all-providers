@@ -1,5 +1,7 @@
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUpload } from "@fortawesome/free-solid-svg-icons";
 
 interface FileDropzoneProps {
   onFilesAccepted: (files: File[]) => void;
@@ -36,7 +38,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFilesAccepted }) => {
     >
       <input {...getInputProps()} />
       <div className="flex flex-col items-center" id="file-dropzone-description">
-        <span className="text-2xl mb-2" role="img" aria-label="upload">📤</span>
+        <FontAwesomeIcon icon={faUpload} className="text-2xl mb-2 text-gray-600" aria-label="upload" />
         <span className="text-gray-700">Drop documents here or <span className="text-blue-600 underline">Click here to browse</span></span>
         <span className="text-xs text-gray-400 mt-2">PDF, DOCX, TXT, RTF, GIF, JPG, PNG</span>
       </div>

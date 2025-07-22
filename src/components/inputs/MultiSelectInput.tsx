@@ -20,7 +20,7 @@ export interface SelectedItemUIProps {
 
 export interface MultiSelectInputProps {
   label: string;
-  labelPosition?: "left" | "top";
+  labelPosition?: "left" | "above";
   value: MultiSelectItem[];
   options: MultiSelectItem[];
   onChange: (items: MultiSelectItem[]) => void;
@@ -72,7 +72,7 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
     {
       className,
       label,
-      labelPosition,
+      labelPosition = "left",
       value = [],
       options = [],
       onChange,
@@ -165,15 +165,17 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
       <div
         ref={containerRef}
         className={cn(
-          (labelPosition === "left" ? "flex items-start gap-2 min-w-0" : "flex flex-col gap-1"),
+          labelPosition === "above"
+            ? "flex flex-col items-start gap-1 min-w-0"
+            : "flex items-start gap-2 min-w-0",
           className
         )}
         {...props}
       >
         {label && (
           <label className={cn(
-            "text-xs font-semibold mb-1",
-            labelPosition === "left" && "min-w-[120px] max-w-[120px] break-words whitespace-normal"
+            "text-xs font-semibold",
+            labelPosition === "left" && "min-w-[120px] max-w-[120px] break-words whitespace-normal mt-3"
           )}>{label}</label>
         )}
         <div className={cn("flex-1")}> {/* Value UI container */}

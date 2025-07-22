@@ -25,7 +25,7 @@ export interface SingleSelectProps {
   /**
    * Label position: 'left' or 'top'. Default is 'left'.
    */
-  labelPosition?: 'left' | 'top';
+  labelPosition?: 'left' | 'above';
   /**
    * Currently selected option
    */
@@ -87,6 +87,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
     }, [options, searchValue]);
 
     const handleSelect = (option: SingleSelectOption) => {
+      console.log('SingleSelect handleSelect called:', { option, label });
       onChange(option);
       setOpen(false);
       setSearchValue("");
@@ -168,9 +169,9 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
     return (
       <div
         className={cn(
-          labelPosition === 'left'
-            ? 'flex items-center gap-2 flex-1 min-w-0'
-            : 'flex flex-col gap-1 self-stretch',
+          labelPosition === 'above'
+            ? 'flex flex-col items-start gap-1 flex-1 min-w-0'
+            : 'flex items-center gap-2 flex-1 min-w-0',
           className
         )}
         ref={ref}
@@ -197,7 +198,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
             <button
               type="button"
               className={cn(
-                "flex h-[38px] px-2 items-center flex-1 rounded border border-[#E6E6E6] cursor-pointer w-full text-left bg-transparent",
+                "flex min-h-[38px] px-2 items-center flex-1 rounded border border-[#E6E6E6] cursor-pointer w-full text-left bg-transparent",
                 disabled && "opacity-50 cursor-not-allowed",
                 open && "ring-1 ring-blue-400",
               )}
@@ -303,7 +304,12 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                       value?.id !== option.id && "hover:bg-blue-50",
                       option.disabled && "opacity-50 cursor-not-allowed",
                     )}
-                    onClick={() => !option.disabled && handleSelect(option)}
+                    onClick={() => {
+                      console.log('SingleSelect option clicked:', { option, label, disabled: option.disabled });
+                      if (!option.disabled) {
+                        handleSelect(option);
+                      }
+                    }}
                     role="option"
                     aria-selected={value?.id === option.id}
                     data-testid={`single-select-option-${option.id}`}
