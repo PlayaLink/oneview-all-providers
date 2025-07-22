@@ -57,7 +57,8 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
           user_metadata: { full_name: `${firstName} ${lastName}` }
         };
         sessionStorage.setItem('oneview_dummy_user', JSON.stringify(dummy));
-        window.location.reload();
+        // Navigate to home page to trigger a fresh authentication check
+        window.location.href = "/";
       }
     } else {
       await supabase.auth.signOut();
