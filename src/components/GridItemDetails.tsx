@@ -477,13 +477,6 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       setSaveSuccess(true);
       setHasUnsavedChanges(false); // Clear unsaved changes state
       
-      // Show success toast
-      toast({
-        title: "Save Successful",
-        description: "Changes have been saved successfully",
-        variant: "default",
-      });
-      
       setTimeout(() => {
         setSaveSuccess(false);
         // Footer will be hidden by hasUnsavedChanges being false
