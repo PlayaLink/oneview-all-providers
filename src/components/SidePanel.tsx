@@ -90,7 +90,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       {/* Resize Handle */}
       <div
         ref={resizeRef}
-        className={`absolute left-0 top-0 w-1 h-full cursor-col-resize z-10 transition-colors duration-200 ${
+        className={`absolute left-0 top-0 w-1 h-full cursor-col-resize z-[1001] transition-colors duration-200 ${
           isHoveringResizeHandle || isResizing 
             ? 'bg-[#008BC9]' 
             : 'bg-transparent hover:bg-[#E3F2FD]'
