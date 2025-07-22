@@ -516,7 +516,7 @@ const AllRecords: React.FC = () => {
       {/* All Providers Header (add ref) */}
       <div ref={headerRef} id="all-providers-header-ref">
         <AllProvidersHeader
-          title={provider_id ? undefined : "All Providers"}
+          title="All Providers"
           provider_id={provider_id}
           providerInfo={selectedProviderInfo}
           onProviderSelect={handleProviderSelect}

@@ -1,116 +1,70 @@
 import React, { useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faTimes, faUser } from "@fortawesome/free-solid-svg-icons";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { Button } from "@/components/ui/button";
-import SectionsDropdown from "@/components/SectionsDropdown";
+import { useQuery } from "@tanstack/react-query";
+import { fetchProviders } from "@/lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
-import { useFeatureSettings } from "@/hooks/useFeatureSettings";
 
-interface ProviderInfo {
-  fullName: string;
-  title: string;
-  npi: string;
-  specialty: string;
-  email?: string;
-}
-
-interface ProviderSearchItem {
-  provider_id: string;
-  fullName: string;
-  firstName: string;
-  lastName: string;
-  title: string;
-  npi: string;
-  specialty: string;
-  email?: string;
+interface Provider {
+  id: string;
+  provider_name: string;
+  npi_number: string;
+  title?: string;
+  primary_specialty?: string;
+  work_email?: string;
+  first_name?: string;
+  last_name?: string;
 }
 
 interface AllProvidersHeaderProps {
-  title?: string;
-  icon?: IconDefinition;
-  buttonText?: string;
-  buttonIcon?: IconDefinition;
-  onButtonClick?: () => void;
-  buttonClassName?: string;
-  npi?: string;
-  provider_id?: string;
-  providerInfo?: ProviderInfo;
-  onProviderSelect?: (provider_id: string) => void;
-  providerSearchList?: ProviderSearchItem[];
-  // SectionsDropdown props
-  visibleSections?: Set<string>;
-  onSectionVisibilityChange?: (sectionKey: string, visible: boolean) => void;
+  provider?: Provider;
 }
 
-const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps>(({
-  title,
-  icon,
-  buttonText,
-  buttonIcon,
-  onButtonClick,
-  buttonClassName = "bg-[#79AC48] hover:bg-[#6B9A3F] text-white",
-  npi,
-  providerInfo,
-  onProviderSelect,
-  providerSearchList = [],
-  visibleSections,
-  onSectionVisibilityChange,
-}, ref) => {
+const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps>(({ provider }, ref) => {
   const [search, setSearch] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  const { settings, isLoading: settingsLoading } = useFeatureSettings();
 
-  // Initialize search value when on provider detail route
-  React.useEffect(() => {
-    if (npi && providerInfo) {
-      setSearch(providerInfo.fullName);
-    } else {
-      setSearch("");
-    }
-  }, [npi, providerInfo]);
+  // Fetch all providers
+  const { data: providers = [], isLoading } = useQuery({
+    queryKey: ["providers"],
+    queryFn: fetchProviders,
+    initialData: [],
+  });
 
   // Filter providers by name or NPI
-  const filteredProviders = search.trim().length > 0
-    ? providerSearchList.filter((p) =>
-        p.fullName.toLowerCase().includes(search.toLowerCase()) ||
-        (p.firstName && p.firstName.toLowerCase().includes(search.toLowerCase())) ||
-        (p.lastName && p.lastName.toLowerCase().includes(search.toLowerCase())) ||
-        p.npi.includes(search)
+  const searchString = search.toLowerCase();
+  const filteredProviders = searchString.length > 0
+    ? providers.filter((p: Provider) =>
+        (p.provider_name && p.provider_name.toLowerCase().includes(searchString)) ||
+        (p.npi_number && p.npi_number.includes(searchString))
       )
-    : [];
+    : providers;
 
-  const handleSelect = (provider: ProviderSearchItem) => {
-    setSearch(provider.fullName);
+  // Handle selection
+  const handleSelect = (selected: Provider) => {
+    setSearch("");
     setDropdownOpen(false);
-    if (onProviderSelect) onProviderSelect(provider.provider_id);
+    navigate(`/${selected.id}`);
   };
 
+  // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    setSearch(newValue);
-    
-    // If the search becomes empty (user cleared it manually), go back to previous page
-    if (newValue === "" && search !== "") {
-      navigate(-1);
-      return;
-    }
-    
+    setSearch(e.target.value);
     setDropdownOpen(true);
   };
 
+  // Handle input focus
   const handleInputFocus = () => {
     setDropdownOpen(true);
   };
 
+  // Handle clear
   const handleClear = () => {
     setSearch("");
     setDropdownOpen(false);
     inputRef.current?.focus();
-    // Go back to the previous page when search is cleared
-    navigate(-1);
   };
 
   // Close dropdown on click outside
@@ -129,32 +83,33 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
   }, [dropdownOpen]);
 
   return (
-    <header ref={ref} className="bg-white text-[#545454] px-4 py-4 border-b border-gray-300 relative z-10" role="banner" aria-label="All Providers Header" data-testid="all-providers-header">
-      <div className="flex items-center justify-between px-1">
-        {/* Left: Icon and Title or Provider Info */}
-        <div className="flex items-center gap-2 min-w-0">
-          {!npi && title && (
-            <h1 className="font-bold text-base tracking-wider capitalize" role="all-providers-header-title">
-              {title.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())}
-            </h1>
-          )}
-          {/* Single-provider view header */}
-          {npi && providerInfo && (
-            <div className="flex items-center gap-4">
-              {/* User Icon in Circle */}
-              <div className="flex-shrink-0 w-12 h-12 rounded-full border border-gray-300 bg-gray-100 flex items-center justify-center" aria-hidden="true">
-                <FontAwesomeIcon icon={faUser} className="w-8 h-8 text-gray-400" />
-              </div>
-              <div className="flex flex-col">
-                <h1 className="font-bold text-base text-[#545454]">
-                  {providerInfo.fullName} - {providerInfo.title} <span className="font-normal">NPI {providerInfo.npi}</span>
-                </h1>
-                <p className="font-semibold text-[#3BA8D1] text-sm">{providerInfo.specialty}</p>
-              </div>
+    <header ref={ref} className="bg-white text-[#545454] py-4 border-b border-gray-300 relative z-10" role="banner" aria-label="All Providers Header" data-testid="all-providers-header">
+      <div className="flex items-center gap-2 px-1">
+        {/* Provider Info or All Providers Title */}
+        {provider ? (
+          <div className="flex items-center gap-4 mb-2">
+            {/* User Icon in Circle */}
+            <div className="flex-shrink-0 w-12 h-12 rounded-full border border-gray-300 bg-gray-100 flex items-center justify-center" aria-hidden="true">
+              <FontAwesomeIcon icon={faUser} className="w-8 h-8 text-gray-400" />
             </div>
-          )}
-        </div>
-        {/* Center: Searchbox */}
+            <div className="flex flex-col">
+              <h1 className="font-bold text-base text-[#545454]">
+                {provider.provider_name} {provider.title ? `- ${provider.title}` : ""} <span className="font-normal">NPI {provider.npi_number}</span>
+              </h1>
+              {provider.primary_specialty && (
+                <p className="font-semibold text-[#3BA8D1] text-sm">{provider.primary_specialty}</p>
+              )}
+              {provider.work_email && (
+                <span className="text-xs text-gray-500">{provider.work_email}</span>
+              )}
+            </div>
+          </div>
+        ) : (
+          <h1 className="font-bold text-base tracking-wider capitalize px-4 mb-2" role="all-providers-header-title">
+            All Providers
+          </h1>
+        )}
+        {/* Searchbox (always visible) */}
         <div className="flex-1 flex justify-center relative">
           <div className="w-[350px] relative">
             <label htmlFor="provider-search" className="sr-only">Search providers</label>
@@ -171,6 +126,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
               aria-autocomplete="list"
               aria-controls="provider-search-results"
               aria-activedescendant={dropdownOpen && filteredProviders.length > 0 ? "provider-option-0" : undefined}
+              autoComplete="off"
             />
             {search && (
               <button
@@ -190,83 +146,44 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
             />
             {/* Dropdown */}
             {dropdownOpen && filteredProviders.length > 0 && (
-              <div 
+              <div
                 id="provider-search-results"
                 className="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded shadow-lg z-50 max-h-60 overflow-y-auto"
                 role="listbox"
                 aria-label="Provider search results"
               >
-                {filteredProviders.map((provider, index) => {
-                  return (
-                    <div
-                      key={provider.provider_id}
-                      id={`provider-option-${index}`}
-                      className="px-4 py-3 cursor-pointer hover:bg-blue-50 flex flex-col gap-1"
-                      onMouseDown={() => handleSelect(provider)}
-                      role="option"
-                      aria-selected="false"
-                      data-testid={`provider-option-${provider.provider_id}`}
-                    >
-                      <div className="flex justify-between items-center">
-                        <span className="font-semibold text-[#545454]">
-                          {provider.fullName} - {provider.title}
-                        </span>
-                        <span className="text-xs text-gray-500 font-medium">
-                          ID: {provider.provider_id}
-                        </span>
-                      </div>
-                      <span className="font-bold text-[#3BA8D1] text-sm">
-                        {provider.specialty}
+                {filteredProviders.map((prov, index) => (
+                  <div
+                    key={prov.id}
+                    id={`provider-option-${index}`}
+                    className="px-4 py-3 cursor-pointer hover:bg-blue-50 flex flex-col gap-1"
+                    onMouseDown={() => handleSelect(prov)}
+                    role="option"
+                    aria-selected="false"
+                    data-testid={`provider-option-${prov.id}`}
+                  >
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold text-[#545454]">
+                        {prov.provider_name} {prov.title ? `- ${prov.title}` : ""}
                       </span>
-                      {provider.email && (
-                        <span className="text-xs text-gray-500">{provider.email}</span>
-                      )}
+                      <span className="text-xs text-gray-500 font-medium">
+                        ID: {prov.id}
+                      </span>
                     </div>
-                  );
-                })}
+                    <span className="font-bold text-[#3BA8D1] text-sm">
+                      {prov.primary_specialty}
+                    </span>
+                    {prov.work_email && (
+                      <span className="text-xs text-gray-500">{prov.work_email}</span>
+                    )}
+                  </div>
+                ))}
               </div>
             )}
           </div>
         </div>
-        {/* Right: Add Provider Button or SectionsDropdown */}
-        <div className="flex items-center gap-4">
-          {npi ? (
-            // Single-provider view: show SectionsDropdown
-            <SectionsDropdown
-              trigger={
-                <div className="relative" role="group" aria-label="Section visibility controls" style={{ display: 'inline-block' }}>
-                  <button
-                    className="flex items-center gap-2 text-xs font-medium tracking-wide border border-gray-300 rounded px-3 py-1 bg-white focus:outline-none focus:ring-0"
-                    type="button"
-                    aria-haspopup="true"
-                    aria-expanded={false}
-                    aria-label="Sections dropdown"
-                    data-testid="sections-dropdown-button"
-                  >
-                    Sections
-                    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-down" className="svg-inline--fa fa-chevron-down w-3 h-3 ml-1" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"></path></svg>
-                  </button>
-                </div>
-              }
-            />
-          ) : (
-            // Main view: show Add Provider button
-            buttonText && (
-              <Button
-                size="sm"
-                className={buttonClassName}
-                onClick={onButtonClick}
-                aria-label={buttonText}
-                data-testid="add-provider-button"
-              >
-                {buttonIcon && (
-                  <FontAwesomeIcon icon={buttonIcon} className="w-4 h-4 mr-2" aria-hidden="true" />
-                )}
-                {buttonText}
-              </Button>
-            )
-          )}
-        </div>
+        {/* Right: (Optional) Add Provider Button or other controls can go here */}
+        <div className="flex items-center gap-4"></div>
       </div>
     </header>
   );

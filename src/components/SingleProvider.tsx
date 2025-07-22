@@ -17,16 +17,12 @@ const SingleProvider: React.FC = () => {
   });
   const provider = providers.find((p: any) => String(p.id) === String(provider_id));
 
-  // Log provider object and provider_id for debugging
-  console.log('[SingleProvider] provider_id:', provider_id, 'provider:', provider);
-
   // Fetch all grid definitions
   const { data: gridDefs = [] } = useQuery({
     queryKey: ["grid_definitions"],
     queryFn: fetchGridDefinitions,
     initialData: [],
   });
-  console.log('[SingleProvider] gridDefs initialData:', gridDefs);
 
   // Fetch all grid data for this provider from the edge function
   const { data: allGrids, isLoading, error } = useQuery({
@@ -34,14 +30,12 @@ const SingleProvider: React.FC = () => {
     queryFn: () => fetchAllProviderGrids(provider_id!),
     enabled: !!provider_id,
   });
-  console.log('[SingleProvider] allGrids result:', allGrids);
 
   return (
-    <div className="flex flex-col min-h-0 w-full px-4 pt-4 pb-8">
+    <div className="flex flex-col min-h-0 w-full px-4 pb-8">
       <AllProvidersHeader
-        title={provider?.fullName || "Provider"}
         provider_id={provider_id}
-        providerInfo={provider}
+        provider={provider}
         providerSearchList={[]}
       />
       {isLoading && <div>Loading all provider data...</div>}
