@@ -307,7 +307,11 @@ const AllRecords: React.FC = () => {
   const handleRowSelect = (row: any | null, gridName?: string) => {
     // Debug: Log handleRowSelect call
     console.log('[AllRecords] handleRowSelect called:', { row, gridName });
-    if (row && gridName) {
+    
+    // If clicking the already selected row, unselect it and close sidepanel
+    if (row && gridName && selectedRow && selectedRow.id === row.id && selectedRow.gridName === gridName) {
+      setSelectedRow(null);
+    } else if (row && gridName) {
       setSelectedRow({ ...row, gridName });
     } else {
       setSelectedRow(null);
@@ -473,6 +477,7 @@ const AllRecords: React.FC = () => {
         onClose={() => {
           setShowDetailModal(false);
           setDetailModalRow(null);
+          setSelectedRow(null); // Clear the main selectedRow when modal closes
         }}
         selectedRow={detailModalRow}
         inputConfig={inputConfig}
