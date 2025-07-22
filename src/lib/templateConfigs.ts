@@ -114,7 +114,10 @@ export const facilityAffiliationsTemplate: TemplateConfig = {
 
 // Main function to get the template config for a grid - Updated to handle all grids
 export function getTemplateConfigByGrid(gridKey: string): TemplateConfig | null {
-  switch (gridKey) {
+  // Normalize the grid key to lowercase for case-insensitive matching
+  const normalizedKey = gridKey.toLowerCase();
+  
+  switch (normalizedKey) {
     // Core provider grids
     case "provider_info": return providerInfoTemplate;
     case "state_licenses": return stateLicenseTemplate;
@@ -124,7 +127,7 @@ export function getTemplateConfigByGrid(gridKey: string): TemplateConfig | null 
     
     // For grids without specific templates, return a default template
     default: {
-      console.warn(`No specific template found for grid: ${gridKey}, using default template`);
+      console.warn(`No specific template found for grid: ${gridKey} (normalized: ${normalizedKey}), using default template`);
       return {
         id: gridKey,
         name: gridKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),

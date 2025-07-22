@@ -280,7 +280,6 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
 
   // Handle input change (local only)
   const handleChange = (key: string, value: any) => {
-    console.log('Field changed:', { key, value, originalValue: selectedRow?.[key] });
     
     setFormValues((prev) => ({ ...prev, [key]: value }));
     
@@ -288,8 +287,6 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
     if (selectedRow) {
       const originalValue = selectedRow[key] ?? (inputConfig.find(f => f.key === key)?.type === 'multi-select' ? [] : '');
       const hasChanged = JSON.stringify(value) !== JSON.stringify(originalValue);
-      
-      console.log('Change detection:', { key, hasChanged, value, originalValue });
       
       if (hasChanged) {
         setHasUnsavedChanges(true);
@@ -338,7 +335,6 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       return;
     }
 
-    console.log('Starting save operation:', { gridName, selectedRowId: selectedRow.id, formValues });
     setIsSaving(true);
 
     // Store the previous data for rollback in case of error

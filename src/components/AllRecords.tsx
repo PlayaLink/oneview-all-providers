@@ -307,9 +307,6 @@ const AllRecords: React.FC = () => {
   };
 
   const handleRowSelect = (row: any | null, gridName?: string) => {
-    // Debug: Log handleRowSelect call
-    console.log('[AllRecords] handleRowSelect called:', { row, gridName });
-    
     // If clicking the already selected row, unselect it and close sidepanel
     if (row && gridName && selectedRow && selectedRow.id === row.id && selectedRow.gridName === gridName) {
       setSelectedRow(null);
@@ -321,7 +318,6 @@ const AllRecords: React.FC = () => {
   };
 
   const handleCloseSidePanel = () => {
-    console.log('[DEBUG] handleCloseSidePanel called, clearing selectedRow');
     setSelectedRow(null);
   };
 
@@ -457,7 +453,19 @@ const AllRecords: React.FC = () => {
       )
     : [];
 
-  // Remove all debug console.log statements
+  // Generate inputConfig for modal based on detailModalRow
+  const modalTemplateConfig = detailModalRow?.gridName
+    ? getTemplateConfigByGrid(detailModalRow.gridName)
+    : null;
+
+  const modalInputConfig = modalTemplateConfig
+    ? modalTemplateConfig.fieldGroups.flatMap(group =>
+        group.fields.map(field => ({
+          ...field,
+          group: group.title, // Add group title for collapsible sections if needed
+        }))
+      )
+    : [];
 
   return (
     <>
@@ -478,16 +486,18 @@ const AllRecords: React.FC = () => {
       <GridItemDetailModal
         isOpen={showDetailModal}
         onClose={() => {
-          console.log('[DEBUG] GridItemDetailModal onClose called, clearing selectedRow');
           setShowDetailModal(false);
           setDetailModalRow(null);
           setSelectedRow(null); // Clear the main selectedRow when modal closes
         }}
         selectedRow={detailModalRow}
-        inputConfig={inputConfig}
-        title={templateConfig?.name || selectedRow?.gridName || "Details"}
+        inputConfig={modalInputConfig}
+        title={modalTemplateConfig?.name || detailModalRow?.gridName || "Details"}
         user={user}
-        onUpdateSelectedProvider={undefined}
+        onUpdateSelectedProvider={(gridName: string, updatedProvider: any) => {
+          // Update the detailModalRow state when changes are saved
+          setDetailModalRow(updatedProvider);
+        }}
       />
       {/* Global Navigation (add ref) */}
       <div ref={globalNavRef} id="global-navigation-ref" />
