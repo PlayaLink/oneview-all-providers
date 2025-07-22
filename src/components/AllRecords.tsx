@@ -185,6 +185,7 @@ const AllRecords: React.FC = () => {
   // const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
   const [selectedRow, setSelectedRow] = useState<(any & { gridName: string }) | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [detailModalRow, setDetailModalRow] = useState<(any & { gridName: string }) | null>(null);
 
   // Facility details modal state
   const [facilityDetailsModal, setFacilityDetailsModal] = useState<{
@@ -460,13 +461,20 @@ const AllRecords: React.FC = () => {
         inputConfig={inputConfig}
         onClose={handleCloseSidePanel}
         user={user}
-        onExpandDetailModal={() => setShowDetailModal(true)}
+        onExpandDetailModal={() => {
+          setDetailModalRow(selectedRow);
+          setSelectedRow(null);
+          setShowDetailModal(true);
+        }}
       />
       {/* GridItemDetailModal (expandable modal) */}
       <GridItemDetailModal
         isOpen={showDetailModal}
-        onClose={() => setShowDetailModal(false)}
-        selectedRow={selectedRow}
+        onClose={() => {
+          setShowDetailModal(false);
+          setDetailModalRow(null);
+        }}
+        selectedRow={detailModalRow}
         inputConfig={inputConfig}
         title={templateConfig?.name || selectedRow?.gridName || "Details"}
         user={user}

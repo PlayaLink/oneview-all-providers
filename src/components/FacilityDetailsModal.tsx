@@ -117,7 +117,7 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
           >
           <div className="flex flex-1 min-h-0">
             {/* Left sidebar navigation */}
-            <div className="w-72 flex-shrink-0 border-r border-gray-200 bg-white flex flex-col">
+            <div className="w-72 flex-shrink-0 border-r border-gray-200 bg-white flex flex-col" data-testid="facility-details-sidebar">
               <div className="p-6 pt-4 flex-shrink-0">
                 <nav
                   className="space-y-4"
@@ -186,7 +186,7 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
             </div>
 
             {/* Main content area */}
-            <div className="flex-1 flex flex-col min-h-0">
+            <div className="flex-1 flex flex-col min-h-0" data-testid="facility-details-main-content">
               {/* Tab header */}
               <div className="flex-shrink-0 p-6 pb-4 border-b border-gray-100">
                 <h2 className="text-lg font-bold text-gray-700 tracking-wide">
