@@ -26,6 +26,7 @@ import SidePanel from "@/components/SidePanel";
 import { getTemplateConfigByGrid } from "@/lib/templateConfigs";
 import { getOrderedSectionsAndGrids } from "@/lib/gridOrdering";
 import { FacilityDetailsModal } from "./FacilityDetailsModal";
+import GridItemDetailModal from "./GridItemDetailModal";
 
 const fetchProviders = async () => {
   const { data, error } = await supabase.from('providers').select('*');
@@ -183,6 +184,7 @@ const AllRecords: React.FC = () => {
   // Remove local visibleSections and setVisibleSections state
   // const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
   const [selectedRow, setSelectedRow] = useState<(any & { gridName: string }) | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
 
   // Facility details modal state
   const [facilityDetailsModal, setFacilityDetailsModal] = useState<{
@@ -458,6 +460,17 @@ const AllRecords: React.FC = () => {
         inputConfig={inputConfig}
         onClose={handleCloseSidePanel}
         user={user}
+        onExpandDetailModal={() => setShowDetailModal(true)}
+      />
+      {/* GridItemDetailModal (expandable modal) */}
+      <GridItemDetailModal
+        isOpen={showDetailModal}
+        onClose={() => setShowDetailModal(false)}
+        selectedRow={selectedRow}
+        inputConfig={inputConfig}
+        title={templateConfig?.name || selectedRow?.gridName || "Details"}
+        user={user}
+        onUpdateSelectedProvider={undefined}
       />
       {/* Global Navigation (add ref) */}
       <div ref={globalNavRef} id="global-navigation-ref" />

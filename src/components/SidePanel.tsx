@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback, Suspense, lazy } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark, faUserDoctor, faFileMedical, faFolder } from "@fortawesome/free-solid-svg-icons";
+import { faXmark, faUserDoctor, faFileMedical, faFolder, faUpRightAndDownLeftFromCenter } from "@fortawesome/free-solid-svg-icons";
 import CollapsibleSection from "./CollapsibleSection";
 import { MultiSelectInput } from "./inputs/MultiSelectInput";
 import { SingleSelect } from "./inputs/SingleSelect";
@@ -21,6 +21,7 @@ import { fetchDocumentsForRecord, insertDocument, updateDocument, deleteDocument
 import { toast } from '@/hooks/use-toast';
 import BirthInfoDetails from './sidepanel-details/BirthInfoDetails';
 import { sharedTabsById } from './tabsRegistry';
+import GridItemDetailModal from "./GridItemDetailModal";
 
 // Types for input fields
 export interface InputField {
@@ -49,6 +50,8 @@ interface SidePanelProps {
   title?: string;
   user: any;
   onUpdateSelectedProvider?: (gridName: string, updatedProvider: any) => void;
+  /** Called when the expand icon is clicked in the header */
+  onExpandDetailModal?: () => void;
 }
 
 // Helper to fetch provider by ID
@@ -65,7 +68,7 @@ function formatGridName(name: string) {
   return withSpaces.charAt(0).toUpperCase() + withSpaces.slice(1).toLowerCase();
 }
 
-const detailsComponentMap: Record<string, React.ComponentType<any>> = {
+export const detailsComponentMap: Record<string, React.ComponentType<any>> = {
   ProviderInfoDetails,
   StateLicenseDetails,
   BirthInfoDetails,
@@ -74,7 +77,7 @@ const detailsComponentMap: Record<string, React.ComponentType<any>> = {
 
 const SidePanel: React.FC<SidePanelProps> = (props) => {
   // Destructure props as before
-  const { isOpen, selectedRow, inputConfig, onClose, title, user, onUpdateSelectedProvider } = props;
+  const { isOpen, selectedRow, inputConfig, onClose, title, user, onUpdateSelectedProvider, onExpandDetailModal } = props;
   // Use gridName from selectedRow
   const gridName = selectedRow?.gridName;
   const [formValues, setFormValues] = React.useState<Record<string, any>>({});
@@ -709,14 +712,15 @@ if (template?.DetailsComponent) {
   };
 
   return (
-    <div
-      className={`fixed top-0 right-0 h-full bg-white transform transition-transform duration-300 ease-in-out z-[1000] flex flex-col ${isOpen ? "translate-x-0" : "translate-x-full"}`}
-      role="dialog"
-      aria-modal="true"
-      aria-label={headerText}
-      data-testid="side-panel"
+    <>
+      <div
+        className={`fixed top-0 right-0 h-full bg-white transform transition-transform duration-300 ease-in-out z-[1000] flex flex-col ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label={headerText}
+        data-testid="side-panel"
         style={{
-        width: `${panelWidth}px`,
+          width: `${panelWidth}px`,
           boxShadow: isOpen
             ? "-8px 0 24px -2px rgba(0, 0, 0, 0.12), -4px 0 8px -2px rgba(0, 0, 0, 0.08)"
             : "none",
@@ -744,6 +748,16 @@ if (template?.DetailsComponent) {
           <div className="flex-1">
           <h2 className="text-lg font-semibold">{headerText}</h2>
           </div>
+          {/* Expand icon button */}
+          <button
+            onClick={onExpandDetailModal}
+            className="ml-2 p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors"
+            aria-label="Expand details modal"
+            data-testid="expand-detail-modal-button"
+          >
+            <FontAwesomeIcon icon={faUpRightAndDownLeftFromCenter} className="w-5 h-5" />
+          </button>
+          {/* Close icon button */}
           <button
             onClick={onClose}
             className="ml-4 p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors"
@@ -894,6 +908,7 @@ if (template?.DetailsComponent) {
           </div>
         </div>
       </div>
+    </>
   );
 };
 
