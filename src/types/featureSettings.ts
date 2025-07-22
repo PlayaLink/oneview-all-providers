@@ -15,6 +15,7 @@ export interface FeatureSettings {
   grid_scroll_arrows_left: boolean; // Feature flag for grid scroll arrows direction
   user_authentication: boolean; // Feature flag for user authentication
   all_providers_tab: boolean; // Feature flag for all providers tab
+  new_nav_option_1: boolean; // Feature flag for new navigation option
 }
 
 export type FeatureSettingKey = keyof FeatureSettings;
@@ -26,4 +27,5 @@ export const DEFAULT_FEATURE_SETTINGS: FeatureSettings = {
   grid_scroll_arrows_left: false, // Default to false (right direction)
   user_authentication: true, // Default to true (auth required)
   all_providers_tab: true, // Default to true (tab visible)
+  new_nav_option_1: false, // Default to false (legacy nav)
 }; 

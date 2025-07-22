@@ -5,6 +5,7 @@ import MainContentArea from "@/components/MainContentArea";
 import ApplicationFooter from "@/components/ApplicationFooter";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import { Outlet } from "react-router-dom";
+import NewGlobalNavigation1 from "@/components/NewGlobalNavigation1";
 
 interface AppLayoutProps {
   user: any;
@@ -14,6 +15,7 @@ interface AppLayoutProps {
 
 const AppLayout: React.FC<AppLayoutProps> = ({ user, children, showFooter = true }) => {
   const { value: showFooterFlag, isLoading } = useFeatureFlag("footer");
+  const { value: useNewNav, isLoading: navFlagLoading } = useFeatureFlag("new_nav_option_1");
   let shouldShowFooter: boolean = showFooter;
   if (typeof showFooterFlag === "boolean") {
     shouldShowFooter = showFooterFlag;
@@ -23,7 +25,11 @@ const AppLayout: React.FC<AppLayoutProps> = ({ user, children, showFooter = true
   }
   return (
     <div className="h-screen flex flex-col bg-white" data-testid="app-layout">
-      <GlobalNavigation user={user} />
+      {useNewNav ? (
+        <NewGlobalNavigation1 user={user} />
+      ) : (
+        <GlobalNavigation user={user} />
+      )}
       <PageContainer>
         <MainContentArea>
           {/* Render nested routes here */}
