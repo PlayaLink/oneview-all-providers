@@ -136,6 +136,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
                     </button>
 
                   </div>
+                  {}
                   <button
                     className="w-full text-center px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
                     onClick={handleLogout}
@@ -144,6 +145,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
                   >
                     Logout
                   </button>
+                  {/* Feature Flags */}
                   {allSettings.map(setting => (
                     <div key={setting.setting_key} className="mb-4 flex items-center justify-between">
                       <label className="text-xs font-medium text-gray-700">
