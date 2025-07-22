@@ -40,7 +40,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
     const viewportWidth = window.innerWidth;
     const newWidth = viewportWidth - e.clientX;
     const minWidth = 484; // Current minimum width
-    const maxWidth = viewportWidth * 0.5; // 50% of viewport
+    const maxWidth = viewportWidth * 0.75; // 75% of viewport
 
     const constrainedWidth = Math.max(minWidth, Math.min(maxWidth, newWidth));
     setPanelWidth(constrainedWidth);
