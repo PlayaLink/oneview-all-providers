@@ -45,6 +45,11 @@ import {
   faBell,
   faBellSlash,
   faCopy,
+  faCircleDown,
+  faFlag,
+  faEllipsisVertical,
+  faCircleExclamation,
+  faSidebar,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Icon mapping from string names to FontAwesome icon objects
