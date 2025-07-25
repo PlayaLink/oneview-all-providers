@@ -473,6 +473,14 @@ const MainContent: React.FC<MainContentProps> = ({
               onRowClicked={handleSingleProviderRowClick}
               showCheckboxes={false}
               selectedRowId={selectedRowsByGrid[providerInfoGrid.tableName]}
+              showActionsColumn={true}
+              onDownload={(data) => console.log('Download:', data)}
+              onToggleAlert={(data, enabled) => console.log('Toggle Alert:', data, enabled)}
+              onToggleSidebar={(data) => handleSingleProviderRowClick(data)}
+              onToggleFlag={(data, flagged) => console.log('Toggle Flag:', data, flagged)}
+              onToggleSummary={(data, included) => console.log('Toggle Summary:', data, included)}
+              onAddRecord={() => console.log('Add Record for:', providerInfoGrid.tableName)}
+              onMoreHeaderActions={() => console.log('More Header Actions for:', providerInfoGrid.tableName)}
             />
           </div>
         )}
