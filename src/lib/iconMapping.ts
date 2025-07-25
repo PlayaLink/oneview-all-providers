@@ -59,6 +59,8 @@ import {
   faBars,
   faStarHalf,
   faPenToSquare,
+  faComment,
+  faFileLines,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Icon mapping from string names to FontAwesome icon objects
@@ -132,6 +134,8 @@ const iconMap: Record<string, IconDefinition> = {
   "star-half-stroke": faStarHalf,
   "shield-check": faShieldHalved,
   "pen-to-square": faPenToSquare,
+  comment: faComment,
+  "file-lines": faFileLines,
 };
 
 // Function to get FontAwesome icon from icon name
