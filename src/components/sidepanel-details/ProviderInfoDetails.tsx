@@ -128,8 +128,8 @@ export const providerInfoTemplate = {
   },
   tabs: [
     { id: 'details', label: 'Details', icon: 'bars-staggered', enabled: true },
-    { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true },
-    { id: 'documents', label: 'Documents', icon: 'folder', enabled: true },
+    { id: 'notes', label: 'Notes', icon: 'comment', enabled: true },
+    { id: 'documents', label: 'Documents 2', icon: 'file-lines', enabled: true },
     { id: 'team', label: 'Team', icon: 'users', enabled: true },
   ],
   fieldGroups: providerInfoFieldGroups,

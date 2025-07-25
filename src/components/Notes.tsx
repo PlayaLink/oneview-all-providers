@@ -296,7 +296,7 @@ const Notes: React.FC<NotesProps> = ({ recordId, recordType, user, className }) 
 export const notesTab = {
   id: 'notes',
   label: 'Notes',
-  icon: 'file-medical',
+  icon: 'comment',
   enabled: true,
   Component: Notes,
 }; 

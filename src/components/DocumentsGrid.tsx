@@ -140,7 +140,7 @@ const DocumentsGrid: React.FC<DocumentsGridProps> = ({ documents, onEdit, onDele
 export const documentsTab = {
   id: 'documents',
   label: 'Docs',
-  icon: 'folder',
+  icon: 'file-lines',
   enabled: true,
   Component: DocumentsGrid,
 }; 

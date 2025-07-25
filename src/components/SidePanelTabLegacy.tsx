@@ -36,7 +36,7 @@ const SidePanelTabLegacy: React.FC<SidePanelTabLegacyProps> = ({
         <TooltipTrigger asChild>
           <div
             className={cn(
-              "flex h-[52px] w-full flex-col items-center justify-center gap-2 border-l border-b border-[#EAECEF] p-1 transition-all duration-200 cursor-pointer",
+              "flex w-full flex-col items-center justify-center gap-2 border-l border-b border-[#EAECEF] px-1 py-5 transition-all duration-200 cursor-pointer",
               {
                 // Active state (selected)
                 "bg-[#F7F7F7]": isActive && !isHovered,
@@ -58,7 +58,7 @@ const SidePanelTabLegacy: React.FC<SidePanelTabLegacyProps> = ({
           >
             <FontAwesomeIcon
               icon={getIconByName(icon)}
-              className={cn("w-5 h-5 transition-colors", {
+              className={cn("w-6 h-6 transition-colors", {
                 "text-[#008BC9]": isActive || isHovered,
                 "text-[#545454]": !isActive && !isHovered,
               })}
@@ -67,7 +67,7 @@ const SidePanelTabLegacy: React.FC<SidePanelTabLegacyProps> = ({
             {count !== undefined && (
               <div 
                 className={cn(
-                  "rounded-full px-1.5 py-0.5 text-xs font-medium",
+                  "rounded-full px-2.5 py-1 text-xs font-medium",
                   {
                     "bg-[#008BC9] text-white": isActive || isHovered,
                     "bg-[#545454] text-white": !isActive && !isHovered,

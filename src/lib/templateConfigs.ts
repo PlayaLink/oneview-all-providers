@@ -148,8 +148,8 @@ export function getTemplateConfigByGrid(gridKey: string, context?: 'sidepanel' |
         description: `Default template for ${gridKey}`,
         tabs: [
           { id: 'details', label: 'Details', icon: 'bars-staggered', enabled: true },
-          { id: 'notes', label: 'Notes', icon: 'note-sticky', enabled: true },
-          { id: 'documents', label: 'Documents', icon: 'folder', enabled: true },
+          { id: 'notes', label: 'Notes', icon: 'comment', enabled: true },
+          { id: 'documents', label: 'Documents', icon: 'file-lines', enabled: true },
         ],
         fieldGroups: [],
         header: ({ gridName, row }) => `${gridName} for ${row.id || 'Record'}`,
