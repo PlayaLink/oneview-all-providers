@@ -49,7 +49,7 @@ import {
   faFlag,
   faEllipsisVertical,
   faCircleExclamation,
-  faSidebar,
+  faColumns,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Icon mapping from string names to FontAwesome icon objects
