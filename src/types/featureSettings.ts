@@ -16,6 +16,7 @@ export interface FeatureSettings {
   user_authentication: boolean; // Feature flag for user authentication
   all_providers_tab: boolean; // Feature flag for all providers tab
   new_nav_option_1: boolean; // Feature flag for new navigation option
+  new_sidepanel: boolean; // Feature flag for new side panel
 }
 
 export type FeatureSettingKey = keyof FeatureSettings;
@@ -28,4 +29,5 @@ export const DEFAULT_FEATURE_SETTINGS: FeatureSettings = {
   user_authentication: true, // Default to true (auth required)
   all_providers_tab: true, // Default to true (tab visible)
   new_nav_option_1: false, // Default to false (legacy nav)
+  new_sidepanel: true, // Default to true (use new side panel)
 }; 

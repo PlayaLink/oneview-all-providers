@@ -23,13 +23,15 @@ import ProviderInfoDetails from './sidepanel-details/ProviderInfoDetails';
 import ProviderInfoDetailsWide from './sidepanel-details/ProviderInfoDetailsWide';
 import StateLicenseDetails from './sidepanel-details/StateLicenseDetails';
 import { getIconByName } from "@/lib/iconMapping";
-import SidePanelTab from "./TabTitle";
+import SidePanelTab from "./SidePanelTab";
 import FileDropzone from './FileDropzone';
 import { fetchDocumentsForRecord, insertDocument, updateDocument, deleteDocument } from '@/lib/supabaseClient';
 import { toast } from '@/hooks/use-toast';
 import BirthInfoDetails from './sidepanel-details/BirthInfoDetails';
 import { sharedTabsById } from './tabsRegistry';
 import NavItem from './NavItem';
+import SidePanelTabLegacy from "./SidePanelTabLegacy";
+import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 
 // Types for input fields
 export interface InputField {
@@ -841,22 +843,27 @@ if (template?.getDetailsComponent) {
       <div className="flex-1 min-h-0 flex flex-col">
         {context === 'sidepanel' ? (
           <Tabs value={tab} onValueChange={setTab} className="flex flex-1 min-h-0" data-testid={`grid-item-details-tabs-${context}`}>
-            <TabsList className="flex flex-col w-20 pt-4 pb-2 px-2 p-2 gap-2 border-r border-gray-200 items-center justify-start" data-testid={`grid-item-details-tabs-list-${context}`}>
-              {tabs.map((tabConfig) => (
-                <TabsTrigger
-                  key={tabConfig.id}
-                  value={tabConfig.id}
-                  className="p-0 border-0 bg-transparent w-full"
-                >
-                  <SidePanelTab
-                    rowKey={tabConfig.id}
-                    fullLabel={tabConfig.label}
-                    iconLabel={tabConfig.label}
-                    icon={tabConfig.icon}
-                    isActive={tab === tabConfig.id}
-                  />
-                </TabsTrigger>
-              ))}
+            <TabsList className="flex flex-col w-20 pt-4 pb-2 px-2 p-2 gap-2 border-r border-gray-200 items-center justify-start" data-testid={`grid-item-details-tabs-list-${context}`}> 
+              {tabs.map((tabConfig) => {
+                // Feature flag logic for new_sidepanel
+                const { value: isNewSidepanel } = useFeatureFlag('new_sidepanel');
+                const TabComponent = isNewSidepanel ? SidePanelTab : SidePanelTabLegacy;
+                return (
+                  <TabsTrigger
+                    key={tabConfig.id}
+                    value={tabConfig.id}
+                    className="p-0 border-0 bg-transparent w-full"
+                  >
+                    <TabComponent
+                      rowKey={tabConfig.id}
+                      fullLabel={tabConfig.label}
+                      iconLabel={tabConfig.label}
+                      icon={tabConfig.icon}
+                      isActive={tab === tabConfig.id}
+                    />
+                  </TabsTrigger>
+                );
+              })}
             </TabsList>
             <div className="flex-1 min-h-0 flex flex-col overflow-y-auto p-2" data-testid={`grid-item-details-tabpanel-container-${context}`}>
               {/* Tab Title */}
