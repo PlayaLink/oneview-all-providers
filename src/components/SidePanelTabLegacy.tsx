@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getIconByName } from "@/lib/iconMapping";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 export interface SidePanelTabLegacyProps {
@@ -19,7 +24,7 @@ const SidePanelTabLegacy: React.FC<SidePanelTabLegacyProps> = ({
   iconLabel,
   icon,
   className = "",
-  isActive = false
+  isActive = false,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -38,9 +43,9 @@ const SidePanelTabLegacy: React.FC<SidePanelTabLegacyProps> = ({
                 // Default state
                 "bg-white": !isActive && !isHovered,
                 // Right border for non-active tabs
-                "border-r": !isActive
+                "border-r": !isActive,
               },
-              className
+              className,
             )}
             data-testid={`tab-title-legacy-${rowKey}`}
             role="tab"
@@ -51,13 +56,10 @@ const SidePanelTabLegacy: React.FC<SidePanelTabLegacyProps> = ({
           >
             <FontAwesomeIcon
               icon={getIconByName(icon)}
-              className={cn(
-                "w-5 h-5 transition-colors",
-                {
-                  "text-[#008BC9]": isActive || isHovered,
-                  "text-[#545454]": !isActive && !isHovered
-                }
-              )}
+              className={cn("w-5 h-5 transition-colors", {
+                "text-[#008BC9]": isActive || isHovered,
+                "text-[#545454]": !isActive && !isHovered,
+              })}
               aria-hidden="true"
             />
           </div>
