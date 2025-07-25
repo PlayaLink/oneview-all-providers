@@ -47,16 +47,22 @@
 .ag-header.actions-header {
   border-left: 1px solid #E2E2E2;
   background: #FFF;
-  padding: 0;
+  padding: 0 !important;
+  overflow: visible;
 }
 
 .ag-header.actions-header .ag-header-cell-label {
   display: none;
 }
 
+.ag-header.actions-header .ag-header-cell-comp-wrapper {
+  height: 100%;
+  width: 100%;
+}
+
 .ag-cell.actions-cell {
   border-left: 1px solid #E2E2E2;
-  padding: 0;
+  padding: 0 !important;
   overflow: visible;
 }
 
@@ -67,4 +73,15 @@
 
 .ag-theme-alpine .ag-pinned-right-cols-container {
   border-left: 1px solid #E2E2E2;
+}
+
+/* Override AG Grid header height for actions column */
+.ag-theme-alpine .ag-header-row .ag-header-cell[aria-colindex] {
+  border-bottom: 1px solid #E2E2E2;
+}
+
+/* Actions column specific cell styling */
+.ag-theme-alpine .ag-row .ag-cell[aria-colindex]:last-child {
+  border-left: 1px solid #E2E2E2;
+  border-bottom: 1px solid #D2D5DC;
 }
