@@ -100,6 +100,11 @@ const iconMap: Record<string, IconDefinition> = {
   "bell": faBell,
   "bell-slash": faBellSlash,
   "copy": faCopy,
+  "circle-down": faCircleDown,
+  "flag": faFlag,
+  "ellipsis-vertical": faEllipsisVertical,
+  "circle-exclamation": faCircleExclamation,
+  "sidebar": faSidebar,
 };
 
 // Function to get FontAwesome icon from icon name
