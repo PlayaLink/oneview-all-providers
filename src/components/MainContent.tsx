@@ -505,6 +505,14 @@ const MainContent: React.FC<MainContentProps> = ({
                 onRowClicked={handleStateLicenseRowClick}
                 showCheckboxes={false}
                 selectedRowId={selectedRowsByGrid[stateLicensesGrid.tableName]}
+                showActionsColumn={true}
+                onDownload={(data) => console.log('Download:', data)}
+                onToggleAlert={(data, enabled) => console.log('Toggle Alert:', data, enabled)}
+                onToggleSidebar={(data) => handleStateLicenseRowClick(data)}
+                onToggleFlag={(data, flagged) => console.log('Toggle Flag:', data, flagged)}
+                onToggleSummary={(data, included) => console.log('Toggle Summary:', data, included)}
+                onAddRecord={() => console.log('Add Record for:', stateLicensesGrid.tableName)}
+                onMoreHeaderActions={() => console.log('More Header Actions for:', stateLicensesGrid.tableName)}
               />
             )}
           </div>
