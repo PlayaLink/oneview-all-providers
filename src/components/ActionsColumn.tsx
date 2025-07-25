@@ -174,7 +174,7 @@ export const ActionsCell: React.FC<ActionsColumnProps> = ({
         <Switch
           checked={summaryIncluded}
           onCheckedChange={handleToggleSummary}
-          className="data-[state=checked]:bg-[#79AC48] data-[state=unchecked]:bg-[#D2D5DC] h-3 w-[23px]"
+          className="data-[state=checked]:bg-[#79AC48] data-[state=unchecked]:bg-[#D2D5DC] h-3 w-[23px] border-0"
           aria-label="Include in summary"
           data-testid="summary-toggle"
         />
