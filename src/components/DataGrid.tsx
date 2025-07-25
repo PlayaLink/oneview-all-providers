@@ -12,6 +12,7 @@ import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import type { ColumnMenuTab } from "ag-grid-community";
 import ContextMenu from "./ContextMenu";
+import { ActionsHeader, ActionsCell } from "./ActionsColumn";
 
 // Import AG Grid styles
 import "ag-grid-community/styles/ag-grid.css";
