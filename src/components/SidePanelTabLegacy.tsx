@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getIconByName } from "@/lib/iconMapping";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 export interface SidePanelTabLegacyProps {
   rowKey: string;
@@ -11,34 +13,65 @@ export interface SidePanelTabLegacyProps {
   isActive?: boolean;
 }
 
-const SidePanelTabLegacy: React.FC<SidePanelTabLegacyProps> = ({ 
-  rowKey, 
-  fullLabel, 
-  iconLabel, 
-  icon, 
+const SidePanelTabLegacy: React.FC<SidePanelTabLegacyProps> = ({
+  rowKey,
+  fullLabel,
+  iconLabel,
+  icon,
   className = "",
   isActive = false
 }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <div 
-      className={`flex flex-col items-center gap-1 py-6 px-2 w-full transition-colors rounded ${
-        isActive 
-          ? 'bg-[#D32F2F] text-white hover:bg-[#B71C1C]' // Red for selected state
-          : 'text-[#545454] hover:bg-gray-100'
-      } ${className}`}
-      data-testid={`tab-title-legacy-${rowKey}`}
-      role="tab"
-      aria-label={`${fullLabel} tab`}
-      aria-selected={isActive}
-    >
-      <FontAwesomeIcon 
-        icon={getIconByName(icon)} 
-        className="w-6 h-6 mb-1" 
-        aria-hidden="true"
-      />
-      <span className="text-xs">{iconLabel}</span>
-    </div>
+    <TooltipProvider>
+      <Tooltip open={isHovered}>
+        <TooltipTrigger asChild>
+          <div
+            className={cn(
+              "flex h-[52px] w-12 flex-col items-center justify-center gap-2 border-l border-b border-[#EAECEF] p-1 transition-all duration-200 cursor-pointer",
+              {
+                // Active state (selected)
+                "bg-[#F7F7F7]": isActive && !isHovered,
+                // Hover state
+                "bg-[#EAECEF]": isHovered,
+                // Default state
+                "bg-white": !isActive && !isHovered,
+                // Right border for non-active tabs
+                "border-r": !isActive
+              },
+              className
+            )}
+            data-testid={`tab-title-legacy-${rowKey}`}
+            role="tab"
+            aria-label={`${fullLabel} tab`}
+            aria-selected={isActive}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            <FontAwesomeIcon
+              icon={getIconByName(icon)}
+              className={cn(
+                "w-5 h-5 transition-colors",
+                {
+                  "text-[#008BC9]": isActive || isHovered,
+                  "text-[#545454]": !isActive && !isHovered
+                }
+              )}
+              aria-hidden="true"
+            />
+          </div>
+        </TooltipTrigger>
+        <TooltipContent
+          side="right"
+          className="bg-[#545454] text-white text-xs font-medium px-3 py-1.5 rounded border-none shadow-md"
+          sideOffset={8}
+        >
+          {fullLabel}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 };
 
-export default SidePanelTabLegacy; 
+export default SidePanelTabLegacy;
