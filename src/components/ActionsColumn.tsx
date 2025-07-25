@@ -44,7 +44,7 @@ export const ActionsHeader: React.FC<ActionsHeaderProps> = ({
           aria-label="Actions info"
         />
       </div>
-      
+
       <div className="flex items-center gap-2">
         {onAddRecord && (
           <button
@@ -56,7 +56,7 @@ export const ActionsHeader: React.FC<ActionsHeaderProps> = ({
             <FontAwesomeIcon icon={faPlus} className="w-3 h-3 text-white" />
           </button>
         )}
-        
+
         {onMoreHeaderActions && (
           <button
             onClick={onMoreHeaderActions}
@@ -164,7 +164,7 @@ export const ActionsCell: React.FC<ActionsColumnProps> = ({
           icon={faFlag}
           className={cn(
             "w-5 h-5 transition-colors",
-            flagged ? "text-[#DB0D00]" : "text-[#545454] hover:text-[#3BA8D1]"
+            flagged ? "text-[#DB0D00]" : "text-[#545454] hover:text-[#3BA8D1]",
           )}
         />
       </button>

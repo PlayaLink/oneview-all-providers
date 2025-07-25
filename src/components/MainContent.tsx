@@ -1,16 +1,36 @@
-import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useCallback,
+} from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronUp, faChevronDown, faTable } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronUp,
+  faChevronDown,
+  faTable,
+} from "@fortawesome/free-solid-svg-icons";
 import DataGrid from "@/components/DataGrid";
 import SidePanel from "@/components/SidePanel";
 import { generateSampleData } from "@/lib/dataGenerator";
-import { getColumnsForGrid, getColumnsForSingleProviderView, formatProviderName } from "@/lib/columnConfigs";
+import {
+  getColumnsForGrid,
+  getColumnsForSingleProviderView,
+  formatProviderName,
+} from "@/lib/columnConfigs";
 import { gridDefinitions, getGridsByGroup } from "@/lib/gridDefinitions";
 import { getIconByName } from "@/lib/iconMapping";
 import { Provider } from "@/types";
-import { useQuery } from '@tanstack/react-query';
-import { fetchProviders, fetchStateLicenses, fetchBirthInfo, fetchAddresses, fetchFacilityAffiliations } from '@/lib/supabaseClient';
-import { getTemplateConfigByGrid } from '@/lib/templateConfigs';
+import { useQuery } from "@tanstack/react-query";
+import {
+  fetchProviders,
+  fetchStateLicenses,
+  fetchBirthInfo,
+  fetchAddresses,
+  fetchFacilityAffiliations,
+} from "@/lib/supabaseClient";
+import { getTemplateConfigByGrid } from "@/lib/templateConfigs";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 
 interface MainContentProps {
@@ -19,8 +39,14 @@ interface MainContentProps {
   visibleSections?: Set<string>;
   singleProviderNpi?: string;
   selectedRowsByGrid?: { [gridName: string]: string | null };
-  selectedProviderByGrid?: { [gridName: string]: (any & { gridName: string }) | null };
-  onGridRowSelect?: (gridName: string, rowId: string | null, provider: any | null) => void;
+  selectedProviderByGrid?: {
+    [gridName: string]: (any & { gridName: string }) | null;
+  };
+  onGridRowSelect?: (
+    gridName: string,
+    rowId: string | null,
+    provider: any | null,
+  ) => void;
   onClearGridRowSelect?: (gridName: string) => void;
   onUpdateSelectedProvider?: (gridName: string, updatedProvider: any) => void; // Add this callback
   sidePanelOpen?: boolean;
@@ -53,12 +79,16 @@ const MainContent: React.FC<MainContentProps> = ({
   onCloseSidePanel,
 }) => {
   const { value: showFooter } = useFeatureFlag("footer");
-  const { value: gridScrollArrowsLeft } = useFeatureFlag("grid_scroll_arrows_left");
+  const { value: gridScrollArrowsLeft } = useFeatureFlag(
+    "grid_scroll_arrows_left",
+  );
   const [currentGridIndex, setCurrentGridIndex] = useState(0);
   const [selectedGridName, setSelectedGridName] = useState<string | null>(null);
   // Render the first two grids by default
-  const [visibleGrids, setVisibleGrids] = useState<Set<number>>(new Set([0, 1])); // Track which grids are loaded
-  
+  const [visibleGrids, setVisibleGrids] = useState<Set<number>>(
+    new Set([0, 1]),
+  ); // Track which grids are loaded
+
   // Add refs for grid scrolling
   const gridRefs = useRef<(HTMLDivElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -66,34 +96,37 @@ const MainContent: React.FC<MainContentProps> = ({
 
   // Centralized grid data fetching (now using per-table helpers)
   const providerInfoQuery = useQuery({
-    queryKey: ['providers'],
+    queryKey: ["providers"],
     queryFn: fetchProviders,
   });
   const stateLicensesQuery = useQuery({
-    queryKey: ['state_licenses'],
+    queryKey: ["state_licenses"],
     queryFn: fetchStateLicenses,
   });
   const birthInfoQuery = useQuery({
-    queryKey: ['birth_info'],
+    queryKey: ["birth_info"],
     queryFn: fetchBirthInfo,
   });
 
   const addressesQuery = useQuery({
-    queryKey: ['addresses'],
+    queryKey: ["addresses"],
     queryFn: fetchAddresses,
   });
   const facilityAffiliationsQuery = useQuery({
-    queryKey: ['facility_affiliations'],
+    queryKey: ["facility_affiliations"],
     queryFn: fetchFacilityAffiliations,
   });
 
   // DRY mapping of grid keys to data sources and mapping logic
-  const gridDataSources: Record<string, { query: any, map: (row: any) => any }> = {
+  const gridDataSources: Record<
+    string,
+    { query: any; map: (row: any) => any }
+  > = {
     Provider_Info: {
       query: providerInfoQuery,
       map: (row) => ({
         ...row,
-        provider_name: `${row.last_name || ''}, ${row.first_name || ''}`.trim(),
+        provider_name: `${row.last_name || ""}, ${row.first_name || ""}`.trim(),
         primary_specialty: row.primary_specialty,
         npi_number: row.npi_number,
         work_email: row.work_email,
@@ -107,12 +140,16 @@ const MainContent: React.FC<MainContentProps> = ({
     State_Licenses: {
       query: stateLicensesQuery,
       map: (license) => {
-
         return {
           ...license,
-          provider_name: license.provider ? formatProviderName(license.provider.last_name, license.provider.first_name) : '',
-          title: license.provider?.title || '',
-          primary_specialty: license.provider?.primary_specialty || '',
+          provider_name: license.provider
+            ? formatProviderName(
+                license.provider.last_name,
+                license.provider.first_name,
+              )
+            : "",
+          title: license.provider?.title || "",
+          primary_specialty: license.provider?.primary_specialty || "",
         };
       },
     },
@@ -121,9 +158,14 @@ const MainContent: React.FC<MainContentProps> = ({
       map: (row) => {
         return {
           ...row,
-          provider_name: row.provider ? formatProviderName(row.provider.last_name, row.provider.first_name) : '',
-          title: row.provider?.title || '',
-          primary_specialty: row.provider?.primary_specialty || '',
+          provider_name: row.provider
+            ? formatProviderName(
+                row.provider.last_name,
+                row.provider.first_name,
+              )
+            : "",
+          title: row.provider?.title || "",
+          primary_specialty: row.provider?.primary_specialty || "",
         };
       },
     },
@@ -131,18 +173,22 @@ const MainContent: React.FC<MainContentProps> = ({
       query: addressesQuery,
       map: (row) => ({
         ...row,
-        provider_name: row.provider ? formatProviderName(row.provider.last_name, row.provider.first_name) : '',
-        title: row.provider?.title || '',
-        primary_specialty: row.provider?.primary_specialty || '',
+        provider_name: row.provider
+          ? formatProviderName(row.provider.last_name, row.provider.first_name)
+          : "",
+        title: row.provider?.title || "",
+        primary_specialty: row.provider?.primary_specialty || "",
       }),
     },
     Facility_Affiliations: {
       query: facilityAffiliationsQuery,
       map: (row) => ({
         ...row,
-        provider_name: row.provider ? formatProviderName(row.provider.last_name, row.provider.first_name) : '',
-        title: row.provider?.title || '',
-        primary_specialty: row.provider?.primary_specialty || '',
+        provider_name: row.provider
+          ? formatProviderName(row.provider.last_name, row.provider.first_name)
+          : "",
+        title: row.provider?.title || "",
+        primary_specialty: row.provider?.primary_specialty || "",
       }),
     },
     // Add more grids as needed
@@ -167,8 +213,10 @@ const MainContent: React.FC<MainContentProps> = ({
       if (visibleSections.size === 0) {
         return gridDefinitions; // No filtering, show all grids (same as main view)
       }
-      
-      const filteredGrids = gridDefinitions.filter((grid) => visibleSections.has(grid.tableName));
+
+      const filteredGrids = gridDefinitions.filter((grid) =>
+        visibleSections.has(grid.tableName),
+      );
       return filteredGrids;
     }
     if (selectedItem && selectedItem !== "all-sections") {
@@ -216,91 +264,104 @@ const MainContent: React.FC<MainContentProps> = ({
   // Function to get provider info data for single provider view (without provider-specific columns)
   const getProviderInfoDataForSingleView = () => {
     if (!providerInfoData || !singleProviderNpi) return [];
-    
-    const provider = providerInfoData.find(row => String(row.npi_number) === String(singleProviderNpi));
+
+    const provider = providerInfoData.find(
+      (row) => String(row.npi_number) === String(singleProviderNpi),
+    );
     if (!provider) return [];
-    
+
     // Return provider data without provider-specific fields
-    return [{
-      id: provider.id,
-      // Remove provider-specific fields for single provider view
-      // provider_name, title, primary_specialty are excluded
-      npi_number: provider.npi_number || '',
-      work_email: provider.work_email || '',
-      personal_email: provider.personal_email || '',
-      mobile_phone_number: provider.mobile_phone_number || '',
-      tags: provider.tags || [],
-      last_updated: provider.last_updated || '',
-      // Include the original data for side panel
-      ...provider,
-    }];
+    return [
+      {
+        id: provider.id,
+        // Remove provider-specific fields for single provider view
+        // provider_name, title, primary_specialty are excluded
+        npi_number: provider.npi_number || "",
+        work_email: provider.work_email || "",
+        personal_email: provider.personal_email || "",
+        mobile_phone_number: provider.mobile_phone_number || "",
+        tags: provider.tags || [],
+        last_updated: provider.last_updated || "",
+        // Include the original data for side panel
+        ...provider,
+      },
+    ];
   };
 
   // Function to transform provider-specific state licenses data
   const getProviderStateLicensesData = () => {
-    if (!stateLicensesQuery.data || !Array.isArray(stateLicensesQuery.data)) return [];
-    
+    if (!stateLicensesQuery.data || !Array.isArray(stateLicensesQuery.data))
+      return [];
+
     return stateLicensesQuery.data.map((license) => ({
       id: license.id,
       // Remove provider-specific fields for single provider view
       // provider_name, title, primary_specialty are excluded
-      license_type: license.license_type || '',
-      license_additional_info: license.license_additional_info || '',
-      state: license.state || '',
-      status: license.status || '',
-      issue_date: license.issue_date || '',
-      expiration_date: license.expiration_date || '',
-      expires_within: license.expires_within || '',
+      license_type: license.license_type || "",
+      license_additional_info: license.license_additional_info || "",
+      state: license.state || "",
+      status: license.status || "",
+      issue_date: license.issue_date || "",
+      expiration_date: license.expiration_date || "",
+      expires_within: license.expires_within || "",
       tags: license.tags || [],
-      last_updated: license.last_updated || '',
+      last_updated: license.last_updated || "",
       // Include the original data for side panel
       ...license,
     }));
   };
 
   const handlePrevious = () => {
-    const newIndex = currentGridIndex > 0 ? currentGridIndex - 1 : gridsToShow.length - 1;
+    const newIndex =
+      currentGridIndex > 0 ? currentGridIndex - 1 : gridsToShow.length - 1;
     setCurrentGridIndex(newIndex);
-    
+
     // Add the new grid to visible grids for lazy loading
-    setVisibleGrids(prev => new Set(Array.from(prev).concat([newIndex])));
-    
+    setVisibleGrids((prev) => new Set(Array.from(prev).concat([newIndex])));
+
     // Smooth scroll within the grid container
     setTimeout(() => {
       const targetGrid = gridRefs.current[newIndex];
-      const scrollContainer = containerRef.current?.querySelector('[role="grid-scroll-container"]') as HTMLElement;
+      const scrollContainer = containerRef.current?.querySelector(
+        '[role="grid-scroll-container"]',
+      ) as HTMLElement;
       if (targetGrid && scrollContainer) {
         const containerRect = scrollContainer.getBoundingClientRect();
         const targetRect = targetGrid.getBoundingClientRect();
-        const scrollTop = scrollContainer.scrollTop + (targetRect.top - containerRect.top);
-        
+        const scrollTop =
+          scrollContainer.scrollTop + (targetRect.top - containerRect.top);
+
         scrollContainer.scrollTo({
           top: scrollTop,
-          behavior: 'smooth'
+          behavior: "smooth",
         });
       }
     }, 100);
   };
 
   const handleNext = () => {
-    const newIndex = currentGridIndex < gridsToShow.length - 1 ? currentGridIndex + 1 : 0;
+    const newIndex =
+      currentGridIndex < gridsToShow.length - 1 ? currentGridIndex + 1 : 0;
     setCurrentGridIndex(newIndex);
-    
+
     // Add the new grid to visible grids for lazy loading
-    setVisibleGrids(prev => new Set(Array.from(prev).concat([newIndex])));
-    
+    setVisibleGrids((prev) => new Set(Array.from(prev).concat([newIndex])));
+
     // Smooth scroll within the grid container
     setTimeout(() => {
       const targetGrid = gridRefs.current[newIndex];
-      const scrollContainer = containerRef.current?.querySelector('[role="grid-scroll-container"]') as HTMLElement;
+      const scrollContainer = containerRef.current?.querySelector(
+        '[role="grid-scroll-container"]',
+      ) as HTMLElement;
       if (targetGrid && scrollContainer) {
         const containerRect = scrollContainer.getBoundingClientRect();
         const targetRect = targetGrid.getBoundingClientRect();
-        const scrollTop = scrollContainer.scrollTop + (targetRect.top - containerRect.top);
-        
+        const scrollTop =
+          scrollContainer.scrollTop + (targetRect.top - containerRect.top);
+
         scrollContainer.scrollTo({
           top: scrollTop,
-          behavior: 'smooth'
+          behavior: "smooth",
         });
       }
     }, 100);
@@ -316,12 +377,15 @@ const MainContent: React.FC<MainContentProps> = ({
       setSelectedGridName(null);
     } else {
       // Clear any previous selections from other grids first
-      Object.keys(selectedRowsByGrid).forEach(existingGridName => {
-        if (existingGridName !== gridName && selectedRowsByGrid[existingGridName]) {
+      Object.keys(selectedRowsByGrid).forEach((existingGridName) => {
+        if (
+          existingGridName !== gridName &&
+          selectedRowsByGrid[existingGridName]
+        ) {
           onGridRowSelect(existingGridName, null, null);
         }
       });
-      
+
       onGridRowSelect(gridName, row.id, row);
       setSelectedGridName(gridName.replace(/_/g, " "));
       setSidePanelOpen(true);
@@ -348,24 +412,33 @@ const MainContent: React.FC<MainContentProps> = ({
     // Use activePanelGridName if available, otherwise use selectedRow.gridName
     const gridName = activePanelGridName || selectedRow?.gridName;
     const templateConfig = gridName ? getTemplateConfigByGrid(gridName) : null;
-    
+
     if (templateConfig && Array.isArray(templateConfig.fieldGroups)) {
-      const fields = templateConfig.fieldGroups.flatMap(group => group.fields);
+      const fields = templateConfig.fieldGroups.flatMap(
+        (group) => group.fields,
+      );
       return fields;
     }
-    
+
     // fallback to providerInfoConfig or an empty array
     return []; // Changed from providerInfoConfig to an empty array
   };
 
   // Memoize inputConfig for SidePanel
-  const inputConfig = useMemo(() => getTemplateConfigForActiveGrid(), [activePanelGridName]);
+  const inputConfig = useMemo(
+    () => getTemplateConfigForActiveGrid(),
+    [activePanelGridName],
+  );
 
   // Define handleRowClick before usage
   const handleRowClick = (row: any, gridName: string) => {
     if (onRowSelect) {
       // New interface for AllRecords component
-      if (selectedRow && selectedRow.id === row.id && selectedRow.gridName === gridName) {
+      if (
+        selectedRow &&
+        selectedRow.id === row.id &&
+        selectedRow.gridName === gridName
+      ) {
         onRowSelect(null);
       } else {
         onRowSelect(row, gridName);
@@ -377,7 +450,7 @@ const MainContent: React.FC<MainContentProps> = ({
   };
 
   const handleGridInView = useCallback((index: number) => {
-    setVisibleGrids(prev => {
+    setVisibleGrids((prev) => {
       if (!prev.has(index)) {
         return new Set(Array.from(prev).concat([index]));
       }
@@ -398,7 +471,7 @@ const MainContent: React.FC<MainContentProps> = ({
             handleGridInView(index);
           }
         },
-        { threshold: 0 } // Trigger as soon as the top of the grid enters the viewport
+        { threshold: 0 }, // Trigger as soon as the top of the grid enters the viewport
       );
       observerRefs.current[index]?.observe(gridEl);
     });
@@ -409,10 +482,18 @@ const MainContent: React.FC<MainContentProps> = ({
 
   if (singleProviderNpi) {
     // Find the selected provider's info from live providerInfoData (Supabase)
-    const providerInfoGrid = gridDefinitions.find(g => g.tableName === "Provider_Info");
-    const stateLicensesGrid = gridDefinitions.find(g => g.tableName === "State_Licenses");
-    const providerRows = Array.isArray(providerInfoData) ? providerInfoData : [];
-    const selectedProvider = providerRows.find(row => String(row.npi_number) === String(singleProviderNpi));
+    const providerInfoGrid = gridDefinitions.find(
+      (g) => g.tableName === "Provider_Info",
+    );
+    const stateLicensesGrid = gridDefinitions.find(
+      (g) => g.tableName === "State_Licenses",
+    );
+    const providerRows = Array.isArray(providerInfoData)
+      ? providerInfoData
+      : [];
+    const selectedProvider = providerRows.find(
+      (row) => String(row.npi_number) === String(singleProviderNpi),
+    );
 
     // Handler for row click in single-provider view
     const handleSingleProviderRowClick = (row: any) => {
@@ -427,8 +508,11 @@ const MainContent: React.FC<MainContentProps> = ({
         }
       } else {
         // Clear any previous selections from other grids first
-        Object.keys(selectedRowsByGrid).forEach(existingGridName => {
-          if (existingGridName !== gridName && selectedRowsByGrid[existingGridName]) {
+        Object.keys(selectedRowsByGrid).forEach((existingGridName) => {
+          if (
+            existingGridName !== gridName &&
+            selectedRowsByGrid[existingGridName]
+          ) {
             onGridRowSelect(existingGridName, null, null);
           }
         });
@@ -450,8 +534,11 @@ const MainContent: React.FC<MainContentProps> = ({
         }
       } else {
         // Clear any previous selections from other grids first
-        Object.keys(selectedRowsByGrid).forEach(existingGridName => {
-          if (existingGridName !== gridName && selectedRowsByGrid[existingGridName]) {
+        Object.keys(selectedRowsByGrid).forEach((existingGridName) => {
+          if (
+            existingGridName !== gridName &&
+            selectedRowsByGrid[existingGridName]
+          ) {
             onGridRowSelect(existingGridName, null, null);
           }
         });
@@ -464,76 +551,120 @@ const MainContent: React.FC<MainContentProps> = ({
       <div className="flex flex-col flex-1 min-h-0 w-full px-4 pt-4 pb-8">
         {/* Provider Info Grid */}
         {providerInfoGrid && (
-          <div key={providerInfoGrid.tableName} className="flex flex-col mb-8 bg-white rounded shadow" style={{ height: 122 }}>
+          <div
+            key={providerInfoGrid.tableName}
+            className="flex flex-col mb-8 bg-white rounded shadow"
+            style={{ height: 122 }}
+          >
             <DataGrid
               title={providerInfoGrid.tableName.replace(/_/g, " ")}
               icon={getIconByName(providerInfoGrid.icon)}
               data={getProviderInfoDataForSingleView()}
-              columns={getColumnsForSingleProviderView(providerInfoGrid.tableName)}
+              columns={getColumnsForSingleProviderView(
+                providerInfoGrid.tableName,
+              )}
               onRowClicked={handleSingleProviderRowClick}
               showCheckboxes={false}
               selectedRowId={selectedRowsByGrid[providerInfoGrid.tableName]}
               showActionsColumn={true}
-              onDownload={(data) => console.log('Download:', data)}
-              onToggleAlert={(data, enabled) => console.log('Toggle Alert:', data, enabled)}
+              onDownload={(data) => console.log("Download:", data)}
+              onToggleAlert={(data, enabled) =>
+                console.log("Toggle Alert:", data, enabled)
+              }
               onToggleSidebar={(data) => handleSingleProviderRowClick(data)}
-              onToggleFlag={(data, flagged) => console.log('Toggle Flag:', data, flagged)}
-              onToggleSummary={(data, included) => console.log('Toggle Summary:', data, included)}
-              onAddRecord={() => console.log('Add Record for:', providerInfoGrid.tableName)}
-              onMoreHeaderActions={() => console.log('More Header Actions for:', providerInfoGrid.tableName)}
+              onToggleFlag={(data, flagged) =>
+                console.log("Toggle Flag:", data, flagged)
+              }
+              onToggleSummary={(data, included) =>
+                console.log("Toggle Summary:", data, included)
+              }
+              onAddRecord={() =>
+                console.log("Add Record for:", providerInfoGrid.tableName)
+              }
+              onMoreHeaderActions={() =>
+                console.log(
+                  "More Header Actions for:",
+                  providerInfoGrid.tableName,
+                )
+              }
             />
           </div>
         )}
 
         {/* State Licenses Grid */}
         {stateLicensesGrid && (
-          <div key={stateLicensesGrid.tableName} className="flex flex-col mb-8 bg-white rounded shadow" style={{ height: 400 }}>
+          <div
+            key={stateLicensesGrid.tableName}
+            className="flex flex-col mb-8 bg-white rounded shadow"
+            style={{ height: 400 }}
+          >
             {stateLicensesQuery.isLoading ? (
               <div className="flex items-center justify-center h-full">
                 <div className="text-gray-500">Loading state licenses...</div>
               </div>
             ) : stateLicensesQuery.error ? (
               <div className="flex items-center justify-center h-full">
-                <div className="text-red-500">Error loading state licenses: {stateLicensesQuery.error.message}</div>
+                <div className="text-red-500">
+                  Error loading state licenses:{" "}
+                  {stateLicensesQuery.error.message}
+                </div>
               </div>
             ) : (
               <DataGrid
-                title={`${stateLicensesGrid.tableName.replace(/_/g, " ")} for ${selectedProvider?.provider_name || 'Provider'}`}
+                title={`${stateLicensesGrid.tableName.replace(/_/g, " ")} for ${selectedProvider?.provider_name || "Provider"}`}
                 icon={getIconByName(stateLicensesGrid.icon)}
                 data={getProviderStateLicensesData()}
-                columns={getColumnsForSingleProviderView(stateLicensesGrid.tableName)}
+                columns={getColumnsForSingleProviderView(
+                  stateLicensesGrid.tableName,
+                )}
                 onRowClicked={handleStateLicenseRowClick}
                 showCheckboxes={false}
                 selectedRowId={selectedRowsByGrid[stateLicensesGrid.tableName]}
                 showActionsColumn={true}
-                onDownload={(data) => console.log('Download:', data)}
-                onToggleAlert={(data, enabled) => console.log('Toggle Alert:', data, enabled)}
+                onDownload={(data) => console.log("Download:", data)}
+                onToggleAlert={(data, enabled) =>
+                  console.log("Toggle Alert:", data, enabled)
+                }
                 onToggleSidebar={(data) => handleStateLicenseRowClick(data)}
-                onToggleFlag={(data, flagged) => console.log('Toggle Flag:', data, flagged)}
-                onToggleSummary={(data, included) => console.log('Toggle Summary:', data, included)}
-                onAddRecord={() => console.log('Add Record for:', stateLicensesGrid.tableName)}
-                onMoreHeaderActions={() => console.log('More Header Actions for:', stateLicensesGrid.tableName)}
+                onToggleFlag={(data, flagged) =>
+                  console.log("Toggle Flag:", data, flagged)
+                }
+                onToggleSummary={(data, included) =>
+                  console.log("Toggle Summary:", data, included)
+                }
+                onAddRecord={() =>
+                  console.log("Add Record for:", stateLicensesGrid.tableName)
+                }
+                onMoreHeaderActions={() =>
+                  console.log(
+                    "More Header Actions for:",
+                    stateLicensesGrid.tableName,
+                  )
+                }
               />
             )}
           </div>
         )}
 
         {/* Side Panel for single-provider view */}
-        {sidePanelOpen && activePanelGridName && selectedProviderByGrid[activePanelGridName] && (
-          <SidePanel
-            isOpen={sidePanelOpen}
-            selectedRow={selectedProviderByGrid[activePanelGridName]}
-            inputConfig={getTemplateConfigForActiveGrid()}
-            onClose={handleSidePanelClose}
-            title={
-              activePanelGridName && selectedProviderByGrid[activePanelGridName]?.provider_name
-                ? `${activePanelGridName.replace(/_/g, " ")} for ${selectedProviderByGrid[activePanelGridName].provider_name}${selectedProviderByGrid[activePanelGridName].title ? ", " + selectedProviderByGrid[activePanelGridName].title : ""}`
-                : undefined
-            }
-            user={user}
-            onUpdateSelectedProvider={onUpdateSelectedProvider}
-          />
-        )}
+        {sidePanelOpen &&
+          activePanelGridName &&
+          selectedProviderByGrid[activePanelGridName] && (
+            <SidePanel
+              isOpen={sidePanelOpen}
+              selectedRow={selectedProviderByGrid[activePanelGridName]}
+              inputConfig={getTemplateConfigForActiveGrid()}
+              onClose={handleSidePanelClose}
+              title={
+                activePanelGridName &&
+                selectedProviderByGrid[activePanelGridName]?.provider_name
+                  ? `${activePanelGridName.replace(/_/g, " ")} for ${selectedProviderByGrid[activePanelGridName].provider_name}${selectedProviderByGrid[activePanelGridName].title ? ", " + selectedProviderByGrid[activePanelGridName].title : ""}`
+                  : undefined
+              }
+              user={user}
+              onUpdateSelectedProvider={onUpdateSelectedProvider}
+            />
+          )}
       </div>
     );
   }
@@ -548,11 +679,15 @@ const MainContent: React.FC<MainContentProps> = ({
 
   const currentGrid = gridsToShow[currentGridIndex];
   const currentGridName = currentGrid ? currentGrid.tableName : null;
-  
+
   // Use active panel grid for side panel data, fallback to current grid
   const activeGridName = activePanelGridName || currentGridName;
-  const selectedRowId = activeGridName ? selectedRowsByGrid[activeGridName] : null;
-  const selectedProvider = activeGridName ? selectedProviderByGrid[activeGridName] : null;
+  const selectedRowId = activeGridName
+    ? selectedRowsByGrid[activeGridName]
+    : null;
+  const selectedProvider = activeGridName
+    ? selectedProviderByGrid[activeGridName]
+    : null;
 
   if (!currentGrid) {
     return (
@@ -563,7 +698,10 @@ const MainContent: React.FC<MainContentProps> = ({
   }
 
   // Show loading state for State Licenses grid
-  if (currentGrid.tableName === "State_Licenses" && stateLicensesQuery.isLoading) {
+  if (
+    currentGrid.tableName === "State_Licenses" &&
+    stateLicensesQuery.isLoading
+  ) {
     return (
       <div className="flex-1 flex items-center justify-center pt-4 px-4">
         <div className="text-gray-500">Loading state licenses...</div>
@@ -575,58 +713,85 @@ const MainContent: React.FC<MainContentProps> = ({
   if (currentGrid.tableName === "State_Licenses" && stateLicensesQuery.error) {
     return (
       <div className="flex-1 flex items-center justify-center pt-4 px-4">
-        <div className="text-red-500">Error loading state licenses: {stateLicensesQuery.error.message}</div>
+        <div className="text-red-500">
+          Error loading state licenses: {stateLicensesQuery.error.message}
+        </div>
       </div>
     );
   }
 
-
   return (
-    <div className="flex-1 flex flex-col min-h-0 h-full" role="region" aria-label="Main Content" data-testid="main-content">
+    <div
+      className="flex-1 flex flex-col min-h-0 h-full"
+      role="region"
+      aria-label="Main Content"
+      data-testid="main-content"
+    >
       {/* Main Content Area */}
-      <div ref={containerRef} className={`flex flex-1 gap-2 min-h-0 pt-2 ${gridScrollArrowsLeft ? 'flex-row-reverse pl-2 pr-4' : 'pl-4 pr-2'}`}>
-          {/* Grids Container */}
+      <div
+        ref={containerRef}
+        className={`flex flex-1 gap-2 min-h-0 pt-2 ${gridScrollArrowsLeft ? "flex-row-reverse pl-2 pr-4" : "pl-4 pr-2"}`}
+      >
+        {/* Grids Container */}
         <div className="flex-1 flex flex-col min-h-0">
-          <div 
-            role="grid-scroll-container" 
+          <div
+            role="grid-scroll-container"
             aria-label="Grid Scroll Container"
-            className={`overflow-y-auto flex-1${showFooter ? ' pb-24' : ''}`}
+            className={`overflow-y-auto flex-1${showFooter ? " pb-24" : ""}`}
           >
             {gridsToShow.map((grid, index) => (
               <div
                 key={grid.tableName}
-                ref={(el) => gridRefs.current[index] = el}
+                ref={(el) => (gridRefs.current[index] = el)}
                 className="flex flex-col min-h-0 mb-4 last:mb-0 h-full"
               >
                 {/* Only render DataGrid if it's been visited or is the current grid */}
                 {visibleGrids.has(index) ? (
-          <DataGrid
+                  <DataGrid
                     title={grid.tableName.replace(/_/g, " ")}
                     icon={getIconByName(grid.icon)}
                     data={getDataForGrid(grid.tableName)}
                     columns={getColumnsForGrid(grid.tableName)}
-            height="100%"
+                    height="100%"
                     onRowClicked={(row) => handleRowClick(row, grid.tableName)}
-                    selectedRowId={selectedRow && selectedRow.gridName === grid.tableName ? selectedRow.id : null}
+                    selectedRowId={
+                      selectedRow && selectedRow.gridName === grid.tableName
+                        ? selectedRow.id
+                        : null
+                    }
                     showActionsColumn={true}
-                    onDownload={(data) => console.log('Download:', data)}
-                    onToggleAlert={(data, enabled) => console.log('Toggle Alert:', data, enabled)}
+                    onDownload={(data) => console.log("Download:", data)}
+                    onToggleAlert={(data, enabled) =>
+                      console.log("Toggle Alert:", data, enabled)
+                    }
                     onToggleSidebar={(data) => {
                       handleRowClick(data, grid.tableName);
                     }}
-                    onToggleFlag={(data, flagged) => console.log('Toggle Flag:', data, flagged)}
-                    onToggleSummary={(data, included) => console.log('Toggle Summary:', data, included)}
-                    onAddRecord={() => console.log('Add Record for:', grid.tableName)}
-                    onMoreHeaderActions={() => console.log('More Header Actions for:', grid.tableName)}
+                    onToggleFlag={(data, flagged) =>
+                      console.log("Toggle Flag:", data, flagged)
+                    }
+                    onToggleSummary={(data, included) =>
+                      console.log("Toggle Summary:", data, included)
+                    }
+                    onAddRecord={() =>
+                      console.log("Add Record for:", grid.tableName)
+                    }
+                    onMoreHeaderActions={() =>
+                      console.log("More Header Actions for:", grid.tableName)
+                    }
                   />
                 ) : (
                   // Placeholder for unloaded grids
-                  <div 
-                    className="flex items-center justify-center bg-gray-50 border-2 border-dashed border-gray-300 rounded flex-1"
-                  >
+                  <div className="flex items-center justify-center bg-gray-50 border-2 border-dashed border-gray-300 rounded flex-1">
                     <div className="text-gray-500 text-center">
-                      <FontAwesomeIcon icon={faTable} className="w-8 h-8 mb-2" />
-                      <p>Click navigation to load {grid.tableName.replace(/_/g, " ")}</p>
+                      <FontAwesomeIcon
+                        icon={faTable}
+                        className="w-8 h-8 mb-2"
+                      />
+                      <p>
+                        Click navigation to load{" "}
+                        {grid.tableName.replace(/_/g, " ")}
+                      </p>
                     </div>
                   </div>
                 )}
@@ -637,7 +802,11 @@ const MainContent: React.FC<MainContentProps> = ({
 
         {/* Scroll Navigation - Always Visible */}
         {isMultipleGrids && (
-          <div className="flex flex-col items-center gap-2 flex-shrink-0" role="grid-scroll-navigation" aria-label="Grid Scroll Navigation">
+          <div
+            className="flex flex-col items-center gap-2 flex-shrink-0"
+            role="grid-scroll-navigation"
+            aria-label="Grid Scroll Navigation"
+          >
             {/* Scroll Arrows */}
             <div
               className="flex flex-col gap-0.5 rounded p-1"
@@ -695,7 +864,7 @@ const MainContent: React.FC<MainContentProps> = ({
 
       {/* Side Panel */}
       {selectedRow && onCloseSidePanel && (
-      <SidePanel
+        <SidePanel
           isOpen={!!selectedRow}
           selectedRow={selectedRow}
           inputConfig={getTemplateConfigForActiveGrid()}
