@@ -16,6 +16,7 @@ export interface SidePanelTabLegacyProps {
   icon: string;
   className?: string;
   isActive?: boolean;
+  count?: number;
 }
 
 const SidePanelTabLegacy: React.FC<SidePanelTabLegacyProps> = ({
@@ -25,6 +26,7 @@ const SidePanelTabLegacy: React.FC<SidePanelTabLegacyProps> = ({
   icon,
   className = "",
   isActive = false,
+  count,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -62,6 +64,21 @@ const SidePanelTabLegacy: React.FC<SidePanelTabLegacyProps> = ({
               })}
               aria-hidden="true"
             />
+            {count !== undefined && (
+              <div 
+                className={cn(
+                  "rounded-full px-1.5 py-0.5 text-xs font-medium",
+                  {
+                    "bg-[#008BC9] text-white": isActive || isHovered,
+                    "bg-[#545454] text-white": !isActive && !isHovered,
+                  }
+                )}
+                data-testid={`tab-count-legacy-${rowKey}`}
+                aria-label={`${count} items`}
+              >
+                {count}
+              </div>
+            )}
           </div>
         </TooltipTrigger>
         <TooltipContent

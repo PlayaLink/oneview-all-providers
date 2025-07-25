@@ -40,6 +40,7 @@ import SidePanelTab from "./SidePanelTab";
 import FileDropzone from "./FileDropzone";
 import {
   fetchDocumentsForRecord,
+  fetchNotes,
   insertDocument,
   updateDocument,
   deleteDocument,
@@ -207,6 +208,8 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   const [documents, setDocuments] = useState<any[]>([]);
   const [documentsLoading, setDocumentsLoading] = useState(false);
   const [editingDocument, setEditingDocument] = useState<any | null>(null);
+  const [notesCount, setNotesCount] = useState<number>(0);
+  const [teamCount, setTeamCount] = useState<number>(0);
 
   // Select template based on gridName and context
   const template = gridName ? getTemplateConfigByGrid(gridName, context) : null;
@@ -345,6 +348,22 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
     fetchDocumentsForRecord(selectedRow.id)
       .then(setDocuments)
       .finally(() => setDocumentsLoading(false));
+  }, [selectedRow?.id]);
+
+  // Fetch notes count for the selected record
+  useEffect(() => {
+    if (!selectedRow?.id) return;
+    fetchNotes(selectedRow.id, gridName || "Provider_Info")
+      .then((notes) => setNotesCount(notes?.length || 0))
+      .catch(() => setNotesCount(0));
+  }, [selectedRow?.id, gridName]);
+
+  // Fetch team count (placeholder - replace with actual team data fetching)
+  useEffect(() => {
+    if (!selectedRow?.id) return;
+    // TODO: Replace with actual team data fetching
+    // For now, set a placeholder count
+    setTeamCount(0);
   }, [selectedRow?.id]);
 
   if (!selectedRow) return null;
@@ -1016,6 +1035,12 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                       iconLabel={tabConfig.label}
                       icon={tabConfig.icon}
                       isActive={tab === tabConfig.id}
+                      count={
+                        tabConfig.id === 'notes' ? notesCount :
+                        tabConfig.id === 'documents' ? documents.length :
+                        tabConfig.id === 'team' ? teamCount :
+                        undefined
+                      }
                     />
                   </TabsTrigger>
                 );

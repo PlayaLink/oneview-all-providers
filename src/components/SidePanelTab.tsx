@@ -9,6 +9,7 @@ export interface SidePanelTabProps {
   icon: string;
   className?: string;
   isActive?: boolean;
+  count?: number;
 }
 
 const SidePanelTab: React.FC<SidePanelTabProps> = ({ 
@@ -17,7 +18,8 @@ const SidePanelTab: React.FC<SidePanelTabProps> = ({
   iconLabel, 
   icon, 
   className = "",
-  isActive = false
+  isActive = false,
+  count
 }) => {
   return (
     <div 
@@ -37,6 +39,19 @@ const SidePanelTab: React.FC<SidePanelTabProps> = ({
         aria-hidden="true"
       />
       <span className="text-xs">{iconLabel}</span>
+      {count !== undefined && (
+        <div 
+          className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+            isActive 
+              ? 'bg-white text-[#008BC9]' 
+              : 'bg-[#545454] text-white'
+          }`}
+          data-testid={`tab-count-${rowKey}`}
+          aria-label={`${count} items`}
+        >
+          {count}
+        </div>
+      )}
     </div>
   );
 };
