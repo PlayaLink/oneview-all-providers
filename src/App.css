@@ -42,3 +42,29 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Actions Column Styles */
+.ag-header.actions-header {
+  border-left: 1px solid #E2E2E2;
+  background: #FFF;
+  padding: 0;
+}
+
+.ag-header.actions-header .ag-header-cell-label {
+  display: none;
+}
+
+.ag-cell.actions-cell {
+  border-left: 1px solid #E2E2E2;
+  padding: 0;
+  overflow: visible;
+}
+
+/* Ensure proper styling for the AG Grid actions column */
+.ag-theme-alpine .ag-pinned-right-cols-container .ag-row .ag-cell {
+  border-right: none;
+}
+
+.ag-theme-alpine .ag-pinned-right-cols-container {
+  border-left: 1px solid #E2E2E2;
+}
