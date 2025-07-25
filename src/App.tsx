@@ -11,7 +11,6 @@ import TeamPage from "./pages/Team";
 import AppLayout from "./components/AppLayout";
 import { UserProvider } from "./contexts/UserContext";
 import { FeatureFlagProvider, useFeatureFlag } from "./contexts/FeatureFlagContext";
-import MainContent from "./components/MainContent";
 import SingleProvider from "./components/SingleProvider";
 import { faker } from '@faker-js/faker';
 

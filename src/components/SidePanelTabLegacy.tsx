@@ -65,7 +65,7 @@ const SidePanelTabLegacy: React.FC<SidePanelTabLegacyProps> = ({
           </div>
         </TooltipTrigger>
         <TooltipContent
-          side="right"
+          side="left"
           className="bg-[#545454] text-white text-xs font-medium px-3 py-1.5 rounded border-none shadow-md"
           sideOffset={8}
         >
