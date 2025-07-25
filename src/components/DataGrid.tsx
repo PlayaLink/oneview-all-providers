@@ -77,7 +77,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   // Use feature flag for floating filters
   const { value: showFloatingFilters } = useFeatureFlag("floating_filters");
 
-  // Prepare column definitions with optional checkbox column
+  // Prepare column definitions with optional checkbox column and actions column
   const columnDefs = React.useMemo(() => {
     // Check if any column has sort set
     const hasSort = columns.some(col => col.sort);
@@ -167,8 +167,48 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           },
         };
       }),
+      ...(showActionsColumn
+        ? [
+            {
+              headerName: "",
+              field: "actions",
+              width: 194,
+              pinned: "right" as const,
+              lockPosition: true,
+              suppressMenu: true,
+              sortable: false,
+              filter: false,
+              resizable: false,
+              floatingFilter: false,
+              headerComponent: () => (
+                <ActionsHeader
+                  onAddRecord={onAddRecord}
+                  onMoreHeaderActions={onMoreHeaderActions}
+                />
+              ),
+              cellRenderer: (params: any) => (
+                <ActionsCell
+                  rowData={params.data}
+                  onDownload={onDownload}
+                  onToggleAlert={onToggleAlert}
+                  onToggleSidebar={onToggleSidebar}
+                  onToggleFlag={onToggleFlag}
+                  onToggleSummary={onToggleSummary}
+                />
+              ),
+              cellStyle: {
+                borderLeft: "1px solid #E2E2E2",
+                borderRight: "none",
+                padding: 0,
+                display: "flex",
+                alignItems: "center",
+              },
+              headerClass: "actions-header",
+            },
+          ]
+        : []),
     ];
-  }, [columns, showCheckboxes, showFloatingFilters, selectedRowId]);
+  }, [columns, showCheckboxes, showFloatingFilters, selectedRowId, showActionsColumn, onDownload, onToggleAlert, onToggleSidebar, onToggleFlag, onToggleSummary, onAddRecord, onMoreHeaderActions]);
 
 
 
