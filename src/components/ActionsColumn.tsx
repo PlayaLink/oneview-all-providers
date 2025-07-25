@@ -56,7 +56,7 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
   return (
     <TooltipProvider>
       <div 
-        className={`flex items-center justify-center gap-1 ${className}`} 
+        className={`ag-cell flex items-center justify-center gap-1 ${className}`} 
         data-testid="actions-column"
         role="group"
         aria-label={`Actions for ${gridName}`}

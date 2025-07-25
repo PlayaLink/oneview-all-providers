@@ -8,7 +8,7 @@ import {
 } from "ag-grid-community";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { faFilter, faPlus, faEllipsisVertical, faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import type { ColumnMenuTab } from "ag-grid-community";
 import ContextMenu from "./ContextMenu";
@@ -17,6 +17,73 @@ import ActionsColumn from "./ActionsColumn";
 // Import AG Grid styles
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
+
+// Custom Actions Header Component
+const ActionsHeader: React.FC<{
+  onAddRecord?: () => void;
+  onMoreActions?: () => void;
+  onHelp?: () => void;
+}> = ({ onAddRecord, onMoreActions, onHelp }) => {
+  return (
+    <div 
+      className="flex items-center justify-between w-full h-full"
+      data-testid="actions-header"
+      role="columnheader"
+      aria-label="Actions column header"
+    >
+      <div className="flex items-center gap-2">
+        <span 
+          className="ag-header-cell-text"
+          data-testid="actions-header-text"
+        >
+          Actions
+        </span>
+        <button
+          onClick={onHelp}
+          className="w-4 h-4 text-gray-400 hover:text-gray-600 transition-colors"
+          data-testid="actions-help-button"
+          data-referenceid="actions-help"
+          aria-label="Help for actions"
+          title="Help for actions"
+        >
+          <FontAwesomeIcon 
+            icon={faCircleExclamation} 
+            className="w-4 h-4" 
+          />
+        </button>
+      </div>
+      
+      <div className="flex items-center gap-1">
+        <button
+          onClick={onAddRecord}
+          className="w-6 h-6 bg-[#79AC48] hover:bg-[#6B9A3F] rounded transition-colors flex items-center justify-center"
+          data-testid="actions-add-button"
+          data-referenceid="actions-add"
+          aria-label="Add new record"
+          title="Add new record"
+        >
+          <FontAwesomeIcon 
+            icon={faPlus} 
+            className="w-3 h-3 text-white" 
+          />
+        </button>
+        <button
+          onClick={onMoreActions}
+          className="w-6 h-6 text-gray-600 hover:text-gray-800 transition-colors flex items-center justify-center"
+          data-testid="actions-more-button"
+          data-referenceid="actions-more"
+          aria-label="More actions"
+          title="More actions"
+        >
+          <FontAwesomeIcon 
+            icon={faEllipsisVertical} 
+            className="w-3 h-3" 
+          />
+        </button>
+      </div>
+    </div>
+  );
+};
 
 interface DataGridProps {
   title: string;
@@ -185,6 +252,13 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               filter: false,
               resizable: false,
               floatingFilter: false,
+              headerComponent: (params: any) => (
+                <ActionsHeader
+                  onAddRecord={onAddRecord}
+                  onMoreActions={onMoreHeaderActions}
+                  onHelp={() => console.log('Help clicked for', title)}
+                />
+              ),
               cellRenderer: (params: any) => (
                 <ActionsColumn
                   gridName={title}
