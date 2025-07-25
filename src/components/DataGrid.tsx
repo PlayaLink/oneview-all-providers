@@ -203,6 +203,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                 display: "flex",
                 alignItems: "center",
               },
+              cellClass: "actions-cell",
               headerClass: "actions-header",
             },
           ]
