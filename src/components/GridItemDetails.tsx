@@ -843,7 +843,7 @@ if (template?.getDetailsComponent) {
       <div className="flex-1 min-h-0 flex flex-col">
         {context === 'sidepanel' ? (
           <Tabs value={tab} onValueChange={setTab} className="flex flex-1 min-h-0" data-testid={`grid-item-details-tabs-${context}`}>
-            <TabsList className="flex flex-col w-20 pt-4 pb-2 px-2 p-2 gap-2 border-r border-gray-200 items-center justify-start" data-testid={`grid-item-details-tabs-list-${context}`}> 
+            <TabsList className="flex flex-col w-20 pt-0 pb-0 px-0 p-0 gap-0 border-r border-gray-200 items-center justify-start" data-testid={`grid-item-details-tabs-list-${context}`}> 
               {tabs.map((tabConfig) => {
                 // Feature flag logic for new_sidepanel
                 const { value: isNewSidepanel } = useFeatureFlag('new_sidepanel');
@@ -1097,4 +1097,4 @@ if (template?.getDetailsComponent) {
   );
 };
 
-export default GridItemDetails; 
+export default GridItemDetails;
