@@ -12,6 +12,7 @@ import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import type { ColumnMenuTab } from "ag-grid-community";
 import ContextMenu from "./ContextMenu";
+import { ActionsHeader, ActionsCell } from "./ActionsColumn";
 
 // Import AG Grid styles
 import "ag-grid-community/styles/ag-grid.css";
@@ -29,6 +30,14 @@ interface DataGridProps {
   showStatusBadges?: boolean;
   selectedRowId?: string | null;
   handleShowFacilityDetails?: (facility: any) => void;
+  showActionsColumn?: boolean;
+  onDownload?: (data: any) => void;
+  onToggleAlert?: (data: any, enabled: boolean) => void;
+  onToggleSidebar?: (data: any) => void;
+  onToggleFlag?: (data: any, flagged: boolean) => void;
+  onToggleSummary?: (data: any, included: boolean) => void;
+  onAddRecord?: () => void;
+  onMoreHeaderActions?: () => void;
 }
 
 const DataGrid: React.FC<DataGridProps> = (props) => {
@@ -44,10 +53,23 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     showStatusBadges = true,
     selectedRowId: controlledSelectedRowId,
     handleShowFacilityDetails,
+    showActionsColumn = true,
+    onDownload,
+    onToggleAlert,
+    onToggleSidebar,
+    onToggleFlag,
+    onToggleSummary,
+    onAddRecord,
+    onMoreHeaderActions,
   } = props;
 
-  const [internalSelectedRowId, setInternalSelectedRowId] = React.useState<string | null>(null);
-  const selectedRowId = controlledSelectedRowId !== undefined ? controlledSelectedRowId : internalSelectedRowId;
+  const [internalSelectedRowId, setInternalSelectedRowId] = React.useState<
+    string | null
+  >(null);
+  const selectedRowId =
+    controlledSelectedRowId !== undefined
+      ? controlledSelectedRowId
+      : internalSelectedRowId;
 
   // Context menu state
   const [contextMenu, setContextMenu] = React.useState<{
@@ -60,10 +82,10 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   // Use feature flag for floating filters
   const { value: showFloatingFilters } = useFeatureFlag("floating_filters");
 
-  // Prepare column definitions with optional checkbox column
+  // Prepare column definitions with optional checkbox column and actions column
   const columnDefs = React.useMemo(() => {
     // Check if any column has sort set
-    const hasSort = columns.some(col => col.sort);
+    const hasSort = columns.some((col) => col.sort);
     return [
       ...(showCheckboxes
         ? [
@@ -86,17 +108,17 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         : []),
       ...columns.map((col) => {
         // If no sort is set anywhere, set provider_name to ascending
-        if (!hasSort && col.field === 'provider_name') {
+        if (!hasSort && col.field === "provider_name") {
           return {
             ...col,
-            sort: 'asc' as 'asc', // Explicitly cast to SortDirection
+            sort: "asc" as "asc", // Explicitly cast to SortDirection
             floatingFilter: showFloatingFilters,
             suppressMenu: false,
             filter: true,
             menuTabs: [
-              'filterMenuTab',
-              'generalMenuTab',
-              'columnsMenuTab',
+              "filterMenuTab",
+              "generalMenuTab",
+              "columnsMenuTab",
             ] as ColumnMenuTab[],
             cellStyle: (params: any) => {
               const baseCellStyle = {
@@ -125,9 +147,9 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           suppressMenu: false,
           filter: true,
           menuTabs: [
-            'filterMenuTab',
-            'generalMenuTab',
-            'columnsMenuTab',
+            "filterMenuTab",
+            "generalMenuTab",
+            "columnsMenuTab",
           ] as ColumnMenuTab[],
           cellStyle: (params: any) => {
             const baseCellStyle = {
@@ -150,10 +172,62 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           },
         };
       }),
+      ...(showActionsColumn
+        ? [
+            {
+              headerName: "",
+              field: "actions",
+              width: 194,
+              pinned: "right" as const,
+              lockPosition: true,
+              suppressMenu: true,
+              sortable: false,
+              filter: false,
+              resizable: false,
+              floatingFilter: false,
+              headerComponent: () => (
+                <ActionsHeader
+                  onAddRecord={onAddRecord}
+                  onMoreHeaderActions={onMoreHeaderActions}
+                />
+              ),
+              cellRenderer: (params: any) => (
+                <ActionsCell
+                  rowData={params.data}
+                  onDownload={onDownload}
+                  onToggleAlert={onToggleAlert}
+                  onToggleSidebar={onToggleSidebar}
+                  onToggleFlag={onToggleFlag}
+                  onToggleSummary={onToggleSummary}
+                />
+              ),
+              cellStyle: {
+                borderLeft: "1px solid #E2E2E2",
+                borderRight: "none",
+                padding: 0,
+                display: "flex",
+                alignItems: "center",
+              },
+              cellClass: "actions-cell",
+              headerClass: "actions-header",
+            },
+          ]
+        : []),
     ];
-  }, [columns, showCheckboxes, showFloatingFilters, selectedRowId]);
-
-
+  }, [
+    columns,
+    showCheckboxes,
+    showFloatingFilters,
+    selectedRowId,
+    showActionsColumn,
+    onDownload,
+    onToggleAlert,
+    onToggleSidebar,
+    onToggleFlag,
+    onToggleSummary,
+    onAddRecord,
+    onMoreHeaderActions,
+  ]);
 
   const handleRowClicked = (event: RowClickedEvent) => {
     // Prevent cell focus on single click
@@ -196,17 +270,17 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   const handleCellContextMenu = (event: any) => {
     // Prevent default browser context menu
     event.event.preventDefault();
-    
+
     // Get the row data
     const rowData = event.data;
     if (!rowData) return;
-    
+
     // Set context menu position and data
     setContextMenu({
       show: true,
       x: event.event.clientX,
       y: event.event.clientY,
-      rowData: rowData
+      rowData: rowData,
     });
   };
 
@@ -222,7 +296,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
     // Check if this is row selection (not checkbox selection)
     const isRowSelected = selectedRowId === params.data.id;
-    
+
     if (isRowSelected) {
       // Dark blue background for row selection (same as horizontal nav)
       return {
@@ -246,26 +320,40 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   const getRowClass = (params: any) => {
     // Check if this is checkbox selection
     if (params.node.isSelected()) {
-      return 'checkbox-selected';
+      return "checkbox-selected";
     }
-    
+
     // Check if this is row selection
     if (selectedRowId === params.data.id) {
-      return 'row-selected';
+      return "row-selected";
     }
-    
-    return '';
+
+    return "";
   };
 
   // Convert height to string with px if it's a number
-  const computedHeight = typeof height === 'number' ? `${height}px` : height;
+  const computedHeight = typeof height === "number" ? `${height}px` : height;
 
   return (
-    <section className="bg-white" role="region" aria-label={`${title} data grid`} data-testid="data-grid">
+    <section
+      className="bg-white"
+      role="region"
+      aria-label={`${title} data grid`}
+      data-testid="data-grid"
+    >
       {/* Grid Header */}
-      <header className="flex items-center justify-between pl-1 pr-3 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 rounded-t overflow-hidden" role="grid-header" aria-label="Grid header" data-testid="grid-header">
+      <header
+        className="flex items-center justify-between pl-1 pr-3 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 rounded-t overflow-hidden"
+        role="grid-header"
+        aria-label="Grid header"
+        data-testid="grid-header"
+      >
         <div className="flex items-center gap-2 pl-4">
-          <FontAwesomeIcon icon={icon} className="pr-1 w-4 h-4 text-[#545454]" aria-hidden="true" />
+          <FontAwesomeIcon
+            icon={icon}
+            className="pr-1 w-4 h-4 text-[#545454]"
+            aria-hidden="true"
+          />
           <h2 className="text-[#545454] font-semibold text-xs tracking-wider">
             {title}
           </h2>
@@ -273,16 +361,32 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
         <div className="flex items-center gap-3">
           {showStatusBadges && (
-            <div className="flex items-center gap-2" role="group" aria-label="Status indicators">
-              <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#F48100] rounded-full" role="status" aria-label="1 item expiring">
+            <div
+              className="flex items-center gap-2"
+              role="group"
+              aria-label="Status indicators"
+            >
+              <div
+                className="flex items-center gap-1 px-2.5 py-0.5 bg-[#F48100] rounded-full"
+                role="status"
+                aria-label="1 item expiring"
+              >
                 <span className="text-white font-bold text-xs">1</span>
                 <span className="text-white font-bold text-xs">Expiring</span>
               </div>
-              <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#DB0D00] rounded-full" role="status" aria-label="1 item expired">
+              <div
+                className="flex items-center gap-1 px-2.5 py-0.5 bg-[#DB0D00] rounded-full"
+                role="status"
+                aria-label="1 item expired"
+              >
                 <span className="text-white font-bold text-xs">1</span>
                 <span className="text-white font-bold text-xs">Expired</span>
               </div>
-              <div className="flex items-center gap-1 px-2.5 py-0.5 bg-[#545454] rounded-full" role="status" aria-label="900+ total items">
+              <div
+                className="flex items-center gap-1 px-2.5 py-0.5 bg-[#545454] rounded-full"
+                role="status"
+                aria-label="900+ total items"
+              >
                 <span className="text-white font-bold text-xs">900+</span>
                 <span className="text-white font-bold text-xs">Total</span>
               </div>
@@ -290,21 +394,30 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           )}
 
           <div className="flex items-center">
-            <div className="w-9 h-5 bg-[#79AC48] rounded-full relative" role="switch" aria-label="Toggle view mode" aria-checked="true">
-              <div className="w-4 h-4 bg-white rounded-full absolute right-0.5 top-0.5" aria-hidden="true"></div>
+            <div
+              className="w-9 h-5 bg-[#79AC48] rounded-full relative"
+              role="switch"
+              aria-label="Toggle view mode"
+              aria-checked="true"
+            >
+              <div
+                className="w-4 h-4 bg-white rounded-full absolute right-0.5 top-0.5"
+                aria-hidden="true"
+              ></div>
             </div>
           </div>
         </div>
       </header>
 
-
       {/* AG Grid Container */}
       <div
         className="ag-theme-alpine ag-grid-custom"
-        style={{ 
-          width: '100%',
-          ...(height ? { height: computedHeight } : {})
-        } as React.CSSProperties}
+        style={
+          {
+            width: "100%",
+            ...(height ? { height: computedHeight } : {}),
+          } as React.CSSProperties
+        }
         role="grid"
         aria-label={`${title} data table`}
         aria-rowcount={data.length}
@@ -350,19 +463,19 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           sideBar={{
             toolPanels: [
               {
-                id: 'columns',
-                labelDefault: 'Columns',
-                labelKey: 'columns',
-                iconKey: 'columns',
-                toolPanel: 'agColumnsToolPanel',
+                id: "columns",
+                labelDefault: "Columns",
+                labelKey: "columns",
+                iconKey: "columns",
+                toolPanel: "agColumnsToolPanel",
               },
             ],
-            defaultToolPanel: 'columns',
-            position: 'right',
+            defaultToolPanel: "columns",
+            position: "right",
           }} // Sidebar open by default to Columns panel
           suppressMenuHide={true}
           columnMenu="legacy"
-          onGridReady={params => params.api.sizeColumnsToFit()}
+          onGridReady={(params) => params.api.sizeColumnsToFit()}
         />
       </div>
       {contextMenu && (

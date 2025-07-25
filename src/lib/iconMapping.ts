@@ -45,6 +45,11 @@ import {
   faBell,
   faBellSlash,
   faCopy,
+  faCircleDown,
+  faFlag,
+  faEllipsisVertical,
+  faCircleExclamation,
+  faColumns,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Icon mapping from string names to FontAwesome icon objects
@@ -69,10 +74,10 @@ const iconMap: Record<string, IconDefinition> = {
   "hospital-symbol": faHospital,
   "briefcase-medical": faBriefcase, // Using faBriefcase as alternative
   "people-arrows": faUserGroup, // Using faUserGroup as alternative
-  "users": faUsers,
+  users: faUsers,
   medal: faMedal,
   gavel: faGavel,
-  "folder": faFolder,
+  folder: faFolder,
   "folder-download": faFolder,
   "file-import": faFileImport,
   "seal-exclamation": faExclamationTriangle, // Using faExclamationTriangle as alternative
@@ -82,19 +87,24 @@ const iconMap: Record<string, IconDefinition> = {
   key: faKey,
   wallet: faWallet,
   "siren-on": faVolumeHigh, // Using faVolumeHigh as alternative
-  "clock": faClock,
+  clock: faClock,
   "bars-staggered": faBarsStaggered,
-  "ellipsis": faEllipsis,
+  ellipsis: faEllipsis,
   // Context menu icons
-  "plus": faPlus,
+  plus: faPlus,
   "external-link-alt": faExternalLinkAlt,
   "id-card": faIdCard,
   "filter-circle-xmark": faFilterCircleXmark,
-  "rotate": faRotate,
-  "unlock": faUnlock,
-  "bell": faBell,
+  rotate: faRotate,
+  unlock: faUnlock,
+  bell: faBell,
   "bell-slash": faBellSlash,
-  "copy": faCopy,
+  copy: faCopy,
+  "circle-down": faCircleDown,
+  flag: faFlag,
+  "ellipsis-vertical": faEllipsisVertical,
+  "circle-exclamation": faCircleExclamation,
+  sidebar: faColumns,
 };
 
 // Function to get FontAwesome icon from icon name

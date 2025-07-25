@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
 
 #root {
   max-width: 1280px;
@@ -41,4 +41,47 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Actions Column Styles */
+.ag-header.actions-header {
+  border-left: 1px solid #e2e2e2;
+  background: #fff;
+  padding: 0 !important;
+  overflow: visible;
+}
+
+.ag-header.actions-header .ag-header-cell-label {
+  display: none;
+}
+
+.ag-header.actions-header .ag-header-cell-comp-wrapper {
+  height: 100%;
+  width: 100%;
+}
+
+.ag-cell.actions-cell {
+  border-left: 1px solid #e2e2e2;
+  padding: 0 !important;
+  overflow: visible;
+}
+
+/* Ensure proper styling for the AG Grid actions column */
+.ag-theme-alpine .ag-pinned-right-cols-container .ag-row .ag-cell {
+  border-right: none;
+}
+
+.ag-theme-alpine .ag-pinned-right-cols-container {
+  border-left: 1px solid #e2e2e2;
+}
+
+/* Override AG Grid header height for actions column */
+.ag-theme-alpine .ag-header-row .ag-header-cell[aria-colindex] {
+  border-bottom: 1px solid #e2e2e2;
+}
+
+/* Actions column specific cell styling */
+.ag-theme-alpine .ag-row .ag-cell[aria-colindex]:last-child {
+  border-left: 1px solid #e2e2e2;
+  border-bottom: 1px solid #d2d5dc;
 }
