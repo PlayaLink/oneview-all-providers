@@ -51,6 +51,7 @@ import { sharedTabsById } from "./tabsRegistry";
 import NavItem from "./NavItem";
 import SidePanelTabLegacy from "./SidePanelTabLegacy";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
+import GridItemDetailsHeader from "./GridItemDetailsHeader";
 
 // Types for input fields
 export interface InputField {
@@ -885,7 +886,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   // Determine header styling based on context
   const headerClassName =
     context === "sidepanel"
-      ? "flex items-center justify-between p-4 border-b border-gray-200 bg-[#008BC9] text-white"
+      ? "flex items-center justify-between p-4 border-b border-gray-200"
       : "flex flex-row items-center justify-between pb-4 flex-shrink-0 border-b border-gray-200";
 
   const headerTitleClassName =
@@ -969,39 +970,13 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       )}
 
       {/* Header */}
-      <div
-        className={headerClassName}
-        data-testid={`grid-item-details-header-${context}`}
-      >
-        <div className="flex-1">
-          <h2 className={headerTitleClassName}>{headerText}</h2>
-        </div>
-        {/* Expand icon button - only for sidepanel context */}
-        {context === "sidepanel" && onExpandDetailModal && (
-          <button
-            onClick={onExpandDetailModal}
-            className="ml-2 p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors"
-            aria-label="Expand details modal"
-            data-testid="expand-detail-modal-button"
-          >
-            <FontAwesomeIcon
-              icon={faUpRightAndDownLeftFromCenter}
-              className="w-5 h-5"
-            />
-          </button>
-        )}
-        {/* Close icon button - only for sidepanel context */}
-        {context === "sidepanel" && (
-          <button
-            onClick={onClose}
-            className={`ml-4 p-2 rounded-full transition-colors hover:bg-white hover:bg-opacity-20`}
-            aria-label={`Close sidepanel`}
-            data-testid={`close-sidepanel-button`}
-          >
-            <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
-          </button>
-        )}
-      </div>
+             <GridItemDetailsHeader
+         headerText={headerText}
+         headerClassName={headerClassName}
+         context={context}
+         onExpandDetailModal={onExpandDetailModal}
+         onClose={onClose}
+       />
 
       {/* Tabs and Content */}
       <div className="flex-1 min-h-0 flex flex-col">
