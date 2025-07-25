@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -35,7 +37,8 @@ body {
 
 .ag-theme-alpine {
   --ag-header-background-color: #fff;
-  --ag-font-family: "Poppins", -apple-system, Roboto, Helvetica, Arial, sans-serif;
+  --ag-font-family:
+    "Poppins", -apple-system, Roboto, Helvetica, Arial, sans-serif;
   --ag-foreground-color: #545454;
 }
 
@@ -152,8 +155,14 @@ body {
   }
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-
-html, body, #root {
-  font-family: 'Poppins', -apple-system, Roboto, Helvetica, Arial, sans-serif;
+html,
+body,
+#root {
+  font-family:
+    "Poppins",
+    -apple-system,
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
 }
