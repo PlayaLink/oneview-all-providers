@@ -592,6 +592,16 @@ const MainContent: React.FC<MainContentProps> = ({
             height="100%"
                     onRowClicked={(row) => handleRowClick(row, grid.tableName)}
                     selectedRowId={selectedRow && selectedRow.gridName === grid.tableName ? selectedRow.id : null}
+                    showActionsColumn={true}
+                    onDownload={(data) => console.log('Download:', data)}
+                    onToggleAlert={(data, enabled) => console.log('Toggle Alert:', data, enabled)}
+                    onToggleSidebar={(data) => {
+                      handleRowClick(data, grid.tableName);
+                    }}
+                    onToggleFlag={(data, flagged) => console.log('Toggle Flag:', data, flagged)}
+                    onToggleSummary={(data, included) => console.log('Toggle Summary:', data, included)}
+                    onAddRecord={() => console.log('Add Record for:', grid.tableName)}
+                    onMoreHeaderActions={() => console.log('More Header Actions for:', grid.tableName)}
                   />
                 ) : (
                   // Placeholder for unloaded grids
