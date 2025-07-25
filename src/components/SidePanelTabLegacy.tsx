@@ -29,7 +29,7 @@ const SidePanelTabLegacy: React.FC<SidePanelTabLegacyProps> = ({
         <TooltipTrigger asChild>
           <div
             className={cn(
-              "flex h-[52px] w-12 flex-col items-center justify-center gap-2 border-l border-b border-[#EAECEF] p-1 transition-all duration-200 cursor-pointer",
+              "flex h-[52px] w-full flex-col items-center justify-center gap-2 border-l border-b border-[#EAECEF] p-1 transition-all duration-200 cursor-pointer",
               {
                 // Active state (selected)
                 "bg-[#F7F7F7]": isActive && !isHovered,
