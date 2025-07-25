@@ -148,7 +148,7 @@ export const ActionsCell: React.FC<ActionsColumnProps> = ({
         data-testid="sidebar-toggle"
       >
         <FontAwesomeIcon
-          icon={faSidebar}
+          icon={faColumns}
           className="w-5 h-5 text-[#545454] hover:text-[#3BA8D1] transition-colors"
         />
       </button>
