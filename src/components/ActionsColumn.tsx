@@ -8,7 +8,7 @@ import {
   faEllipsisVertical,
   faCircleExclamation,
   faPlus,
-  faSidebar,
+  faColumns,
 } from "@fortawesome/free-solid-svg-icons";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
