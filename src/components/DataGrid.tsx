@@ -53,6 +53,14 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     showStatusBadges = true,
     selectedRowId: controlledSelectedRowId,
     handleShowFacilityDetails,
+    showActionsColumn = true,
+    onDownload,
+    onToggleAlert,
+    onToggleSidebar,
+    onToggleFlag,
+    onToggleSummary,
+    onAddRecord,
+    onMoreHeaderActions,
   } = props;
 
   const [internalSelectedRowId, setInternalSelectedRowId] = React.useState<string | null>(null);
