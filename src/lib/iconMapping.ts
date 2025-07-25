@@ -50,6 +50,15 @@ import {
   faEllipsisVertical,
   faCircleExclamation,
   faColumns,
+  faPaperclip,
+  faTimes,
+  faToggleOn,
+  faToggleOff,
+  faCirclePlus,
+  faCircleXmark,
+  faBars,
+  faStarHalf,
+  faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Icon mapping from string names to FontAwesome icon objects
@@ -105,6 +114,24 @@ const iconMap: Record<string, IconDefinition> = {
   "ellipsis-vertical": faEllipsisVertical,
   "circle-exclamation": faCircleExclamation,
   sidebar: faColumns,
+  // Action icons
+  "faCircleDown": faCircleDown,
+  "faPaperclip": faPaperclip,
+  "faBell": faBell,
+  "faTable": faTable,
+  "faFlag": faFlag,
+  "faTimes": faTimes,
+  "faToggleOn": faToggleOn,
+  "faToggleOff": faToggleOff,
+  "faStar": faStar,
+  "faShieldCheck": faShieldHalved, // Using faShieldHalved as alternative for faShieldCheck
+  // Action icons from database
+  "circle-plus": faCirclePlus,
+  "circle-xmark": faCircleXmark,
+  "sidebar-flip": faBars,
+  "star-half-stroke": faStarHalf,
+  "shield-check": faShieldHalved,
+  "pen-to-square": faPenToSquare,
 };
 
 // Function to get FontAwesome icon from icon name

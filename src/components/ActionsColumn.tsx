@@ -1,184 +1,101 @@
-import React from "react";
+import React from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCircleDown,
-  faBell,
-  faBellSlash,
-  faFlag,
-  faEllipsisVertical,
-  faCircleExclamation,
-  faPlus,
-  faColumns,
-} from "@fortawesome/free-solid-svg-icons";
-import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils";
+import { getIconByName } from "@/lib/iconMapping";
+import { useGridActions, GridAction } from "@/hooks/useGridActions";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface ActionsColumnProps {
+  gridName: string;
   rowData: any;
-  onDownload?: (data: any) => void;
-  onToggleAlert?: (data: any, enabled: boolean) => void;
-  onToggleSidebar?: (data: any) => void;
-  onToggleFlag?: (data: any, flagged: boolean) => void;
-  onToggleSummary?: (data: any, included: boolean) => void;
-  onMoreActions?: (data: any) => void;
+  onActionClick: (actionName: string, rowData: any) => void;
+  className?: string;
 }
 
-interface ActionsHeaderProps {
-  onAddRecord?: () => void;
-  onMoreHeaderActions?: () => void;
-}
-
-export const ActionsHeader: React.FC<ActionsHeaderProps> = ({
-  onAddRecord,
-  onMoreHeaderActions,
+const ActionsColumn: React.FC<ActionsColumnProps> = ({ 
+  gridName, 
+  rowData, 
+  onActionClick, 
+  className = "" 
 }) => {
+  const { gridActions, isLoading, error } = useGridActions(gridName);
+  
+  // Debug logging
+  console.log('ActionsColumn debug:', {
+    gridName,
+    isLoading,
+    error,
+    gridActionsCount: gridActions?.length || 0,
+    gridActions
+  });
+
+  if (isLoading) {
+    return (
+      <div className={`flex items-center justify-center gap-1 ${className}`} data-testid="actions-column-loading">
+        <div className="w-4 h-4 bg-gray-200 rounded animate-pulse"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    console.error('Error loading grid actions:', error);
+    return (
+      <div className={`flex items-center justify-center ${className}`} data-testid="actions-column-error">
+        <span className="text-red-500 text-xs">Error</span>
+      </div>
+    );
+  }
+
+  if (!gridActions || gridActions.length === 0) {
+    return (
+      <div className={`flex items-center justify-center ${className}`} data-testid="actions-column-empty">
+        <span className="text-gray-400 text-xs">No actions</span>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex items-center justify-between w-full px-4 py-3">
-      <div className="flex items-center gap-3">
-        <span className="text-[#545454] font-bold text-[13px] font-[Poppins]">
-          Actions
-        </span>
-        <FontAwesomeIcon
-          icon={faCircleExclamation}
-          className="w-5 h-5 text-[#545454]"
-          aria-label="Actions info"
-        />
-      </div>
+    <TooltipProvider>
+      <div 
+        className={`flex items-center justify-center gap-1 ${className}`} 
+        data-testid="actions-column"
+        role="group"
+        aria-label={`Actions for ${gridName}`}
+      >
+        {gridActions.map((gridAction: GridAction) => {
+          const { action } = gridAction;
+          const icon = getIconByName(action.icon);
+          
+          if (!icon) {
+            console.warn(`Icon not found for action: ${action.icon}`);
+            return null;
+          }
 
-      <div className="flex items-center gap-2">
-        {onAddRecord && (
-          <button
-            onClick={onAddRecord}
-            className="flex items-center justify-center w-6 h-6 bg-[#79AC48] rounded px-2 py-1.5"
-            aria-label="Add Record"
-            data-testid="add-record-button"
-          >
-            <FontAwesomeIcon icon={faPlus} className="w-3 h-3 text-white" />
-          </button>
-        )}
-
-        {onMoreHeaderActions && (
-          <button
-            onClick={onMoreHeaderActions}
-            className="flex items-center justify-center w-5 h-5"
-            aria-label="More header actions"
-            data-testid="more-header-actions-button"
-          >
-            <FontAwesomeIcon
-              icon={faEllipsisVertical}
-              className="w-5 h-5 text-[#545454]"
-            />
-          </button>
-        )}
+          return (
+            <Tooltip key={gridAction.id}>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => onActionClick(action.name, rowData)}
+                  className="p-1 hover:bg-gray-100 rounded transition-colors"
+                  data-testid={`action-${action.name}`}
+                  data-referenceid={`action-${action.name}-${rowData.id}`}
+                  aria-label={action.tooltip}
+                  title={action.tooltip}
+                >
+                  <FontAwesomeIcon 
+                    icon={icon} 
+                    className="w-4 h-4 text-gray-600 hover:text-gray-800" 
+                  />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{action.tooltip}</p>
+              </TooltipContent>
+            </Tooltip>
+          );
+        })}
       </div>
-    </div>
+    </TooltipProvider>
   );
 };
 
-export const ActionsCell: React.FC<ActionsColumnProps> = ({
-  rowData,
-  onDownload,
-  onToggleAlert,
-  onToggleSidebar,
-  onToggleFlag,
-  onToggleSummary,
-}) => {
-  const [alertEnabled, setAlertEnabled] = React.useState(true);
-  const [flagged, setFlagged] = React.useState(false);
-  const [summaryIncluded, setSummaryIncluded] = React.useState(true);
-
-  const handleDownload = () => {
-    onDownload?.(rowData);
-  };
-
-  const handleToggleAlert = () => {
-    const newState = !alertEnabled;
-    setAlertEnabled(newState);
-    onToggleAlert?.(rowData, newState);
-  };
-
-  const handleToggleSidebar = () => {
-    onToggleSidebar?.(rowData);
-  };
-
-  const handleToggleFlag = () => {
-    const newState = !flagged;
-    setFlagged(newState);
-    onToggleFlag?.(rowData, newState);
-  };
-
-  const handleToggleSummary = (checked: boolean) => {
-    setSummaryIncluded(checked);
-    onToggleSummary?.(rowData, checked);
-  };
-
-  return (
-    <div className="flex items-center justify-end gap-2 w-full px-4">
-      {/* Download */}
-      <button
-        onClick={handleDownload}
-        className="flex items-center justify-center w-5 h-5"
-        aria-label="Download"
-        data-testid="download-action"
-      >
-        <FontAwesomeIcon
-          icon={faCircleDown}
-          className="w-5 h-5 text-[#545454] hover:text-[#3BA8D1] transition-colors"
-        />
-      </button>
-
-      {/* Alert Toggle */}
-      <button
-        onClick={handleToggleAlert}
-        className="flex items-center justify-center w-5 h-5"
-        aria-label={alertEnabled ? "Disable alerts" : "Enable alerts"}
-        data-testid="alert-toggle"
-      >
-        <FontAwesomeIcon
-          icon={alertEnabled ? faBell : faBellSlash}
-          className="w-5 h-5 text-[#545454] hover:text-[#3BA8D1] transition-colors"
-        />
-      </button>
-
-      {/* Sidebar Toggle */}
-      <button
-        onClick={handleToggleSidebar}
-        className="flex items-center justify-center w-5 h-5"
-        aria-label="Toggle sidebar"
-        data-testid="sidebar-toggle"
-      >
-        <FontAwesomeIcon
-          icon={faColumns}
-          className="w-5 h-5 text-[#545454] hover:text-[#3BA8D1] transition-colors"
-        />
-      </button>
-
-      {/* Flag Toggle */}
-      <button
-        onClick={handleToggleFlag}
-        className="flex items-center justify-center w-5 h-5"
-        aria-label={flagged ? "Unflag item" : "Flag item"}
-        data-testid="flag-toggle"
-      >
-        <FontAwesomeIcon
-          icon={faFlag}
-          className={cn(
-            "w-5 h-5 transition-colors",
-            flagged ? "text-[#DB0D00]" : "text-[#545454] hover:text-[#3BA8D1]",
-          )}
-        />
-      </button>
-
-      {/* Summary Toggle */}
-      <div className="flex items-center justify-center">
-        <Switch
-          checked={summaryIncluded}
-          onCheckedChange={handleToggleSummary}
-          className="data-[state=checked]:bg-[#79AC48] data-[state=unchecked]:bg-[#D2D5DC] h-3 w-[23px] border-0"
-          aria-label="Include in summary"
-          data-testid="summary-toggle"
-        />
-      </div>
-    </div>
-  );
-};
+export default ActionsColumn;

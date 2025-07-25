@@ -12,7 +12,7 @@ import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import type { ColumnMenuTab } from "ag-grid-community";
 import ContextMenu from "./ContextMenu";
-import { ActionsHeader, ActionsCell } from "./ActionsColumn";
+import ActionsColumn from "./ActionsColumn";
 
 // Import AG Grid styles
 import "ag-grid-community/styles/ag-grid.css";
@@ -185,20 +185,48 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               filter: false,
               resizable: false,
               floatingFilter: false,
-              headerComponent: () => (
-                <ActionsHeader
-                  onAddRecord={onAddRecord}
-                  onMoreHeaderActions={onMoreHeaderActions}
-                />
-              ),
               cellRenderer: (params: any) => (
-                <ActionsCell
+                <ActionsColumn
+                  gridName={title}
                   rowData={params.data}
-                  onDownload={onDownload}
-                  onToggleAlert={onToggleAlert}
-                  onToggleSidebar={onToggleSidebar}
-                  onToggleFlag={onToggleFlag}
-                  onToggleSummary={onToggleSummary}
+                  onActionClick={(actionName, rowData) => {
+                    // Handle different action types based on database action names
+                    switch (actionName) {
+                      case 'download':
+                        onDownload?.(rowData);
+                        break;
+                      case 'activate':
+                        onDownload?.(rowData);
+                        break;
+                      case 'alert':
+                        onToggleAlert?.(rowData, true);
+                        break;
+                      case 'side_panel':
+                        onToggleSidebar?.(rowData);
+                        break;
+                      case 'verifications':
+                        onToggleFlag?.(rowData, true);
+                        break;
+                      case 'flag':
+                        onToggleFlag?.(rowData, true);
+                        break;
+                      case 'view_details':
+                        onToggleSummary?.(rowData, true);
+                        break;
+                      case 'deactivate':
+                        console.log('Deactivate action clicked for row:', rowData);
+                        break;
+                      case 'exclude':
+                        console.log('Exclude action clicked for row:', rowData);
+                        break;
+                      case 'tracking':
+                        console.log('Tracking action clicked for row:', rowData);
+                        break;
+                      default:
+                        console.log(`Action ${actionName} clicked for row:`, rowData);
+                    }
+                  }}
+                  className="h-full flex items-center justify-center"
                 />
               ),
               cellStyle: {

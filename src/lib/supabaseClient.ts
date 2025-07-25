@@ -1680,3 +1680,67 @@ export async function fetchAllProviderGrids(provider_id: string) {
     };
   }
 } 
+
+// Fetch all actions
+export async function fetchActions() {
+  const { data, error } = await supabase
+    .from('actions')
+    .select('*')
+    .order('name');
+  if (error) throw error;
+  return data;
+}
+
+// Fetch actions for a specific grid
+export async function fetchGridActions(gridId: string) {
+  const { data, error } = await supabase
+    .from('grid_actions')
+    .select(`
+      *,
+      action:actions(*)
+    `)
+    .eq('grid_id', gridId)
+    .order('order');
+  if (error) throw error;
+  return data;
+}
+
+// Fetch actions for a grid by grid name/key
+export async function fetchGridActionsByGridName(gridName: string) {
+  // First get the grid definition to get the grid_id
+  const { data: gridDef, error: gridError } = await supabase
+    .from('grid_definitions')
+    .select('id')
+    .eq('display_name', gridName)
+    .single();
+  
+  if (gridError) throw gridError;
+  if (!gridDef) return [];
+
+  // Then get the grid actions using the grid_id
+  const { data, error } = await supabase
+    .from('grid_actions')
+    .select(`
+      *,
+      action:actions(*)
+    `)
+    .eq('grid_id', gridDef.id)
+    .order('order');
+  
+  if (error) throw error;
+  return data;
+}
+
+// Fetch all grid actions with their related data
+export async function fetchAllGridActions() {
+  const { data, error } = await supabase
+    .from('grid_actions')
+    .select(`
+      *,
+      action:actions(*),
+      grid:grid_definitions(display_name, table_name, key)
+    `)
+    .order('order');
+  if (error) throw error;
+  return data;
+} 
