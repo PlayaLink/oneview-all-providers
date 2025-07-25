@@ -30,6 +30,14 @@ interface DataGridProps {
   showStatusBadges?: boolean;
   selectedRowId?: string | null;
   handleShowFacilityDetails?: (facility: any) => void;
+  showActionsColumn?: boolean;
+  onDownload?: (data: any) => void;
+  onToggleAlert?: (data: any, enabled: boolean) => void;
+  onToggleSidebar?: (data: any) => void;
+  onToggleFlag?: (data: any, flagged: boolean) => void;
+  onToggleSummary?: (data: any, included: boolean) => void;
+  onAddRecord?: () => void;
+  onMoreHeaderActions?: () => void;
 }
 
 const DataGrid: React.FC<DataGridProps> = (props) => {
