@@ -884,16 +884,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   }
 
   // Determine header styling based on context
-  const headerClassName =
-    context === "sidepanel"
-      ? "flex items-center justify-between p-4 border-b border-gray-200"
-      : "flex flex-row items-center justify-between pb-4 flex-shrink-0 border-b border-gray-200";
-
-  const headerTitleClassName =
-    context === "sidepanel"
-      ? "text-lg font-semibold"
-      : "flex items-center gap-2 text-lg font-bold text-gray-700 tracking-wider";
-
+  
   const containerClassName =
     context === "sidepanel"
       ? `fixed top-0 right-0 h-full bg-white transform transition-transform duration-300 ease-in-out z-[1000] flex flex-col ${isOpen ? "translate-x-0" : "translate-x-full"}`
@@ -970,13 +961,12 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       )}
 
       {/* Header */}
-             <GridItemDetailsHeader
-         headerText={headerText}
-         headerClassName={headerClassName}
-         context={context}
-         onExpandDetailModal={onExpandDetailModal}
-         onClose={onClose}
-       />
+      <GridItemDetailsHeader
+        headerText={headerText}
+        context={context}
+        onExpandDetailModal={onExpandDetailModal}
+        onClose={onClose}
+      />
 
       {/* Tabs and Content */}
       <div className="flex-1 min-h-0 flex flex-col">
