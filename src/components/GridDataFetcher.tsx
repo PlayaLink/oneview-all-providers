@@ -61,6 +61,7 @@ interface GridDataFetcherProps {
   handleShowFacilityDetails?: (facility: any) => void;
   selectedRowId?: string | null;
   selectedGridKey?: string | null;
+  onOpenDetailModal?: (row: any, gridName: string) => void;
 }
 
 const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
@@ -73,6 +74,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
   handleShowFacilityDetails,
   selectedRowId,
   selectedGridKey,
+  onOpenDetailModal,
 }) => {
   const lowerKey = gridKey.toLowerCase();
   // Fetch all grid definitions and find the one for this gridKey
@@ -229,9 +231,13 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
         onToggleFlag={(data, flagged) =>
           console.log("Toggle Flag:", data, flagged)
         }
-        onToggleSummary={(data, included) =>
-          console.log("Toggle Summary:", data, included)
-        }
+        onToggleSummary={(data, included) => {
+          if (onOpenDetailModal) {
+            onOpenDetailModal(data, gridKey);
+          } else {
+            console.log("Toggle Summary:", data, included);
+          }
+        }}
         onAddRecord={() => console.log("Add Record for:", gridDef.table_name)}
         onMoreHeaderActions={() =>
           console.log("More Header Actions for:", gridDef.table_name)

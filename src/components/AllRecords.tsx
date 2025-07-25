@@ -49,6 +49,7 @@ function GridsSection({
   selectedProviderInfo,
   handleProviderSelect,
   handleShowFacilityDetails,
+  onOpenDetailModal,
   ...rest
 }: any) {
   // Add refs for each grid container
@@ -140,6 +141,7 @@ function GridsSection({
                     handleShowFacilityDetails={handleShowFacilityDetails}
                     selectedRowId={selectedRow?.id}
                     selectedGridKey={selectedRow?.gridName}
+                    onOpenDetailModal={onOpenDetailModal}
                   />
                 </div>
               ))}
@@ -407,6 +409,12 @@ const AllRecords: React.FC = () => {
     });
   };
 
+  const handleOpenDetailModal = (row: any, gridName: string) => {
+    const rowWithGridName = { ...row, gridName };
+    setDetailModalRow(rowWithGridName);
+    setShowDetailModal(true);
+  };
+
   // Use sectionFilters for filtering
   const sectionFilters = useSectionFilterStore((s) => s.sectionFilters);
 
@@ -587,6 +595,7 @@ const AllRecords: React.FC = () => {
               selectedProviderInfo={selectedProviderInfo}
               handleProviderSelect={handleProviderSelect}
               handleShowFacilityDetails={handleShowFacilityDetails}
+              onOpenDetailModal={handleOpenDetailModal}
               // Remove visibleSections and handleSectionVisibilityChange props
               // visibleSections={visibleSections}
               // handleSectionVisibilityChange={handleSectionVisibilityChange}
@@ -617,6 +626,7 @@ const AllRecords: React.FC = () => {
               selectedProviderInfo={selectedProviderInfo}
               handleProviderSelect={handleProviderSelect}
               handleShowFacilityDetails={handleShowFacilityDetails}
+              onOpenDetailModal={handleOpenDetailModal}
             />
         </div>
       )}
