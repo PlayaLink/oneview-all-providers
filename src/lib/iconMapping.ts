@@ -104,7 +104,7 @@ const iconMap: Record<string, IconDefinition> = {
   "flag": faFlag,
   "ellipsis-vertical": faEllipsisVertical,
   "circle-exclamation": faCircleExclamation,
-  "sidebar": faSidebar,
+  "sidebar": faColumns,
 };
 
 // Function to get FontAwesome icon from icon name
