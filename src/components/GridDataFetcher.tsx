@@ -200,6 +200,14 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
         onRowClicked={onRowClicked}
         handleShowFacilityDetails={handleShowFacilityDetails}
         selectedRowId={selectedGridKey === gridKey ? selectedRowId : null}
+        showActionsColumn={true}
+        onDownload={(data) => console.log('Download:', data)}
+        onToggleAlert={(data, enabled) => console.log('Toggle Alert:', data, enabled)}
+        onToggleSidebar={(data) => onRowClicked?.(data)}
+        onToggleFlag={(data, flagged) => console.log('Toggle Flag:', data, flagged)}
+        onToggleSummary={(data, included) => console.log('Toggle Summary:', data, included)}
+        onAddRecord={() => console.log('Add Record for:', gridDef.table_name)}
+        onMoreHeaderActions={() => console.log('More Header Actions for:', gridDef.table_name)}
       />
       {isLoading && <div className="text-gray-500 mt-4">Loading...</div>}
       {error && <div className="text-red-500 mt-4">Error loading data: {error.message}</div>}
@@ -207,4 +215,4 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
   );
 };
 
-export default GridDataFetcher; 
+export default GridDataFetcher;
