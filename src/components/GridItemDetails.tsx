@@ -852,7 +852,7 @@ if (template?.getDetailsComponent) {
                   <TabsTrigger
                     key={tabConfig.id}
                     value={tabConfig.id}
-                    className="p-0 border-0 bg-transparent w-full"
+                    className="p-0 border-0 bg-transparent w-full data-[state=active]:bg-transparent data-[state=active]:shadow-none"
                   >
                     <TabComponent
                       rowKey={tabConfig.id}
