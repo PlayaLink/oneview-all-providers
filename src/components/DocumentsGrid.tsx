@@ -1,7 +1,7 @@
 import React from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-enterprise/styles/ag-grid.css';
-import 'ag-grid-enterprise/styles/ag-theme-balham.css';
+import 'ag-grid-enterprise/styles/ag-theme-quartz.css';
 
 interface Document {
   id: string;
@@ -26,19 +26,26 @@ const DocumentsGrid: React.FC<DocumentsGridProps> = ({ documents }) => {
   ];
 
   return (
-    <div className="ag-theme-balham" style={{ width: '100%', height: 400 }}>
-      <AgGridReact
-        rowData={documents}
-        columnDefs={columnDefs}
-        headerHeight={40}
-        rowHeight={42}
-        defaultColDef={{
-          resizable: true,
-          sortable: true,
-          filter: true,
-        }}
-        onGridReady={(params) => params.api.sizeColumnsToFit()}
-      />
+    <div className="ag-theme-quartz" style={{ width: '100%', height: 400 }}>
+              <AgGridReact
+          rowData={documents}
+          columnDefs={columnDefs}
+          headerHeight={40}
+          rowHeight={42}
+          defaultColDef={{
+            resizable: true,
+            sortable: true,
+            filter: true,
+            filterParams: {
+              buttons: ['reset'],
+              closeOnApply: true,
+              suppressApplyButton: true,
+            },
+          }}
+          enableRangeSelection={true}
+          enableFillHandle={true}
+          onGridReady={(params) => params.api.sizeColumnsToFit()}
+        />
     </div>
   );
 };

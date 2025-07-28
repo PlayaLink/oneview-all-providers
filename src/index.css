@@ -35,14 +35,14 @@ body {
   z-index: auto;
 }
 
-.ag-theme-balham {
+.ag-theme-quartz {
   --ag-header-background-color: #fff;
   --ag-font-family:
     "Poppins", -apple-system, Roboto, Helvetica, Arial, sans-serif;
   --ag-foreground-color: #545454;
 }
 
-.ag-theme-balham .ag-root-wrapper {
+.ag-theme-quartz .ag-root-wrapper {
   border-top-left-radius: 0 !important;
   border-top-right-radius: 0 !important;
 }
@@ -51,9 +51,9 @@ body {
   Force lower z-index for AG Grid header and icons globally to prevent them from appearing above modals and overlays.
   This targets common parent containers as well as the icon itself.
 */
-.ag-theme-balham .ag-header,
-.ag-theme-balham .ag-header-cell,
-.ag-theme-balham .ag-header-icon {
+.ag-theme-quartz .ag-header,
+.ag-theme-quartz .ag-header-cell,
+.ag-theme-quartz .ag-header-icon {
   z-index: 4 !important;
 }
 
@@ -62,16 +62,7 @@ body {
   background-color: white !important;
 }
 
-/* Hide default AG Grid header menu icon - multiple selectors */
-.ag-header-icon.ag-header-cell-menu-button::before,
-.ag-header-icon.ag-header-cell-menu-button::after,
-.ag-header-icon.ag-header-cell-menu-button .ag-icon,
-.ag-header-icon.ag-header-cell-menu-button svg,
-.ag-header-icon.ag-header-cell-menu-button i {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-}
+
 
 /* Also target the specific menu button */
 .ag-header-cell-menu-button {
@@ -79,6 +70,11 @@ body {
 }
 
 .ag-header-cell-menu-button::before {
+  display: none !important;
+}
+
+/* Hide filter apply panel */
+.ag-filter-apply-panel {
   display: none !important;
 }
 

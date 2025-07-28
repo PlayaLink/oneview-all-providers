@@ -8,9 +8,9 @@ import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import ContextMenu from "./ContextMenu";
 import ActionsColumn from "./ActionsColumn";
 
-// Import AG Grid styles with Balham theme
+// Import AG Grid styles with Quartz theme
 import "ag-grid-enterprise/styles/ag-grid.css";
-import "ag-grid-enterprise/styles/ag-theme-balham.css";
+import "ag-grid-enterprise/styles/ag-theme-quartz.css";
 
 // Custom Actions Header Component
 const ActionsHeader: React.FC<{
@@ -429,7 +429,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
       {/* AG Grid Container */}
       <div
-        className="ag-theme-balham"
+        className="ag-theme-quartz"
         style={
           {
             width: "100%",
@@ -461,8 +461,16 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
             resizable: true,
             sortable: true,
             filter: true,
+            floatingFilter: showFloatingFilters,
+            filterParams: {
+              buttons: ['reset'],
+              closeOnApply: true,
+              suppressApplyButton: true,
+            },
           }}
           suppressColumnVirtualisation={false}
+          enableRangeSelection={true}
+          enableFillHandle={true}
           onGridReady={(params) => params.api.sizeColumnsToFit()}
         />
       </div>
