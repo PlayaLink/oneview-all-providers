@@ -6,7 +6,7 @@ import {
 } from "ag-grid-enterprise";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { faFilter, faPlus, faEllipsisVertical, faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { faFilter, faPlus, faEllipsisVertical, faCircleExclamation, faBars } from "@fortawesome/free-solid-svg-icons";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import ContextMenu from "./ContextMenu";
 import ActionsColumn from "./ActionsColumn";
@@ -548,16 +548,27 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
             filter: true,
           }}
           suppressColumnVirtualisation={false}
+          theme="legacy"
           icons={{
-            filter: () => (
-              <FontAwesomeIcon
-                icon={faFilter}
-                className="w-3 h-3 text-[#545454]"
-                style={{ fontSize: "12px" }}
-                aria-hidden="true"
-              />
-            ),
-            menu: undefined, // Use AG Grid's default menu icon
+            filter: () => {
+              console.log('Rendering filter icon');
+              return '⚏';
+            },
+            menu: () => {
+              console.log('Rendering menu icon');
+              return '⋮';
+            },
+            menuAlt: () => {
+              console.log('Rendering menuAlt icon');
+              return (
+                <FontAwesomeIcon
+                  icon={faBars}
+                  className="w-3 h-3 text-[#545454]"
+                  style={{ fontSize: "12px" }}
+                  aria-hidden="true"
+                />
+              );
+            },
           }}
           // Sidebar disabled by default - users can enable via column menu if needed
           suppressMenuHide={true}

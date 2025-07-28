@@ -62,6 +62,26 @@ body {
   background-color: white !important;
 }
 
+/* Hide default AG Grid header menu icon - multiple selectors */
+.ag-header-icon.ag-header-cell-menu-button::before,
+.ag-header-icon.ag-header-cell-menu-button::after,
+.ag-header-icon.ag-header-cell-menu-button .ag-icon,
+.ag-header-icon.ag-header-cell-menu-button svg,
+.ag-header-icon.ag-header-cell-menu-button i {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Also target the specific menu button */
+.ag-header-cell-menu-button {
+  background: none !important;
+}
+
+.ag-header-cell-menu-button::before {
+  display: none !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
