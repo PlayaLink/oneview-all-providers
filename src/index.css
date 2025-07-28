@@ -57,6 +57,11 @@ body {
   z-index: 4 !important;
 }
 
+/* AG Grid menu body styling */
+.ag-tabs-body.ag-menu-body {
+  background-color: white !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
