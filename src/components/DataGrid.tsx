@@ -1,19 +1,16 @@
 import React from "react";
 import { AgGridReact } from "ag-grid-react";
-import {
-  ColDef,
-  ColumnMenuTab,
-} from "ag-grid-enterprise";
+import { ColDef } from "ag-grid-enterprise";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { faFilter, faPlus, faEllipsisVertical, faCircleExclamation, faBars } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faEllipsisVertical, faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import ContextMenu from "./ContextMenu";
 import ActionsColumn from "./ActionsColumn";
 
-// Import AG Grid styles
+// Import AG Grid styles with Balham theme
 import "ag-grid-enterprise/styles/ag-grid.css";
-import "ag-grid-enterprise/styles/ag-theme-alpine.css";
+import "ag-grid-enterprise/styles/ag-theme-balham.css";
 
 // Custom Actions Header Component
 const ActionsHeader: React.FC<{
@@ -112,7 +109,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     columns,
     onSelectionChanged,
     onRowClicked,
-    height, // removed = "400px"
+    height,
     showCheckboxes = true,
     showStatusBadges = true,
     selectedRowId: controlledSelectedRowId,
@@ -146,11 +143,12 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   // Use feature flag for floating filters
   const { value: showFloatingFilters } = useFeatureFlag("floating_filters");
 
-  // Prepare column definitions with optional checkbox column and actions column
+  // Prepare column definitions
   const columnDefs = React.useMemo(() => {
-    // Check if any column has sort set
     const hasSort = columns.some((col) => col.sort);
+    
     return [
+      // Checkbox column
       ...(showCheckboxes
         ? [
             {
@@ -164,78 +162,30 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               sortable: false,
               filter: false,
               resizable: false,
-              cellClass: "ag-cell-no-border",
-              headerClass: "ag-header-no-border",
-              floatingFilter: false, // never show floating filter for checkbox column
             },
           ]
         : []),
+      
+      // Data columns
       ...columns.map((col) => {
-        // If no sort is set anywhere, set provider_name to ascending
-        if (!hasSort && col.field === "provider_name") {
-          return {
-            ...col,
-            sort: "asc" as "asc", // Explicitly cast to SortDirection
-            floatingFilter: showFloatingFilters,
-            suppressMenu: false,
-            filter: true,
-            menuTabs: [
-              "filterMenuTab",
-              "generalMenuTab",
-              "columnsMenuTab",
-            ] as ColumnMenuTab[],
-            cellStyle: (params: any) => {
-              const baseCellStyle = {
-                color: "#545454",
-                fontSize: "12px",
-                display: "flex",
-                alignItems: "center",
-                paddingLeft: "16px",
-                borderRight: "none",
-                ...col.cellStyle,
-              };
-              const isRowSelected = selectedRowId === params.data.id;
-              if (isRowSelected) {
-                return {
-                  ...baseCellStyle,
-                  color: "white",
-                };
-              }
-              return baseCellStyle;
-            },
-          };
-        }
-        return {
+        const baseCol = {
           ...col,
           floatingFilter: showFloatingFilters,
           suppressMenu: false,
           filter: true,
-          menuTabs: [
-            "filterMenuTab",
-            "generalMenuTab",
-            "columnsMenuTab",
-          ] as ColumnMenuTab[],
-          cellStyle: (params: any) => {
-            const baseCellStyle = {
-              color: "#545454",
-              fontSize: "12px",
-              display: "flex",
-              alignItems: "center",
-              paddingLeft: "16px",
-              borderRight: "none",
-              ...col.cellStyle,
-            };
-            const isRowSelected = selectedRowId === params.data.id;
-            if (isRowSelected) {
-              return {
-                ...baseCellStyle,
-                color: "white",
-              };
-            }
-            return baseCellStyle;
-          },
+          resizable: true,
+          sortable: true,
         };
+
+        // Set default sort for provider_name if no sort is specified
+        if (!hasSort && col.field === "provider_name") {
+          baseCol.sort = "asc";
+        }
+
+        return baseCol;
       }),
+      
+      // Actions column
       ...(showActionsColumn
         ? [
             {
@@ -261,7 +211,6 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                   gridName={title}
                   rowData={params.data}
                   onActionClick={(actionName, rowData) => {
-                    // Handle different action types based on database action names
                     switch (actionName) {
                       case 'download':
                         onDownload?.(rowData);
@@ -300,15 +249,6 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                   className="h-full flex items-center justify-center"
                 />
               ),
-              cellStyle: {
-                borderLeft: "1px solid #E2E2E2",
-                borderRight: "none",
-                padding: 0,
-                display: "flex",
-                alignItems: "center",
-              },
-              cellClass: "actions-cell",
-              headerClass: "actions-header",
             },
           ]
         : []),
@@ -317,7 +257,6 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     columns,
     showCheckboxes,
     showFloatingFilters,
-    selectedRowId,
     showActionsColumn,
     onDownload,
     onToggleAlert,
@@ -329,23 +268,22 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   ]);
 
   const handleRowClicked = (event: any) => {
-    // Prevent cell focus on single click
     event.api.setFocusedCell(null, null);
-    // If the clicked row is already selected, unselect and close side panel
+    
     if (selectedRowId === event.data.id) {
       if (controlledSelectedRowId === undefined) {
         setInternalSelectedRowId(null);
       }
       if (onRowClicked) {
-        onRowClicked(null); // Pass null to close side panel
+        onRowClicked(null);
       }
       return;
     }
-    // Always set row selection on row click
+    
     if (controlledSelectedRowId === undefined) {
       setInternalSelectedRowId(event.data.id);
     }
-    // Call onRowClicked callback
+    
     if (onRowClicked && event.data) {
       onRowClicked(event.data);
     }
@@ -355,26 +293,16 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     if (onSelectionChanged) {
       onSelectionChanged(event);
     }
-    // When checkbox selection changes, clear row selection
     if (controlledSelectedRowId === undefined) {
       setInternalSelectedRowId(null);
     }
   };
 
-  const handleRowDoubleClicked = (event: any) => {
-    // Allow cell focus only on double click
-    // This will let AG Grid handle cell focus naturally
-  };
-
   const handleCellContextMenu = (event: any) => {
-    // Prevent default browser context menu
     event.event.preventDefault();
-
-    // Get the row data
     const rowData = event.data;
     if (!rowData) return;
 
-    // Set context menu position and data
     setContextMenu({
       show: true,
       x: event.event.clientX,
@@ -393,20 +321,16 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       backgroundColor: "white",
     };
 
-    // Check if this is row selection (not checkbox selection)
     const isRowSelected = selectedRowId === params.data.id;
 
     if (isRowSelected) {
-      // Dark blue background for row selection (same as horizontal nav)
       return {
         ...baseStyle,
         backgroundColor: "#008BC9",
       };
     }
 
-    // Check if this is checkbox selection
     if (params.node.isSelected()) {
-      // Light blue background for checkbox selection
       return {
         ...baseStyle,
         backgroundColor: "#E3F2FD",
@@ -417,20 +341,15 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   };
 
   const getRowClass = (params: any) => {
-    // Check if this is checkbox selection
     if (params.node.isSelected()) {
       return "checkbox-selected";
     }
-
-    // Check if this is row selection
     if (selectedRowId === params.data.id) {
       return "row-selected";
     }
-
     return "";
   };
 
-  // Convert height to string with px if it's a number
   const computedHeight = typeof height === "number" ? `${height}px` : height;
 
   return (
@@ -510,7 +429,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
       {/* AG Grid Container */}
       <div
-        className="ag-theme-alpine ag-grid-custom"
+        className="ag-theme-balham"
         style={
           {
             width: "100%",
@@ -522,19 +441,15 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         aria-rowcount={data.length}
         aria-colcount={columnDefs.length}
         data-testid="ag-grid-container"
-        data-debug-height={computedHeight}
-        data-debug-rowcount={data.length}
-        data-debug-colcount={columnDefs.length}
         onContextMenu={(e) => e.preventDefault()}
       >
         <AgGridReact
           rowData={data}
-          columnDefs={columnDefs as any}
-          onSelectionChanged={handleSelectionChanged as any}
-          onRowClicked={handleRowClicked as any}
-          onRowDoubleClicked={handleRowDoubleClicked as any}
+          columnDefs={columnDefs}
+          onSelectionChanged={handleSelectionChanged}
+          onRowClicked={handleRowClicked}
           onCellContextMenu={handleCellContextMenu}
-          rowSelection={showCheckboxes ? "multiple" : "single"}
+          rowSelection={showCheckboxes ? "multiple" : undefined}
           headerHeight={40}
           rowHeight={42}
           suppressRowClickSelection={true}
@@ -548,34 +463,10 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
             filter: true,
           }}
           suppressColumnVirtualisation={false}
-          theme="legacy"
-          icons={{
-            filter: () => {
-              console.log('Rendering filter icon');
-              return '⚏';
-            },
-            menu: () => {
-              console.log('Rendering menu icon');
-              return '⋮';
-            },
-            menuAlt: () => {
-              console.log('Rendering menuAlt icon');
-              return (
-                <FontAwesomeIcon
-                  icon={faBars}
-                  className="w-3 h-3 text-[#545454]"
-                  style={{ fontSize: "12px" }}
-                  aria-hidden="true"
-                />
-              );
-            },
-          }}
-          // Sidebar disabled by default - users can enable via column menu if needed
-          suppressMenuHide={true}
-          columnMenu="legacy"
           onGridReady={(params) => params.api.sizeColumnsToFit()}
         />
       </div>
+      
       {contextMenu && (
         <ContextMenu
           x={contextMenu.x}

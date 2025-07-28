@@ -1,4 +1,4 @@
-import { ColDef } from "ag-grid-community";
+import { ColDef } from "ag-grid-enterprise";
 import { gridDefinitions } from "./gridDefinitions";
 
 // Helper function to format column names for display
