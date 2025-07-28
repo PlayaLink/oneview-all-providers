@@ -42,7 +42,7 @@ const HorizontalNav: React.FC<HorizontalNavProps> = ({
   }, [sectionFilters, gridSections, groupKeyToGrids]);
 
   return (
-    <nav className="bg-white border-b border-[#EAECEF]" role="navigation" aria-label="Section navigation" data-testid="horizontal-nav">
+    <nav className="bg-white border-b border-[var(--stroke-light-blue-grey)]" role="navigation" aria-label="Section navigation" data-testid="horizontal-nav">
       <div className="px-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-end pt-5 overflow-x-auto whitespace-nowrap" role="tablist" aria-label="Available sections">
