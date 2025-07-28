@@ -24,9 +24,9 @@ const NAVITEM_VARIANTS = {
     alignment: "justify-start",
   },
   horizontal: {
-    base: "font-bold rounded transition-colors select-none px-4 py-2 text-sm w-full flex items-center gap-2",
-    active: "bg-[#008BC9] text-white",
-    inactive: "text-[#545454] hover:bg-[#E0F2FB]",
+    base: "transition-colors select-none px-4 py-2.5 text-xs tracking-[0.429px] w-full flex items-center gap-2 rounded-t border border-transparent border-b-0 font-normal",
+    active: "bg-white text-[#545454] font-semibold border-[#EAECEF] border-t border-r border-l",
+    inactive: "text-[#006CAB] font-normal hover:bg-[#E0F2FB]",
     alignment: "justify-center",
   },
   sidenav: {
@@ -113,4 +113,4 @@ const NavItem: React.FC<NavItemProps> = ({
   );
 };
 
-export default NavItem; 
+export default NavItem;
