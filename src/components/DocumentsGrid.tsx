@@ -42,8 +42,7 @@ const DocumentsGrid: React.FC<DocumentsGridProps> = ({ documents }) => {
               suppressApplyButton: true,
             },
           }}
-          enableRangeSelection={true}
-          enableFillHandle={true}
+          cellSelection={false}
           onGridReady={(params) => params.api.sizeColumnsToFit()}
         />
     </div>
