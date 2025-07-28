@@ -36,6 +36,7 @@ const DocumentsGrid: React.FC<DocumentsGridProps> = ({ documents }) => {
             resizable: true,
             sortable: true,
             filter: true,
+            cellClass: 'ag-cell-vertically-centered',
             filterParams: {
               buttons: ['reset'],
               closeOnApply: true,

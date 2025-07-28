@@ -78,6 +78,13 @@ body {
   display: none !important;
 }
 
+/* Vertically center cell content */
+.ag-cell-vertically-centered {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+}
+
 
 
 @layer base {

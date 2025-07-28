@@ -462,6 +462,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
             sortable: true,
             filter: true,
             floatingFilter: showFloatingFilters,
+            cellClass: 'ag-cell-vertically-centered',
             filterParams: {
               buttons: ['reset'],
               closeOnApply: true,
