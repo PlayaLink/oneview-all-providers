@@ -2,21 +2,18 @@ import React from "react";
 import { AgGridReact } from "ag-grid-react";
 import {
   ColDef,
-  SelectionChangedEvent,
-  RowClickedEvent,
-  RowDoubleClickedEvent,
-} from "ag-grid-community";
+  ColumnMenuTab,
+} from "ag-grid-enterprise";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { faFilter, faPlus, faEllipsisVertical, faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
-import type { ColumnMenuTab } from "ag-grid-community";
 import ContextMenu from "./ContextMenu";
 import ActionsColumn from "./ActionsColumn";
 
 // Import AG Grid styles
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
+import "ag-grid-enterprise/styles/ag-grid.css";
+import "ag-grid-enterprise/styles/ag-theme-alpine.css";
 
 // Custom Actions Header Component
 const ActionsHeader: React.FC<{
@@ -90,7 +87,7 @@ interface DataGridProps {
   icon: IconDefinition;
   data: any[];
   columns: ColDef[];
-  onSelectionChanged?: (event: SelectionChangedEvent) => void;
+  onSelectionChanged?: (event: any) => void;
   onRowClicked?: (data: any) => void;
   height?: string | number;
   showCheckboxes?: boolean;
@@ -331,7 +328,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     onMoreHeaderActions,
   ]);
 
-  const handleRowClicked = (event: RowClickedEvent) => {
+  const handleRowClicked = (event: any) => {
     // Prevent cell focus on single click
     event.api.setFocusedCell(null, null);
     // If the clicked row is already selected, unselect and close side panel
@@ -354,7 +351,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     }
   };
 
-  const handleSelectionChanged = (event: SelectionChangedEvent) => {
+  const handleSelectionChanged = (event: any) => {
     if (onSelectionChanged) {
       onSelectionChanged(event);
     }
@@ -364,7 +361,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     }
   };
 
-  const handleRowDoubleClicked = (event: RowDoubleClickedEvent) => {
+  const handleRowDoubleClicked = (event: any) => {
     // Allow cell focus only on double click
     // This will let AG Grid handle cell focus naturally
   };
@@ -532,10 +529,10 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       >
         <AgGridReact
           rowData={data}
-          columnDefs={columnDefs}
-          onSelectionChanged={handleSelectionChanged}
-          onRowClicked={handleRowClicked}
-          onRowDoubleClicked={handleRowDoubleClicked}
+          columnDefs={columnDefs as any}
+          onSelectionChanged={handleSelectionChanged as any}
+          onRowClicked={handleRowClicked as any}
+          onRowDoubleClicked={handleRowDoubleClicked as any}
           onCellContextMenu={handleCellContextMenu}
           rowSelection={showCheckboxes ? "multiple" : "single"}
           headerHeight={40}
