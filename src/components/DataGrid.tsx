@@ -559,19 +559,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
             ),
             menu: undefined, // Use AG Grid's default menu icon
           }}
-          sideBar={{
-            toolPanels: [
-              {
-                id: "columns",
-                labelDefault: "Columns",
-                labelKey: "columns",
-                iconKey: "columns",
-                toolPanel: "agColumnsToolPanel",
-              },
-            ],
-            defaultToolPanel: "columns",
-            position: "right",
-          }} // Sidebar open by default to Columns panel
+          // Sidebar disabled by default - users can enable via column menu if needed
           suppressMenuHide={true}
           columnMenu="legacy"
           onGridReady={(params) => params.api.sizeColumnsToFit()}
