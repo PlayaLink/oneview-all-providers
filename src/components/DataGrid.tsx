@@ -326,7 +326,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     if (isRowSelected) {
       return {
         ...baseStyle,
-        backgroundColor: "#008BC9",
+        backgroundColor: "#C4D8F7",
       };
     }
 
