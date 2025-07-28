@@ -59,6 +59,12 @@ body {
 
 @layer base {
   :root {
+    /* Figma design variables */
+    --stroke-light-blue-grey: #eaecef;
+    --bg-white: #fff;
+    --text-dark-grey: #545454;
+    --text-hyperlinks: #006cab;
+
     --background: 0 0% 100%;
     --foreground: #545454;
 

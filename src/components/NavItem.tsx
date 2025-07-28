@@ -24,9 +24,10 @@ const NAVITEM_VARIANTS = {
     alignment: "justify-start",
   },
   horizontal: {
-    base: "font-bold rounded transition-colors select-none px-4 py-2 text-sm w-full flex items-center gap-2",
-    active: "bg-[#008BC9] text-white",
-    inactive: "text-[#545454] hover:bg-[#E0F2FB]",
+    base: "transition-colors select-none px-4 py-2.5 text-xs tracking-[0.429px] w-full flex items-center gap-2 rounded-t border border-transparent border-b-0 font-normal",
+    active:
+      "bg-[var(--bg-white)] text-[var(--text-dark-grey)] font-semibold border-[var(--stroke-light-blue-grey)] border-t border-r border-l",
+    inactive: "text-[var(--text-hyperlinks)] font-normal hover:bg-[#E0F2FB]",
     alignment: "justify-center",
   },
   sidenav: {
@@ -52,8 +53,10 @@ const NavItem: React.FC<NavItemProps> = ({
 }) => {
   let variantStyles = NAVITEM_VARIANTS[variant];
   if (!variantStyles) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.warn(`Unknown NavItem variant: ${variant}, defaulting to 'sidenav'`);
+    if (process.env.NODE_ENV !== "production") {
+      console.warn(
+        `Unknown NavItem variant: ${variant}, defaulting to 'sidenav'`,
+      );
     }
     variantStyles = NAVITEM_VARIANTS.sidenav;
   }
@@ -74,14 +77,16 @@ const NavItem: React.FC<NavItemProps> = ({
         variantStyles.base,
         stateStyles,
         variantStyles.alignment,
-        className
+        className,
       )}
       aria-current={active ? "page" : undefined}
       aria-pressed={active ? "true" : "false"}
-      data-testid={`nav-item-${typeof children === 'string' ? children.toLowerCase().replace(/\s+/g, '-') : 'default'}`}
+      data-testid={`nav-item-${typeof children === "string" ? children.toLowerCase().replace(/\s+/g, "-") : "default"}`}
       {...props}
     >
-      <span className={cn("flex items-center min-w-0", variantStyles.alignment)}>
+      <span
+        className={cn("flex items-center min-w-0", variantStyles.alignment)}
+      >
         {icon && variant === "sidenav" && (
           <span
             className="mr-2 flex items-center"
@@ -92,10 +97,18 @@ const NavItem: React.FC<NavItemProps> = ({
             {icon}
           </span>
         )}
-        <span className={`truncate${uppercase ? ' uppercase' : ''}`} data-testid="nav-item-content">{content}</span>
+        <span
+          className={`truncate${uppercase ? " uppercase" : ""}`}
+          data-testid="nav-item-content"
+        >
+          {content}
+        </span>
       </span>
       {settingsDropdown && (
-        <span className="ml-auto flex items-center" data-testid="nav-item-settings-dropdown">
+        <span
+          className="ml-auto flex items-center"
+          data-testid="nav-item-settings-dropdown"
+        >
           {settingsDropdown}
         </span>
       )}
@@ -113,4 +126,4 @@ const NavItem: React.FC<NavItemProps> = ({
   );
 };
 
-export default NavItem; 
+export default NavItem;
