@@ -67,21 +67,21 @@
 }
 
 /* Ensure proper styling for the AG Grid actions column */
-.ag-theme-alpine .ag-pinned-right-cols-container .ag-row .ag-cell {
+.ag-theme-quartz .ag-pinned-right-cols-container .ag-row .ag-cell {
   border-right: none;
 }
 
-.ag-theme-alpine .ag-pinned-right-cols-container {
+.ag-theme-quartz .ag-pinned-right-cols-container {
   border-left: 1px solid #e2e2e2;
 }
 
 /* Override AG Grid header height for actions column */
-.ag-theme-alpine .ag-header-row .ag-header-cell[aria-colindex] {
+.ag-theme-quartz .ag-header-row .ag-header-cell[aria-colindex] {
   border-bottom: 1px solid #e2e2e2;
 }
 
 /* Actions column specific cell styling */
-.ag-theme-alpine .ag-row .ag-cell[aria-colindex]:last-child {
+.ag-theme-quartz .ag-row .ag-cell[aria-colindex]:last-child {
   border-left: 1px solid #e2e2e2;
   border-bottom: 1px solid #d2d5dc;
 }

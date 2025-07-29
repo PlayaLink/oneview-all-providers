@@ -1,3 +1,6 @@
+// Import AG Grid Enterprise license configuration FIRST
+import "./lib/ag-grid-license";
+
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
