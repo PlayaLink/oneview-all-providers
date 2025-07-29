@@ -140,6 +140,10 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     rowData: any;
   } | null>(null);
 
+  // Column state persistence
+  const [gridApi, setGridApi] = React.useState<any>(null);
+  const gridStateKey = `ag-grid-state-${title}`;
+
   // Use feature flag for floating filters
   const { value: showFloatingFilters } = useFeatureFlag("floating_filters");
 
@@ -315,6 +319,36 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     setContextMenu(null);
   };
 
+  // Save column state to localStorage
+  const saveColumnState = React.useCallback(() => {
+    if (gridApi) {
+      const columnState = gridApi.getColumnState();
+      localStorage.setItem(gridStateKey, JSON.stringify(columnState));
+    }
+  }, [gridApi, gridStateKey]);
+
+  // Load column state from localStorage
+  const loadColumnState = React.useCallback(() => {
+    if (gridApi) {
+      const savedState = localStorage.getItem(gridStateKey);
+      if (savedState) {
+        try {
+          const columnState = JSON.parse(savedState);
+          gridApi.applyColumnState({
+            state: columnState,
+            applyOrder: true,
+            applyVisible: true,
+            applySize: true,
+            applySort: true,
+            applyFilter: true,
+          });
+        } catch (error) {
+          console.warn('Failed to load column state:', error);
+        }
+      }
+    }
+  }, [gridApi, gridStateKey]);
+
   const getRowStyle = (params: any) => {
     const baseStyle = {
       borderBottom: "0.5px solid #D2D5DC",
@@ -471,7 +505,19 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           }}
           suppressColumnVirtualisation={false}
           cellSelection={false}
-          onGridReady={(params) => params.api.sizeColumnsToFit()}
+          maintainColumnOrder={true}
+          onGridReady={(params) => {
+            setGridApi(params.api);
+            params.api.sizeColumnsToFit();
+            // Load saved column state after grid is ready
+            setTimeout(() => {
+              loadColumnState();
+            }, 100);
+          }}
+          onColumnMoved={saveColumnState}
+          onColumnResized={saveColumnState}
+          onSortChanged={saveColumnState}
+          onFilterChanged={saveColumnState}
         />
       </div>
       

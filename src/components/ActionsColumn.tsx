@@ -18,15 +18,6 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
   className = "" 
 }) => {
   const { gridActions, isLoading, error } = useGridActions(gridName);
-  
-  // Debug logging
-  console.log('ActionsColumn debug:', {
-    gridName,
-    isLoading,
-    error,
-    gridActionsCount: gridActions?.length || 0,
-    gridActions
-  });
 
   if (isLoading) {
     return (
