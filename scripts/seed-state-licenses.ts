@@ -31,7 +31,66 @@ const US_STATES = [
 ];
 
 const LICENSE_TYPES = ["MD", "DO", "NP", "PA", "RN", "LPN", "CRNA", "DPM", "DDS", "DMD"];
-const STATUS = ["Active", "Expired", "Pending"];
+const STATUS = [
+  // Active statuses
+  "Active (probation completed)",
+  "Active (Subject To Restrictions)",
+  "Active (Subject to Restrictions) *",
+  "Active (suspension completed)",
+  "Active - Consent Order",
+  "Active - Current",
+  "Active - Do Not Renew",
+  "Active - Fee Exempt",
+  "Active - Fully Licensed",
+  "Active - In Late Renewal",
+  "Active - In Renewal",
+  "Active - Not Practicing",
+  "Active - One Year",
+  "Active - One Year With Distinguished Professor Limitation",
+  "Active - Pending DEA",
+  "Active - Pending Renewal",
+  "Active - Prescribing",
+  "Active - Prior Discipline",
+  "Active - Pro Bono",
+  // Other statuses
+  "Semi-Active",
+  "Senior Active",
+  "Special Emeritus Certification",
+  "Special Status",
+  "Suspension Completed",
+  "Telemedicine",
+  "Telemedicine Active",
+  "Telemonitoring Active",
+  "Teleradiology Active",
+  "Temporary",
+  "Temporary Approval",
+  "Temporary License",
+  "Temporary Permit",
+  "Texas License Issued",
+  "Timely Renewal",
+  "Trainee/Student",
+  "Unencumbered (full unrestricted license to practice)",
+  "Unlimited",
+  "Valid",
+  // Cancelled statuses
+  "Canc Non-Payment",
+  "Canceled",
+  "Cancelled",
+  "Cancelled (board request)",
+  "Cancelled (by request)",
+  "Cancelled (considered)",
+  "Cancelled (did not renew)",
+  "Cancelled (non payment)",
+  "Cancelled - Deceased",
+  "Cancelled - Failure to Renew",
+  "Cancelled - Requested",
+  "Cancelled by Entity",
+  "Cancelled by Request",
+  "Cancelled Inactive",
+  "Cancelled Nonpayment",
+  "Cancelled Permit",
+  "Cancelled, Did Not Renew"
+];
 const TAG_OPTIONS = ['urgent', 'expiring', 'renewal', 'compliance', 'audit', 'pending', 'primary', 'secondary'];
 
 function getDeterministicItem<T>(array: T[], seed: number): T {
