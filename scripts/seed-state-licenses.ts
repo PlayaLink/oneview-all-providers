@@ -1,9 +1,30 @@
 import { createClient } from '@supabase/supabase-js';
 import { faker } from '@faker-js/faker';
+import fetch from 'node-fetch';
+import https from 'https';
 
+// Create a custom fetch that ignores SSL certificate issues for development
+const customFetch = (url: string, options: any) => {
+  return fetch(url, {
+    ...options,
+    agent: new https.Agent({
+      rejectUnauthorized: false
+    })
+  });
+};
+
+// Create a standalone Supabase client for the script
 const supabaseUrl = 'https://nsqushsijqnlstgwgkzx.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zcXVzaHNpanFubHN0Z3dna3p4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NTA2OTksImV4cCI6MjA2NzEyNjY5OX0.v0zmEJ83t1tI9Obt-ofjk6SJ3VxynkOoKJIwpDGLc5g';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false
+  },
+  global: {
+    fetch: customFetch as any
+  }
+});
 
 const US_STATES = [
   "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"
@@ -54,7 +75,13 @@ function randomTags() {
 
 function generateStateLicense(provider_id: string, seed: number) {
   const issue = randomDateBetween(new Date(1990, 0, 1), new Date(2015, 11, 31));
-  const exp = randomDateBetween(issue, new Date(2027, 11, 31));
+  
+  // Generate expiration date between 30 days in the past and 150 days in the future
+  const today = new Date();
+  const pastDate = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000)); // 30 days ago
+  const futureDate = new Date(today.getTime() + (150 * 24 * 60 * 60 * 1000)); // 150 days from now
+  const exp = randomDateBetween(pastDate, futureDate);
+  
   return {
     provider_id,
     license_type: getDeterministicItem(LICENSE_TYPES, seed),
@@ -64,17 +91,44 @@ function generateStateLicense(provider_id: string, seed: number) {
     status: getDeterministicItem(STATUS, seed),
     issue_date: formatDate(issue),
     expiration_date: formatDate(exp),
-    expires_within: getDeterministicItem([
-      "Expired", "Expiring", "7 Days", "14 Days", "30 Days", "60 Days", "90 Days"
-    ], seed),
+    expires_within: expiresWithin(exp),
     tags: randomTags()
   };
 }
 
 async function main() {
-  const { data: providers, error } = await supabase.from('providers').select('id');
+  console.log('Starting state licenses seeding...');
+  
+  // Add retry logic for fetching providers
+  let providers;
+  let error;
+  let retries = 3;
+  
+  while (retries > 0) {
+    try {
+      console.log(`Attempting to fetch providers (attempt ${4 - retries}/3)...`);
+      const result = await supabase.from('providers').select('id');
+      providers = result.data;
+      error = result.error;
+      
+      if (!error && providers) {
+        console.log(`Successfully fetched ${providers.length} providers`);
+        break;
+      }
+    } catch (err) {
+      console.log(`Attempt failed: ${err}`);
+      error = err;
+    }
+    
+    retries--;
+    if (retries > 0) {
+      console.log(`Retrying in 2 seconds...`);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    }
+  }
+  
   if (error) {
-    console.error('Error fetching providers:', error);
+    console.error('Error fetching providers after all retries:', error);
     process.exit(1);
   }
   if (!providers) {
@@ -82,9 +136,16 @@ async function main() {
     process.exit(1);
   }
 
+  // Clear existing state licenses data
+  console.log('Clearing existing state licenses...');
+  const { error: deleteError } = await supabase.from('state_licenses').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+  if (deleteError) {
+    console.error('Error clearing existing state licenses:', deleteError);
+    process.exit(1);
+  }
+  console.log('Existing state licenses cleared successfully.');
+
   for (const [i, provider] of providers.entries()) {
-    // Optionally: delete existing dummy state licenses for this provider
-    // await supabase.from('state_licenses').delete().eq('provider_id', provider.id);
     const licenses = Array.from({ length: 5 }).map((_, j) => generateStateLicense(provider.id, i * 10 + j));
     const { error: insertError } = await supabase.from('state_licenses').insert(licenses);
     if (insertError) {
