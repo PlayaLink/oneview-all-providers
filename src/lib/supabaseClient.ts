@@ -1599,9 +1599,16 @@ export async function fetchAllProviderGrids(provider_id: string) {
     console.log('Calling edge function with URL:', url);
     console.log('Access token present:', !!accessToken);
     
+    // Add timeout to prevent hanging requests
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+    
     const res = await fetch(url, {
       headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+      signal: controller.signal,
     });
+    
+    clearTimeout(timeoutId);
     
     console.log('Response status:', res.status);
     console.log('Response headers:', Object.fromEntries(res.headers.entries()));
@@ -1670,6 +1677,18 @@ export async function fetchAllProviderGrids(provider_id: string) {
     }
   } catch (error) {
     console.error('Error calling edge function:', error);
+    
+    // Handle specific error types
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        console.warn('Edge function request timed out, using fallback data');
+      } else if (error.message.includes('message channel closed')) {
+        console.warn('Message channel closed, using fallback data');
+      } else {
+        console.warn('Edge function error:', error.message);
+      }
+    }
+    
     // Fallback: return empty results instead of crashing
     return {
       providers: [],
