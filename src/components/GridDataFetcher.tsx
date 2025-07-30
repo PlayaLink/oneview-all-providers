@@ -8,6 +8,7 @@ import {
 } from "@/lib/supabaseClient";
 import DataGrid from "@/components/DataGrid";
 import { getIconByName } from "@/lib/iconMapping";
+import { extractTitleAcronym } from "@/lib/utils";
 
 // Example mapping functions for specific grids
 const gridDataMappers: Record<string, (row: any) => any> = {
@@ -162,17 +163,37 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
   // Build AG Grid columns dynamically from backend config
   const agGridColumns = React.useMemo(() => {
     if (!Array.isArray(columns)) return [];
-    return columns.map((col: any) => ({
-      field: col.name,
-      headerName: col.display_name,
-      minWidth: col.width || 120,
-      flex: 1,
-      valueFormatter:
-        col.type === "boolean" ? undefined : getValueFormatterForType(col.type),
-      cellRenderer: col.type === "boolean" ? booleanCellRenderer : undefined,
-      hide: !col.visible,
-      // ...add more as needed
-    }));
+    
+    // Check if any column contains "title" in the name
+    const titleColumns = columns.filter(col => col.name.toLowerCase().includes('title'));
+    console.log("Columns containing 'title':", titleColumns);
+    
+    return columns.map((col: any) => {
+      const colDef: any = {
+        field: col.name,
+        headerName: col.display_name,
+        minWidth: col.width || 120,
+        flex: 1,
+        valueFormatter:
+          col.type === "boolean" ? undefined : getValueFormatterForType(col.type),
+        cellRenderer: col.type === "boolean" ? booleanCellRenderer : undefined,
+        hide: !col.visible,
+        // ...add more as needed
+      };
+
+      // Apply custom valueFormatter for title field
+      if (col.name === "title" || col.name.toLowerCase() === "title") {
+        console.log("Applying title valueFormatter for column:", col.name);
+        colDef.valueFormatter = (params: any) => {
+          const fullTitle = params.value;
+          const acronym = extractTitleAcronym(fullTitle);
+          console.log("Title formatting:", { fullTitle, acronym });
+          return acronym;
+        };
+      }
+
+      return colDef;
+    });
   }, [columns]);
 
   // Check for field mismatches

@@ -142,6 +142,31 @@ export const providerTitles = [
 // Helper function to get formatted titles for the options array
 export const getProviderTitleOptions = () => providerTitles.map(title => title.formatted_title);
 
+// Helper function to extract title acronym from formatted title
+export const extractTitleAcronym = (formattedTitle: string): string => {
+  if (!formattedTitle) return '';
+  
+  // First try to find an exact match in our providerTitles array
+  const exactMatch = providerTitles.find(title => title.formatted_title === formattedTitle);
+  if (exactMatch) {
+    return exactMatch.title_acronym;
+  }
+  
+  // Fallback: extract acronym from the format "ACRONYM - Full Title"
+  const match = formattedTitle.match(/^([A-Z]+)\s*-\s*(.+)$/);
+  if (match) {
+    return match[1].trim();
+  }
+  
+  // If no pattern matches, return the original string
+  return formattedTitle;
+};
+
+// Helper function to get title acronym from title value
+export const getTitleAcronym = (titleValue: string): string => {
+  return extractTitleAcronym(titleValue);
+};
+
 // Provider Info fieldGroups definition - Updated to match database schema
 export const providerInfoFieldGroups = [
   // 1. Provider Name
