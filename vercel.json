@@ -1,4 +1,4 @@
 {
   "framework": "vite",
-  "buildCommand": "npm run build"
+  "buildCommand": "npm install @rollup/rollup-linux-x64-gnu@^4.21.0 @swc/core-linux-x64-gnu@^1.11.24 && npm run build"
 } 
