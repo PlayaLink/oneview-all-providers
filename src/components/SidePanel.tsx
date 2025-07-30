@@ -109,10 +109,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
         data-testid="side-panel"
         style={{
           width: isOpen ? `${panelWidth}px` : '0px',
-          minWidth: isOpen ? `${panelWidth}px` : '0px',
-          boxShadow: isOpen
-            ? "-8px 0 24px -2px rgba(0, 0, 0, 0.12), -4px 0 8px -2px rgba(0, 0, 0, 0.08)"
-            : "none",
+          minWidth: isOpen ? `${panelWidth}px` : '0px'
         }}
       >
         <GridItemDetails
