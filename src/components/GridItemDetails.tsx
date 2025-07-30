@@ -198,11 +198,8 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   const gridName = selectedRow?.gridName;
   const [formValues, setFormValues] = React.useState<Record<string, any>>({});
   const [tab, setTab] = useState("details");
-  const [isResizing, setIsResizing] = useState(false);
-  const [isHoveringResizeHandle, setIsHoveringResizeHandle] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const queryClient = useQueryClient();
-  const resizeRef = useRef<HTMLDivElement>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
@@ -294,53 +291,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
     }
   }, [selectedRow, inputConfig, context]);
 
-  // Handle mouse down on resize handle (only for sidepanel context)
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      if (context !== "sidepanel") return;
-      e.preventDefault();
-      setIsResizing(true);
-      document.body.style.cursor = "col-resize";
-      document.body.style.userSelect = "none";
-    },
-    [context],
-  );
 
-  // Handle mouse move for resizing (only for sidepanel context)
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (!isResizing || context !== "sidepanel") return;
-
-      const viewportWidth = window.innerWidth;
-      const newWidth = viewportWidth - e.clientX;
-      const minWidth = 484; // Current minimum width
-      const maxWidth = viewportWidth * 0.5; // 50% of viewport
-
-      const constrainedWidth = Math.max(minWidth, Math.min(maxWidth, newWidth));
-      // Note: In the refactored version, panel width is managed by the parent component
-    },
-    [isResizing, context],
-  );
-
-  // Handle mouse up to stop resizing
-  const handleMouseUp = useCallback(() => {
-    setIsResizing(false);
-    document.body.style.cursor = "";
-    document.body.style.userSelect = "";
-  }, []);
-
-  // Add/remove event listeners (only for sidepanel context)
-  useEffect(() => {
-    if (isResizing && context === "sidepanel") {
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [isResizing, handleMouseMove, handleMouseUp, context]);
 
   // Fetch documents for the selected record
   useEffect(() => {
@@ -938,24 +889,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       data-testid={`grid-item-details-${context}`}
       style={containerStyle}
     >
-      {/* Resize Handle - only for sidepanel context */}
-      {context === "sidepanel" && (
-        <div
-          ref={resizeRef}
-          className={`absolute left-0 top-0 w-1 h-full cursor-col-resize z-10 transition-colors duration-200 ${
-            isHoveringResizeHandle || isResizing
-              ? "bg-[#008BC9]"
-              : "bg-transparent hover:bg-[#E3F2FD]"
-          }`}
-          onMouseDown={handleMouseDown}
-          onMouseEnter={() => setIsHoveringResizeHandle(true)}
-          onMouseLeave={() => setIsHoveringResizeHandle(false)}
-          role="separator"
-          aria-label="Resize side panel"
-          aria-orientation="vertical"
-          data-testid="side-panel-resize-handle"
-        />
-      )}
+
 
       {/* Header */}
       <GridItemDetailsHeader
