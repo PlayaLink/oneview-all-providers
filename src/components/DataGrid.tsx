@@ -99,6 +99,8 @@ interface DataGridProps {
   onToggleSummary?: (data: any, included: boolean) => void;
   onAddRecord?: () => void;
   onMoreHeaderActions?: () => void;
+  /** Whether to pin the actions column to the right */
+  pinActionsColumn?: boolean;
 }
 
 const DataGrid: React.FC<DataGridProps> = (props) => {
@@ -122,6 +124,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     onToggleSummary,
     onAddRecord,
     onMoreHeaderActions,
+    pinActionsColumn = true,
   } = props;
 
   const [internalSelectedRowId, setInternalSelectedRowId] = React.useState<
@@ -189,8 +192,8 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         return baseCol;
       }),
       
-      // Actions column
-      ...(showActionsColumn
+      // Actions column - only show when pinActionsColumn is true
+      ...(showActionsColumn && pinActionsColumn
         ? [
             {
               headerName: "",
@@ -269,6 +272,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     onToggleSummary,
     onAddRecord,
     onMoreHeaderActions,
+    pinActionsColumn,
   ]);
 
   const handleRowClicked = (event: any) => {

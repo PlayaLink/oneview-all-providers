@@ -146,6 +146,7 @@ function GridsSection({
                     selectedRowId={selectedRow?.id}
                     selectedGridKey={selectedRow?.gridName}
                     onOpenDetailModal={onOpenDetailModal}
+                    pinActionsColumn={!selectedRow}
                   />
                 </div>
               ))}
