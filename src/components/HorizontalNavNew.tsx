@@ -11,7 +11,7 @@ interface GridSection {
   order: number;
 }
 
-interface HorizontalNavProps {
+interface HorizontalNavNewProps {
   gridSections: GridSection[];
   selectedSection: string | null;
   onSectionSelect: (sectionKey: string) => void;
@@ -19,7 +19,7 @@ interface HorizontalNavProps {
   // onSectionVisibilityChange?: (sectionKey: string, visible: boolean) => void;
 }
 
-const HorizontalNav: React.FC<HorizontalNavProps> = ({
+const HorizontalNavNew: React.FC<HorizontalNavNewProps> = ({
   gridSections,
   selectedSection,
   onSectionSelect,
@@ -42,10 +42,19 @@ const HorizontalNav: React.FC<HorizontalNavProps> = ({
   }, [sectionFilters, gridSections, groupKeyToGrids]);
 
   return (
-    <nav className="bg-white border-b border-gray-300" role="navigation" aria-label="Section navigation" data-testid="horizontal-nav">
-      <div className="px-4 py-3">
+    <nav
+      className="bg-white border-b border-gray-300"
+      role="navigation"
+      aria-label="Section navigation"
+      data-testid="horizontal-nav"
+    >
+      <div className="px-4">
         <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 overflow-x-auto whitespace-nowrap" role="tablist" aria-label="Available sections">
+          <div
+            className="flex items-end pt-5 overflow-x-auto whitespace-nowrap gap-2"
+            role="tablist"
+            aria-label="Available sections"
+          >
             {visibleSectionList.map((section) => (
               <NavItem
                 key={section.key}
@@ -88,4 +97,4 @@ const HorizontalNav: React.FC<HorizontalNavProps> = ({
   );
 };
 
-export default HorizontalNav;
+export default HorizontalNavNew; 

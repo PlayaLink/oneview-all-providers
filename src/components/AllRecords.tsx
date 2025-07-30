@@ -10,7 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
 import SideNav from "@/components/SideNav";
-import HorizontalNav from "@/components/HorizontalNav";
+import HorizontalNavNew from "@/components/HorizontalNavNew";
 import AllProvidersHeader from "@/components/AllProvidersHeader";
 // import MainContent from "@/components/MainContent"; // Currently unused
 
@@ -605,7 +605,7 @@ const AllRecords: React.FC = () => {
         <div className="flex-1 min-h-0 h-full flex flex-col">
             {/* HorizontalNav (add ref) */}
             <div ref={horizontalNavRef} id="horizontal-nav-ref">
-              <HorizontalNav
+              <HorizontalNavNew
                 selectedSection={selectedSection}
                 onSectionSelect={handleSectionSelect}
                 gridSections={gridSections}
