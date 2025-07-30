@@ -75,13 +75,14 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
 
   return (
     <div
-      className={`fixed top-0 right-0 h-full bg-white transform transition-transform duration-300 ease-in-out z-[1000] flex flex-col ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+      className={`h-full bg-white border-l border-gray-300 flex flex-col transition-all duration-300 ease-in-out ${isOpen ? "w-full" : "w-0 overflow-hidden"}`}
       role="dialog"
       aria-modal="true"
       aria-label="Side panel"
       data-testid="side-panel"
       style={{
-        width: `${panelWidth}px`,
+        width: isOpen ? `${panelWidth}px` : '0px',
+        minWidth: isOpen ? `${panelWidth}px` : '0px',
         boxShadow: isOpen
           ? "-8px 0 24px -2px rgba(0, 0, 0, 0.12), -4px 0 8px -2px rgba(0, 0, 0, 0.08)"
           : "none",
@@ -102,6 +103,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
         aria-label="Resize side panel"
         aria-orientation="vertical"
         data-testid="side-panel-resize-handle"
+        style={{ display: isOpen ? 'block' : 'none' }}
       />
       
       <GridItemDetails

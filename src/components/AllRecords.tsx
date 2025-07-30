@@ -50,6 +50,10 @@ function GridsSection({
   handleProviderSelect,
   handleShowFacilityDetails,
   onOpenDetailModal,
+  inputConfig,
+  setDetailModalRow,
+  setSelectedRow,
+  setShowDetailModal,
   ...rest
 }: any) {
   // Add refs for each grid container
@@ -107,7 +111,7 @@ function GridsSection({
 
   return (
     <section className="flex-1 min-h-0 flex flex-row" role="region" aria-label="Grids list" data-testid="grids-list">
-      {/* Grids List and Scroll Arrows Side by Side */}
+      {/* Grids List, Scroll Arrows, and SidePanel Side by Side */}
       <div className="flex-1 min-h-0 flex flex-row pl-4 pt-4">
         {/* Grids List */}
         <div className="flex-1 min-h-0 overflow-y-auto" data-testid="grids-scroll-container" ref={scrollContainerRef} onScroll={handleScroll}>
@@ -172,6 +176,19 @@ function GridsSection({
             </button>
           </div>
         )}
+        {/* SidePanel - rendered inline next to grids list */}
+        <SidePanel
+          isOpen={!!selectedRow}
+          selectedRow={selectedRow}
+          inputConfig={inputConfig}
+          onClose={handleCloseSidePanel}
+          user={user}
+          onExpandDetailModal={() => {
+            setDetailModalRow(selectedRow);
+            setSelectedRow(null);
+            setShowDetailModal(true);
+          }}
+        />
       </div>
     </section>
   );
@@ -489,19 +506,6 @@ const AllRecords: React.FC = () => {
 
   return (
     <>
-      {/* Render SidePanel overlay if a row is selected */}
-      <SidePanel
-        isOpen={!!selectedRow}
-        selectedRow={selectedRow}
-        inputConfig={inputConfig}
-        onClose={handleCloseSidePanel}
-        user={user}
-        onExpandDetailModal={() => {
-          setDetailModalRow(selectedRow);
-          setSelectedRow(null);
-          setShowDetailModal(true);
-        }}
-      />
       {/* GridItemDetailModal (expandable modal) */}
       <GridItemDetailModal
         isOpen={showDetailModal}
@@ -596,6 +600,10 @@ const AllRecords: React.FC = () => {
               handleProviderSelect={handleProviderSelect}
               handleShowFacilityDetails={handleShowFacilityDetails}
               onOpenDetailModal={handleOpenDetailModal}
+              inputConfig={inputConfig}
+              setDetailModalRow={setDetailModalRow}
+              setSelectedRow={setSelectedRow}
+              setShowDetailModal={setShowDetailModal}
               // Remove visibleSections and handleSectionVisibilityChange props
               // visibleSections={visibleSections}
               // handleSectionVisibilityChange={handleSectionVisibilityChange}
@@ -627,6 +635,10 @@ const AllRecords: React.FC = () => {
               handleProviderSelect={handleProviderSelect}
               handleShowFacilityDetails={handleShowFacilityDetails}
               onOpenDetailModal={handleOpenDetailModal}
+              inputConfig={inputConfig}
+              setDetailModalRow={setDetailModalRow}
+              setSelectedRow={setSelectedRow}
+              setShowDetailModal={setShowDetailModal}
             />
         </div>
       )}
