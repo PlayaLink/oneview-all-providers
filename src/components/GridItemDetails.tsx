@@ -897,6 +897,13 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         context={context}
         onExpandDetailModal={onExpandDetailModal}
         onClose={onClose}
+        gridName={gridName}
+        rowData={selectedRow}
+        onActionClick={(actionName, rowData) => {
+          // Handle action clicks here
+          console.log(`Action ${actionName} clicked for row:`, rowData);
+          // You can add specific action handling logic here
+        }}
       />
 
       {/* Tabs and Content */}

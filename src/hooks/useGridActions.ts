@@ -22,6 +22,7 @@ export interface GridAction {
 }
 
 export function useGridActions(gridName?: string) {
+  console.log('useGridActions called with gridName:', gridName);
   const {
     data: gridActions = [],
     isLoading,
@@ -31,6 +32,8 @@ export function useGridActions(gridName?: string) {
     queryFn: () => gridName ? fetchGridActionsByGridName(gridName) : fetchAllGridActions(),
     enabled: !!gridName,
   });
+
+  console.log('useGridActions result:', { gridName, gridActions, isLoading, error });
 
   // Sort actions by order
   const sortedActions = gridActions.sort((a, b) => a.order - b.order);

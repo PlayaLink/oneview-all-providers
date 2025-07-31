@@ -1727,14 +1727,21 @@ export async function fetchGridActions(gridId: string) {
 // Fetch actions for a grid by grid name/key
 export async function fetchGridActionsByGridName(gridName: string) {
   // First get the grid definition to get the grid_id
-  const { data: gridDef, error: gridError } = await supabase
+  // Try to find the grid by display_name, key, or table_name
+  const { data: gridDefs, error: gridError } = await supabase
     .from('grid_definitions')
-    .select('id')
-    .eq('display_name', gridName)
-    .single();
+    .select('id, display_name, key, table_name')
+    .or(`display_name.eq.${gridName},key.eq.${gridName},table_name.eq.${gridName}`)
+    .limit(1);
   
   if (gridError) throw gridError;
-  if (!gridDef) return [];
+  if (!gridDefs || gridDefs.length === 0) {
+    console.warn(`No grid definition found for gridName: ${gridName}`);
+    return [];
+  }
+
+  const gridDef = gridDefs[0];
+  console.log(`Found grid definition for ${gridName}:`, gridDef);
 
   // Then get the grid actions using the grid_id
   const { data, error } = await supabase

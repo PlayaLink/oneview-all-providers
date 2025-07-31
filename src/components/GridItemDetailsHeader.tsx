@@ -1,12 +1,16 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUpRightAndDownLeftFromCenter, faXmark } from "@fortawesome/free-solid-svg-icons";
+import ActionsColumn from "./ActionsColumn";
 
 interface GridItemDetailsHeaderProps {
   headerText: string;
   context: "sidepanel" | "modal";
   onExpandDetailModal?: () => void;
   onClose: () => void;
+  gridName?: string;
+  rowData?: any;
+  onActionClick?: (actionName: string, rowData: any) => void;
 }
 
 const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
@@ -14,6 +18,9 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
   context,
   onExpandDetailModal,
   onClose,
+  gridName,
+  rowData,
+  onActionClick,
 }) => {
   const headerClassName =
     context === "sidepanel"
@@ -26,13 +33,15 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
       data-testid={`grid-item-details-header-${context}`}
     >
       <div className="flex-1">
-        <h2 className="flex items-center gap-2 text-lg font-bold text-gray-700 tracking-wider">{headerText}</h2>
+        <h2 className="flex items-start gap-2 text-lg font-bold text-gray-700 tracking-wider mr-2">{headerText}</h2>
       </div>
-      {/* Expand icon button - only for sidepanel context */}
+      <div className="flex flex-col">
+        <div className="flex flex-row justify-end">
+                   {/* Expand icon button - only for sidepanel context */}
       {context === "sidepanel" && onExpandDetailModal && (
         <button
           onClick={onExpandDetailModal}
-          className="ml-2 p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors"
+          className="p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors"
           aria-label="Expand details modal"
           data-testid="expand-detail-modal-button"
         >
@@ -46,13 +55,26 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
       {context === "sidepanel" && (
         <button
           onClick={onClose}
-          className={`ml-4 p-2 rounded-full transition-colors hover:bg-white hover:bg-opacity-20`}
+          className={`p-2 rounded-full transition-colors hover:bg-white hover:bg-opacity-20`}
           aria-label={`Close sidepanel`}
           data-testid={`close-sidepanel-button`}
         >
           <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
         </button>
       )}
+        </div>
+         {/* Actions Column below header text */}
+         {gridName && rowData && onActionClick && (
+          <div className="mt-1">
+            <ActionsColumn
+              gridName={gridName}
+              rowData={rowData}
+              onActionClick={onActionClick}
+              className="justify-start"
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

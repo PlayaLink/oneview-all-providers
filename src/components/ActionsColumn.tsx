@@ -17,6 +17,7 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
   onActionClick, 
   className = "" 
 }) => {
+  console.log('ActionsColumn - gridName:', gridName, 'rowData:', rowData);
   const { gridActions, isLoading, error } = useGridActions(gridName);
 
   if (isLoading) {
@@ -28,7 +29,7 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
   }
 
   if (error) {
-    console.error('Error loading grid actions:', error);
+    console.error('Error loading grid actions for gridName:', gridName, 'Error:', error);
     return (
       <div className={`flex items-center justify-center ${className}`} data-testid="actions-column-error">
         <span className="text-red-500 text-xs">Error</span>
@@ -47,7 +48,7 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
   return (
     <TooltipProvider>
       <div 
-        className={`ag-cell flex items-center justify-center gap-1 ${className}`} 
+        className={`flex items-center justify-center gap-1 ${className}`} 
         data-testid="actions-column"
         role="group"
         aria-label={`Actions for ${gridName}`}
