@@ -25,7 +25,7 @@ const getValueFormatterForType = (type: string) => {
     return (params: any) => {
       if (params.value === true) return "Yes";
       if (params.value === false) return "No";
-      return null; // AG Grid will render a truly empty cell
+      return ""; // Return empty string for null/undefined values
     };
   }
   if (type === "date") {
@@ -44,12 +44,6 @@ const getValueFormatterForType = (type: string) => {
   }
   // Add more as needed (multi-select, etc.)
   return undefined;
-};
-
-const booleanCellRenderer = (params: any) => {
-  if (params.value === true) return "Yes";
-  if (params.value === false) return "No";
-  return ""; // This will render a truly blank cell
 };
 
 interface GridDataFetcherProps {
@@ -158,7 +152,6 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
       })
     : [];
 
-  // Remove all console.log statements
 
   // Build AG Grid columns dynamically from backend config
   const agGridColumns = React.useMemo(() => {
@@ -166,7 +159,6 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
     
     // Check if any column contains "title" in the name
     const titleColumns = columns.filter(col => col.name.toLowerCase().includes('title'));
-    console.log("Columns containing 'title':", titleColumns);
     
     return columns.map((col: any) => {
       const colDef: any = {
@@ -174,9 +166,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
         headerName: col.display_name,
         minWidth: col.width || 120,
         flex: 1,
-        valueFormatter:
-          col.type === "boolean" ? undefined : getValueFormatterForType(col.type),
-        cellRenderer: col.type === "boolean" ? booleanCellRenderer : undefined,
+        valueFormatter: getValueFormatterForType(col.type),
         hide: !col.visible,
         // ...add more as needed
       };
@@ -187,7 +177,6 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
         colDef.valueFormatter = (params: any) => {
           const fullTitle = params.value;
           const acronym = extractTitleAcronym(fullTitle);
-          console.log("Title formatting:", { fullTitle, acronym });
           return acronym;
         };
       }
