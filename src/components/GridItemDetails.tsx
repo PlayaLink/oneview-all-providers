@@ -218,7 +218,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   const template = gridName ? getTemplateConfigByGrid(gridName, context) : null;
 
   // Fetch provider using provider_id from selectedRow
-  const providerId = selectedRow?.provider_id || null;
+  const providerId = gridName === "provider_info" ? selectedRow?.id : selectedRow?.provider_id || null;
   const {
     data: provider,
     isLoading: providerLoading,
