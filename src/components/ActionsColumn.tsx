@@ -10,13 +10,15 @@ interface ActionsColumnProps {
   rowData: any;
   onActionClick: (actionName: string, rowData: any) => void;
   className?: string;
+  excludeActions?: string[];
 }
 
 const ActionsColumn: React.FC<ActionsColumnProps> = ({ 
   gridName, 
   rowData, 
   onActionClick, 
-  className = "" 
+  className = "",
+  excludeActions = []
 }) => {
 
   const { gridActions, isLoading, error } = useGridActions(gridName);
@@ -54,7 +56,9 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
         role="group"
         aria-label={`Actions for ${gridName}`}
       >
-        {gridActions.map((gridAction: GridAction) => {
+        {gridActions
+          .filter((gridAction: GridAction) => !excludeActions.includes(gridAction.action.name))
+          .map((gridAction: GridAction) => {
       
           const { action } = gridAction;
           const icon = getIconByName(action.icon);
