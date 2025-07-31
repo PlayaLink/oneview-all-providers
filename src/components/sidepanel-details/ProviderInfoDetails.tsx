@@ -279,8 +279,6 @@ export const providerInfoTemplate = {
   name: 'Provider Information',
   description: 'Template for displaying provider information details',
   header: ({ gridName, row, provider }) => {
-    console.log("333 row:", row);
-    console.log("444 provider:", provider);
     const name = provider ? [provider.last_name, provider.first_name].filter(Boolean).join(', ') : (row.provider_name || '');
     const title = provider ? extractTitleAcronym(provider.title || '') : extractTitleAcronym(row.title || '');
     return `${gridName} for ${name} ${title}`.trim();

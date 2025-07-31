@@ -1,6 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { getIconByName } from "@/lib/iconMapping";
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { getIconByName, isCustomIcon } from "@/lib/iconMapping";
 import { useGridActions, GridAction } from "@/hooks/useGridActions";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -54,6 +55,7 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
         aria-label={`Actions for ${gridName}`}
       >
         {gridActions.map((gridAction: GridAction) => {
+          console.log('ActionsColumn - gridAction:', gridAction);
           const { action } = gridAction;
           const icon = getIconByName(action.icon);
           
@@ -73,10 +75,18 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
                   aria-label={action.tooltip}
                   title={action.tooltip}
                 >
-                  <FontAwesomeIcon 
-                    icon={icon} 
-                    className="w-4 h-4 text-gray-600 hover:text-gray-800" 
-                  />
+                  {isCustomIcon(action.icon) ? (
+                    <img 
+                      src={icon as string}
+                      alt={action.tooltip}
+                      className="w-4 h-4 text-gray-600 hover:text-gray-800" 
+                    />
+                  ) : (
+                    <FontAwesomeIcon 
+                      icon={icon as IconDefinition} 
+                      className="w-4 h-4 text-gray-600 hover:text-gray-800" 
+                    />
+                  )}
                 </button>
               </TooltipTrigger>
               <TooltipContent>

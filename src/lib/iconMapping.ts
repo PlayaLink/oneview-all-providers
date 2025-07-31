@@ -63,6 +63,11 @@ import {
   faFileLines,
 } from "@fortawesome/free-solid-svg-icons";
 
+// Custom SVG icons mapping
+const customIcons: Record<string, string> = {
+  "sidebar-flip": "/icons/sidebar-flip.svg",
+};
+
 // Icon mapping from string names to FontAwesome icon objects
 const iconMap: Record<string, IconDefinition> = {
   "user-doctor": faUserDoctor,
@@ -138,9 +143,20 @@ const iconMap: Record<string, IconDefinition> = {
   "file-lines": faFileLines,
 };
 
-// Function to get FontAwesome icon from icon name
-export const getIconByName = (iconName: string): IconDefinition => {
-  return iconMap[iconName] || faTable; // fallback to table icon
+// Function to get icon (FontAwesome or custom SVG path) from icon name
+export const getIconByName = (iconName: string): IconDefinition | string => {
+  // First check if it's a custom SVG icon
+  if (iconName in customIcons) {
+    return customIcons[iconName];
+  }
+  
+  // Fall back to FontAwesome icons
+  return iconMap[iconName] || faTable;
+};
+
+// Function to check if an icon is a custom SVG icon
+export const isCustomIcon = (iconName: string): boolean => {
+  return iconName in customIcons;
 };
 
 // Export the icon map for other uses
