@@ -196,6 +196,11 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
 
   // Use gridName from selectedRow
   const gridName = selectedRow?.gridName;
+  
+  // Validate that gridName is present
+  if (!gridName) {
+    throw new Error('GridItemDetails: gridName is required but not provided in selectedRow');
+  }
   const [formValues, setFormValues] = React.useState<Record<string, any>>({});
   const [tab, setTab] = useState("details");
   const [isSaving, setIsSaving] = useState(false);
@@ -212,14 +217,8 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   // Select template based on gridName and context
   const template = gridName ? getTemplateConfigByGrid(gridName, context) : null;
 
-  // Fetch provider if selectedRow has provider_id and it's not a provider row itself
-  console.log("111 DEBUG: selectedRow:", selectedRow);
-  const providerId =
-    selectedRow && selectedRow.provider_id
-      ? selectedRow.provider_id
-      : selectedRow && selectedRow.id && gridName === "Provider_Info"
-        ? selectedRow.id
-        : null;
+  // Fetch provider using provider_id from selectedRow
+  const providerId = selectedRow?.provider_id || null;
   const {
     data: provider,
     isLoading: providerLoading,
@@ -227,13 +226,12 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   } = useQuery({
     queryKey: ["provider", providerId],
     queryFn: () => fetchProviderById(providerId),
-    enabled: !!providerId && gridName !== "Provider_Info",
+    enabled: !!providerId,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // For Provider_Info grid, the selectedRow is the provider
-  const effectiveProvider =
-    gridName === "provider_info" ? selectedRow : provider;
+  // Use the fetched provider data
+  const effectiveProvider = provider;
 
   // Only reset form values if the selectedRow.id actually changes
   const lastInitializedId = React.useRef<any>(null);
@@ -306,7 +304,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   // Fetch notes count for the selected record
   useEffect(() => {
     if (!selectedRow?.id) return;
-    fetchNotes(selectedRow.id, gridName || "Provider_Info")
+    fetchNotes(selectedRow.id, gridName)
       .then((notes) => setNotesCount(notes?.length || 0))
       .catch(() => setNotesCount(0));
   }, [selectedRow?.id, gridName]);
@@ -521,7 +519,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
             },
           );
         }
-      } else if (gridName === "Provider_Info") {
+      } else if (gridName === "provider_info") {
         queryClient.setQueryData(["providers"], (oldData: any[]) => {
           if (!oldData) return oldData;
           previousData = oldData;
@@ -593,7 +591,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       // Rollback optimistic updates on error
       if (gridName === "State_Licenses" && previousData) {
         queryClient.setQueryData(["stateLicenses"], previousData);
-      } else if (gridName === "Provider_Info" && previousData) {
+      } else if (gridName === "provider_info" && previousData) {
         queryClient.setQueryData(["providers"], previousData);
       }
 
@@ -765,10 +763,10 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   // Header formatting
   let headerText = "";
   if (template && template.header) {
-    const displayGridName = formatGridName(gridName || "");
-    if (providerLoading && gridName !== "Provider_Info") {
+    const displayGridName = formatGridName(gridName);
+    if (providerLoading) {
       headerText = "Loading provider...";
-    } else if (providerError && gridName !== "Provider_Info") {
+    } else if (providerError) {
       headerText = "Error loading provider";
     } else {
       headerText = template.header({
@@ -1003,7 +1001,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                           React.createElement(NotesComponent, {
                             className: "flex-1 min-h-0",
                             recordId: selectedRow.id,
-                            recordType: gridName || "Provider_Info",
+                            recordType: gridName,
                             user: user,
                           })
                         );
@@ -1150,7 +1148,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                               React.createElement(NotesComponent, {
                                 className: "flex-1 min-h-0",
                                 recordId: selectedRow.id,
-                                recordType: gridName || "Provider_Info",
+                                recordType: gridName,
                                 user: user,
                               })
                             );
