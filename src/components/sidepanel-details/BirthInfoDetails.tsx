@@ -4,7 +4,7 @@ import { MultiSelectInput } from '../inputs/MultiSelectInput';
 import { SingleSelect } from '../inputs/SingleSelect';
 import TextInputField from '../inputs/TextInputField';
 import { getInputType, renderFieldComponent } from './getInputType';
-import { getTitleAcronym } from './ProviderInfoDetails';
+import { extractTitleAcronym } from '@/lib/utils';
 
 // Birth Info field group definition - Updated to match database schema
 export const birthInfoFieldGroup = {
@@ -50,7 +50,7 @@ export const birthInfoTemplate = {
   header: ({ gridName, row, provider }) => {
     // For Birth Info, just use the provider name if available, else fallback to row
     const name = provider ? [provider.last_name, provider.first_name].filter(Boolean).join(', ') : (row.provider_name || '');
-    const title = provider ? getTitleAcronym(provider.title || '') : getTitleAcronym(row.title || '');
+    const title = provider ? extractTitleAcronym(provider.title || '') : extractTitleAcronym(row.title || '');
     return `${gridName} for ${name} ${title}`.trim();
   },
   tabs: [

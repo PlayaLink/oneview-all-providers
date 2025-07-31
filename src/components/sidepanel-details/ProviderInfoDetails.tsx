@@ -4,6 +4,7 @@ import { MultiSelectInput } from '../inputs/MultiSelectInput';
 import { SingleSelect } from '../inputs/SingleSelect';
 import TextInputField from '../inputs/TextInputField';
 import { getInputType, renderFieldComponent } from './getInputType';
+import { extractTitleAcronym } from '@/lib/utils';
 
 // Provider titles with structured data
 export const providerTitles = [
@@ -145,7 +146,7 @@ export const getProviderTitleOptions = () => providerTitles.map(title => title.f
 // Helper function to get title acronym from title value
 export const getTitleAcronym = (titleValue: string): string => {
   if (!titleValue) return '';
-  
+  console.log("111 titleValue:", titleValue);
   // First try to find an exact match in our providerTitles array
   const exactMatch = providerTitles.find(title => title.formatted_title === titleValue);
   if (exactMatch) {
@@ -155,6 +156,7 @@ export const getTitleAcronym = (titleValue: string): string => {
   // Fallback: extract acronym from the format "ACRONYM - Full Title"
   const match = titleValue.match(/^([A-Z]+)\s*-\s*(.+)$/);
   if (match) {
+    console.log("222 match:", match);
     return match[1].trim();
   }
   
@@ -277,8 +279,10 @@ export const providerInfoTemplate = {
   name: 'Provider Information',
   description: 'Template for displaying provider information details',
   header: ({ gridName, row, provider }) => {
+    console.log("333 row:", row);
+    console.log("444 provider:", provider);
     const name = provider ? [provider.last_name, provider.first_name].filter(Boolean).join(', ') : (row.provider_name || '');
-    const title = provider ? getTitleAcronym(provider.title || '') : getTitleAcronym(row.title || '');
+    const title = provider ? extractTitleAcronym(provider.title || '') : extractTitleAcronym(row.title || '');
     return `${gridName} for ${name} ${title}`.trim();
   },
   tabs: [
