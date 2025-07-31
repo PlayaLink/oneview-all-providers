@@ -142,29 +142,24 @@ export const providerTitles = [
 // Helper function to get formatted titles for the options array
 export const getProviderTitleOptions = () => providerTitles.map(title => title.formatted_title);
 
-// Helper function to extract title acronym from formatted title
-export const extractTitleAcronym = (formattedTitle: string): string => {
-  if (!formattedTitle) return '';
+// Helper function to get title acronym from title value
+export const getTitleAcronym = (titleValue: string): string => {
+  if (!titleValue) return '';
   
   // First try to find an exact match in our providerTitles array
-  const exactMatch = providerTitles.find(title => title.formatted_title === formattedTitle);
+  const exactMatch = providerTitles.find(title => title.formatted_title === titleValue);
   if (exactMatch) {
     return exactMatch.title_acronym;
   }
   
   // Fallback: extract acronym from the format "ACRONYM - Full Title"
-  const match = formattedTitle.match(/^([A-Z]+)\s*-\s*(.+)$/);
+  const match = titleValue.match(/^([A-Z]+)\s*-\s*(.+)$/);
   if (match) {
     return match[1].trim();
   }
   
   // If no pattern matches, return the original string
-  return formattedTitle;
-};
-
-// Helper function to get title acronym from title value
-export const getTitleAcronym = (titleValue: string): string => {
-  return extractTitleAcronym(titleValue);
+  return titleValue;
 };
 
 // Provider Info fieldGroups definition - Updated to match database schema
@@ -283,7 +278,7 @@ export const providerInfoTemplate = {
   description: 'Template for displaying provider information details',
   header: ({ gridName, row, provider }) => {
     const name = provider ? [provider.last_name, provider.first_name].filter(Boolean).join(', ') : (row.provider_name || '');
-    const title = provider ? provider.title || '' : (row.title || '');
+    const title = provider ? getTitleAcronym(provider.title || '') : getTitleAcronym(row.title || '');
     return `${gridName} for ${name} ${title}`.trim();
   },
   tabs: [

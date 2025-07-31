@@ -5,7 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// Utility function to extract title acronym from formatted title
+// Generic utility function to extract title acronym from formatted title
+// This is a fallback for grids that don't have their own title mapping
 export const extractTitleAcronym = (formattedTitle: string): string => {
   if (!formattedTitle) return '';
   

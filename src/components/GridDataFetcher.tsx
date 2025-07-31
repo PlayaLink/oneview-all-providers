@@ -9,6 +9,7 @@ import {
 import DataGrid from "@/components/DataGrid";
 import { getIconByName } from "@/lib/iconMapping";
 import { extractTitleAcronym } from "@/lib/utils";
+import { getTitleAcronym } from "./sidepanel-details/ProviderInfoDetails";
 
 // Example mapping functions for specific grids
 const gridDataMappers: Record<string, (row: any) => any> = {
@@ -176,7 +177,10 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
         console.log("Applying title valueFormatter for column:", col.name);
         colDef.valueFormatter = (params: any) => {
           const fullTitle = params.value;
-          const acronym = extractTitleAcronym(fullTitle);
+          // Use provider-specific title formatting if this is a provider grid
+          const acronym = gridDef?.table_name === "providers" || gridDef?.table_name === "providers_with_full_name" 
+            ? getTitleAcronym(fullTitle)
+            : extractTitleAcronym(fullTitle);
           return acronym;
         };
       }
