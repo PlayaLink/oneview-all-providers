@@ -24,7 +24,7 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
 }) => {
   const headerClassName =
     context === "sidepanel"
-      ? "flex items-center justify-between p-4 border-b border-gray-200"
+      ? "flex justify-between px-4 pb-1 border-b border-gray-200"
       : "flex flex-row items-center justify-between pb-4 flex-shrink-0 border-b border-gray-200";
 
   return (
