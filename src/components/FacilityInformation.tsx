@@ -94,7 +94,7 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
     const type = property.type?.toLowerCase() || "text";
 
     if (type === "single-select" || type === "multi-select") {
-      console.log("property **********", property);
+  
       const options = property.options || [];
       if (options.length === 0) {
         return (
@@ -197,7 +197,7 @@ export const FacilityInformation: React.FC<FacilityInformationProps> = ({
       defaultExpanded: true,
       'data-testid': `facility-section-${groupName.toLowerCase().replace(/\s+/g, "-")}`
     };
-    console.log(`CollapsibleSection for group: ${groupName}`, properties);
+
     return (
       <CollapsibleSection {...collapsibleProps}>
         <div className="flex flex-col gap-4 w-full px-2">

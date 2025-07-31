@@ -236,13 +236,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   // Only reset form values if the selectedRow.id actually changes
   const lastInitializedId = React.useRef<any>(null);
   React.useEffect(() => {
-    console.log("GridItemDetails useEffect - form initialization:", {
-      selectedRowId: selectedRow?.id,
-      lastInitializedId: lastInitializedId.current,
-      context,
-      inputConfigLength: inputConfig?.length,
-      selectedRowKeys: selectedRow ? Object.keys(selectedRow) : [],
-    });
+
 
     if (selectedRow && selectedRow.id !== lastInitializedId.current) {
       const initialValues: Record<string, any> = {};
@@ -272,15 +266,10 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         }
 
         initialValues[key] = value;
-        console.log("Field initialization:", {
-          key,
-          fieldType: field.type,
-          value,
-          originalValue: selectedRow[key],
-        });
+
       });
 
-      console.log("Setting initial form values:", initialValues);
+
       setFormValues(initialValues);
       setHasUnsavedChanges(false); // Reset unsaved changes when new row is selected
       lastInitializedId.current = selectedRow.id;
@@ -328,21 +317,11 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
 
   // Handle input change (local only)
   const handleChange = (key: string, value: any) => {
-    console.log("handleChange called:", {
-      key,
-      value,
-      context,
-      selectedRowId: selectedRow?.id,
-    });
+
 
     setFormValues((prev) => {
       const newValues = { ...prev, [key]: value };
-      console.log("Form values updated:", {
-        key,
-        oldValue: prev[key],
-        newValue: value,
-        allValues: newValues,
-      });
+
       return newValues;
     });
 
@@ -356,12 +335,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       const hasChanged =
         JSON.stringify(value) !== JSON.stringify(originalValue);
 
-      console.log("Change detection:", {
-        key,
-        value,
-        originalValue,
-        hasChanged,
-      });
+
 
       if (hasChanged) {
         setHasUnsavedChanges(true);
@@ -488,12 +462,12 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         ([key]) => !validColumns.includes(key),
       );
       if (excludedFields.length > 0) {
-        console.log("Excluded fields from update:", excludedFields);
+  
       }
 
       // Check if there are any updates to save
       if (Object.keys(filteredUpdates).length === 0) {
-        console.log("No updates to save. filteredUpdates:", filteredUpdates);
+  
         return;
       }
 
@@ -529,10 +503,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         });
       }
       // --- DYNAMIC TABLE UPDATE LOGIC ---
-      console.log("Save operation grid name:", {
-        gridName,
-        availableMappings: Object.keys(gridToTableMap),
-      });
+
       const tableName = gridToTableMap[gridName];
       if (!tableName) {
         console.error("Available grid mappings:", Object.keys(gridToTableMap));
@@ -540,17 +511,13 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         throw new Error(`No table mapping found for gridName: ${gridName}`);
       }
 
-      console.log("Updating record:", {
-        tableName,
-        recordId: selectedRow.id,
-        updates: filteredUpdates,
-      });
+
       // Remove optimistic update: do not call setQueryData for legacy keys
       // Only refetch the grid_data queries after save
       let result;
       try {
         result = await updateRecord(tableName, selectedRow.id, filteredUpdates);
-        console.log("Supabase updateRecord result:", result);
+
         // Refetch all grid data queries so GridDataFetcher and side panel get fresh data
         await queryClient.refetchQueries({
           queryKey: ["grid_data"],
@@ -900,7 +867,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         rowData={selectedRow}
         onActionClick={(actionName, rowData) => {
           // Handle action clicks here
-          console.log(`Action ${actionName} clicked for row:`, rowData);
+    
           // You can add specific action handling logic here
         }}
       />

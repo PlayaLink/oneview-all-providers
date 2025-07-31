@@ -70,7 +70,7 @@ export function renderFieldComponent({ field, formValues, handleChange, classNam
         value={selectedValue}
         options={options}
         onChange={(val) => {
-          console.log('SingleSelect onChange called:', { fieldKey, val, label: field.label });
+      
           // Store the id value, not the full object
           handleChange(fieldKey, val?.id || null);
         }}

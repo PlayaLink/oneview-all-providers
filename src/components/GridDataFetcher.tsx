@@ -174,7 +174,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
 
       // Apply custom valueFormatter for title field
       if (col.name === "title" || col.name.toLowerCase() === "title") {
-        console.log("Applying title valueFormatter for column:", col.name);
+
         colDef.valueFormatter = (params: any) => {
           const fullTitle = params.value;
           // Use provider-specific title formatting if this is a provider grid
@@ -240,25 +240,19 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
         handleShowFacilityDetails={handleShowFacilityDetails}
         selectedRowId={selectedGridKey === gridKey ? selectedRowId : null}
         showActionsColumn={true}
-        onDownload={(data) => console.log("Download:", data)}
-        onToggleAlert={(data, enabled) =>
-          console.log("Toggle Alert:", data, enabled)
-        }
+                  onDownload={(data) => {}}
+                  onToggleAlert={(data, enabled) => {}}
         onToggleSidebar={(data) => onRowClicked?.(data)}
-        onToggleFlag={(data, flagged) =>
-          console.log("Toggle Flag:", data, flagged)
-        }
+                  onToggleFlag={(data, flagged) => {}}
         onToggleSummary={(data, included) => {
           if (onOpenDetailModal) {
             onOpenDetailModal(data, gridKey);
           } else {
-            console.log("Toggle Summary:", data, included);
+
           }
         }}
-        onAddRecord={() => console.log("Add Record for:", gridDef.table_name)}
-        onMoreHeaderActions={() =>
-          console.log("More Header Actions for:", gridDef.table_name)
-        }
+                  onAddRecord={() => {}}
+                  onMoreHeaderActions={() => {}}
         pinActionsColumn={pinActionsColumn}
       />
       {isLoading && <div className="text-gray-500 mt-4">Loading...</div>}

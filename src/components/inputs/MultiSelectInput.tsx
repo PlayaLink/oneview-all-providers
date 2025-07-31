@@ -180,7 +180,7 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
         )}
         <div className={cn("flex-1")}> {/* Value UI container */}
           <Popover open={open} onOpenChange={(newOpen) => {
-            console.log('MultiSelect onOpenChange:', { newOpen, disabled, label, options: options.length });
+        
             setOpen(newOpen);
           }}>
             <PopoverTrigger asChild>

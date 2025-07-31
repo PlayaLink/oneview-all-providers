@@ -459,7 +459,7 @@ export async function fetchGridFieldGroups(gridId: string) {
 
 // Fetch all rows from a given table name
 export async function fetchGridData(tableName: string) {
-  console.log('[fetchGridData] Fetching data for table:', tableName);
+  
   if (!tableName) return [];
   const { data, error } = await supabase
     .from(tableName)
@@ -909,7 +909,7 @@ export async function fetchFacilityWithAllData(id: string) {
     .eq('id', id)
     .single();
   if (error) throw error;
-  + console.log('Raw facility_with_all_data from DB:', data);
+  
   return FacilitySchema.extend({
     properties: z.array(z.object({
       id: z.string(),
@@ -1596,8 +1596,8 @@ export async function fetchAllProviderGrids(provider_id: string) {
   const url = `${getSupabaseUrl()}/functions/v1/all-records?provider_id=${provider_id}`;
   
   try {
-    console.log('Calling edge function with URL:', url);
-    console.log('Access token present:', !!accessToken);
+
+    
     
     // Add timeout to prevent hanging requests
     const controller = new AbortController();
@@ -1610,26 +1610,26 @@ export async function fetchAllProviderGrids(provider_id: string) {
     
     clearTimeout(timeoutId);
     
-    console.log('Response status:', res.status);
-    console.log('Response headers:', Object.fromEntries(res.headers.entries()));
+    
+    
     
     // Get the response text first to debug
     const responseText = await res.text();
-    console.log('Response text:', responseText.substring(0, 200) + '...');
+    
     
     if (!res.ok) {
       // If we get a 401 and don't have a token, try with a dummy token
       if (res.status === 401 && !accessToken) {
-        console.log('Got 401 without token, trying with dummy token...');
+
         const dummyRes = await fetch(url, {
           headers: { Authorization: `Bearer dummy-token-for-development` },
         });
         
         const dummyText = await dummyRes.text();
-        console.log('Dummy token response text:', dummyText.substring(0, 200) + '...');
+        
         
         if (!dummyRes.ok) {
-          console.log('Edge function still requires authentication, using fallback data');
+          
           // Return fallback data instead of crashing
           return {
             providers: [],
@@ -1642,7 +1642,7 @@ export async function fetchAllProviderGrids(provider_id: string) {
         
         try {
           const json = JSON.parse(dummyText);
-          console.log('all-records edge function result (with dummy token):', json);
+  
           return json;
         } catch (parseError) {
           console.error('Failed to parse dummy token response:', parseError);
@@ -1668,7 +1668,7 @@ export async function fetchAllProviderGrids(provider_id: string) {
     // Try to parse the successful response as JSON
     try {
       const json = JSON.parse(responseText);
-      console.log('all-records edge function result:', json);
+
       return json;
     } catch (parseError) {
       console.error('Failed to parse response as JSON:', parseError);
@@ -1741,7 +1741,7 @@ export async function fetchGridActionsByGridName(gridName: string) {
   }
 
   const gridDef = gridDefs[0];
-  console.log(`Found grid definition for ${gridName}:`, gridDef);
+  
 
   // Then get the grid actions using the grid_id
   const { data, error } = await supabase

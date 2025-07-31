@@ -210,7 +210,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                 <ActionsHeader
                   onAddRecord={onAddRecord}
                   onMoreActions={onMoreHeaderActions}
-                  onHelp={() => console.log('Help clicked for', title)}
+                  onHelp={() => {}}
                 />
               ),
               cellRenderer: (params: any) => (
@@ -241,16 +241,16 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                         onToggleSummary?.(rowData, true);
                         break;
                       case 'deactivate':
-                        console.log('Deactivate action clicked for row:', rowData);
+                
                         break;
                       case 'exclude':
-                        console.log('Exclude action clicked for row:', rowData);
+                
                         break;
                       case 'tracking':
-                        console.log('Tracking action clicked for row:', rowData);
+                
                         break;
                       default:
-                        console.log(`Action ${actionName} clicked for row:`, rowData);
+                
                     }
                   }}
                   className="h-full flex items-center justify-center"

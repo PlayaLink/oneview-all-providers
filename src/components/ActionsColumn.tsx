@@ -18,7 +18,7 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
   onActionClick, 
   className = "" 
 }) => {
-  console.log('ActionsColumn - gridName:', gridName, 'rowData:', rowData);
+
   const { gridActions, isLoading, error } = useGridActions(gridName);
 
   if (isLoading) {
@@ -55,7 +55,7 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
         aria-label={`Actions for ${gridName}`}
       >
         {gridActions.map((gridAction: GridAction) => {
-          console.log('ActionsColumn - gridAction:', gridAction);
+      
           const { action } = gridAction;
           const icon = getIconByName(action.icon);
           

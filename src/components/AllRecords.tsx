@@ -62,7 +62,7 @@ function GridsSection({
   const [currentGridIndex, setCurrentGridIndex] = React.useState(0);
 
   // Debug: Log gridsToShow
-  console.log('[DEBUG] GridsSection gridsToShow:', gridsToShow.map(g => g.key || g.table_name));
+  
 
   // Scroll to a specific grid by index
   const scrollToGrid = (idx: number) => {
@@ -344,7 +344,7 @@ const AllRecords: React.FC = () => {
   // Handler for showing facility details modal
   const handleShowFacilityDetails = async (facilityAffiliation: any) => {
     try {
-      console.log('Facility affiliation data:', facilityAffiliation);
+
       
       // After the database refactor, facility_affiliations now has facility_id
       if (!facilityAffiliation.facility_id) {
@@ -398,16 +398,16 @@ const AllRecords: React.FC = () => {
         return;
       }
       
-      console.log('Found facility with all data:', facility);
+
       
       // Now fetch facility requirement values for this facility
       const requirementValues = await fetchFacilityRequirementValuesByFacility(facility.id);
-      console.log('Facility requirement values payload:', requirementValues);
+
       
       // Pass the complete facility object with all data (including properties)
       const facilityForModal = facility;
       
-      console.log('Facility object being passed to modal:', facilityForModal);
+
       
       setFacilityDetailsModal({
         isOpen: true,
@@ -484,12 +484,7 @@ const AllRecords: React.FC = () => {
     ? getTemplateConfigByGrid(detailModalRow.gridName, 'modal')
     : null;
 
-  console.log('Modal template config:', {
-    detailModalRowGridName: detailModalRow?.gridName,
-    modalTemplateConfig: modalTemplateConfig?.id,
-    modalTemplateConfigName: modalTemplateConfig?.name,
-    modalTemplateConfigFieldGroups: modalTemplateConfig?.fieldGroups?.length
-  });
+
 
   const modalInputConfig = modalTemplateConfig
     ? modalTemplateConfig.fieldGroups.flatMap(group =>
@@ -500,10 +495,7 @@ const AllRecords: React.FC = () => {
       )
     : [];
 
-  console.log('Modal input config:', {
-    modalInputConfigLength: modalInputConfig.length,
-    modalInputConfigFields: modalInputConfig.map(f => ({ key: f.key, type: f.type, options: f.options?.length }))
-  });
+
 
   return (
     <>
