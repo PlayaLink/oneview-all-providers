@@ -3,7 +3,7 @@ import CollapsibleSection from '../CollapsibleSection';
 import { MultiSelectInput } from '../inputs/MultiSelectInput';
 import { SingleSelect } from '../inputs/SingleSelect';
 import TextInputField from '../inputs/TextInputField';
-import { generateProviderName } from '@/lib/utils';
+import { generateProviderName, generateDefaultHeaderText } from '@/lib/utils';
 
 // Helper to get value and onChange for a field
 function getFieldProps(fieldKey, formValues, handleChange) {
@@ -157,11 +157,7 @@ export const providerInfoWideTemplate = {
   id: 'provider_info_wide',
   name: 'Provider Information (Wide)',
   description: 'Template for displaying provider information details in wide format',
-  header: ({ gridName, row, provider }) => {
-    const name = generateProviderName(provider, row);
-    const title = provider ? provider.title || '' : (row.title || '');
-    return `${gridName} for ${name} ${title}`.trim();
-  },
+  header: ({ gridName, row, provider }) => generateDefaultHeaderText({ gridName, provider }),
   tabs: [
     { id: 'details', label: 'Details', icon: 'bars-staggered', enabled: true },
     { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true },

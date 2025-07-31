@@ -177,7 +177,7 @@ export const stateLicenseTemplate = {
   name: 'State Licenses',
   description: 'Template for displaying state license details',
   header: ({ gridName, row, provider }) => {
-    const name = generateProviderName(provider, row);
+    const name = provider ? generateProviderName(provider) : '';
     const title = provider ? extractTitleAcronym(provider.title || '') : extractTitleAcronym(row.title || '');
     return `${gridName} ${row.license || ''} for ${name} ${title}`.trim();
   },

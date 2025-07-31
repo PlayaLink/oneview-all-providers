@@ -213,6 +213,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   const template = gridName ? getTemplateConfigByGrid(gridName, context) : null;
 
   // Fetch provider if selectedRow has provider_id and it's not a provider row itself
+  console.log("111 DEBUG: selectedRow:", selectedRow);
   const providerId =
     selectedRow && selectedRow.provider_id
       ? selectedRow.provider_id
@@ -232,7 +233,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
 
   // For Provider_Info grid, the selectedRow is the provider
   const effectiveProvider =
-    gridName === "Provider_Info" ? selectedRow : provider;
+    gridName === "provider_info" ? selectedRow : provider;
 
   // Only reset form values if the selectedRow.id actually changes
   const lastInitializedId = React.useRef<any>(null);
@@ -763,40 +764,22 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
 
   // Header formatting
   let headerText = "";
-  console.log("=== HEADER DEBUG ===");
-  console.log("template exists:", !!template);
-  console.log("template.header exists:", !!(template && template.header));
-  console.log("gridName:", gridName);
-  console.log("providerLoading:", providerLoading);
-  console.log("providerError:", providerError);
-  console.log("selectedRow:", selectedRow);
-  console.log("effectiveProvider:", effectiveProvider);
-  
   if (template && template.header) {
     const displayGridName = formatGridName(gridName || "");
-    console.log("displayGridName:", displayGridName);
-    
     if (providerLoading && gridName !== "Provider_Info") {
-      console.log("Using loading message");
       headerText = "Loading provider...";
     } else if (providerError && gridName !== "Provider_Info") {
-      console.log("Using error message");
       headerText = "Error loading provider";
     } else {
-      console.log("Calling template.header function");
       headerText = template.header({
         gridName: displayGridName,
         row: selectedRow,
         provider: effectiveProvider,
       });
-      console.log("headerText result:", headerText);
     }
   } else {
-    console.log("No template or header, using title fallback:", title);
     headerText = title || "";
   }
-  console.log("Final headerText:", headerText);
-  console.log("=== END HEADER DEBUG ===");
 
   // Tabs from template
   let tabIds: string[] = [];

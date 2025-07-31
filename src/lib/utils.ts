@@ -30,34 +30,34 @@ export const extractTitleAcronym = (formattedTitle: string): string => {
 // extractTitleAcronym(null) -> ""
 
 // Utility function to generate provider name in "First Last" format
-export const generateProviderName = (provider?: any, row?: any): string => {
-  console.log("=== generateProviderName DEBUG ===");
-  console.log("provider:", provider);
-  console.log("row:", row);
-  
-  if (provider) {
-    // Use provider object if available
-    const firstName = provider.first_name || '';
-    const lastName = provider.last_name || '';
-    const result = [firstName, lastName].filter(Boolean).join(' ');
-    console.log("Using provider object, result:", result);
-    console.log("=== END generateProviderName DEBUG ===");
-    return result;
-  } else if (row) {
-    // Fallback to row data
-    const result = row.provider_name || '';
-    console.log("Using row data, result:", result);
-    console.log("=== END generateProviderName DEBUG ===");
-    return result;
+export const generateProviderName = (provider?: any): string => {
+  if (!provider) {
+    throw new Error('generateProviderName: Provider object is required');
   }
-  console.log("No data available, returning empty string");
-  console.log("=== END generateProviderName DEBUG ===");
-  return '';
+  
+  const firstName = provider.first_name || '';
+  const lastName = provider.last_name || '';
+  return [firstName, lastName].filter(Boolean).join(' ');
 };
 
 // Test cases for generateProviderName:
 // generateProviderName({ first_name: "John", last_name: "Doe" }) -> "John Doe"
 // generateProviderName({ first_name: "John" }) -> "John"
 // generateProviderName({ last_name: "Doe" }) -> "Doe"
-// generateProviderName({}, { provider_name: "Dr. John Doe" }) -> "Dr. John Doe"
-// generateProviderName() -> ""
+// generateProviderName() -> throws Error: "Provider object is required"
+
+// Reusable helper function for default header text generation
+export const generateDefaultHeaderText = ({ gridName, provider }: { gridName: string; provider?: any }): string => {
+  if (!provider) {
+    return `${gridName}`;
+  }
+  
+  const name = generateProviderName(provider);
+  const title = extractTitleAcronym(provider.title || '');
+  return `${gridName} for ${name} ${title}`.trim();
+};
+
+// Test cases for generateDefaultHeaderText:
+// generateDefaultHeaderText({ gridName: "Provider Info", provider: { first_name: "John", last_name: "Doe", title: "MD - Medical Doctor" } }) -> "Provider Info for John Doe MD"
+// generateDefaultHeaderText({ gridName: "Birth Info", provider: { first_name: "John", last_name: "Doe", title: "DO - Osteopathic Doctor" } }) -> "Birth Info for John Doe DO"
+// generateDefaultHeaderText({ gridName: "Provider Info" }) -> "Provider Info"

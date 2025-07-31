@@ -4,7 +4,7 @@ import { MultiSelectInput } from '../inputs/MultiSelectInput';
 import { SingleSelect } from '../inputs/SingleSelect';
 import TextInputField from '../inputs/TextInputField';
 import { getInputType, renderFieldComponent } from './getInputType';
-import { extractTitleAcronym, generateProviderName } from '@/lib/utils';
+import { extractTitleAcronym, generateProviderName, generateDefaultHeaderText } from '@/lib/utils';
 
 // Provider titles with structured data
 export const providerTitles = [
@@ -276,23 +276,7 @@ export const providerInfoTemplate = {
   id: 'provider_info',
   name: 'Provider Information',
   description: 'Template for displaying provider information details',
-  header: ({ gridName, row, provider }) => {
-    console.log("=== ProviderInfoDetails HEADER DEBUG ===");
-    console.log("gridName:", gridName);
-    console.log("row:", row);
-    console.log("provider:", provider);
-    
-    const name = generateProviderName(provider, row);
-    console.log("generateProviderName result:", name);
-    
-    const title = provider ? extractTitleAcronym(provider.title || '') : extractTitleAcronym(row.title || '');
-    console.log("extractTitleAcronym result:", title);
-    
-    const result = `${gridName} for ${name} ${title}`.trim();
-    console.log("Final header result:", result);
-    console.log("=== END ProviderInfoDetails HEADER DEBUG ===");
-    return result;
-  },
+  header: ({ gridName, provider }) => generateDefaultHeaderText({ gridName, provider }),
   tabs: [
     { id: 'details', label: 'Details', icon: 'bars-staggered', enabled: true },
     { id: 'notes', label: 'Notes', icon: 'comment', enabled: true },

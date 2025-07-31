@@ -15,7 +15,7 @@ import { getTitleAcronym } from "./sidepanel-details/ProviderInfoDetails";
 const gridDataMappers: Record<string, (row: any) => any> = {
   provider_info: (row) => ({
     ...row,
-    provider_name: generateProviderName(null, row),
+    provider_name: row.provider_name || `${row.last_name || ""}, ${row.first_name || ""}`.trim().replace(/^, |, $/, ""),
     id: row.provider_id || row.id, // Ensure id is set for AG Grid selection/navigation
   }),
   // Add more grid-specific mappers as needed

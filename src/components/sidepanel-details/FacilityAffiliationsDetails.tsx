@@ -1,6 +1,7 @@
 import React from 'react';
 import CollapsibleSection from '../CollapsibleSection';
 import { getInputType, renderFieldComponent } from './getInputType';
+import { generateProviderName, generateDefaultHeaderText } from '@/lib/utils';
 
 // Field groups for Facility Affiliations - Updated to match database schema
 export const facilityAffiliationsFieldGroups = [
@@ -62,5 +63,20 @@ const FacilityAffiliationsDetails = ({ formValues, handleChange }) => (
     ))}
   </>
 );
+
+// Unified template object for Facility Affiliations side panel
+export const facilityAffiliationsTemplate = {
+  id: 'facility_affiliations',
+  name: 'Facility Affiliations',
+  description: 'Template for editing provider facility affiliations',
+  tabs: [
+    { id: 'details', label: 'Details', icon: 'hospital', enabled: true },
+    { id: 'notes', label: 'Notes', icon: 'note-sticky', enabled: true },
+    { id: 'documents', label: 'Documents', icon: 'folder', enabled: true },
+  ],
+  fieldGroups: facilityAffiliationsFieldGroups,
+  header: ({ gridName, provider }) => generateDefaultHeaderText({ gridName, provider }),
+  DetailsComponent: FacilityAffiliationsDetails,
+};
 
 export default FacilityAffiliationsDetails; 
