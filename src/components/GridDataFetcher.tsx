@@ -8,14 +8,14 @@ import {
 } from "@/lib/supabaseClient";
 import DataGrid from "@/components/DataGrid";
 import { getIconByName } from "@/lib/iconMapping";
-import { extractTitleAcronym } from "@/lib/utils";
+import { extractTitleAcronym, generateProviderName } from "@/lib/utils";
 import { getTitleAcronym } from "./sidepanel-details/ProviderInfoDetails";
 
 // Example mapping functions for specific grids
 const gridDataMappers: Record<string, (row: any) => any> = {
   provider_info: (row) => ({
     ...row,
-    provider_name: `${row.last_name || ""}, ${row.first_name || ""}`.trim(),
+    provider_name: generateProviderName(null, row),
     id: row.provider_id || row.id, // Ensure id is set for AG Grid selection/navigation
   }),
   // Add more grid-specific mappers as needed

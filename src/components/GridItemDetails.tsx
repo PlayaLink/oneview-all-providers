@@ -763,22 +763,40 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
 
   // Header formatting
   let headerText = "";
+  console.log("=== HEADER DEBUG ===");
+  console.log("template exists:", !!template);
+  console.log("template.header exists:", !!(template && template.header));
+  console.log("gridName:", gridName);
+  console.log("providerLoading:", providerLoading);
+  console.log("providerError:", providerError);
+  console.log("selectedRow:", selectedRow);
+  console.log("effectiveProvider:", effectiveProvider);
+  
   if (template && template.header) {
     const displayGridName = formatGridName(gridName || "");
+    console.log("displayGridName:", displayGridName);
+    
     if (providerLoading && gridName !== "Provider_Info") {
+      console.log("Using loading message");
       headerText = "Loading provider...";
     } else if (providerError && gridName !== "Provider_Info") {
+      console.log("Using error message");
       headerText = "Error loading provider";
     } else {
+      console.log("Calling template.header function");
       headerText = template.header({
         gridName: displayGridName,
         row: selectedRow,
         provider: effectiveProvider,
       });
+      console.log("headerText result:", headerText);
     }
   } else {
+    console.log("No template or header, using title fallback:", title);
     headerText = title || "";
   }
+  console.log("Final headerText:", headerText);
+  console.log("=== END HEADER DEBUG ===");
 
   // Tabs from template
   let tabIds: string[] = [];

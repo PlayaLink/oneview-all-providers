@@ -4,7 +4,7 @@ import { MultiSelectInput } from '../inputs/MultiSelectInput';
 import { SingleSelect } from '../inputs/SingleSelect';
 import TextInputField from '../inputs/TextInputField';
 import { getInputType, renderFieldComponent } from './getInputType';
-import { extractTitleAcronym } from '@/lib/utils';
+import { extractTitleAcronym, generateProviderName } from '@/lib/utils';
 
 // State Licenses fieldGroups definition - Updated to match database schema
 export const stateLicenseFieldGroups = [
@@ -177,7 +177,7 @@ export const stateLicenseTemplate = {
   name: 'State Licenses',
   description: 'Template for displaying state license details',
   header: ({ gridName, row, provider }) => {
-    const name = provider ? [provider.last_name, provider.first_name].filter(Boolean).join(', ') : (row.provider_name || '');
+    const name = generateProviderName(provider, row);
     const title = provider ? extractTitleAcronym(provider.title || '') : extractTitleAcronym(row.title || '');
     return `${gridName} ${row.license || ''} for ${name} ${title}`.trim();
   },

@@ -5,8 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// Generic utility function to extract title acronym from formatted title
-// This is a fallback for grids that don't have their own title mapping
+// Utility function to extract title acronym from formatted title
 export const extractTitleAcronym = (formattedTitle: string): string => {
   if (!formattedTitle) return '';
   
@@ -29,3 +28,36 @@ export const extractTitleAcronym = (formattedTitle: string): string => {
 // extractTitleAcronym("Just a title without acronym") -> "Just a title without acronym"
 // extractTitleAcronym("") -> ""
 // extractTitleAcronym(null) -> ""
+
+// Utility function to generate provider name in "First Last" format
+export const generateProviderName = (provider?: any, row?: any): string => {
+  console.log("=== generateProviderName DEBUG ===");
+  console.log("provider:", provider);
+  console.log("row:", row);
+  
+  if (provider) {
+    // Use provider object if available
+    const firstName = provider.first_name || '';
+    const lastName = provider.last_name || '';
+    const result = [firstName, lastName].filter(Boolean).join(' ');
+    console.log("Using provider object, result:", result);
+    console.log("=== END generateProviderName DEBUG ===");
+    return result;
+  } else if (row) {
+    // Fallback to row data
+    const result = row.provider_name || '';
+    console.log("Using row data, result:", result);
+    console.log("=== END generateProviderName DEBUG ===");
+    return result;
+  }
+  console.log("No data available, returning empty string");
+  console.log("=== END generateProviderName DEBUG ===");
+  return '';
+};
+
+// Test cases for generateProviderName:
+// generateProviderName({ first_name: "John", last_name: "Doe" }) -> "John Doe"
+// generateProviderName({ first_name: "John" }) -> "John"
+// generateProviderName({ last_name: "Doe" }) -> "Doe"
+// generateProviderName({}, { provider_name: "Dr. John Doe" }) -> "Dr. John Doe"
+// generateProviderName() -> ""
