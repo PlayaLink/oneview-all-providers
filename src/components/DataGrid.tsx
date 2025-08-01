@@ -531,6 +531,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         onContextMenu={(e) => e.preventDefault()}
       >
         <AgGridReact
+          theme="legacy"
           rowData={data}
           columnDefs={columnDefs}
           onSelectionChanged={handleSelectionChanged}
