@@ -70,7 +70,7 @@ const SidePanelTabLegacy: React.FC<SidePanelTabLegacyProps> = ({
                   "rounded-full px-2.5 py-1 text-xs font-medium",
                   {
                     "bg-[#008BC9] text-white": isActive || isHovered,
-                    "bg-[#545454] text-white": !isActive && !isHovered,
+                    "text-[#545454] font-semibold": !isActive && !isHovered,
                   }
                 )}
                 data-testid={`tab-count-legacy-${rowKey}`}
