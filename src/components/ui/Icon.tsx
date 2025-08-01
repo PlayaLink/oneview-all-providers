@@ -18,6 +18,7 @@ const Icon: React.FC<IconProps> = ({
 }) => {
   const iconData = getIconByName(icon);
   
+  // Check if it's a custom SVG icon (returns a string path)
   if (isCustomIcon(icon)) {
     return (
       <img 
@@ -29,6 +30,7 @@ const Icon: React.FC<IconProps> = ({
     );
   }
   
+  // Otherwise it's a FontAwesome icon
   return (
     <FontAwesomeIcon 
       icon={iconData as IconDefinition} 

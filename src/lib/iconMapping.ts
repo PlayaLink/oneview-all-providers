@@ -61,14 +61,9 @@ import {
   faFileLines,
 } from "@fortawesome/free-solid-svg-icons";
 
-// Custom SVG icons mapping
-const customIcons: Record<string, string> = {
-  "sidebar-flip": "/icons/sidebar-flip.svg",
-};
-
-// Icon mapping from string names to FontAwesome icon objects
-// Only including icons that are actually used in the codebase
-const iconMap: Record<string, IconDefinition> = {
+// Unified icon mapping that can contain either FontAwesome icons or SVG file paths
+// When you get access to premium FontAwesome icons, just replace the SVG paths with the IconDefinition
+const iconMap: Record<string, IconDefinition | string> = {
   // Grid and tab icons
   "bars-staggered": faBarsStaggered,
   "comment": faComment,
@@ -111,10 +106,12 @@ const iconMap: Record<string, IconDefinition> = {
   // Additional action icons
   "circle-plus": faCirclePlus,
   "circle-xmark": faCircleXmark,
-  "sidebar-flip": faBars,
   "star-half-stroke": faStarHalf,
   "shield-check": faShieldHalved,
   "pen-to-square": faPenToSquare,
+  
+  // Premium FontAwesome icons (currently using custom SVG, replace with IconDefinition when available)
+  "sidebar-flip": "/icons/sidebar-flip.svg",
   
   // Legacy icons (keeping for backward compatibility)
   "user-doctor": faUserDoctor,
@@ -149,20 +146,15 @@ const iconMap: Record<string, IconDefinition> = {
   "ellipsis": faEllipsis,
 };
 
-// Function to get icon (FontAwesome or custom SVG path) from icon name
+// Function to get icon (FontAwesome or SVG path) from icon name
 export const getIconByName = (iconName: string): IconDefinition | string => {
-  // First check if it's a custom SVG icon
-  if (iconName in customIcons) {
-    return customIcons[iconName];
-  }
-  
-  // Fall back to FontAwesome icons
   return iconMap[iconName] || faTable;
 };
 
-// Function to check if an icon is a custom SVG icon
+// Function to check if an icon is a custom SVG icon (returns a string path)
 export const isCustomIcon = (iconName: string): boolean => {
-  return iconName in customIcons;
+  const icon = iconMap[iconName];
+  return typeof icon === 'string' && icon.startsWith('/');
 };
 
 // Export the icon map for other uses
