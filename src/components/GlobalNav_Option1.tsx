@@ -73,14 +73,13 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
       >
         <div className="flex flex-1 px-4 py-3">
           <div className="flex flex-1 justify-between items-center">
-            {/* Left side nav items */}
-            <div className="flex items-center gap-5">
+            {/* Left side - Logo */}
+            <ModioLogoFeatureFlags user={user} onLogout={handleLogout} />
+             {/* Right side nav items */}
+             <div className="flex items-center gap-5">
               <HelpCenter />
               <UserAccount user={user} onLogout={handleLogout} />
             </div>
-
-            {/* Right side - Logo */}
-            <ModioLogoFeatureFlags user={user} onLogout={handleLogout} />
           </div>
         </div>
       </header>
