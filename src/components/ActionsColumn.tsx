@@ -2,7 +2,6 @@ import React from 'react';
 import Icon from "@/components/ui/Icon";
 import { useGridActions, GridAction } from "@/hooks/useGridActions";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import Icon from "@/components/ui/Icon";
 
 interface ActionsColumnProps {
   gridName: string;

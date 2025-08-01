@@ -17,14 +17,14 @@ const ActionsHeader: React.FC<{
   onHelp?: () => void;
 }> = ({ onAddRecord, onMoreActions, onHelp }) => {
   return (
-    <div 
+    <div
       className="flex items-center justify-between w-full h-full"
       data-testid="actions-header"
       role="columnheader"
       aria-label="Actions column header"
     >
       <div className="flex items-center gap-2">
-        <span 
+        <span
           className="ag-header-cell-text"
           data-testid="actions-header-text"
         >
@@ -38,13 +38,13 @@ const ActionsHeader: React.FC<{
           aria-label="Help for actions"
           title="Help for actions"
         >
-          <Icon 
-            icon="circle-exclamation" 
-            className="w-4 h-4" 
+          <Icon
+            icon="circle-exclamation"
+            className="w-4 h-4"
           />
         </button>
       </div>
-      
+
       <div className="flex items-center gap-1">
         <button
           onClick={onAddRecord}
@@ -54,9 +54,9 @@ const ActionsHeader: React.FC<{
           aria-label="Add new record"
           title="Add new record"
         >
-          <Icon 
-            icon="plus" 
-            className="w-3 h-3 text-white" 
+          <Icon
+            icon="plus"
+            className="w-3 h-3 text-white"
           />
         </button>
         <button
@@ -67,9 +67,9 @@ const ActionsHeader: React.FC<{
           aria-label="More actions"
           title="More actions"
         >
-          <Icon 
-            icon="ellipsis-vertical" 
-            className="w-3 h-3" 
+          <Icon
+            icon="ellipsis-vertical"
+            className="w-3 h-3"
           />
         </button>
       </div>
@@ -99,6 +99,8 @@ interface DataGridProps {
   onMoreHeaderActions?: () => void;
   /** Whether to pin the actions column to the right */
   pinActionsColumn?: boolean;
+  /** Callback to open the detail modal */
+  onOpenDetailModal?: (rowData: any) => void;
 }
 
 const DataGrid: React.FC<DataGridProps> = (props) => {
@@ -123,6 +125,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     onAddRecord,
     onMoreHeaderActions,
     pinActionsColumn = true,
+    onOpenDetailModal,
   } = props;
 
   const [internalSelectedRowId, setInternalSelectedRowId] = React.useState<
@@ -151,26 +154,26 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   // Prepare column definitions
   const columnDefs = React.useMemo(() => {
     const hasSort = columns.some((col) => col.sort);
-    
+
     return [
       // Checkbox column
       ...(showCheckboxes
         ? [
-            {
-              headerName: "",
-              headerCheckboxSelection: true,
-              checkboxSelection: true,
-              width: 50,
-              pinned: "left" as const,
-              lockPosition: true,
-              suppressMenu: true,
-              sortable: false,
-              filter: false,
-              resizable: false,
-            },
-          ]
+          {
+            headerName: "",
+            headerCheckboxSelection: true,
+            checkboxSelection: true,
+            width: 50,
+            pinned: "left" as const,
+            lockPosition: true,
+            suppressMenu: true,
+            sortable: false,
+            filter: false,
+            resizable: false,
+          },
+        ]
         : []),
-      
+
       // Data columns
       ...columns.map((col) => {
         const baseCol = {
@@ -189,73 +192,75 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
         return baseCol;
       }),
-      
+
       // Actions column - only show when pinActionsColumn is true
       ...(showActionsColumn && pinActionsColumn
         ? [
-            {
-              headerName: "",
-              field: "actions",
-              width: 194,
-              pinned: "right" as const,
-              lockPosition: true,
-              suppressMenu: true,
-              sortable: false,
-              filter: false,
-              resizable: false,
-              floatingFilter: false,
-              headerComponent: (params: any) => (
-                <ActionsHeader
-                  onAddRecord={onAddRecord}
-                  onMoreActions={onMoreHeaderActions}
-                  onHelp={() => {}}
-                />
-              ),
-              cellRenderer: (params: any) => (
-                <ActionsColumn
-                  gridName={title}
-                  rowData={params.data}
-                  onActionClick={(actionName, rowData) => {
-                    switch (actionName) {
-                      case 'download':
-                        onDownload?.(rowData);
-                        break;
-                      case 'activate':
-                        onDownload?.(rowData);
-                        break;
-                      case 'alert':
-                        onToggleAlert?.(rowData, true);
-                        break;
-                      case 'side_panel':
-                        onToggleSidebar?.(rowData);
-                        break;
-                      case 'verifications':
-                        onToggleFlag?.(rowData, true);
-                        break;
-                      case 'flag':
-                        onToggleFlag?.(rowData, true);
-                        break;
-                      case 'view_details':
-                        onToggleSummary?.(rowData, true);
-                        break;
-                      case 'deactivate':
-                
-                        break;
-                      case 'exclude':
-                
-                        break;
-                      case 'tracking':
-                
-                        break;
-                      default:
-                
-                    }
-                  }}
-                  className="h-full flex items-center justify-center"
-                />
-              ),
-            },
-          ]
+          {
+            headerName: "",
+            field: "actions",
+            width: 194,
+            pinned: "right" as const,
+            lockPosition: true,
+            suppressMenu: true,
+            sortable: false,
+            filter: false,
+            resizable: false,
+            floatingFilter: false,
+            suppressRowClickSelection: true,
+            headerComponent: (params: any) => (
+              <ActionsHeader
+                onAddRecord={onAddRecord}
+                onMoreActions={onMoreHeaderActions}
+                onHelp={() => { }}
+              />
+            ),
+            cellRenderer: (params: any) => (
+              <ActionsColumn
+                gridName={title}
+                rowData={params.data}
+                onActionClick={(actionName, rowData) => {
+                  switch (actionName) {
+                    case 'download':
+                      onDownload?.(rowData);
+                      break;
+                    case 'activate':
+                      onDownload?.(rowData);
+                      break;
+                    case 'alert':
+                      onToggleAlert?.(rowData, true);
+                      break;
+                    case 'side_panel':
+                      onToggleSidebar?.(rowData);
+                      break;
+                    case 'verifications':
+                      onToggleFlag?.(rowData, true);
+                      break;
+                    case 'flag':
+                      onToggleFlag?.(rowData, true);
+                      break;
+                    case 'view_details':
+                      // Open the grid item details modal
+                      onOpenDetailModal?.(rowData);
+                      break;
+                    case 'deactivate':
+
+                      break;
+                    case 'exclude':
+
+                      break;
+                    case 'tracking':
+
+                      break;
+                    default:
+
+                  }
+                }}
+                className="h-full flex items-center justify-center"
+              />
+            ),
+          },
+        ]
         : []),
     ];
   }, [
@@ -271,11 +276,29 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     onAddRecord,
     onMoreHeaderActions,
     pinActionsColumn,
+    onOpenDetailModal,
   ]);
 
+
+
+  const isActionsColumnClickedRef = React.useRef(false);
+
+  const handleCellClicked = (event: any) => {
+    // If the click is on the actions column, set a flag to prevent row click
+    if (event.column && event.column.getColId() === 'actions') {
+      isActionsColumnClickedRef.current = true;
+      return;
+    }
+  };
+
   const handleRowClicked = (event: any) => {
+    // Check if we just clicked on the actions column
+    if (isActionsColumnClickedRef.current) {
+      isActionsColumnClickedRef.current = false; // Reset the flag
+      return;
+    }
     event.api.setFocusedCell(null, null);
-    
+
     if (selectedRowId === event.data.id) {
       if (controlledSelectedRowId === undefined) {
         setInternalSelectedRowId(null);
@@ -285,15 +308,17 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       }
       return;
     }
-    
+
     if (controlledSelectedRowId === undefined) {
       setInternalSelectedRowId(event.data.id);
     }
-    
+
     if (onRowClicked && event.data) {
       onRowClicked(event.data);
     }
   };
+
+
 
   const handleSelectionChanged = (event: any) => {
     if (onSelectionChanged) {
@@ -484,6 +509,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           columnDefs={columnDefs}
           onSelectionChanged={handleSelectionChanged}
           onRowClicked={handleRowClicked}
+          onCellClicked={handleCellClicked}
           onCellContextMenu={handleCellContextMenu}
           rowSelection={showCheckboxes ? "multiple" : undefined}
           headerHeight={40}
@@ -522,7 +548,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           onFilterChanged={saveColumnState}
         />
       </div>
-      
+
       {contextMenu && (
         <ContextMenu
           x={contextMenu.x}

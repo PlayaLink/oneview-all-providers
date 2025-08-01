@@ -513,21 +513,16 @@ const AllRecords: React.FC = () => {
       {/* All Providers Header (add ref) */}
       <div ref={headerRef} id="all-providers-header-ref">
         <AllProvidersHeader
-          title="All Providers"
-          provider_id={provider_id}
-          providerInfo={selectedProviderInfo}
-          onProviderSelect={handleProviderSelect}
-          providerSearchList={providerSearchList}
-          icon="users"
-          buttonText="Add Provider"
-          buttonIcon="user-plus"
-          onButtonClick={() => {
-            // Add Provider functionality
-          }}
-          buttonClassName="bg-[#79AC48] hover:bg-[#6B9A3F] text-white"
-          // Remove visibleSections and onSectionVisibilityChange props
-          // visibleSections={npi ? visibleSections : undefined}
-          // onSectionVisibilityChange={npi ? handleSectionVisibilityChange : undefined}
+          provider={selectedProviderInfo ? {
+            id: selectedProviderInfo.provider_id,
+            provider_name: selectedProviderInfo.fullName,
+            npi_number: selectedProviderInfo.npi,
+            title: selectedProviderInfo.title,
+            primary_specialty: selectedProviderInfo.specialty,
+            work_email: selectedProviderInfo.email,
+            first_name: selectedProviderInfo.firstName,
+            last_name: selectedProviderInfo.lastName,
+          } : undefined}
         />
       </div>
       {/* Main Content */}

@@ -242,15 +242,13 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
         showActionsColumn={true}
                   onDownload={(data) => {}}
                   onToggleAlert={(data, enabled) => {}}
-        onToggleSidebar={(data) => onRowClicked?.(data)}
-                  onToggleFlag={(data, flagged) => {}}
-        onToggleSummary={(data, included) => {
-          if (onOpenDetailModal) {
-            onOpenDetailModal(data, gridKey);
-          } else {
-
-          }
+        onToggleSidebar={(data) => {
+          // For side_panel action, we want to open the side panel directly
+          // This bypasses the row click suppression logic
+          onRowClicked?.(data);
         }}
+                  onToggleFlag={(data, flagged) => {}}
+        onOpenDetailModal={(data) => onOpenDetailModal?.(data, gridKey)}
                   onAddRecord={() => {}}
                   onMoreHeaderActions={() => {}}
         pinActionsColumn={pinActionsColumn}
