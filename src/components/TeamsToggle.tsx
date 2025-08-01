@@ -1,35 +1,35 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faAsterisk, faCloudArrowUp, faCircleInfo, faScrewdriverWrench } from "@fortawesome/free-solid-svg-icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-// Dummy team data
-const dummyTeams = [
+// Team data matching the design
+const teams = [
   {
     id: 1,
-    name: "CompHealth",
-    location: "Salt Lake City, Utah",
+    name: "CHG - Credentialing",
+    location: "Salt Lake City, UT",
     logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/47f216dffab8a61501f2184cb57a9b37a11a21ed?width=58",
     isActive: true
   },
   {
     id: 2,
-    name: "Weatherby Healthcare",
-    location: "Fort Lauderdale, Florida",
+    name: "CHG - CompHealth",
+    location: "Salt Lake City, UT",
     logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/47f216dffab8a61501f2184cb57a9b37a11a21ed?width=58",
     isActive: false
   },
   {
     id: 3,
-    name: "CHG Healthcare",
-    location: "Salt Lake City, Utah",
+    name: "CHG - Weatherby",
+    location: "Fort Lauderdale, FL",
     logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/47f216dffab8a61501f2184cb57a9b37a11a21ed?width=58",
     isActive: false
   },
   {
     id: 4,
-    name: "Foundation Medical Staffing",
-    location: "Omaha, Nebraska",
+    name: "Modio Health QA",
+    location: "San Francisco, CA",
     logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/47f216dffab8a61501f2184cb57a9b37a11a21ed?width=58",
     isActive: false
   }
@@ -113,4 +113,4 @@ const TeamsToggle: React.FC = () => {
   );
 };
 
-export default TeamsToggle; 
+export default TeamsToggle;
