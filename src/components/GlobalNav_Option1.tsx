@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
-import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
+
 import { faSignOut } from "@fortawesome/free-solid-svg-icons";
 import NavItem from "./NavItem";
 import FeatureFlags from "./FeatureFlags";
 import GlobalFeatureToggle from "./GlobalFeatureToggle";
 import ModioLogoFeatureFlags from "./ModioLogoFeatureFlags";
 import TeamsToggle from "./TeamsToggle";
+import HelpCenter from "./HelpCenter";
 import {
   Popover,
   PopoverContent,
@@ -26,7 +27,7 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [newFeaturesDropdownOpen, setNewFeaturesDropdownOpen] = useState(false);
-  const [helpCenterOpen, setHelpCenterOpen] = useState(false);
+
   const [userAccountOpen, setUserAccountOpen] = useState(false);
   const { value: hasAllProviderTab, isLoading: navLoading } =
     useFeatureFlag("all_providers_tab");
@@ -77,145 +78,7 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
           <div className="flex flex-1 justify-between items-center">
             {/* Left side nav items */}
             <div className="flex items-center gap-5">
-              {/* Help Center */}
-              <Popover open={helpCenterOpen} onOpenChange={setHelpCenterOpen}>
-                <PopoverTrigger asChild>
-                  <button
-                    className="flex items-center justify-center h-5 pb-px transition-colors hover:opacity-80"
-                    aria-label="Help Center"
-                    data-testid="help-center-button"
-                  >
-                    <FontAwesomeIcon
-                      icon={faQuestionCircle}
-                      className="w-5 h-5 text-white"
-                    />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent
-                  className="w-[259px] p-1 border-0 bg-white rounded-lg shadow-[0_20px_25px_-5px_rgba(0,0,0,0.05),0_8px_10px_-6px_rgba(0,0,0,0.10)]"
-                  align="start"
-                  side="bottom"
-                  sideOffset={4}
-                >
-                  <div className="flex flex-col">
-                    {/* Header */}
-                    <div
-                      className="flex items-center justify-end px-2 py-1 gap-2"
-                      data-testid="help-center-header"
-                    >
-                      <div
-                        className="flex-1 text-[#BABABA] text-xs font-medium tracking-[0.429px]"
-                        style={{
-                          fontFamily:
-                            "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
-                        }}
-                      >
-                        Resources
-                      </div>
-                    </div>
-
-                    {/* Menu Items */}
-                    <button
-                      className="flex items-center justify-end px-6 py-1 gap-2 hover:bg-gray-50 transition-colors text-left"
-                      onClick={() => setHelpCenterOpen(false)}
-                      data-testid="training-support-item"
-                    >
-                      <div
-                        className="flex-1 text-[#545454] text-xs font-medium tracking-[0.429px]"
-                        style={{
-                          fontFamily:
-                            "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
-                        }}
-                      >
-                        Training & Support
-                      </div>
-                    </button>
-
-                    <button
-                      className="flex items-center justify-end px-6 py-1 gap-2 hover:bg-gray-50 transition-colors text-left"
-                      onClick={() => setHelpCenterOpen(false)}
-                      data-testid="modio-u-item"
-                    >
-                      <div
-                        className="flex-1 text-[#545454] text-xs font-medium tracking-[0.429px]"
-                        style={{
-                          fontFamily:
-                            "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
-                        }}
-                      >
-                        Modio U
-                      </div>
-                    </button>
-
-                    <button
-                      className="flex items-center justify-end px-6 py-1 gap-2 hover:bg-gray-50 transition-colors text-left"
-                      onClick={() => setHelpCenterOpen(false)}
-                      data-testid="refer-friend-item"
-                    >
-                      <div
-                        className="flex-1 text-[#545454] text-xs font-medium tracking-[0.429px]"
-                        style={{
-                          fontFamily:
-                            "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
-                        }}
-                      >
-                        Refer a friend
-                      </div>
-                    </button>
-
-                    <button
-                      className="flex items-center justify-end px-6 py-1 gap-2 hover:bg-gray-50 transition-colors text-left"
-                      onClick={() => setHelpCenterOpen(false)}
-                      data-testid="privacy-policy-item"
-                    >
-                      <div
-                        className="flex-1 text-[#545454] text-xs font-medium tracking-[0.429px]"
-                        style={{
-                          fontFamily:
-                            "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
-                        }}
-                      >
-                        Privacy Policy
-                      </div>
-                    </button>
-
-                    <button
-                      className="flex items-center justify-end px-6 py-1 gap-2 hover:bg-gray-50 transition-colors text-left"
-                      onClick={() => setHelpCenterOpen(false)}
-                      data-testid="terms-conditions-item"
-                    >
-                      <div
-                        className="flex-1 text-[#545454] text-xs font-medium tracking-[0.429px]"
-                        style={{
-                          fontFamily:
-                            "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
-                        }}
-                      >
-                        Terms & Conditions
-                      </div>
-                    </button>
-
-                    <button
-                      className="flex items-center justify-end px-6 py-1 gap-2 hover:bg-gray-50 transition-colors text-left"
-                      onClick={() => {
-                        window.open("https://modiohealth.com", "_blank");
-                        setHelpCenterOpen(false);
-                      }}
-                      data-testid="modio-website-item"
-                    >
-                      <div
-                        className="flex-1 text-[#545454] text-xs font-medium tracking-[0.429px]"
-                        style={{
-                          fontFamily:
-                            "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
-                        }}
-                      >
-                        modiohealth.com
-                      </div>
-                    </button>
-                  </div>
-                </PopoverContent>
-              </Popover>
+              <HelpCenter />
 
               {/* User Account Avatar */}
               <Popover open={userAccountOpen} onOpenChange={setUserAccountOpen}>
