@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
+import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
 import NavItem from "./NavItem";
 import FeatureFlags from "./FeatureFlags";
 import GlobalFeatureToggle from "./GlobalFeatureToggle";
