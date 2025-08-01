@@ -3,6 +3,7 @@ import { AgGridReact } from "ag-grid-react";
 import { ColDef } from "ag-grid-enterprise";
 import Icon from "@/components/ui/Icon";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
+import { useGridActions } from "@/hooks/useGridActions";
 import ContextMenu from "./ContextMenu";
 import ActionsColumn from "./ActionsColumn";
 
@@ -151,6 +152,25 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   // Use feature flag for floating filters
   const { value: showFloatingFilters } = useFeatureFlag("floating_filters");
 
+  // Get actual actions for this grid
+  const { gridActions } = useGridActions(title);
+
+  // Calculate actions column width based on number of actions
+  const minWidthActionsColumn = 165;
+  const calculateActionsColumnWidth = React.useCallback(() => {
+    if (!showActionsColumn || !pinActionsColumn) return 120;
+    
+    // Each action button width (adjust this value to change action button size)
+    // Plus some padding for the container
+    const actionWidth = 32; // Width per action button
+    const containerPadding = 16; // Padding on each side
+    
+    // Use actual action count from the grid
+    const actualActions = gridActions?.length; // Fallback to 4 if not loaded yet
+    
+    return Math.min(Math.max(minWidthActionsColumn, actualActions * actionWidth + containerPadding), 300);
+  }, [showActionsColumn, pinActionsColumn, title, gridActions]);
+
   // Prepare column definitions
   const columnDefs = React.useMemo(() => {
     const hasSort = columns.some((col) => col.sort);
@@ -199,7 +219,10 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           {
             headerName: "",
             field: "actions",
-            width: 194,
+            width: calculateActionsColumnWidth(), // Dynamic width: 32px per action + 16px padding
+            minWidth: minWidthActionsColumn, // Minimum width
+            maxWidth: 300, // Maximum width
+            suppressSizeToFit: true, // Prevent AG Grid from auto-sizing this column
             pinned: "right" as const,
             lockPosition: true,
             suppressMenu: true,
@@ -277,6 +300,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     onMoreHeaderActions,
     pinActionsColumn,
     onOpenDetailModal,
+    calculateActionsColumnWidth,
   ]);
 
 
