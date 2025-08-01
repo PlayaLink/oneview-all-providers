@@ -32,8 +32,19 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
       className={headerClassName}
       data-testid={`grid-item-details-header-${context}`}
     >
-      <div className="flex-1">
-        <h2 className="flex items-start gap-2 text-lg font-bold text-gray-700 tracking-wider mr-2">{headerText}</h2>
+      <div className="flex-1 flex-col">
+        <h2 className="text-lg font-bold text-gray-700 tracking-wider mr-2">{headerText}</h2>
+        {gridName && rowData && onActionClick && (
+          <div className="flex flex-row justify-start my-2">
+            <ActionsColumn
+              gridName={gridName}
+              rowData={rowData}
+              onActionClick={onActionClick}
+              className="justify-start"
+              excludeActions={["side_panel", "view_details"]}
+            />
+          </div>
+        )}
       </div>
       <div className="flex flex-col">
         <div className="flex flex-row justify-end">
@@ -41,7 +52,7 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
       {context === "sidepanel" && onExpandDetailModal && (
         <button
           onClick={onExpandDetailModal}
-          className="p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors"
+          className="px-2 pb-2 pt-1 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors"
           aria-label="Expand details modal"
           data-testid="expand-detail-modal-button"
         >
@@ -55,7 +66,7 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
       {context === "sidepanel" && (
         <button
           onClick={onClose}
-          className={`p-2 rounded-full transition-colors hover:bg-white hover:bg-opacity-20`}
+          className={`pl-2 pr-4 pb-2 pt-1 rounded-full transition-colors hover:bg-white hover:bg-opacity-20`}
           aria-label={`Close sidepanel`}
           data-testid={`close-sidepanel-button`}
         >
@@ -63,18 +74,6 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
         </button>
       )}
         </div>
-         {/* Actions Column below header text */}
-         {gridName && rowData && onActionClick && (
-          <div className="mt-1">
-            <ActionsColumn
-              gridName={gridName}
-              rowData={rowData}
-              onActionClick={onActionClick}
-              className="justify-start"
-              excludeActions={["side_panel", "view_details"]}
-            />
-          </div>
-        )}
       </div>
     </div>
   );
