@@ -62,6 +62,7 @@ const DocumentsGrid: React.FC<DocumentsGridProps> = ({ documents }) => {
   return (
     <div className="ag-theme-quartz" style={{ width: '100%', height: 400 }}>
               <AgGridReact
+          theme="legacy"
           rowData={documents}
           columnDefs={columnDefs}
           headerHeight={40}
@@ -104,4 +105,4 @@ export const documentsTab = {
   icon: 'file-lines',
   enabled: true,
   Component: DocumentsGrid,
-}; 
+};
