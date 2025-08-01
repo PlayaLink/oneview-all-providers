@@ -1,13 +1,11 @@
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
   faUserDoctor,
-  faWeightScale,
   faHome,
   faAddressBook,
   faFileMedical,
   faBook,
   faPlay,
-  faShieldAlt,
   faShieldHalved,
   faClipboard,
   faClipboardList,
@@ -69,59 +67,36 @@ const customIcons: Record<string, string> = {
 };
 
 // Icon mapping from string names to FontAwesome icon objects
+// Only including icons that are actually used in the codebase
 const iconMap: Record<string, IconDefinition> = {
-  "user-doctor": faUserDoctor,
-  weight: faWeightScale,
-  "house-chimney": faHome,
-  "address-book": faAddressBook,
-  "file-medical": faFileMedical,
-  "book-atlas": faBook,
-  triangle: faPlay, // Using faPlay as triangle alternative
-  "shield-halved": faShieldHalved,
-  "clipboard-prescription": faClipboard,
-  prescription: faClipboard,
-  "clipboard-list-check": faClipboardList,
-  "badge-check": faCheckCircle, // Using faCheckCircle as alternative
-  "file-certificate": faCertificate,
-  heartbeat: faHeartbeat,
-  university: faUniversity,
-  "book-medical": faBookMedical,
-  "building-user": faBuilding,
-  "hospital-symbol": faHospital,
-  "briefcase-medical": faBriefcase, // Using faBriefcase as alternative
-  "people-arrows": faUserGroup, // Using faUserGroup as alternative
-  users: faUsers,
-  medal: faMedal,
-  gavel: faGavel,
-  folder: faFolder,
-  "folder-download": faFolder,
-  "file-import": faFileImport,
-  "seal-exclamation": faExclamationTriangle, // Using faExclamationTriangle as alternative
-  "ranking-star": faStar, // Using faStar as alternative
-  "file-export": faFileExport,
-  "sensor-fire": faFire, // Using faFire as alternative
-  key: faKey,
-  wallet: faWallet,
-  "siren-on": faVolumeHigh, // Using faVolumeHigh as alternative
-  clock: faClock,
+  // Grid and tab icons
   "bars-staggered": faBarsStaggered,
-  ellipsis: faEllipsis,
-  // Context menu icons
-  plus: faPlus,
+  "comment": faComment,
+  "file-lines": faFileLines,
+  "users": faUsers,
+  "hospital": faHospital,
+  "folder": faFolder,
+  "file-medical": faFileMedical,
+  "note-sticky": faComment, // Using faComment as alternative for note-sticky
+  "house-chimney": faHome,
+  
+  // Action icons from database
+  "plus": faPlus,
   "external-link-alt": faExternalLinkAlt,
   "id-card": faIdCard,
   "filter-circle-xmark": faFilterCircleXmark,
-  rotate: faRotate,
-  unlock: faUnlock,
-  bell: faBell,
+  "rotate": faRotate,
+  "unlock": faUnlock,
+  "bell": faBell,
   "bell-slash": faBellSlash,
-  copy: faCopy,
+  "copy": faCopy,
   "circle-down": faCircleDown,
-  flag: faFlag,
+  "flag": faFlag,
   "ellipsis-vertical": faEllipsisVertical,
   "circle-exclamation": faCircleExclamation,
-  sidebar: faColumns,
-  // Action icons
+  "sidebar": faColumns,
+  
+  // Legacy action icon names (from database)
   "faCircleDown": faCircleDown,
   "faPaperclip": faPaperclip,
   "faBell": faBell,
@@ -131,16 +106,47 @@ const iconMap: Record<string, IconDefinition> = {
   "faToggleOn": faToggleOn,
   "faToggleOff": faToggleOff,
   "faStar": faStar,
-  "faShieldCheck": faShieldHalved, // Using faShieldHalved as alternative for faShieldCheck
-  // Action icons from database
+  "faShieldCheck": faShieldHalved,
+  
+  // Additional action icons
   "circle-plus": faCirclePlus,
   "circle-xmark": faCircleXmark,
   "sidebar-flip": faBars,
   "star-half-stroke": faStarHalf,
   "shield-check": faShieldHalved,
   "pen-to-square": faPenToSquare,
-  comment: faComment,
-  "file-lines": faFileLines,
+  
+  // Legacy icons (keeping for backward compatibility)
+  "user-doctor": faUserDoctor,
+  "address-book": faAddressBook,
+  "book-atlas": faBook,
+  "triangle": faPlay,
+  "shield-halved": faShieldHalved,
+  "clipboard-prescription": faClipboard,
+  "prescription": faClipboard,
+  "clipboard-list-check": faClipboardList,
+  "badge-check": faCheckCircle,
+  "file-certificate": faCertificate,
+  "heartbeat": faHeartbeat,
+  "university": faUniversity,
+  "book-medical": faBookMedical,
+  "building-user": faBuilding,
+  "hospital-symbol": faHospital,
+  "briefcase-medical": faBriefcase,
+  "people-arrows": faUserGroup,
+  "medal": faMedal,
+  "gavel": faGavel,
+  "folder-download": faFolder,
+  "file-import": faFileImport,
+  "seal-exclamation": faExclamationTriangle,
+  "ranking-star": faStar,
+  "file-export": faFileExport,
+  "sensor-fire": faFire,
+  "key": faKey,
+  "wallet": faWallet,
+  "siren-on": faVolumeHigh,
+  "clock": faClock,
+  "ellipsis": faEllipsis,
 };
 
 // Function to get icon (FontAwesome or custom SVG path) from icon name
