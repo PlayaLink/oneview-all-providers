@@ -21,8 +21,8 @@ const HelpCenter: React.FC = () => {
         </button>
       </PopoverTrigger>
       <PopoverContent
-        className="p-2 border-0 bg-white rounded-lg shadow-[0_20px_25px_-5px_rgba(0,0,0,0.05),0_8px_10px_-6px_rgba(0,0,0,0.10)]"
-        align="start"
+        className="w-[259px] p-2 border-0 bg-white rounded-lg shadow-[0_20px_25px_-5px_rgba(0,0,0,0.05),0_8px_10px_-6px_rgba(0,0,0,0.10)]"
+        align="end"
         side="bottom"
         sideOffset={4}
       >
