@@ -7,7 +7,7 @@ import { faGear } from "@fortawesome/free-solid-svg-icons";
 import NavItem from "./NavItem";
 import FeatureFlags from "./FeatureFlags";
 import GlobalFeatureToggle from "./GlobalFeatureToggle";
-import ModioLogoFeatureFlags from "./ModioLogoFeatureFlags";
+import ModioLogo from "./ModioLogo";
 import TeamsToggle from "./TeamsToggle";
 import HelpCenter from "./HelpCenter";
 import UserAccount from "./UserAccount";
@@ -84,7 +84,7 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
         <div className="flex flex-1 px-4 py-3">
           <div className="flex flex-1 justify-between items-center">
             {/* Left side - Logo */}
-            <ModioLogoFeatureFlags user={user} onLogout={handleLogout} />
+            <ModioLogo />
              {/* Right side nav items */}
              <div className="flex items-center gap-5">
               <HelpCenter />
