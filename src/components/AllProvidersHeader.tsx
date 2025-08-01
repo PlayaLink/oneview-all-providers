@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faTimes, faUser, faPlus } from "@fortawesome/free-solid-svg-icons";
+import Icon from "@/components/ui/Icon";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProviders } from "@/lib/supabaseClient";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -98,7 +97,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
           <div className="flex items-center gap-4 mb-2">
             {/* User Icon in Circle */}
             <div className="flex-shrink-0 w-12 h-12 rounded-full border border-gray-300 bg-gray-100 flex items-center justify-center" aria-hidden="true">
-              <FontAwesomeIcon icon={faUser} className="w-8 h-8 text-gray-400" />
+              <Icon icon="user" className="w-8 h-8 text-gray-400" />
             </div>
             <div className="flex flex-col">
               <h1 className="font-bold text-base text-[#545454]">
@@ -148,11 +147,11 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
                 aria-label="Clear search"
                 data-testid="clear-search-button"
               >
-                <FontAwesomeIcon icon={faTimes} className="w-4 h-4" aria-hidden="true" />
+                <Icon icon="times" className="w-4 h-4" aria-hidden="true" />
               </button>
             )}
-            <FontAwesomeIcon
-              icon={faSearch}
+            <Icon
+              icon="search"
               className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
               aria-hidden="true"
             />
@@ -220,7 +219,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
               data-testid="add-provider-button"
               // onClick={handleAddProvider}
             >
-              <FontAwesomeIcon icon={faPlus} className="w-4 h-4" aria-hidden="true" />
+              <Icon icon="plus" className="w-4 h-4" aria-hidden="true" />
               Add Provider
             </button>
           )}

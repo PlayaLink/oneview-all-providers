@@ -70,12 +70,48 @@ import {
   faCheck,
   faListCheck,
   faUserPlus,
+  faSearch,
+  faUpRightAndDownLeftFromCenter,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Unified icon mapping that can contain either FontAwesome icons or SVG file paths
 // When you get access to premium FontAwesome icons, just replace the SVG paths with the IconDefinition
 const iconMap: Record<string, IconDefinition | string> = {
   // Grid and tab icons
+  "user-doctor": faUserDoctor,
+  weight: faWeightScale,
+  "house-chimney": faHome,
+  "address-book": faAddressBook,
+  "file-medical": faFileMedical,
+  "book-atlas": faBook,
+  triangle: faPlay, // Using faPlay as triangle alternative
+  "shield-halved": faShieldHalved,
+  "clipboard-prescription": faClipboard,
+  prescription: faClipboard,
+  "clipboard-list-check": faClipboardList,
+  "badge-check": faCheckCircle, // Using faCheckCircle as alternative
+  "file-certificate": faCertificate,
+  heartbeat: faHeartbeat,
+  university: faUniversity,
+  "book-medical": faBookMedical,
+  "building-user": faBuilding,
+  "hospital-symbol": faHospital,
+  "briefcase-medical": faBriefcase, // Using faBriefcase as alternative
+  "people-arrows": faUserGroup, // Using faUserGroup as alternative
+  users: faUsers,
+  medal: faMedal,
+  gavel: faGavel,
+  folder: faFolder,
+  "folder-download": faFolder,
+  "file-import": faFileImport,
+  "seal-exclamation": faExclamationTriangle, // Using faExclamationTriangle as alternative
+  "ranking-star": faStar, // Using faStar as alternative
+  "file-export": faFileExport,
+  "sensor-fire": faFire, // Using faFire as alternative
+  key: faKey,
+  wallet: faWallet,
+  "siren-on": faVolumeHigh, // Using faVolumeHigh as alternative
+  clock: faClock,
   "bars-staggered": faBarsStaggered,
   "comment": faComment,
   "file-lines": faFileLines,
@@ -123,6 +159,8 @@ const iconMap: Record<string, IconDefinition | string> = {
   
   // Premium FontAwesome icons (currently using custom SVG, replace with IconDefinition when available)
   "sidebar-flip": "/icons/sidebar-flip.svg",
+  comment: faComment,
+  "file-lines": faFileLines,
   
   // Navigation and UI icons
   "chevron-up": faChevronUp,
@@ -131,6 +169,7 @@ const iconMap: Record<string, IconDefinition | string> = {
   "chevron-right": faChevronRight,
   "user": faUser,
   "xmark": faXmark,
+  "times": faTimes, // Alias for xmark
   "upload": faUpload,
   "caret-down": faCaretDown,
   "check": faCheck,
@@ -168,6 +207,19 @@ const iconMap: Record<string, IconDefinition | string> = {
   "siren-on": faVolumeHigh,
   "clock": faClock,
   "ellipsis": faEllipsis,
+};
+
+// Function to get icon (FontAwesome or SVG path) from icon name
+export const getIconByName = (iconName: string): IconDefinition | string => {
+  return iconMap[iconName] || faTable;
+};
+
+  "search": faSearch,
+  "up-right-and-down-left-from-center": faUpRightAndDownLeftFromCenter,
+  "expand": faUpRightAndDownLeftFromCenter, // Alias for expand
+  
+  // Premium FontAwesome icons (currently using custom SVG, replace with IconDefinition when available)
+  "sidebar-flip": "/icons/sidebar-flip.svg",
 };
 
 // Function to get icon (FontAwesome or SVG path) from icon name

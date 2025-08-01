@@ -1,4 +1,5 @@
 import React from 'react';
+import Icon from "@/components/ui/Icon";
 import { useGridActions, GridAction } from "@/hooks/useGridActions";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import Icon from "@/components/ui/Icon";
@@ -77,7 +78,7 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
                   title={action.tooltip}
                 >
                   <Icon 
-                    icon={action.icon}
+                    icon={action.icon} 
                     className="w-4 h-4 text-gray-600 hover:text-gray-800" 
                   />
                 </button>

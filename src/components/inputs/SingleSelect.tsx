@@ -1,12 +1,6 @@
 import * as React from "react";
 import { ChevronDown, X } from "lucide-react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCaretDown,
-  faTimes,
-  faCopy,
-  faCheck,
-} from "@fortawesome/free-solid-svg-icons";
+import Icon from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -234,8 +228,8 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                       aria-label={`Copy ${label} selection to clipboard`}
                       data-testid={`single-select-copy-${label.toLowerCase().replace(/\s+/g, '-')}`}
                     >
-                      <FontAwesomeIcon
-                        icon={faCopy}
+                      <Icon
+                        icon="copy"
                         className="text-[14px] text-[#3E88D5]"
                       />
                     </div>
@@ -268,13 +262,13 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                     aria-label={`Clear ${label} selection`}
                     data-testid={`single-select-clear-${label.toLowerCase().replace(/\s+/g, '-')}`}
                   >
-                    <FontAwesomeIcon icon={faTimes} className="text-[11px]" />
+                    <Icon icon="times" className="text-[11px]" />
                   </div>
                 )}
                 {/* Dropdown arrow */}
                 <div className="flex w-[18px] h-4 px-[6px] justify-center items-center">
                   <div className="flex w-[10px] h-3 flex-col justify-center flex-shrink-0 text-[#545454] text-center">
-                    <FontAwesomeIcon icon={faCaretDown} className="text-base" />
+                    <Icon icon="caret-down" className="text-base" />
                   </div>
                 </div>
               </div>
@@ -316,7 +310,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                   >
                     <span className="flex-1">{option.label}</span>
                     {value?.id === option.id && (
-                      <FontAwesomeIcon icon={faCheck} className="ml-2 text-white text-xs"  />
+                      <Icon icon="check" className="ml-2 text-white text-xs"  />
                     )}
                   </div>
                 ))
