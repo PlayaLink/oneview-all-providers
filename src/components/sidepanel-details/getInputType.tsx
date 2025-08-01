@@ -35,8 +35,6 @@ export function renderFieldComponent({ field, formValues, handleChange, classNam
   const inputType = getInputType(field);
   const fieldKey = field.key || field.label;
 
-  console.log('Rendering field:', { fieldKey, inputType, options: field.options, formValue: formValues[fieldKey] });
-
   if (inputType === 'multi-select') {
     const options = field.options?.map((opt) => ({ id: opt, label: opt })) || [];
     const stored = formValues[fieldKey] || [];
@@ -44,7 +42,6 @@ export function renderFieldComponent({ field, formValues, handleChange, classNam
       ? stored.map((v) => (typeof v === 'object' && v !== null ? v : options.find((opt) => opt.id === v))).filter(Boolean)
       : [];
 
-    console.log('MultiSelect rendering:', { fieldKey, options, value, stored });
 
     return (
       <MultiSelectInput
@@ -65,7 +62,6 @@ export function renderFieldComponent({ field, formValues, handleChange, classNam
       ? options.find((opt) => opt.id === formValue) || null
       : formValue || null;
     
-    console.log('SingleSelect rendering:', { fieldKey, options, selectedValue, formValue });
 
     return (
       <SingleSelect
@@ -74,7 +70,7 @@ export function renderFieldComponent({ field, formValues, handleChange, classNam
         value={selectedValue}
         options={options}
         onChange={(val) => {
-          console.log('SingleSelect onChange called:', { fieldKey, val, label: field.label });
+      
           // Store the id value, not the full object
           handleChange(fieldKey, val?.id || null);
         }}

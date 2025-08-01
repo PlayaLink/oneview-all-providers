@@ -51,6 +51,7 @@ const SingleProvider: React.FC = () => {
               iconOverride={grid.icon}
               providerIdFilter={provider_id}
               height={300}
+              pinActionsColumn={true}
             />
           );
         })}

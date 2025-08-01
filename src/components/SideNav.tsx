@@ -24,7 +24,7 @@ interface SideNavProps {
 }
 
 const SideNav: React.FC<SideNavProps> = (props) => {
-  console.log('[SideNav] props:', props);
+
   const {
   collapsed,
   selectedItem,

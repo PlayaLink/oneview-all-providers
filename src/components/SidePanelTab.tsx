@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { getIconByName } from "@/lib/iconMapping";
+import Icon from "@/components/ui/Icon";
 
 export interface SidePanelTabProps {
   rowKey: string;
@@ -33,11 +33,11 @@ const SidePanelTab: React.FC<SidePanelTabProps> = ({
       aria-label={`${fullLabel} tab`}
       aria-selected={isActive}
     >
-      <FontAwesomeIcon 
-        icon={getIconByName(icon)} 
-        className="w-6 h-6 mb-1" 
-        aria-hidden="true"
-      />
+              <Icon 
+          icon={icon} 
+          className="w-6 h-6 mb-1" 
+          aria-hidden="true"
+        />
       <span className="text-xs">{iconLabel}</span>
       {count !== undefined && (
         <div 

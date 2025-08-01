@@ -58,7 +58,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   }, [onClose]);
 
   const handleMenuItemClick = (action: string) => {
-    console.log(`Context menu action: ${action}`, { rowData, gridName });
+
     
     if (action === 'show-facility-details' && handleShowFacilityDetails && rowData) {
       // Call the facility details handler

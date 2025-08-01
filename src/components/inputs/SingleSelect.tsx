@@ -81,7 +81,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
     }, [options, searchValue]);
 
     const handleSelect = (option: SingleSelectOption) => {
-      console.log('SingleSelect handleSelect called:', { option, label });
+  
       onChange(option);
       setOpen(false);
       setSearchValue("");
@@ -93,7 +93,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
     };
 
     const handleOpenChange = (newOpen: boolean) => {
-      console.log('SingleSelect handleOpenChange:', { newOpen, disabled, label, options: options.length });
+  
       if (disabled) return;
       setOpen(newOpen);
       if (!newOpen) {
@@ -299,7 +299,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                       option.disabled && "opacity-50 cursor-not-allowed",
                     )}
                     onClick={() => {
-                      console.log('SingleSelect option clicked:', { option, label, disabled: option.disabled });
+              
                       if (!option.disabled) {
                         handleSelect(option);
                       }

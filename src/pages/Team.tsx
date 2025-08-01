@@ -64,6 +64,7 @@ const TeamPage: React.FC = () => {
           iconOverride={faUsers}
           onRowClicked={handleRowClick}
           height={gridHeight}
+          pinActionsColumn={true}
         />
       </div>
     </>

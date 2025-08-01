@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { getIconByName } from "@/lib/iconMapping";
+import Icon from "@/components/ui/Icon";
 import {
   Tooltip,
   TooltipContent,
@@ -56,8 +56,8 @@ const SidePanelTabLegacy: React.FC<SidePanelTabLegacyProps> = ({
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
-            <FontAwesomeIcon
-              icon={getIconByName(icon)}
+            <Icon
+              icon={icon}
               className={cn("w-6 h-6 transition-colors", {
                 "text-[#008BC9]": isActive || isHovered,
                 "text-[#545454]": !isActive && !isHovered,
@@ -70,7 +70,7 @@ const SidePanelTabLegacy: React.FC<SidePanelTabLegacyProps> = ({
                   "rounded-full px-2.5 py-1 text-xs font-medium",
                   {
                     "bg-[#008BC9] text-white": isActive || isHovered,
-                    "bg-[#545454] text-white": !isActive && !isHovered,
+                    "text-[#545454] font-semibold": !isActive && !isHovered,
                   }
                 )}
                 data-testid={`tab-count-legacy-${rowKey}`}

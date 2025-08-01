@@ -4,6 +4,163 @@ import { MultiSelectInput } from '../inputs/MultiSelectInput';
 import { SingleSelect } from '../inputs/SingleSelect';
 import TextInputField from '../inputs/TextInputField';
 import { getInputType, renderFieldComponent } from './getInputType';
+import { extractTitleAcronym, generateProviderName, generateDefaultHeaderText } from '@/lib/utils';
+
+// Provider titles with structured data
+export const providerTitles = [
+  {
+    title_acronym: "ND",
+    full_title: "Doctor of Naturopathy",
+    formatted_title: "ND - Doctor of Naturopathy"
+  },
+  {
+    title_acronym: "OD",
+    full_title: "Optometrist",
+    formatted_title: "OD - Optometrist"
+  },
+  {
+    title_acronym: "OTD",
+    full_title: "Doctor of Occupational Therapy",
+    formatted_title: "OTD - Doctor of Occupational Therapy"
+  },
+  {
+    title_acronym: "PharmD",
+    full_title: "Doctor of Pharmacy",
+    formatted_title: "PharmD - Doctor of Pharmacy"
+  },
+  {
+    title_acronym: "PsyD",
+    full_title: "Doctor of Psychology",
+    formatted_title: "PsyD - Doctor of Psychology"
+  },
+  {
+    title_acronym: "SLPD",
+    full_title: "Doctor of Speech-Language Pathology",
+    formatted_title: "SLPD - Doctor of Speech-Language Pathology"
+  },
+  {
+    title_acronym: "SP",
+    full_title: "Supervising Physician",
+    formatted_title: "SP - Supervising Physician"
+  },
+  {
+    title_acronym: "MD",
+    full_title: "Medical Doctor",
+    formatted_title: "MD - Medical Doctor"
+  },
+  {
+    title_acronym: "PA",
+    full_title: "Physician Assistant",
+    formatted_title: "PA - Physician Assistant"
+  },
+  {
+    title_acronym: "NP",
+    full_title: "Nurse Practitioner",
+    formatted_title: "NP - Nurse Practitioner"
+  },
+  {
+    title_acronym: "CNM",
+    full_title: "Certified Nurse Midwife",
+    formatted_title: "CNM - Certified Nurse Midwife"
+  },
+  {
+    title_acronym: "DC",
+    full_title: "Doctor of Chiropractic",
+    formatted_title: "DC - Doctor of Chiropractic"
+  },
+  {
+    title_acronym: "DPT",
+    full_title: "Doctor of Physical Therapy",
+    formatted_title: "DPT - Doctor of Physical Therapy"
+  },
+  {
+    title_acronym: "DPM",
+    full_title: "Doctor of Podiatric Medicine",
+    formatted_title: "DPM - Doctor of Podiatric Medicine"
+  },
+  {
+    title_acronym: "DDS",
+    full_title: "Doctor of Dental Surgery",
+    formatted_title: "DDS - Doctor of Dental Surgery"
+  },
+  {
+    title_acronym: "RD",
+    full_title: "Registered Dietitian",
+    formatted_title: "RD - Registered Dietitian"
+  },
+  {
+    title_acronym: "LCSW",
+    full_title: "Licensed Clinical Social Worker",
+    formatted_title: "LCSW - Licensed Clinical Social Worker"
+  },
+  {
+    title_acronym: "LCPC",
+    full_title: "Licensed Clinical Professional Counselor",
+    formatted_title: "LCPC - Licensed Clinical Professional Counselor"
+  },
+  {
+    title_acronym: "LPC",
+    full_title: "Licensed Professional Counselor",
+    formatted_title: "LPC - Licensed Professional Counselor"
+  },
+  {
+    title_acronym: "DO",
+    full_title: "Osteopathic Doctor",
+    formatted_title: "DO - Osteopathic Doctor"
+  },
+  {
+    title_acronym: "DNP",
+    full_title: "Doctor of Nursing Practice",
+    formatted_title: "DNP - Doctor of Nursing Practice"
+  },
+  {
+    title_acronym: "DMD",
+    full_title: "Doctor of Dental Medicine",
+    formatted_title: "DMD - Doctor of Dental Medicine"
+  },
+  {
+    title_acronym: "DVM",
+    full_title: "Doctor of Veterinary Medicine",
+    formatted_title: "DVM - Doctor of Veterinary Medicine"
+  },
+  {
+    title_acronym: "DrPH",
+    full_title: "Doctor of Public Health",
+    formatted_title: "DrPH - Doctor of Public Health"
+  },
+  {
+    title_acronym: "EdD",
+    full_title: "Doctor of Education",
+    formatted_title: "EdD - Doctor of Education"
+  },
+  {
+    title_acronym: "DMSc",
+    full_title: "Doctor of Medical Science",
+    formatted_title: "DMSc - Doctor of Medical Science"
+  }
+];
+
+// Helper function to get formatted titles for the options array
+export const getProviderTitleOptions = () => providerTitles.map(title => title.formatted_title);
+
+// Helper function to get title acronym from title value
+export const getTitleAcronym = (titleValue: string): string => {
+  if (!titleValue) return '';
+  // First try to find an exact match in our providerTitles array
+  const exactMatch = providerTitles.find(title => title.formatted_title === titleValue);
+  if (exactMatch) {
+    return exactMatch.title_acronym;
+  }
+  
+  // Fallback: extract acronym from the format "ACRONYM - Full Title"
+  const match = titleValue.match(/^([A-Z]+)\s*-\s*(.+)$/);
+  if (match) {
+    return match[1].trim();
+  }
+  
+  // If no pattern matches, return the original string
+  return titleValue;
+};
 
 // Provider Info fieldGroups definition - Updated to match database schema
 export const providerInfoFieldGroups = [
@@ -25,9 +182,7 @@ export const providerInfoFieldGroups = [
     id: "type_specialty_classifications",
     title: "Type, Specialty & Classifications",
     fields: [
-      { label: "Provider Title", group: "Type, Specialty & Classifications", type: "single-select", placeholder: "Select Provider Title", required: true, options: [
-        "ND - Doctor of Naturopathy", "OD - Optometrist", "OTD - Doctor of Occupational Therapy", "PharmD - Doctor of Pharmacy", "PsyD - Doctor of Psychology", "SLPD - Doctor of Speech-Language Pathology", "SP - Supervising Physician", "MD - Medical Doctor", "PA - Physician Assistant", "NP - Nurse Practitioner", "CNM - Certified Nurse Midwife", "DC - Doctor of Chiropractic", "DPT - Doctor of Physical Therapy", "DPM - Doctor of Podiatric Medicine", "DDS - Doctor of Dental Surgery", "RD - Registered Dietitian", "LCSW - Licensed Clinical Social Worker", "LCPC - Licensed Clinical Professional Counselor", "LPC - Licensed Professional Counselor", "DO - Osteopathic Doctor", "DNP - Doctor of Nursing Practice", "DMD - Doctor of Dental Medicine", "DVM - Doctor of Veterinary Medicine", "DrPH - Doctor of Public Health", "EdD - Doctor of Education", "DMSc - Doctor of Medical Science"
-      ], key: "title" },
+      { label: "Provider Title", group: "Type, Specialty & Classifications", type: "single-select", placeholder: "Select Provider Title", required: true, options: getProviderTitleOptions(), key: "title" },
       { label: "Primary Specialty", group: "Type, Specialty & Classifications", type: "single-select", placeholder: "Select Specialties", required: true, options: [
         "Abdominal Imaging", "Acupuncture", "Acute Care Imaging", "Acute Care Nurse Practitioner", "Acute Registered Nurse", "Addiction (Substance Use Disorder)", "Adolescent Medicine", "Adult Medicine", "Allergy and Immunology", "Anesthesiology", "Bariatric Medicine", "Breast Surgery", "Burn Surgery", "Cardiology", "Cardiothoracic Surgery", "Pediatrics", "Acute Care", "Aerospace Medicine", "Critical Care Medicine", "Dermatology"
       ], key: "primary_specialty" },
@@ -121,11 +276,7 @@ export const providerInfoTemplate = {
   id: 'provider_info',
   name: 'Provider Information',
   description: 'Template for displaying provider information details',
-  header: ({ gridName, row, provider }) => {
-    const name = provider ? [provider.last_name, provider.first_name].filter(Boolean).join(', ') : (row.provider_name || '');
-    const title = provider ? provider.title || '' : (row.title || '');
-    return `${gridName} for ${name} ${title}`.trim();
-  },
+  header: ({ gridName, provider }) => generateDefaultHeaderText({ gridName, provider }),
   tabs: [
     { id: 'details', label: 'Details', icon: 'bars-staggered', enabled: true },
     { id: 'notes', label: 'Notes', icon: 'comment', enabled: true },

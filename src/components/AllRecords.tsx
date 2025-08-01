@@ -1,13 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUsers,
-  faUserPlus,
-  faChevronLeft,
-  faChevronRight,
-  faChevronUp,
-  faChevronDown,
-} from "@fortawesome/free-solid-svg-icons";
+import Icon from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 import SideNav from "@/components/SideNav";
 import HorizontalNavNew from "@/components/HorizontalNavNew";
@@ -50,6 +42,10 @@ function GridsSection({
   handleProviderSelect,
   handleShowFacilityDetails,
   onOpenDetailModal,
+  inputConfig,
+  setDetailModalRow,
+  setSelectedRow,
+  setShowDetailModal,
   ...rest
 }: any) {
   // Add refs for each grid container
@@ -58,7 +54,7 @@ function GridsSection({
   const [currentGridIndex, setCurrentGridIndex] = React.useState(0);
 
   // Debug: Log gridsToShow
-  console.log('[DEBUG] GridsSection gridsToShow:', gridsToShow.map(g => g.key || g.table_name));
+  
 
   // Scroll to a specific grid by index
   const scrollToGrid = (idx: number) => {
@@ -107,7 +103,7 @@ function GridsSection({
 
   return (
     <section className="flex-1 min-h-0 flex flex-row" role="region" aria-label="Grids list" data-testid="grids-list">
-      {/* Grids List and Scroll Arrows Side by Side */}
+      {/* Grids List, Scroll Arrows, and SidePanel Side by Side */}
       <div className="flex-1 min-h-0 flex flex-row pl-4 pt-4">
         {/* Grids List */}
         <div className="flex-1 min-h-0 overflow-y-auto" data-testid="grids-scroll-container" ref={scrollContainerRef} onScroll={handleScroll}>
@@ -142,6 +138,7 @@ function GridsSection({
                     selectedRowId={selectedRow?.id}
                     selectedGridKey={selectedRow?.gridName}
                     onOpenDetailModal={onOpenDetailModal}
+                    pinActionsColumn={!selectedRow}
                   />
                 </div>
               ))}
@@ -158,7 +155,7 @@ function GridsSection({
               className="p-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
               role="button"
             >
-              <FontAwesomeIcon icon={faChevronUp} />
+              <Icon icon="chevron-up" />
             </button>
             <button
               onClick={handleScrollDown}
@@ -168,10 +165,23 @@ function GridsSection({
               className="p-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
               role="button"
             >
-              <FontAwesomeIcon icon={faChevronDown} />
+              <Icon icon="chevron-down" />
             </button>
           </div>
         )}
+        {/* SidePanel - rendered inline next to grids list */}
+        <SidePanel
+          isOpen={!!selectedRow}
+          selectedRow={selectedRow}
+          inputConfig={inputConfig}
+          onClose={handleCloseSidePanel}
+          user={user}
+          onExpandDetailModal={() => {
+            setDetailModalRow(selectedRow);
+            setSelectedRow(null);
+            setShowDetailModal(true);
+          }}
+        />
       </div>
     </section>
   );
@@ -326,7 +336,7 @@ const AllRecords: React.FC = () => {
   // Handler for showing facility details modal
   const handleShowFacilityDetails = async (facilityAffiliation: any) => {
     try {
-      console.log('Facility affiliation data:', facilityAffiliation);
+
       
       // After the database refactor, facility_affiliations now has facility_id
       if (!facilityAffiliation.facility_id) {
@@ -380,16 +390,16 @@ const AllRecords: React.FC = () => {
         return;
       }
       
-      console.log('Found facility with all data:', facility);
+
       
       // Now fetch facility requirement values for this facility
       const requirementValues = await fetchFacilityRequirementValuesByFacility(facility.id);
-      console.log('Facility requirement values payload:', requirementValues);
+
       
       // Pass the complete facility object with all data (including properties)
       const facilityForModal = facility;
       
-      console.log('Facility object being passed to modal:', facilityForModal);
+
       
       setFacilityDetailsModal({
         isOpen: true,
@@ -466,12 +476,7 @@ const AllRecords: React.FC = () => {
     ? getTemplateConfigByGrid(detailModalRow.gridName, 'modal')
     : null;
 
-  console.log('Modal template config:', {
-    detailModalRowGridName: detailModalRow?.gridName,
-    modalTemplateConfig: modalTemplateConfig?.id,
-    modalTemplateConfigName: modalTemplateConfig?.name,
-    modalTemplateConfigFieldGroups: modalTemplateConfig?.fieldGroups?.length
-  });
+
 
   const modalInputConfig = modalTemplateConfig
     ? modalTemplateConfig.fieldGroups.flatMap(group =>
@@ -482,26 +487,10 @@ const AllRecords: React.FC = () => {
       )
     : [];
 
-  console.log('Modal input config:', {
-    modalInputConfigLength: modalInputConfig.length,
-    modalInputConfigFields: modalInputConfig.map(f => ({ key: f.key, type: f.type, options: f.options?.length }))
-  });
+
 
   return (
     <>
-      {/* Render SidePanel overlay if a row is selected */}
-      <SidePanel
-        isOpen={!!selectedRow}
-        selectedRow={selectedRow}
-        inputConfig={inputConfig}
-        onClose={handleCloseSidePanel}
-        user={user}
-        onExpandDetailModal={() => {
-          setDetailModalRow(selectedRow);
-          setSelectedRow(null);
-          setShowDetailModal(true);
-        }}
-      />
       {/* GridItemDetailModal (expandable modal) */}
       <GridItemDetailModal
         isOpen={showDetailModal}
@@ -529,9 +518,9 @@ const AllRecords: React.FC = () => {
           providerInfo={selectedProviderInfo}
           onProviderSelect={handleProviderSelect}
           providerSearchList={providerSearchList}
-          icon={faUsers}
+          icon="users"
           buttonText="Add Provider"
-          buttonIcon={faUserPlus}
+          buttonIcon="user-plus"
           onButtonClick={() => {
             // Add Provider functionality
           }}
@@ -574,9 +563,9 @@ const AllRecords: React.FC = () => {
                 data-testid="sidebar-toggle"
               >
                 {sidebarCollapsed ? (
-                  <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" aria-hidden="true" />
+                  <Icon icon="chevron-right" className="w-4 h-4" aria-hidden="true" />
                 ) : (
-                  <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" aria-hidden="true" />
+                                      <Icon icon="chevron-left" className="w-4 h-4" aria-hidden="true" />
                 )}
               </button>
             </aside>
@@ -596,6 +585,10 @@ const AllRecords: React.FC = () => {
               handleProviderSelect={handleProviderSelect}
               handleShowFacilityDetails={handleShowFacilityDetails}
               onOpenDetailModal={handleOpenDetailModal}
+              inputConfig={inputConfig}
+              setDetailModalRow={setDetailModalRow}
+              setSelectedRow={setSelectedRow}
+              setShowDetailModal={setShowDetailModal}
               // Remove visibleSections and handleSectionVisibilityChange props
               // visibleSections={visibleSections}
               // handleSectionVisibilityChange={handleSectionVisibilityChange}
@@ -627,6 +620,10 @@ const AllRecords: React.FC = () => {
               handleProviderSelect={handleProviderSelect}
               handleShowFacilityDetails={handleShowFacilityDetails}
               onOpenDetailModal={handleOpenDetailModal}
+              inputConfig={inputConfig}
+              setDetailModalRow={setDetailModalRow}
+              setSelectedRow={setSelectedRow}
+              setShowDetailModal={setShowDetailModal}
             />
         </div>
       )}

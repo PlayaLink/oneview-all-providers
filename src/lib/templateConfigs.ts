@@ -2,9 +2,10 @@ import { stateLicenseTemplate } from '../components/sidepanel-details/StateLicen
 import { birthInfoTemplate } from '../components/sidepanel-details/BirthInfoDetails';
 import { providerInfoTemplate } from '../components/sidepanel-details/ProviderInfoDetails';
 import { providerInfoWideTemplate } from '../components/sidepanel-details/ProviderInfoDetailsWide';
+import { addressTemplate } from '../components/sidepanel-details/AddressDetails';
+import { facilityAffiliationsTemplate } from '../components/sidepanel-details/FacilityAffiliationsDetails';
+import { generateDefaultHeaderText } from './utils';
 import React from 'react';
-import AddressDetails from '../components/sidepanel-details/AddressDetails';
-import FacilityAffiliationsDetails, { facilityAffiliationsFieldGroups } from '../components/sidepanel-details/FacilityAffiliationsDetails';
 
 // Interfaces (keep if used elsewhere)
 export interface TemplateConfig {
@@ -73,47 +74,7 @@ export const gridToTemplateMap: Record<string, string> = {
   "feature_settings": "feature_settings"
 };
 
-export const addressTemplate: TemplateConfig = {
-  id: 'addresses',
-  name: 'Addresses',
-  description: 'Template for editing provider addresses',
-  tabs: [
-    { id: 'details', label: 'Details', icon: 'house-chimney', enabled: true },
-    { id: 'notes', label: 'Notes', icon: 'note-sticky', enabled: true },
-    { id: 'documents', label: 'Documents', icon: 'folder', enabled: true },
-  ],
-  fieldGroups: [
-    {
-      id: 'address_info',
-      title: 'Address Information',
-      fields: [
-        { key: 'type', label: 'Type', type: 'text' },
-        { key: 'address', label: 'Address', type: 'text' },
-        { key: 'address_2', label: 'Address 2', type: 'text' },
-        { key: 'city', label: 'City', type: 'text' },
-        { key: 'state', label: 'State', type: 'text' },
-        { key: 'zip_postal_code', label: 'Zip/Postal Code', type: 'text' },
-        { key: 'tags', label: 'Tags', type: 'text' },
-      ],
-    },
-  ],
-  header: ({ row }) => `Address for ${row.provider_name || ''}`,
-  DetailsComponent: AddressDetails,
-};
 
-export const facilityAffiliationsTemplate: TemplateConfig = {
-  id: 'facility_affiliations',
-  name: 'Facility Affiliations',
-  description: 'Template for editing provider facility affiliations',
-  tabs: [
-    { id: 'details', label: 'Details', icon: 'hospital', enabled: true },
-    { id: 'notes', label: 'Notes', icon: 'note-sticky', enabled: true },
-    { id: 'documents', label: 'Documents', icon: 'folder', enabled: true },
-  ],
-  fieldGroups: facilityAffiliationsFieldGroups,
-  header: ({ row }) => `Facility Affiliation for ${row.provider_name || ''}`,
-  DetailsComponent: FacilityAffiliationsDetails,
-};
 
 // Main function to get the template config for a grid - Updated to handle all grids
 export function getTemplateConfigByGrid(gridKey: string, context?: 'sidepanel' | 'modal'): TemplateConfig | null {
@@ -152,7 +113,7 @@ export function getTemplateConfigByGrid(gridKey: string, context?: 'sidepanel' |
           { id: 'documents', label: 'Documents', icon: 'file-lines', enabled: true },
         ],
         fieldGroups: [],
-        header: ({ gridName, row }) => `${gridName} for ${row.id || 'Record'}`,
+        header: ({ gridName, row, provider }) => generateDefaultHeaderText({ gridName, provider }) || `${gridName} for ${row.id || 'Record'}`,
       };
     }
   }

@@ -1,5 +1,6 @@
 import { ColDef } from "ag-grid-enterprise";
 import { gridDefinitions } from "./gridDefinitions";
+import { extractTitleAcronym } from './utils';
 
 // Helper function to format column names for display
 const formatColumnName = (columnName: string): string => {
@@ -110,6 +111,12 @@ export const getColumnsForGrid = (gridKey: string): ColDef[] => {
         return value;
       };
     }
+    if (columnName === "title") {
+      colDef.valueFormatter = (params: any) => {
+        const fullTitle = params.value;
+        return extractTitleAcronym(fullTitle);
+      };
+    }
     if (isDateColumn(columnName)) {
       colDef.valueFormatter = dateValueFormatter;
     }
@@ -201,6 +208,10 @@ export const standardColumns: ColDef[] = [
     resizable: true,
     minWidth: 100,
     flex: 1,
+    valueFormatter: (params: any) => {
+      const fullTitle = params.value;
+      return getTitleAcronym(fullTitle);
+    },
   },
   {
     field: "primary_specialty",
@@ -306,6 +317,10 @@ export const birthInfoColumns: ColDef[] = [
     resizable: true,
     minWidth: 100,
     flex: 1,
+    valueFormatter: (params: any) => {
+      const fullTitle = params.value;
+      return extractTitleAcronym(fullTitle);
+    },
   },
   {
     field: "primary_specialty",

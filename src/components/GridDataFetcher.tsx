@@ -8,12 +8,14 @@ import {
 } from "@/lib/supabaseClient";
 import DataGrid from "@/components/DataGrid";
 import { getIconByName } from "@/lib/iconMapping";
+import { extractTitleAcronym, generateProviderName } from "@/lib/utils";
+import { getTitleAcronym } from "./sidepanel-details/ProviderInfoDetails";
 
 // Example mapping functions for specific grids
 const gridDataMappers: Record<string, (row: any) => any> = {
   provider_info: (row) => ({
     ...row,
-    provider_name: `${row.last_name || ""}, ${row.first_name || ""}`.trim(),
+    provider_name: row.provider_name || `${row.last_name || ""}, ${row.first_name || ""}`.trim().replace(/^, |, $/, ""),
     id: row.provider_id || row.id, // Ensure id is set for AG Grid selection/navigation
   }),
   // Add more grid-specific mappers as needed
@@ -24,7 +26,7 @@ const getValueFormatterForType = (type: string) => {
     return (params: any) => {
       if (params.value === true) return "Yes";
       if (params.value === false) return "No";
-      return null; // AG Grid will render a truly empty cell
+      return ""; // Return empty string for null/undefined values
     };
   }
   if (type === "date") {
@@ -45,12 +47,6 @@ const getValueFormatterForType = (type: string) => {
   return undefined;
 };
 
-const booleanCellRenderer = (params: any) => {
-  if (params.value === true) return "Yes";
-  if (params.value === false) return "No";
-  return ""; // This will render a truly blank cell
-};
-
 interface GridDataFetcherProps {
   gridKey: string;
   titleOverride?: string;
@@ -62,6 +58,8 @@ interface GridDataFetcherProps {
   selectedRowId?: string | null;
   selectedGridKey?: string | null;
   onOpenDetailModal?: (row: any, gridName: string) => void;
+  /** Whether to pin the actions column to the right */
+  pinActionsColumn?: boolean;
 }
 
 const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
@@ -75,6 +73,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
   selectedRowId,
   selectedGridKey,
   onOpenDetailModal,
+  pinActionsColumn = true,
 }) => {
   const lowerKey = gridKey.toLowerCase();
   // Fetch all grid definitions and find the one for this gridKey
@@ -154,22 +153,40 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
       })
     : [];
 
-  // Remove all console.log statements
 
   // Build AG Grid columns dynamically from backend config
   const agGridColumns = React.useMemo(() => {
     if (!Array.isArray(columns)) return [];
-    return columns.map((col: any) => ({
-      field: col.name,
-      headerName: col.display_name,
-      minWidth: col.width || 120,
-      flex: 1,
-      valueFormatter:
-        col.type === "boolean" ? undefined : getValueFormatterForType(col.type),
-      cellRenderer: col.type === "boolean" ? booleanCellRenderer : undefined,
-      hide: !col.visible,
-      // ...add more as needed
-    }));
+    
+    // Check if any column contains "title" in the name
+    const titleColumns = columns.filter(col => col.name.toLowerCase().includes('title'));
+    
+    return columns.map((col: any) => {
+      const colDef: any = {
+        field: col.name,
+        headerName: col.display_name,
+        minWidth: col.width || 120,
+        flex: 1,
+        valueFormatter: getValueFormatterForType(col.type),
+        hide: !col.visible,
+        // ...add more as needed
+      };
+
+      // Apply custom valueFormatter for title field
+      if (col.name === "title" || col.name.toLowerCase() === "title") {
+
+        colDef.valueFormatter = (params: any) => {
+          const fullTitle = params.value;
+          // Use provider-specific title formatting if this is a provider grid
+          const acronym = gridDef?.table_name === "providers" || gridDef?.table_name === "providers_with_full_name" 
+            ? getTitleAcronym(fullTitle)
+            : extractTitleAcronym(fullTitle);
+          return acronym;
+        };
+      }
+
+      return colDef;
+    });
   }, [columns]);
 
   // Check for field mismatches
@@ -223,25 +240,20 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
         handleShowFacilityDetails={handleShowFacilityDetails}
         selectedRowId={selectedGridKey === gridKey ? selectedRowId : null}
         showActionsColumn={true}
-        onDownload={(data) => console.log("Download:", data)}
-        onToggleAlert={(data, enabled) =>
-          console.log("Toggle Alert:", data, enabled)
-        }
+                  onDownload={(data) => {}}
+                  onToggleAlert={(data, enabled) => {}}
         onToggleSidebar={(data) => onRowClicked?.(data)}
-        onToggleFlag={(data, flagged) =>
-          console.log("Toggle Flag:", data, flagged)
-        }
+                  onToggleFlag={(data, flagged) => {}}
         onToggleSummary={(data, included) => {
           if (onOpenDetailModal) {
             onOpenDetailModal(data, gridKey);
           } else {
-            console.log("Toggle Summary:", data, included);
+
           }
         }}
-        onAddRecord={() => console.log("Add Record for:", gridDef.table_name)}
-        onMoreHeaderActions={() =>
-          console.log("More Header Actions for:", gridDef.table_name)
-        }
+                  onAddRecord={() => {}}
+                  onMoreHeaderActions={() => {}}
+        pinActionsColumn={pinActionsColumn}
       />
       {isLoading && <div className="text-gray-500 mt-4">Loading...</div>}
       {error && (

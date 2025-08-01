@@ -7,7 +7,6 @@ import {
   faFileMedical,
   faBook,
   faPlay,
-  faShieldAlt,
   faShieldHalved,
   faClipboard,
   faClipboardList,
@@ -56,7 +55,6 @@ import {
   faToggleOff,
   faCirclePlus,
   faCircleXmark,
-  faBars,
   faStarHalf,
   faPenToSquare,
   faComment,
@@ -79,6 +77,7 @@ import {
 // Unified icon mapping that can contain either FontAwesome icons or SVG file paths
 // When you get access to premium FontAwesome icons, just replace the SVG paths with the IconDefinition
 const iconMap: Record<string, IconDefinition | string> = {
+  // Provider and medical icons
   "user-doctor": faUserDoctor,
   weight: faWeightScale,
   "house-chimney": faHome,
@@ -115,7 +114,8 @@ const iconMap: Record<string, IconDefinition | string> = {
   clock: faClock,
   "bars-staggered": faBarsStaggered,
   ellipsis: faEllipsis,
-  // Context menu icons
+  
+  // Action and UI icons
   plus: faPlus,
   "external-link-alt": faExternalLinkAlt,
   "id-card": faIdCard,
@@ -130,18 +130,7 @@ const iconMap: Record<string, IconDefinition | string> = {
   "ellipsis-vertical": faEllipsisVertical,
   "circle-exclamation": faCircleExclamation,
   sidebar: faColumns,
-  // Action icons
-  "faCircleDown": faCircleDown,
-  "faPaperclip": faPaperclip,
-  "faBell": faBell,
-  "faTable": faTable,
-  "faFlag": faFlag,
-  "faTimes": faTimes,
-  "faToggleOn": faToggleOn,
-  "faToggleOff": faToggleOff,
-  "faStar": faStar,
-  "faShieldCheck": faShieldHalved, // Using faShieldHalved as alternative for faShieldCheck
-  // Action icons from database
+  paperclip: faPaperclip,
   "circle-plus": faCirclePlus,
   "circle-xmark": faCircleXmark,
   "star-half-stroke": faStarHalf,
@@ -166,6 +155,10 @@ const iconMap: Record<string, IconDefinition | string> = {
   "search": faSearch,
   "up-right-and-down-left-from-center": faUpRightAndDownLeftFromCenter,
   "expand": faUpRightAndDownLeftFromCenter, // Alias for expand
+  
+  // Toggle icons
+  "toggle-on": faToggleOn,
+  "toggle-off": faToggleOff,
   
   // Premium FontAwesome icons (currently using custom SVG, replace with IconDefinition when available)
   "sidebar-flip": "/icons/sidebar-flip.svg",

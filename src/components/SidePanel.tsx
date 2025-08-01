@@ -19,48 +19,59 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
   const [panelWidth, setPanelWidth] = useState(() => {
     // Load saved width from localStorage, fallback to default
     const savedWidth = localStorage.getItem('sidePanelWidth');
-    return savedWidth ? parseInt(savedWidth, 10) : 484;
+    return savedWidth ? parseInt(savedWidth, 10) : 575;
   });
-  const [isResizing, setIsResizing] = useState(false);
-  const [isHoveringResizeHandle, setIsHoveringResizeHandle] = useState(false);
-  const resizeRef = useRef<HTMLDivElement>(null);
-
-  // Handle mouse down on resize handle
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsResizing(true);
-    document.body.style.cursor = 'col-resize';
-    document.body.style.userSelect = 'none';
-  }, []);
-
-  // Handle mouse move for resizing
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (!isResizing) return;
-
-    const viewportWidth = window.innerWidth;
-    const newWidth = viewportWidth - e.clientX;
-    const minWidth = 484; // Current minimum width
-    const maxWidth = viewportWidth * 0.75; // 75% of viewport
-
-    const constrainedWidth = Math.max(minWidth, Math.min(maxWidth, newWidth));
-    setPanelWidth(constrainedWidth);
-  }, [isResizing]);
+  const [isDragging, setIsDragging] = useState(false);
+  const dividerRef = useRef<HTMLDivElement>(null);
 
   // Save width to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('sidePanelWidth', panelWidth.toString());
   }, [panelWidth]);
 
-  // Handle mouse up to stop resizing
+  // Handle mouse down on divider
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  }, []);
+
+  // Handle mouse move for dragging
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!isDragging) return;
+
+    // Use requestAnimationFrame for smoother performance
+    requestAnimationFrame(() => {
+      // Get the container that holds both grids and sidepanel
+      const container = dividerRef.current?.parentElement?.parentElement;
+      if (!container) return;
+
+      const containerRect = container.getBoundingClientRect();
+      const containerWidth = containerRect.width;
+      
+      // Calculate new panel width based on mouse position
+      // Mouse position from right edge of container
+      const mouseXFromRight = containerRect.right - e.clientX;
+      
+      const minWidth = 300; // Minimum panel width
+      const maxWidth = containerWidth * 0.8; // Maximum 80% of container width
+      
+      const newWidth = Math.max(minWidth, Math.min(maxWidth, mouseXFromRight));
+      setPanelWidth(newWidth);
+    });
+  }, [isDragging]);
+
+  // Handle mouse up to stop dragging
   const handleMouseUp = useCallback(() => {
-    setIsResizing(false);
+    setIsDragging(false);
     document.body.style.cursor = '';
     document.body.style.userSelect = '';
   }, []);
 
   // Add/remove event listeners
   useEffect(() => {
-    if (isResizing) {
+    if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
     }
@@ -69,54 +80,52 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isResizing, handleMouseMove, handleMouseUp]);
-
+  }, [isDragging, handleMouseMove, handleMouseUp]);
+  
   if (!selectedRow) return null;
 
   return (
-    <div
-      className={`fixed top-0 right-0 h-full bg-white transform transition-transform duration-300 ease-in-out z-[1000] flex flex-col ${isOpen ? "translate-x-0" : "translate-x-full"}`}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Side panel"
-      data-testid="side-panel"
-      style={{
-        width: `${panelWidth}px`,
-        boxShadow: isOpen
-          ? "-8px 0 24px -2px rgba(0, 0, 0, 0.12), -4px 0 8px -2px rgba(0, 0, 0, 0.08)"
-          : "none",
-      }}
-    >
-      {/* Resize Handle */}
-      <div
-        ref={resizeRef}
-        className={`absolute left-0 top-0 w-1 h-full cursor-col-resize z-[1001] transition-colors duration-200 ${
-          isHoveringResizeHandle || isResizing 
-            ? 'bg-[#008BC9]' 
-            : 'bg-transparent hover:bg-[#E3F2FD]'
-        }`}
-        onMouseDown={handleMouseDown}
-        onMouseEnter={() => setIsHoveringResizeHandle(true)}
-        onMouseLeave={() => setIsHoveringResizeHandle(false)}
-        role="separator"
-        aria-label="Resize side panel"
-        aria-orientation="vertical"
-        data-testid="side-panel-resize-handle"
-      />
+    <>
+      {/* Draggable Divider */}
+      {isOpen && (
+        <div
+          ref={dividerRef}
+          className="w-1 bg-gray-300 hover:bg-blue-500 cursor-col-resize transition-colors duration-200 flex-shrink-0"
+          onMouseDown={handleMouseDown}
+          role="separator"
+          aria-label="Resize side panel"
+          aria-orientation="vertical"
+          data-testid="side-panel-divider"
+          style={{ minHeight: '100%' }}
+        />
+      )}
       
-      <GridItemDetails
-        selectedRow={selectedRow}
-        inputConfig={inputConfig}
-        onClose={onClose}
-        title={title}
-        user={user}
-        onUpdateSelectedProvider={onUpdateSelectedProvider}
-        onExpandDetailModal={onExpandDetailModal}
-        context="sidepanel"
-        panelWidth={panelWidth}
-        isOpen={isOpen}
-      />
-    </div>
+      {/* SidePanel */}
+      <div
+        className={`h-full bg-white border-l border-gray-300 flex flex-col ${isOpen ? "w-full" : "w-0 overflow-hidden"} ${isDragging ? "" : "transition-all duration-300 ease-in-out"}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Side panel"
+        data-testid="side-panel"
+        style={{
+          width: isOpen ? `${panelWidth}px` : '0px',
+          minWidth: isOpen ? `${panelWidth}px` : '0px'
+        }}
+      >
+        <GridItemDetails
+          selectedRow={selectedRow}
+          inputConfig={inputConfig}
+          onClose={onClose}
+          title={title}
+          user={user}
+          onUpdateSelectedProvider={onUpdateSelectedProvider}
+          onExpandDetailModal={onExpandDetailModal}
+          context="sidepanel"
+          panelWidth={panelWidth}
+          isOpen={isOpen}
+        />
+      </div>
+    </>
   );
 };
 

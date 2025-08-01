@@ -35,7 +35,7 @@ import {
 import ProviderInfoDetails from "./sidepanel-details/ProviderInfoDetails";
 import ProviderInfoDetailsWide from "./sidepanel-details/ProviderInfoDetailsWide";
 import StateLicenseDetails from "./sidepanel-details/StateLicenseDetails";
-import { getIconByName } from "@/lib/iconMapping";
+import Icon from "@/components/ui/Icon";
 import SidePanelTab from "./SidePanelTab";
 import FileDropzone from "./FileDropzone";
 import {
@@ -196,13 +196,15 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
 
   // Use gridName from selectedRow
   const gridName = selectedRow?.gridName;
+  
+  // Validate that gridName is present
+  if (!gridName) {
+    throw new Error('GridItemDetails: gridName is required but not provided in selectedRow');
+  }
   const [formValues, setFormValues] = React.useState<Record<string, any>>({});
   const [tab, setTab] = useState("details");
-  const [isResizing, setIsResizing] = useState(false);
-  const [isHoveringResizeHandle, setIsHoveringResizeHandle] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const queryClient = useQueryClient();
-  const resizeRef = useRef<HTMLDivElement>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
@@ -215,13 +217,8 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   // Select template based on gridName and context
   const template = gridName ? getTemplateConfigByGrid(gridName, context) : null;
 
-  // Fetch provider if selectedRow has provider_id and it's not a provider row itself
-  const providerId =
-    selectedRow && selectedRow.provider_id
-      ? selectedRow.provider_id
-      : selectedRow && selectedRow.id && gridName === "Provider_Info"
-        ? selectedRow.id
-        : null;
+  // Fetch provider using provider_id from selectedRow
+  const providerId = gridName === "provider_info" ? selectedRow?.id : selectedRow?.provider_id || null;
   const {
     data: provider,
     isLoading: providerLoading,
@@ -229,24 +226,17 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   } = useQuery({
     queryKey: ["provider", providerId],
     queryFn: () => fetchProviderById(providerId),
-    enabled: !!providerId && gridName !== "Provider_Info",
+    enabled: !!providerId,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // For Provider_Info grid, the selectedRow is the provider
-  const effectiveProvider =
-    gridName === "Provider_Info" ? selectedRow : provider;
+  // Use the fetched provider data
+  const effectiveProvider = provider;
 
   // Only reset form values if the selectedRow.id actually changes
   const lastInitializedId = React.useRef<any>(null);
   React.useEffect(() => {
-    console.log("GridItemDetails useEffect - form initialization:", {
-      selectedRowId: selectedRow?.id,
-      lastInitializedId: lastInitializedId.current,
-      context,
-      inputConfigLength: inputConfig?.length,
-      selectedRowKeys: selectedRow ? Object.keys(selectedRow) : [],
-    });
+
 
     if (selectedRow && selectedRow.id !== lastInitializedId.current) {
       const initialValues: Record<string, any> = {};
@@ -276,15 +266,10 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         }
 
         initialValues[key] = value;
-        console.log("Field initialization:", {
-          key,
-          fieldType: field.type,
-          value,
-          originalValue: selectedRow[key],
-        });
+
       });
 
-      console.log("Setting initial form values:", initialValues);
+
       setFormValues(initialValues);
       setHasUnsavedChanges(false); // Reset unsaved changes when new row is selected
       lastInitializedId.current = selectedRow.id;
@@ -294,53 +279,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
     }
   }, [selectedRow, inputConfig, context]);
 
-  // Handle mouse down on resize handle (only for sidepanel context)
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      if (context !== "sidepanel") return;
-      e.preventDefault();
-      setIsResizing(true);
-      document.body.style.cursor = "col-resize";
-      document.body.style.userSelect = "none";
-    },
-    [context],
-  );
 
-  // Handle mouse move for resizing (only for sidepanel context)
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (!isResizing || context !== "sidepanel") return;
-
-      const viewportWidth = window.innerWidth;
-      const newWidth = viewportWidth - e.clientX;
-      const minWidth = 484; // Current minimum width
-      const maxWidth = viewportWidth * 0.5; // 50% of viewport
-
-      const constrainedWidth = Math.max(minWidth, Math.min(maxWidth, newWidth));
-      // Note: In the refactored version, panel width is managed by the parent component
-    },
-    [isResizing, context],
-  );
-
-  // Handle mouse up to stop resizing
-  const handleMouseUp = useCallback(() => {
-    setIsResizing(false);
-    document.body.style.cursor = "";
-    document.body.style.userSelect = "";
-  }, []);
-
-  // Add/remove event listeners (only for sidepanel context)
-  useEffect(() => {
-    if (isResizing && context === "sidepanel") {
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [isResizing, handleMouseMove, handleMouseUp, context]);
 
   // Fetch documents for the selected record
   useEffect(() => {
@@ -354,7 +293,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   // Fetch notes count for the selected record
   useEffect(() => {
     if (!selectedRow?.id) return;
-    fetchNotes(selectedRow.id, gridName || "Provider_Info")
+    fetchNotes(selectedRow.id, gridName)
       .then((notes) => setNotesCount(notes?.length || 0))
       .catch(() => setNotesCount(0));
   }, [selectedRow?.id, gridName]);
@@ -378,21 +317,11 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
 
   // Handle input change (local only)
   const handleChange = (key: string, value: any) => {
-    console.log("handleChange called:", {
-      key,
-      value,
-      context,
-      selectedRowId: selectedRow?.id,
-    });
+
 
     setFormValues((prev) => {
       const newValues = { ...prev, [key]: value };
-      console.log("Form values updated:", {
-        key,
-        oldValue: prev[key],
-        newValue: value,
-        allValues: newValues,
-      });
+
       return newValues;
     });
 
@@ -406,12 +335,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       const hasChanged =
         JSON.stringify(value) !== JSON.stringify(originalValue);
 
-      console.log("Change detection:", {
-        key,
-        value,
-        originalValue,
-        hasChanged,
-      });
+
 
       if (hasChanged) {
         setHasUnsavedChanges(true);
@@ -538,12 +462,12 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         ([key]) => !validColumns.includes(key),
       );
       if (excludedFields.length > 0) {
-        console.log("Excluded fields from update:", excludedFields);
+  
       }
 
       // Check if there are any updates to save
       if (Object.keys(filteredUpdates).length === 0) {
-        console.log("No updates to save. filteredUpdates:", filteredUpdates);
+  
         return;
       }
 
@@ -569,7 +493,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
             },
           );
         }
-      } else if (gridName === "Provider_Info") {
+      } else if (gridName === "provider_info") {
         queryClient.setQueryData(["providers"], (oldData: any[]) => {
           if (!oldData) return oldData;
           previousData = oldData;
@@ -579,10 +503,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         });
       }
       // --- DYNAMIC TABLE UPDATE LOGIC ---
-      console.log("Save operation grid name:", {
-        gridName,
-        availableMappings: Object.keys(gridToTableMap),
-      });
+
       const tableName = gridToTableMap[gridName];
       if (!tableName) {
         console.error("Available grid mappings:", Object.keys(gridToTableMap));
@@ -590,17 +511,13 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         throw new Error(`No table mapping found for gridName: ${gridName}`);
       }
 
-      console.log("Updating record:", {
-        tableName,
-        recordId: selectedRow.id,
-        updates: filteredUpdates,
-      });
+
       // Remove optimistic update: do not call setQueryData for legacy keys
       // Only refetch the grid_data queries after save
       let result;
       try {
         result = await updateRecord(tableName, selectedRow.id, filteredUpdates);
-        console.log("Supabase updateRecord result:", result);
+
         // Refetch all grid data queries so GridDataFetcher and side panel get fresh data
         await queryClient.refetchQueries({
           queryKey: ["grid_data"],
@@ -641,7 +558,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       // Rollback optimistic updates on error
       if (gridName === "State_Licenses" && previousData) {
         queryClient.setQueryData(["stateLicenses"], previousData);
-      } else if (gridName === "Provider_Info" && previousData) {
+      } else if (gridName === "provider_info" && previousData) {
         queryClient.setQueryData(["providers"], previousData);
       }
 
@@ -813,10 +730,10 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   // Header formatting
   let headerText = "";
   if (template && template.header) {
-    const displayGridName = formatGridName(gridName || "");
-    if (providerLoading && gridName !== "Provider_Info") {
+    const displayGridName = formatGridName(gridName);
+    if (providerLoading) {
       headerText = "Loading provider...";
-    } else if (providerError && gridName !== "Provider_Info") {
+    } else if (providerError) {
       headerText = "Error loading provider";
     } else {
       headerText = template.header({
@@ -887,16 +804,13 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   
   const containerClassName =
     context === "sidepanel"
-      ? `fixed top-0 right-0 h-full bg-white transform transition-transform duration-300 ease-in-out z-[1000] flex flex-col ${isOpen ? "translate-x-0" : "translate-x-full"}`
+      ? `h-full bg-white transform transition-transform duration-300 ease-in-out z-[1000] flex flex-col ${isOpen ? "translate-x-0" : "translate-x-full"}`
       : "flex-1 min-h-0 flex flex-col";
 
   const containerStyle =
     context === "sidepanel"
       ? {
           width: `${panelWidth}px`,
-          boxShadow: isOpen
-            ? "-8px 0 24px -2px rgba(0, 0, 0, 0.12), -4px 0 8px -2px rgba(0, 0, 0, 0.08)"
-            : "none",
         }
       : {};
 
@@ -941,24 +855,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       data-testid={`grid-item-details-${context}`}
       style={containerStyle}
     >
-      {/* Resize Handle - only for sidepanel context */}
-      {context === "sidepanel" && (
-        <div
-          ref={resizeRef}
-          className={`absolute left-0 top-0 w-1 h-full cursor-col-resize z-10 transition-colors duration-200 ${
-            isHoveringResizeHandle || isResizing
-              ? "bg-[#008BC9]"
-              : "bg-transparent hover:bg-[#E3F2FD]"
-          }`}
-          onMouseDown={handleMouseDown}
-          onMouseEnter={() => setIsHoveringResizeHandle(true)}
-          onMouseLeave={() => setIsHoveringResizeHandle(false)}
-          role="separator"
-          aria-label="Resize side panel"
-          aria-orientation="vertical"
-          data-testid="side-panel-resize-handle"
-        />
-      )}
+
 
       {/* Header */}
       <GridItemDetailsHeader
@@ -966,6 +863,13 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         context={context}
         onExpandDetailModal={onExpandDetailModal}
         onClose={onClose}
+        gridName={gridName}
+        rowData={selectedRow}
+        onActionClick={(actionName, rowData) => {
+          // Handle action clicks here
+    
+          // You can add specific action handling logic here
+        }}
       />
 
       {/* Tabs and Content */}
@@ -1064,7 +968,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                           React.createElement(NotesComponent, {
                             className: "flex-1 min-h-0",
                             recordId: selectedRow.id,
-                            recordType: gridName || "Provider_Info",
+                            recordType: gridName,
                             user: user,
                           })
                         );
@@ -1144,22 +1048,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                         variant="sidenav"
                         active={tab === tabConfig.id}
                         onClick={() => setTab(tabConfig.id)}
-                        icon={
-                          <FontAwesomeIcon
-                            icon={
-                              tabConfig.icon === "bars-staggered"
-                                ? faBarsStaggered
-                                : tabConfig.icon === "note-sticky"
-                                  ? faNoteSticky
-                                  : tabConfig.icon === "folder"
-                                    ? faFolder
-                                    : tabConfig.icon === "users"
-                                      ? faUsers
-                                      : getIconByName(tabConfig.icon)
-                            }
-                            className="w-5 h-5"
-                          />
-                        }
+                                                icon={<Icon icon={tabConfig.icon} className="w-5 h-5" />}
                         className="w-full text-left font-medium"
                         data-testid={`grid-item-${tabConfig.id}-tab`}
                       >
@@ -1211,7 +1100,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                               React.createElement(NotesComponent, {
                                 className: "flex-1 min-h-0",
                                 recordId: selectedRow.id,
-                                recordType: gridName || "Provider_Info",
+                                recordType: gridName,
                                 user: user,
                               })
                             );

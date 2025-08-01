@@ -3,6 +3,7 @@ import CollapsibleSection from '../CollapsibleSection';
 import { MultiSelectInput } from '../inputs/MultiSelectInput';
 import TextInputField from '../inputs/TextInputField';
 import { renderFieldComponent } from './getInputType';
+import { generateProviderName, generateDefaultHeaderText } from '@/lib/utils';
 
 // Address field group definition - Updated to match database schema
 export const addressFieldGroup = {
@@ -35,5 +36,20 @@ const AddressDetails = ({ formValues, handleChange }) => (
     ))}
   </div>
 );
+
+// Unified template object for Address side panel
+export const addressTemplate = {
+  id: 'addresses',
+  name: 'Addresses',
+  description: 'Template for editing provider addresses',
+  tabs: [
+    { id: 'details', label: 'Details', icon: 'house-chimney', enabled: true },
+    { id: 'notes', label: 'Notes', icon: 'note-sticky', enabled: true },
+    { id: 'documents', label: 'Documents', icon: 'folder', enabled: true },
+  ],
+  fieldGroups: [addressFieldGroup],
+  header: ({ gridName, provider }) => generateDefaultHeaderText({ gridName, provider }),
+  DetailsComponent: AddressDetails,
+};
 
 export default AddressDetails; 
