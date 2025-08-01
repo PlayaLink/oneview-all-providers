@@ -23,6 +23,7 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
   const location = useLocation();
   const [newFeaturesDropdownOpen, setNewFeaturesDropdownOpen] = useState(false);
   const [helpCenterOpen, setHelpCenterOpen] = useState(false);
+  const [userAccountOpen, setUserAccountOpen] = useState(false);
   const { value: hasAllProviderTab, isLoading: navLoading } = useFeatureFlag("all_providers_tab");
   const { value: requireAuth } = useFeatureFlag("user_authentication");
 
