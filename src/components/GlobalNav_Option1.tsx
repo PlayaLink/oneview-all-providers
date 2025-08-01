@@ -59,7 +59,7 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
       {/* Black Header */}
       <header className="bg-black text-white" role="banner" aria-label="Application Header">
         <div className="flex flex-1 px-4 py-3">
-          <div className="flex flex-1 justify-between items-center">
+          <div className="flex flex-1 justify-end items-center">
             {/* Left side nav items */}
             <div className="flex justify-end items-center gap-5">
               {/* Help Center */}
