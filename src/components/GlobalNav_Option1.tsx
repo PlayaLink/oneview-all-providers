@@ -59,7 +59,42 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
       {/* Black Header */}
       <header className="bg-black text-white" role="banner" aria-label="Application Header">
         <div className="flex flex-1 px-4 py-3">
-          <div className="flex flex-1 justify-end">
+          <div className="flex flex-1 justify-between items-center">
+            {/* Left side nav items */}
+            <div className="flex justify-end items-center gap-5">
+              {/* Help Center */}
+              <div className="flex items-center gap-4">
+                <button
+                  className="flex items-center justify-center h-5 pb-px transition-colors hover:opacity-80"
+                  aria-label="Help Center"
+                  data-testid="help-center-button"
+                >
+                  <FontAwesomeIcon
+                    icon={faQuestionCircle}
+                    className="w-5 h-5 text-white"
+                  />
+                </button>
+              </div>
+
+              {/* User Account Avatar */}
+              <div className="flex w-7 h-7 justify-center items-center relative">
+                <div
+                  className="flex w-7 h-7 px-1.5 py-1.5 justify-center items-center flex-shrink-0 rounded-full bg-[#00A7E1] relative"
+                  role="button"
+                  aria-label="User account"
+                  data-testid="user-avatar"
+                >
+                  <div
+                    className="text-white text-center text-xs font-bold leading-4"
+                    style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+                  >
+                    JS
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right side - Logo */}
             <ModioLogoFeatureFlags user={user} onLogout={handleLogout} />
           </div>
         </div>
