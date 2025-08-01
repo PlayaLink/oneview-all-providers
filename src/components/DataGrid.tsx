@@ -1,9 +1,7 @@
 import React from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ColDef } from "ag-grid-enterprise";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { faPlus, faEllipsisVertical, faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
+import Icon from "@/components/ui/Icon";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import ContextMenu from "./ContextMenu";
 import ActionsColumn from "./ActionsColumn";
@@ -40,8 +38,8 @@ const ActionsHeader: React.FC<{
           aria-label="Help for actions"
           title="Help for actions"
         >
-          <FontAwesomeIcon 
-            icon={faCircleExclamation} 
+          <Icon 
+            icon="circle-exclamation" 
             className="w-4 h-4" 
           />
         </button>
@@ -56,8 +54,8 @@ const ActionsHeader: React.FC<{
           aria-label="Add new record"
           title="Add new record"
         >
-          <FontAwesomeIcon 
-            icon={faPlus} 
+          <Icon 
+            icon="plus" 
             className="w-3 h-3 text-white" 
           />
         </button>
@@ -69,8 +67,8 @@ const ActionsHeader: React.FC<{
           aria-label="More actions"
           title="More actions"
         >
-          <FontAwesomeIcon 
-            icon={faEllipsisVertical} 
+          <Icon 
+            icon="ellipsis-vertical" 
             className="w-3 h-3" 
           />
         </button>
@@ -81,7 +79,7 @@ const ActionsHeader: React.FC<{
 
 interface DataGridProps {
   title: string;
-  icon: IconDefinition;
+  icon: string;
   data: any[];
   columns: ColDef[];
   onSelectionChanged?: (event: any) => void;
@@ -405,7 +403,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         data-testid="grid-header"
       >
         <div className="flex items-center gap-2 pl-4">
-          <FontAwesomeIcon
+          <Icon
             icon={icon}
             className="pr-1 w-4 h-4 text-[#545454]"
             aria-hidden="true"
