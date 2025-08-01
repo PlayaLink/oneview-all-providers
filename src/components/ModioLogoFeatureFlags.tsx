@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
-import { useFeatureSettings } from "@/hooks/useFeatureSettings";
+import { useFeatureFlags } from "@/contexts/FeatureFlagContext";
 
 interface ModioLogoFeatureFlagsProps {
   user: any;
@@ -15,7 +15,7 @@ const ModioLogoFeatureFlags: React.FC<ModioLogoFeatureFlagsProps> = ({ user, onL
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
   
-  const { allSettings, updateFlag, isLoading } = useFeatureSettings();
+  const { allSettings, updateFlag, isLoading } = useFeatureFlags();
 
   const handleLogout = () => {
     onLogout();
