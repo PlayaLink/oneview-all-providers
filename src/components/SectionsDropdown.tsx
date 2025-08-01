@@ -44,7 +44,6 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger, placement 
     if (!search.trim()) return sortedGroupKeys;
     return sortedGroupKeys.filter(group => {
       const groupGrids = groupKeyToGrids[group] || [];
-      console.log('[SectionsDropdown] groupGrids for group', group, groupGrids);
       return (
         groupKeyToSection[group]?.name?.toLowerCase().includes(search.toLowerCase()) ||
         group.toLowerCase().includes(search.toLowerCase()) ||
@@ -55,7 +54,6 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger, placement 
 
   const filteredGridsByGroup = (group: string) => {
     let groupGrids = groupKeyToGrids[group] || [];
-    console.log('[SectionsDropdown] filteredGridsByGroup for group', group, groupGrids);
     if (!search.trim()) {
       // Sort by order property if present
       groupGrids = [...groupGrids].sort((a, b) => (a.order || 0) - (b.order || 0));
