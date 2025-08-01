@@ -58,8 +58,7 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
       {/* Black Header */}
       <header className="bg-black text-white" role="banner" aria-label="Application Header">
         <div className="flex flex-1 px-4 py-3">
-          <div className="flex flex-1 justify-between">
-            <TeamsToggle />
+          <div className="flex flex-1 justify-end">
             <ModioLogoFeatureFlags user={user} onLogout={handleLogout} />
           </div>
         </div>
@@ -69,6 +68,7 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
       <nav className="bg-[#3BA8D1] text-white" role="navigation" aria-label="Primary navigation">
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-5 flex-1 self-stretch">
+            <TeamsToggle />
             <div className="flex items-center gap-2 self-stretch" role="menubar" aria-label="Main application sections">
               <NavItem
                 variant="global"
@@ -104,4 +104,4 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
   );
 };
 
-export default GlobalNav_Option1; 
+export default GlobalNav_Option1;
