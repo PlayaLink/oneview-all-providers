@@ -58,7 +58,7 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
       {/* Black Header */}
       <header className="bg-black text-white" role="banner" aria-label="Application Header">
         <div className="flex flex-1 px-4 py-3">
-          <div className="flex flex-1 gap-8">
+          <div className="flex flex-1 justify-between">
             <TeamsToggle />
             <ModioLogoFeatureFlags user={user} onLogout={handleLogout} />
           </div>
