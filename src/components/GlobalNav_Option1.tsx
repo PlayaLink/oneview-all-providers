@@ -11,6 +11,7 @@ import ModioLogoFeatureFlags from "./ModioLogoFeatureFlags";
 import TeamsToggle from "./TeamsToggle";
 import HelpCenter from "./HelpCenter";
 import UserAccount from "./UserAccount";
+import FeatureFlagsMenu from "./FeatureFlagsMenu";
 
 import { useFeatureFlag, useFeatureFlags } from "@/contexts/FeatureFlagContext";
 import { supabase } from "@/lib/supabaseClient";
@@ -24,11 +25,19 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [newFeaturesDropdownOpen, setNewFeaturesDropdownOpen] = useState(false);
+  const [showFeatureFlagsMenu, setShowFeatureFlagsMenu] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
 
 
   const { value: hasAllProviderTab, isLoading: navLoading } =
     useFeatureFlag("all_providers_tab");
   const { value: requireAuth } = useFeatureFlag("user_authentication");
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setMenuPosition({ x: e.clientX, y: e.clientY });
+    setShowFeatureFlagsMenu(true);
+  };
 
   const handleLogout = async () => {
     // Check if the user is a dummy user (by email domain)
@@ -70,6 +79,7 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
         className="bg-black text-white"
         role="banner"
         aria-label="Application Header"
+        onContextMenu={handleContextMenu}
       >
         <div className="flex flex-1 px-4 py-3">
           <div className="flex flex-1 justify-between items-center">
@@ -140,6 +150,27 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
           </div>
         </div>
       </nav>
+
+      {/* Context Menu for Feature Flags */}
+      {showFeatureFlagsMenu && (
+        <div
+          className="fixed z-50 bg-white border border-gray-200 rounded-lg shadow-lg"
+          style={{
+            left: menuPosition.x,
+            top: menuPosition.y,
+          }}
+        >
+          <FeatureFlagsMenu />
+        </div>
+      )}
+
+      {/* Overlay to close menu when clicking outside */}
+      {showFeatureFlagsMenu && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => setShowFeatureFlagsMenu(false)}
+        />
+      )}
     </>
   );
 };
