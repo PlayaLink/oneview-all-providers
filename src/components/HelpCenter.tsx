@@ -10,18 +10,18 @@ const HelpCenter: React.FC = () => {
     <Popover open={helpCenterOpen} onOpenChange={setHelpCenterOpen}>
       <PopoverTrigger asChild>
         <button
-          className="flex items-center justify-center h-5 pb-px transition-colors hover:opacity-80"
+          className="flex items-center justify-center pb-px transition-colors hover:opacity-80 w-6 h-6 min-w-6 min-h-6"
           aria-label="Help Center"
           data-testid="help-center-button"
         >
           <FontAwesomeIcon
             icon={faQuestionCircle}
-            className="w-5 h-5 text-white"
+            className="w-6 h-6 min-w-6 min-h-6 text-white"
           />
         </button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-[259px] p-1 border-0 bg-white rounded-lg shadow-[0_20px_25px_-5px_rgba(0,0,0,0.05),0_8px_10px_-6px_rgba(0,0,0,0.10)]"
+        className="p-2 border-0 bg-white rounded-lg shadow-[0_20px_25px_-5px_rgba(0,0,0,0.05),0_8px_10px_-6px_rgba(0,0,0,0.10)]"
         align="start"
         side="bottom"
         sideOffset={4}
