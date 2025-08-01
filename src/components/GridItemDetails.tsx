@@ -35,7 +35,7 @@ import {
 import ProviderInfoDetails from "./sidepanel-details/ProviderInfoDetails";
 import ProviderInfoDetailsWide from "./sidepanel-details/ProviderInfoDetailsWide";
 import StateLicenseDetails from "./sidepanel-details/StateLicenseDetails";
-import { getIconByName } from "@/lib/iconMapping";
+import Icon from "@/components/ui/Icon";
 import SidePanelTab from "./SidePanelTab";
 import FileDropzone from "./FileDropzone";
 import {
@@ -1048,22 +1048,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                         variant="sidenav"
                         active={tab === tabConfig.id}
                         onClick={() => setTab(tabConfig.id)}
-                        icon={
-                          <FontAwesomeIcon
-                            icon={
-                              tabConfig.icon === "bars-staggered"
-                                ? faBarsStaggered
-                                : tabConfig.icon === "note-sticky"
-                                  ? faNoteSticky
-                                  : tabConfig.icon === "folder"
-                                    ? faFolder
-                                    : tabConfig.icon === "users"
-                                      ? faUsers
-                                      : getIconByName(tabConfig.icon)
-                            }
-                            className="w-5 h-5"
-                          />
-                        }
+                                                icon={<Icon icon={tabConfig.icon} className="w-5 h-5" />}
                         className="w-full text-left font-medium"
                         data-testid={`grid-item-${tabConfig.id}-tab`}
                       >
