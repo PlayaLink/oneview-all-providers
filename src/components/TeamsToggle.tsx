@@ -37,9 +37,9 @@ const teams = [
 
 const TeamsToggle: React.FC = () => {
   const [open, setOpen] = useState(false);
-  const [selectedTeam, setSelectedTeam] = useState(dummyTeams[0]);
+  const [selectedTeam, setSelectedTeam] = useState(teams[0]);
 
-  const handleTeamSelect = (team: typeof dummyTeams[0]) => {
+  const handleTeamSelect = (team: typeof teams[0]) => {
     setSelectedTeam(team);
     setOpen(false);
   };
