@@ -1,11 +1,11 @@
 import React from "react";
-import GlobalNavigation from "@/components/GlobalNavigation";
+import GlobalNav_Legacy from "@/components/GlobalNav_Legacy";
 import PageContainer from "@/components/PageContainer";
 import MainContentArea from "@/components/MainContentArea";
 import ApplicationFooter from "@/components/ApplicationFooter";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import { Outlet } from "react-router-dom";
-import NewGlobalNavigation1 from "@/components/NewGlobalNavigation1";
+import GlobalNav_Option1 from "@/components/GlobalNav_Option1";
 
 interface AppLayoutProps {
   user: any;
@@ -26,9 +26,9 @@ const AppLayout: React.FC<AppLayoutProps> = ({ user, children, showFooter = true
   return (
     <div className="h-screen flex flex-col bg-white" data-testid="app-layout">
       {useNewNav ? (
-        <NewGlobalNavigation1 user={user} />
+        <GlobalNav_Option1 user={user} />
       ) : (
-        <GlobalNavigation user={user} />
+        <GlobalNav_Legacy user={user} />
       )}
       <PageContainer>
         <MainContentArea>

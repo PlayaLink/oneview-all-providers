@@ -11,11 +11,11 @@ import { useFeatureFlag, useFeatureFlags } from "@/contexts/FeatureFlagContext";
 import { supabase } from "@/lib/supabaseClient";
 import { faker } from '@faker-js/faker';
 
-interface NewGlobalNavigation1Props {
+interface GlobalNav_Option1Props {
   user: any;
 }
 
-const NewGlobalNavigation1: React.FC<NewGlobalNavigation1Props> = ({ user }) => {
+const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
@@ -212,4 +212,4 @@ const NewGlobalNavigation1: React.FC<NewGlobalNavigation1Props> = ({ user }) => 
   );
 };
 
-export default NewGlobalNavigation1; 
+export default GlobalNav_Option1; 

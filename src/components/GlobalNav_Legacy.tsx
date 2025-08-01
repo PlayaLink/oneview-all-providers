@@ -10,11 +10,11 @@ import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import { supabase } from "@/lib/supabaseClient";
 import { faker } from '@faker-js/faker';
 
-interface GlobalNavigationProps {
+interface GlobalNav_LegacyProps {
   user: any;
 }
 
-const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
+const GlobalNav_Legacy: React.FC<GlobalNav_LegacyProps> = ({ user }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
@@ -196,4 +196,4 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({ user }) => {
   );
 };
 
-export default GlobalNavigation; 
+export default GlobalNav_Legacy; 
