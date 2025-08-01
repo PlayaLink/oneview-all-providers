@@ -70,43 +70,119 @@ const TeamsToggle: React.FC = () => {
         </button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-80 p-0 border border-gray-200 bg-white shadow-lg"
+        className="w-[333px] p-0 border-0 bg-white rounded-lg shadow-[0_0_15px_0_rgba(0,0,0,0.10)]"
         align="start"
         side="bottom"
         sideOffset={4}
       >
-        <div className="p-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">Select Organization</h3>
-          <div className="space-y-2">
-            {dummyTeams.map((team) => (
-              <button
-                key={team.id}
-                onClick={() => handleTeamSelect(team)}
-                className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors ${
-                  team.isActive 
-                    ? 'bg-blue-50 border border-blue-200' 
-                    : 'hover:bg-gray-50 border border-transparent'
-                }`}
-                aria-label={`Select ${team.name} organization`}
-                data-testid={`team-option-${team.id}`}
-              >
-                <div className="flex items-center w-8 h-8 rounded-full overflow-hidden">
-                  <img
-                    src={team.logo}
-                    alt={`${team.name} logo`}
-                    className="w-8 h-8 object-cover rounded-full"
-                  />
-                </div>
-                <div className="flex-1 text-left">
-                  <div className="font-medium text-gray-900">{team.name}</div>
-                  <div className="text-sm text-gray-500">{team.location}</div>
-                </div>
-                {team.isActive && (
-                  <div className="w-2 h-2 bg-blue-500 rounded-full" aria-label="Currently selected" />
-                )}
-              </button>
-            ))}
+        <div className="py-1 flex flex-col">
+          {/* Header */}
+          <div
+            className="flex items-center justify-end px-2 py-1 gap-2"
+            data-testid="teams-header"
+          >
+            <div
+              className="flex-1 text-[#6C757D] text-xs font-medium tracking-[0.429px]"
+              style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+            >
+              Select a team:
+            </div>
           </div>
+
+          {/* Team Options */}
+          {teams.map((team) => (
+            <button
+              key={team.id}
+              onClick={() => handleTeamSelect(team)}
+              className="flex items-center justify-end px-6 py-1 gap-2 hover:bg-gray-50 transition-colors"
+              aria-label={`Select ${team.name} team`}
+              data-testid={`team-option-${team.id}`}
+            >
+              <div
+                className="flex-1 text-xs font-medium tracking-[0.429px]"
+                style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+              >
+                <span className="text-[#545454]">{team.name} </span>
+                <span className="text-[#6C757D]">({team.location})</span>
+              </div>
+              <div className="flex items-center justify-center">
+                <FontAwesomeIcon
+                  icon={faAsterisk}
+                  className="w-4 h-4 text-[#F48100]"
+                  aria-label="Required indicator"
+                />
+              </div>
+            </button>
+          ))}
+
+          {/* Separator */}
+          <div className="flex items-center justify-center py-1">
+            <div className="w-full h-px bg-[#EAECEF]"></div>
+          </div>
+
+          {/* Action Items */}
+          <button
+            className="flex items-center justify-end px-2 py-1 gap-2 hover:bg-gray-50 transition-colors"
+            aria-label="Upload a logo"
+            data-testid="upload-logo-action"
+          >
+            <div className="flex items-center justify-center w-5 h-4">
+              <FontAwesomeIcon
+                icon={faCloudArrowUp}
+                className="w-4 h-4 text-[#F48100]"
+              />
+            </div>
+            <div className="flex items-center gap-2 flex-1">
+              <div
+                className="text-[#545454] text-xs font-medium tracking-[0.429px]"
+                style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+              >
+                Upload a logo
+              </div>
+            </div>
+          </button>
+
+          <button
+            className="flex items-center justify-end px-2 py-1 gap-2 hover:bg-gray-50 transition-colors"
+            aria-label="View team profile"
+            data-testid="view-team-profile-action"
+          >
+            <div className="flex items-center justify-center w-5 h-4">
+              <FontAwesomeIcon
+                icon={faCircleInfo}
+                className="w-4 h-4 text-[#79AC48]"
+              />
+            </div>
+            <div className="flex items-center gap-2 flex-1">
+              <div
+                className="text-[#545454] text-xs font-medium tracking-[0.429px]"
+                style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+              >
+                View team profile
+              </div>
+            </div>
+          </button>
+
+          <button
+            className="flex items-center justify-end px-2 py-1 gap-2 hover:bg-gray-50 transition-colors"
+            aria-label="Grid settings"
+            data-testid="grid-settings-action"
+          >
+            <div className="flex items-center justify-center w-5 h-4">
+              <FontAwesomeIcon
+                icon={faScrewdriverWrench}
+                className="w-4 h-4 text-[#79AC48]"
+              />
+            </div>
+            <div className="flex items-center gap-2 flex-1">
+              <div
+                className="text-[#545454] text-xs font-medium tracking-[0.429px]"
+                style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+              >
+                Grid settings
+              </div>
+            </div>
+          </button>
         </div>
       </PopoverContent>
     </Popover>
