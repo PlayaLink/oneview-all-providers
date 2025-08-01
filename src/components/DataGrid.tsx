@@ -25,10 +25,7 @@ const ActionsHeader: React.FC<{
       aria-label="Actions column header"
     >
       <div className="flex items-center gap-2">
-        <span
-          className="ag-header-cell-text"
-          data-testid="actions-header-text"
-        >
+        <span className="ag-header-cell-text" data-testid="actions-header-text">
           Actions
         </span>
         <button
@@ -39,10 +36,7 @@ const ActionsHeader: React.FC<{
           aria-label="Help for actions"
           title="Help for actions"
         >
-          <Icon
-            icon="circle-exclamation"
-            className="w-4 h-4"
-          />
+          <Icon icon="circle-exclamation" className="w-4 h-4" />
         </button>
       </div>
 
@@ -55,10 +49,7 @@ const ActionsHeader: React.FC<{
           aria-label="Add new record"
           title="Add new record"
         >
-          <Icon
-            icon="plus"
-            className="w-3 h-3 text-white"
-          />
+          <Icon icon="plus" className="w-3 h-3 text-white" />
         </button>
         <button
           onClick={onMoreActions}
@@ -68,10 +59,7 @@ const ActionsHeader: React.FC<{
           aria-label="More actions"
           title="More actions"
         >
-          <Icon
-            icon="ellipsis-vertical"
-            className="w-3 h-3"
-          />
+          <Icon icon="ellipsis-vertical" className="w-3 h-3" />
         </button>
       </div>
     </div>
@@ -105,8 +93,6 @@ interface DataGridProps {
 }
 
 const DataGrid: React.FC<DataGridProps> = (props) => {
-
-
   const {
     title,
     icon,
@@ -161,16 +147,22 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   const minWidthActionsColumn = 165;
   const calculateActionsColumnWidth = React.useCallback(() => {
     if (!showActionsColumn || !pinActionsColumn) return 120;
-    
+
     // Each action button width (adjust this value to change action button size)
     // Plus some padding for the container
     const actionWidth = 32; // Width per action button
     const containerPadding = 16; // Padding on each side
-    
+
     // Use actual action count from the grid
     const actualActions = gridActions?.length; // Fallback to 4 if not loaded yet
-    
-    return Math.min(Math.max(minWidthActionsColumn, actualActions * actionWidth + containerPadding), 300);
+
+    return Math.min(
+      Math.max(
+        minWidthActionsColumn,
+        actualActions * actionWidth + containerPadding,
+      ),
+      300,
+    );
   }, [showActionsColumn, pinActionsColumn, title, gridActions]);
 
   // Prepare column definitions
@@ -181,19 +173,19 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       // Checkbox column
       ...(showCheckboxes
         ? [
-          {
-            headerName: "",
-            headerCheckboxSelection: true,
-            checkboxSelection: true,
-            width: 50,
-            pinned: "left" as const,
-            lockPosition: true,
-            suppressMenu: true,
-            sortable: false,
-            filter: false,
-            resizable: false,
-          },
-        ]
+            {
+              headerName: "",
+              headerCheckboxSelection: true,
+              checkboxSelection: true,
+              width: 50,
+              pinned: "left" as const,
+              lockPosition: true,
+              suppressMenu: true,
+              sortable: false,
+              filter: false,
+              resizable: false,
+            },
+          ]
         : []),
 
       // Data columns
@@ -218,74 +210,70 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       // Actions column - only show when pinActionsColumn is true
       ...(showActionsColumn && pinActionsColumn
         ? [
-          {
-            headerName: "",
-            field: "actions",
-            width: calculateActionsColumnWidth(), // Dynamic width: 32px per action + 16px padding
-            minWidth: minWidthActionsColumn, // Minimum width
-            maxWidth: 300, // Maximum width
-            suppressSizeToFit: true, // Prevent AG Grid from auto-sizing this column
-            pinned: "right" as const,
-            lockPosition: true,
-            suppressMenu: true,
-            sortable: false,
-            filter: false,
-            resizable: false,
-            floatingFilter: false,
-            suppressRowClickSelection: true,
-            headerComponent: (params: any) => (
-              <ActionsHeader
-                onAddRecord={onAddRecord}
-                onMoreActions={onMoreHeaderActions}
-                onHelp={() => { }}
-              />
-            ),
-            cellRenderer: (params: any) => (
-              <ActionsColumn
-                gridName={title}
-                rowData={params.data}
-                onActionClick={(actionName, rowData) => {
-                  switch (actionName) {
-                    case 'download':
-                      onDownload?.(rowData);
-                      break;
-                    case 'activate':
-                      onDownload?.(rowData);
-                      break;
-                    case 'alert':
-                      onToggleAlert?.(rowData, true);
-                      break;
-                    case 'side_panel':
-                      onToggleSidebar?.(rowData);
-                      break;
-                    case 'verifications':
-                      onToggleFlag?.(rowData, true);
-                      break;
-                    case 'flag':
-                      onToggleFlag?.(rowData, true);
-                      break;
-                    case 'view_details':
-                      // Open the grid item details modal
-                      onOpenDetailModal?.(rowData);
-                      break;
-                    case 'deactivate':
-
-                      break;
-                    case 'exclude':
-
-                      break;
-                    case 'tracking':
-
-                      break;
-                    default:
-
-                  }
-                }}
-                className="h-full flex items-center justify-center"
-              />
-            ),
-          },
-        ]
+            {
+              headerName: "",
+              field: "actions",
+              width: calculateActionsColumnWidth(), // Dynamic width: 32px per action + 16px padding
+              minWidth: minWidthActionsColumn, // Minimum width
+              maxWidth: 300, // Maximum width
+              suppressSizeToFit: true, // Prevent AG Grid from auto-sizing this column
+              pinned: "right" as const,
+              lockPosition: true,
+              suppressMenu: true,
+              sortable: false,
+              filter: false,
+              resizable: false,
+              floatingFilter: false,
+              suppressRowClickSelection: true,
+              headerComponent: (params: any) => (
+                <ActionsHeader
+                  onAddRecord={onAddRecord}
+                  onMoreActions={onMoreHeaderActions}
+                  onHelp={() => {}}
+                />
+              ),
+              cellRenderer: (params: any) => (
+                <ActionsColumn
+                  gridName={title}
+                  rowData={params.data}
+                  onActionClick={(actionName, rowData) => {
+                    switch (actionName) {
+                      case "download":
+                        onDownload?.(rowData);
+                        break;
+                      case "activate":
+                        onDownload?.(rowData);
+                        break;
+                      case "alert":
+                        onToggleAlert?.(rowData, true);
+                        break;
+                      case "side_panel":
+                        onToggleSidebar?.(rowData);
+                        break;
+                      case "verifications":
+                        onToggleFlag?.(rowData, true);
+                        break;
+                      case "flag":
+                        onToggleFlag?.(rowData, true);
+                        break;
+                      case "view_details":
+                        // Open the grid item details modal
+                        onOpenDetailModal?.(rowData);
+                        break;
+                      case "deactivate":
+                        break;
+                      case "exclude":
+                        break;
+                      case "tracking":
+                        break;
+                      default:
+                    }
+                  }}
+                  className="h-full flex items-center justify-center"
+                />
+              ),
+            },
+          ]
         : []),
     ];
   }, [
@@ -305,13 +293,11 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     calculateActionsColumnWidth,
   ]);
 
-
-
   const isActionsColumnClickedRef = React.useRef(false);
 
   const handleCellClicked = (event: any) => {
     // If the click is on the actions column, set a flag to prevent row click
-    if (event.column && event.column.getColId() === 'actions') {
+    if (event.column && event.column.getColId() === "actions") {
       isActionsColumnClickedRef.current = true;
       return;
     }
@@ -343,8 +329,6 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       onRowClicked(event.data);
     }
   };
-
-
 
   const handleSelectionChanged = (event: any) => {
     if (onSelectionChanged) {
@@ -396,7 +380,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
             applyFilter: true,
           });
         } catch (error) {
-          console.warn('Failed to load column state:', error);
+          console.warn("Failed to load column state:", error);
         }
       }
     }
@@ -551,9 +535,9 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
             sortable: true,
             filter: true,
             floatingFilter: showFloatingFilters,
-            cellClass: 'ag-cell-vertically-centered',
+            cellClass: "ag-cell-vertically-centered",
             filterParams: {
-              buttons: ['reset'],
+              buttons: ["reset"],
               closeOnApply: true,
               suppressApplyButton: true,
             },

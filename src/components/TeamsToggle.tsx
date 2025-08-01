@@ -1,7 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown, faAsterisk, faCloudArrowUp, faCircleInfo, faScrewdriverWrench } from "@fortawesome/free-solid-svg-icons";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  faChevronDown,
+  faAsterisk,
+  faCloudArrowUp,
+  faCircleInfo,
+  faScrewdriverWrench,
+} from "@fortawesome/free-solid-svg-icons";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 // Team data matching the design
 const teams = [
@@ -10,36 +20,36 @@ const teams = [
     name: "CHG - Credentialing",
     location: "Salt Lake City, UT",
     logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/47f216dffab8a61501f2184cb57a9b37a11a21ed?width=58",
-    isActive: true
+    isActive: true,
   },
   {
     id: 2,
     name: "CHG - CompHealth",
     location: "Salt Lake City, UT",
     logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/47f216dffab8a61501f2184cb57a9b37a11a21ed?width=58",
-    isActive: false
+    isActive: false,
   },
   {
     id: 3,
     name: "CHG - Weatherby",
     location: "Fort Lauderdale, FL",
     logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/47f216dffab8a61501f2184cb57a9b37a11a21ed?width=58",
-    isActive: false
+    isActive: false,
   },
   {
     id: 4,
     name: "Modio Health QA",
     location: "San Francisco, CA",
     logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/47f216dffab8a61501f2184cb57a9b37a11a21ed?width=58",
-    isActive: false
-  }
+    isActive: false,
+  },
 ];
 
 const TeamsToggle: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(teams[0]);
 
-  const handleTeamSelect = (team: typeof teams[0]) => {
+  const handleTeamSelect = (team: (typeof teams)[0]) => {
     setSelectedTeam(team);
     setOpen(false);
   };
@@ -60,13 +70,29 @@ const TeamsToggle: React.FC = () => {
               className="w-7 h-7 object-cover rounded-full"
             />
           </div>
-          <div className="text-white font-bold text-base leading-7" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
+          <div
+            className="text-white font-bold text-base leading-7"
+            style={{
+              fontFamily:
+                "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
+            }}
+          >
             {selectedTeam.name}
           </div>
-          <div className="text-white text-[10.5px] leading-normal tracking-[0.429px]" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
+          <div
+            className="text-white text-[10.5px] leading-normal tracking-[0.429px]"
+            style={{
+              fontFamily:
+                "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
+            }}
+          >
             ({selectedTeam.location})
           </div>
-          <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" aria-hidden="true" />
+          <FontAwesomeIcon
+            icon={faChevronDown}
+            className="w-4 h-4"
+            aria-hidden="true"
+          />
         </button>
       </PopoverTrigger>
       <PopoverContent
@@ -83,7 +109,10 @@ const TeamsToggle: React.FC = () => {
           >
             <div
               className="flex-1 text-[#6C757D] text-xs font-medium tracking-[0.429px]"
-              style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+              style={{
+                fontFamily:
+                  "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
+              }}
             >
               Select a team:
             </div>
@@ -100,7 +129,10 @@ const TeamsToggle: React.FC = () => {
             >
               <div
                 className="flex-1 text-xs font-medium tracking-[0.429px]"
-                style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+                style={{
+                  fontFamily:
+                    "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
+                }}
               >
                 <span className="text-[#545454]">{team.name} </span>
                 <span className="text-[#6C757D]">({team.location})</span>
@@ -135,7 +167,10 @@ const TeamsToggle: React.FC = () => {
             <div className="flex items-center gap-2 flex-1">
               <div
                 className="text-[#545454] text-xs font-medium tracking-[0.429px]"
-                style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+                style={{
+                  fontFamily:
+                    "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
+                }}
               >
                 Upload a logo
               </div>
@@ -156,7 +191,10 @@ const TeamsToggle: React.FC = () => {
             <div className="flex items-center gap-2 flex-1">
               <div
                 className="text-[#545454] text-xs font-medium tracking-[0.429px]"
-                style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+                style={{
+                  fontFamily:
+                    "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
+                }}
               >
                 View team profile
               </div>
@@ -177,7 +215,10 @@ const TeamsToggle: React.FC = () => {
             <div className="flex items-center gap-2 flex-1">
               <div
                 className="text-[#545454] text-xs font-medium tracking-[0.429px]"
-                style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+                style={{
+                  fontFamily:
+                    "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
+                }}
               >
                 Grid settings
               </div>
