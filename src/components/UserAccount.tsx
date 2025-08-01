@@ -20,9 +20,9 @@ const UserAccount: React.FC<UserAccountProps> = ({ user, onLogout }) => {
   return (
     <Popover open={userAccountOpen} onOpenChange={setUserAccountOpen}>
       <PopoverTrigger asChild>
-        <button className="flex w-7 h-7 justify-center items-center relative">
+        <button className="flex w-9 h-9 min-w-9 min-h-9 justify-center items-center relative">
           <div
-            className="flex w-7 h-7 px-1.5 py-1.5 justify-center items-center flex-shrink-0 rounded-full bg-[#00A7E1] transition-colors hover:opacity-80"
+            className="flex w-9 h-9 min-w-9 min-h-9 px-1.5 py-1.5 justify-center items-center flex-shrink-0 rounded-full bg-[#00A7E1] transition-colors hover:opacity-80"
             aria-label="User account"
             data-testid="user-avatar"
           >
@@ -39,7 +39,7 @@ const UserAccount: React.FC<UserAccountProps> = ({ user, onLogout }) => {
         </button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-[259px] p-1 border-0 bg-white rounded-lg shadow-[0_20px_25px_-5px_rgba(0,0,0,0.05),0_8px_10px_-6px_rgba(0,0,0,0.10)]"
+        className="p-2 border-0 bg-white rounded-lg shadow-[0_20px_25px_-5px_rgba(0,0,0,0.05),0_8px_10px_-6px_rgba(0,0,0,0.10)]"
         align="end"
         side="bottom"
         sideOffset={4}
@@ -64,8 +64,8 @@ const UserAccount: React.FC<UserAccountProps> = ({ user, onLogout }) => {
           {/* User Profile Section */}
           <div className="flex items-center justify-end px-2 pb-2 pt-1 gap-2">
             {/* Profile Icon */}
-            <div className="flex w-9 h-9 justify-center items-center">
-              <Icon icon="user" className="w-9 h-9 text-[#AEAEAE]" />
+            <div style={{ width: "36px", minWidth: "36px", height: "36px"}} className="flex justify-center items-center rounded-full border border-gray-300 overflow-hidden">
+              <Icon icon="user" className="w-8 h-8 text-[#AEAEAE]" />
             </div>
 
             {/* User Info */}
