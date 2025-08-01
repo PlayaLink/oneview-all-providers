@@ -61,6 +61,19 @@ import {
   faPenToSquare,
   faComment,
   faFileLines,
+  faChevronUp,
+  faChevronDown,
+  faChevronLeft,
+  faChevronRight,
+  faUser,
+  faXmark,
+  faUpload,
+  faCaretDown,
+  faCheck,
+  faListCheck,
+  faUserPlus,
+  faSearch,
+  faUpRightAndDownLeftFromCenter,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Icon mapping from string names to FontAwesome icon objects
@@ -136,6 +149,23 @@ const iconMap: Record<string, IconDefinition> = {
   "pen-to-square": faPenToSquare,
   comment: faComment,
   "file-lines": faFileLines,
+  
+  // Navigation and UI icons
+  "chevron-up": faChevronUp,
+  "chevron-down": faChevronDown,
+  "chevron-left": faChevronLeft,
+  "chevron-right": faChevronRight,
+  "user": faUser,
+  "xmark": faXmark,
+  "times": faTimes, // Alias for xmark
+  "upload": faUpload,
+  "caret-down": faCaretDown,
+  "check": faCheck,
+  "list-check": faListCheck,
+  "user-plus": faUserPlus,
+  "search": faSearch,
+  "up-right-and-down-left-from-center": faUpRightAndDownLeftFromCenter,
+  "expand": faUpRightAndDownLeftFromCenter, // Alias for expand
 };
 
 // Function to get FontAwesome icon from icon name
