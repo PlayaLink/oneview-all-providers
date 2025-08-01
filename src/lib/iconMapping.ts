@@ -59,6 +59,17 @@ import {
   faPenToSquare,
   faComment,
   faFileLines,
+  faChevronUp,
+  faChevronDown,
+  faChevronLeft,
+  faChevronRight,
+  faUser,
+  faXmark,
+  faUpload,
+  faCaretDown,
+  faCheck,
+  faListCheck,
+  faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Unified icon mapping that can contain either FontAwesome icons or SVG file paths
@@ -112,6 +123,19 @@ const iconMap: Record<string, IconDefinition | string> = {
   
   // Premium FontAwesome icons (currently using custom SVG, replace with IconDefinition when available)
   "sidebar-flip": "/icons/sidebar-flip.svg",
+  
+  // Navigation and UI icons
+  "chevron-up": faChevronUp,
+  "chevron-down": faChevronDown,
+  "chevron-left": faChevronLeft,
+  "chevron-right": faChevronRight,
+  "user": faUser,
+  "xmark": faXmark,
+  "upload": faUpload,
+  "caret-down": faCaretDown,
+  "check": faCheck,
+  "list-check": faListCheck,
+  "user-plus": faUserPlus,
   
   // Legacy icons (keeping for backward compatibility)
   "user-doctor": faUserDoctor,

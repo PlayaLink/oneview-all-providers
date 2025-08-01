@@ -1,13 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUsers,
-  faUserPlus,
-  faChevronLeft,
-  faChevronRight,
-  faChevronUp,
-  faChevronDown,
-} from "@fortawesome/free-solid-svg-icons";
+import Icon from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 import SideNav from "@/components/SideNav";
 import HorizontalNavNew from "@/components/HorizontalNavNew";
@@ -163,7 +155,7 @@ function GridsSection({
               className="p-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
               role="button"
             >
-              <FontAwesomeIcon icon={faChevronUp} />
+              <Icon icon="chevron-up" />
             </button>
             <button
               onClick={handleScrollDown}
@@ -173,7 +165,7 @@ function GridsSection({
               className="p-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
               role="button"
             >
-              <FontAwesomeIcon icon={faChevronDown} />
+              <Icon icon="chevron-down" />
             </button>
           </div>
         )}
@@ -526,9 +518,9 @@ const AllRecords: React.FC = () => {
           providerInfo={selectedProviderInfo}
           onProviderSelect={handleProviderSelect}
           providerSearchList={providerSearchList}
-          icon={faUsers}
+          icon="users"
           buttonText="Add Provider"
-          buttonIcon={faUserPlus}
+          buttonIcon="user-plus"
           onButtonClick={() => {
             // Add Provider functionality
           }}
@@ -571,9 +563,9 @@ const AllRecords: React.FC = () => {
                 data-testid="sidebar-toggle"
               >
                 {sidebarCollapsed ? (
-                  <FontAwesomeIcon icon={faChevronRight} className="w-4 h-4" aria-hidden="true" />
+                  <Icon icon="chevron-right" className="w-4 h-4" aria-hidden="true" />
                 ) : (
-                  <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" aria-hidden="true" />
+                                      <Icon icon="chevron-left" className="w-4 h-4" aria-hidden="true" />
                 )}
               </button>
             </aside>
