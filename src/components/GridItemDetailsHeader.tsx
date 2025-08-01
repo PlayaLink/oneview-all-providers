@@ -1,6 +1,5 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUpRightAndDownLeftFromCenter, faXmark } from "@fortawesome/free-solid-svg-icons";
+import Icon from "@/components/ui/Icon";
 
 interface GridItemDetailsHeaderProps {
   headerText: string;
@@ -36,8 +35,8 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
           aria-label="Expand details modal"
           data-testid="expand-detail-modal-button"
         >
-          <FontAwesomeIcon
-            icon={faUpRightAndDownLeftFromCenter}
+          <Icon
+            icon="expand"
             className="w-5 h-5"
           />
         </button>
@@ -50,7 +49,7 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
           aria-label={`Close sidepanel`}
           data-testid={`close-sidepanel-button`}
         >
-          <FontAwesomeIcon icon={faXmark} className="w-5 h-5" />
+          <Icon icon="xmark" className="w-5 h-5" />
         </button>
       )}
     </div>

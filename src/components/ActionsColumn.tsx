@@ -1,6 +1,5 @@
 import React from 'react';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { getIconByName } from "@/lib/iconMapping";
+import Icon from "@/components/ui/Icon";
 import { useGridActions, GridAction } from "@/hooks/useGridActions";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -54,10 +53,9 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
       >
         {gridActions.map((gridAction: GridAction) => {
           const { action } = gridAction;
-          const icon = getIconByName(action.icon);
           
-          if (!icon) {
-            console.warn(`Icon not found for action: ${action.icon}`);
+          if (!action.icon) {
+            console.warn(`Icon not found for action: ${action.name}`);
             return null;
           }
 
@@ -72,8 +70,8 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
                   aria-label={action.tooltip}
                   title={action.tooltip}
                 >
-                  <FontAwesomeIcon 
-                    icon={icon} 
+                  <Icon 
+                    icon={action.icon} 
                     className="w-4 h-4 text-gray-600 hover:text-gray-800" 
                   />
                 </button>
