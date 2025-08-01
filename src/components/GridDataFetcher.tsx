@@ -220,6 +220,8 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
 
   if (!gridDef) return null;
 
+
+
   return (
     <section
       className=""
@@ -231,7 +233,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
     >
       <DataGrid
         title={titleOverride || gridDef.display_name}
-        icon={iconOverride || getIconByName(gridDef.icon)}
+        icon={iconOverride || gridDef.icon}
         data={mappedData}
         columns={agGridColumns}
         showCheckboxes={true}

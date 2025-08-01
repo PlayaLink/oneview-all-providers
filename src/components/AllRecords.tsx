@@ -131,7 +131,7 @@ function GridsSection({
                   <GridDataFetcher
                     gridKey={item.grid.key}
                     titleOverride={item.grid.display_name}
-                    iconOverride={getIconByName(item.grid.icon)}
+                    iconOverride={item.grid.icon}
                     height={gridHeight}
                     onRowClicked={(row: any) => handleRowSelect(row, item.grid.key)}
                     handleShowFacilityDetails={handleShowFacilityDetails}
