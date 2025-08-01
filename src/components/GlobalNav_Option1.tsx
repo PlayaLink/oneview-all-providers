@@ -8,6 +8,7 @@ import FeatureFlags from "./FeatureFlags";
 import GlobalFeatureToggle from "./GlobalFeatureToggle";
 import ModioLogoFeatureFlags from "./ModioLogoFeatureFlags";
 import TeamsToggle from "./TeamsToggle";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useFeatureFlag, useFeatureFlags } from "@/contexts/FeatureFlagContext";
 import { supabase } from "@/lib/supabaseClient";
 import { faker } from '@faker-js/faker';
