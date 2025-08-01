@@ -76,8 +76,9 @@ import {
   faUpRightAndDownLeftFromCenter,
 } from "@fortawesome/free-solid-svg-icons";
 
-// Icon mapping from string names to FontAwesome icon objects
-const iconMap: Record<string, IconDefinition> = {
+// Unified icon mapping that can contain either FontAwesome icons or SVG file paths
+// When you get access to premium FontAwesome icons, just replace the SVG paths with the IconDefinition
+const iconMap: Record<string, IconDefinition | string> = {
   "user-doctor": faUserDoctor,
   weight: faWeightScale,
   "house-chimney": faHome,
@@ -143,7 +144,6 @@ const iconMap: Record<string, IconDefinition> = {
   // Action icons from database
   "circle-plus": faCirclePlus,
   "circle-xmark": faCircleXmark,
-  "sidebar-flip": faBars,
   "star-half-stroke": faStarHalf,
   "shield-check": faShieldHalved,
   "pen-to-square": faPenToSquare,
@@ -166,11 +166,20 @@ const iconMap: Record<string, IconDefinition> = {
   "search": faSearch,
   "up-right-and-down-left-from-center": faUpRightAndDownLeftFromCenter,
   "expand": faUpRightAndDownLeftFromCenter, // Alias for expand
+  
+  // Premium FontAwesome icons (currently using custom SVG, replace with IconDefinition when available)
+  "sidebar-flip": "/icons/sidebar-flip.svg",
 };
 
-// Function to get FontAwesome icon from icon name
-export const getIconByName = (iconName: string): IconDefinition => {
-  return iconMap[iconName] || faTable; // fallback to table icon
+// Function to get icon (FontAwesome or SVG path) from icon name
+export const getIconByName = (iconName: string): IconDefinition | string => {
+  return iconMap[iconName] || faTable;
+};
+
+// Function to check if an icon is a custom SVG icon (returns a string path)
+export const isCustomIcon = (iconName: string): boolean => {
+  const icon = iconMap[iconName];
+  return typeof icon === 'string' && icon.startsWith('/');
 };
 
 // Export the icon map for other uses
