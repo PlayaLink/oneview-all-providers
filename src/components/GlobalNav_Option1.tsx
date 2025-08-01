@@ -61,22 +61,127 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
       {/* Black Header */}
       <header className="bg-black text-white" role="banner" aria-label="Application Header">
         <div className="flex flex-1 px-4 py-3">
-          <div className="flex flex-1 justify-end items-center">
+          <div className="flex flex-1 justify-between items-center">
             {/* Left side nav items */}
-            <div className="flex justify-end items-center gap-5">
+            <div className="flex items-center gap-5">
               {/* Help Center */}
-              <div className="flex items-center gap-4">
-                <button
-                  className="flex items-center justify-center h-5 pb-px transition-colors hover:opacity-80"
-                  aria-label="Help Center"
-                  data-testid="help-center-button"
+              <Popover open={helpCenterOpen} onOpenChange={setHelpCenterOpen}>
+                <PopoverTrigger asChild>
+                  <button
+                    className="flex items-center justify-center h-5 pb-px transition-colors hover:opacity-80"
+                    aria-label="Help Center"
+                    data-testid="help-center-button"
+                  >
+                    <FontAwesomeIcon
+                      icon={faQuestionCircle}
+                      className="w-5 h-5 text-white"
+                    />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-[259px] p-1 border-0 bg-white rounded-lg shadow-[0_20px_25px_-5px_rgba(0,0,0,0.05),0_8px_10px_-6px_rgba(0,0,0,0.10)]"
+                  align="start"
+                  side="bottom"
+                  sideOffset={4}
                 >
-                  <FontAwesomeIcon
-                    icon={faQuestionCircle}
-                    className="w-5 h-5 text-white"
-                  />
-                </button>
-              </div>
+                  <div className="flex flex-col">
+                    {/* Header */}
+                    <div
+                      className="flex items-center justify-end px-2 py-1 gap-2"
+                      data-testid="help-center-header"
+                    >
+                      <div
+                        className="flex-1 text-[#BABABA] text-xs font-medium tracking-[0.429px]"
+                        style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+                      >
+                        Resources
+                      </div>
+                    </div>
+
+                    {/* Menu Items */}
+                    <button
+                      className="flex items-center justify-end px-6 py-1 gap-2 hover:bg-gray-50 transition-colors text-left"
+                      onClick={() => setHelpCenterOpen(false)}
+                      data-testid="training-support-item"
+                    >
+                      <div
+                        className="flex-1 text-[#545454] text-xs font-medium tracking-[0.429px]"
+                        style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+                      >
+                        Training & Support
+                      </div>
+                    </button>
+
+                    <button
+                      className="flex items-center justify-end px-6 py-1 gap-2 hover:bg-gray-50 transition-colors text-left"
+                      onClick={() => setHelpCenterOpen(false)}
+                      data-testid="modio-u-item"
+                    >
+                      <div
+                        className="flex-1 text-[#545454] text-xs font-medium tracking-[0.429px]"
+                        style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+                      >
+                        Modio U
+                      </div>
+                    </button>
+
+                    <button
+                      className="flex items-center justify-end px-6 py-1 gap-2 hover:bg-gray-50 transition-colors text-left"
+                      onClick={() => setHelpCenterOpen(false)}
+                      data-testid="refer-friend-item"
+                    >
+                      <div
+                        className="flex-1 text-[#545454] text-xs font-medium tracking-[0.429px]"
+                        style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+                      >
+                        Refer a friend
+                      </div>
+                    </button>
+
+                    <button
+                      className="flex items-center justify-end px-6 py-1 gap-2 hover:bg-gray-50 transition-colors text-left"
+                      onClick={() => setHelpCenterOpen(false)}
+                      data-testid="privacy-policy-item"
+                    >
+                      <div
+                        className="flex-1 text-[#545454] text-xs font-medium tracking-[0.429px]"
+                        style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+                      >
+                        Privacy Policy
+                      </div>
+                    </button>
+
+                    <button
+                      className="flex items-center justify-end px-6 py-1 gap-2 hover:bg-gray-50 transition-colors text-left"
+                      onClick={() => setHelpCenterOpen(false)}
+                      data-testid="terms-conditions-item"
+                    >
+                      <div
+                        className="flex-1 text-[#545454] text-xs font-medium tracking-[0.429px]"
+                        style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+                      >
+                        Terms & Conditions
+                      </div>
+                    </button>
+
+                    <button
+                      className="flex items-center justify-end px-6 py-1 gap-2 hover:bg-gray-50 transition-colors text-left"
+                      onClick={() => {
+                        window.open('https://modiohealth.com', '_blank');
+                        setHelpCenterOpen(false);
+                      }}
+                      data-testid="modio-website-item"
+                    >
+                      <div
+                        className="flex-1 text-[#545454] text-xs font-medium tracking-[0.429px]"
+                        style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
+                      >
+                        modiohealth.com
+                      </div>
+                    </button>
+                  </div>
+                </PopoverContent>
+              </Popover>
 
               {/* User Account Avatar */}
               <div className="flex w-7 h-7 justify-center items-center relative">
