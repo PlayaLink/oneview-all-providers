@@ -27,7 +27,7 @@ const NAVITEM_VARIANTS = {
     base: "transition-colors select-none px-4 py-2.5 text-xs tracking-[0.429px] w-full flex items-center gap-2 rounded-t border border-gray-300 border-transparent border-b-0 font-normal",
     active:
       "bg-white font-semibold border-gray-300 border-t border-r border-l",
-    inactive: "font-normal hover:bg-[#E0F2FB]",
+    inactive: "text-[#1565c0] font-normal hover:bg-[#E0F2FB]",
     alignment: "justify-center",
   },
   sidenav: {

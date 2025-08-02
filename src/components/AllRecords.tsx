@@ -104,7 +104,7 @@ function GridsSection({
   return (
     <section className="flex-1 min-h-0 flex flex-row" role="region" aria-label="Grids list" data-testid="grids-list">
       {/* Grids List, Scroll Arrows, and SidePanel Side by Side */}
-      <div className="flex-1 min-h-0 flex flex-row pl-4 pt-4">
+      <div className="flex-1 min-h-0 flex flex-row pl-4">
         {/* Grids List */}
         <div className="flex-1 min-h-0 overflow-y-auto" data-testid="grids-scroll-container" ref={scrollContainerRef} onScroll={handleScroll}>
           {gridsLoading ? (
@@ -530,7 +530,7 @@ const AllRecords: React.FC = () => {
         <div className="flex-1 min-h-0 h-full flex flex-row">
             <aside
               className={cn(
-                "relative border-r border-gray-300 bg-white transition-all duration-300 flex flex-col h-full min-h-0",
+                "relative bg-white transition-all duration-300 flex flex-col h-full min-h-0",
                 sidebarCollapsed ? "w-0" : "w-48",
               )}
               role="complementary"
