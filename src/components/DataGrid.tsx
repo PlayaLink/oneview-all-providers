@@ -117,6 +117,9 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     onOpenDetailModal,
   } = props;
 
+  // Collapsible state
+  const [isExpanded, setIsExpanded] = React.useState(true);
+
   const [internalSelectedRowId, setInternalSelectedRowId] = React.useState<
     string | null
   >(null);
@@ -432,10 +435,19 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     >
       {/* Grid Header */}
       <header
-        className="flex items-center justify-between pl-1 pr-3 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 rounded-t overflow-hidden"
-        role="grid-header"
-        aria-label="Grid header"
+        className="flex items-center justify-between pl-1 pr-3 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 rounded-t overflow-hidden cursor-pointer hover:bg-[#B0BEC5] transition-colors"
+        role="button"
+        tabIndex={0}
+        aria-expanded={isExpanded}
+        aria-label={`Toggle ${title} grid`}
         data-testid="grid-header"
+        onClick={() => setIsExpanded(!isExpanded)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setIsExpanded(!isExpanded);
+          }
+        }}
       >
         <div className="flex items-center gap-2 pl-4">
           <Icon
@@ -446,6 +458,18 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           <h2 className="text-[#545454] font-semibold text-xs tracking-wider">
             {title}
           </h2>
+          <div
+            className="flex w-[18px] py-[6px] flex-col items-center gap-[10px] hover:opacity-70 transition-opacity"
+            aria-hidden="true"
+          >
+            <div className="flex h-2 pb-[1px] justify-center items-center">
+              <Icon
+                icon={isExpanded ? "angle-up" : "angle-down"}
+                className="text-[#545454] text-xl"
+                aria-label={isExpanded ? "Collapse grid" : "Expand grid"}
+              />
+            </div>
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
@@ -499,21 +523,22 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       </header>
 
       {/* AG Grid Container */}
-      <div
-        className="ag-theme-quartz"
-        style={
-          {
-            width: "100%",
-            ...(height ? { height: computedHeight } : {}),
-          } as React.CSSProperties
-        }
-        role="grid"
-        aria-label={`${title} data table`}
-        aria-rowcount={data.length}
-        aria-colcount={columnDefs.length}
-        data-testid="ag-grid-container"
-        onContextMenu={(e) => e.preventDefault()}
-      >
+      {isExpanded && (
+        <div
+          className="ag-theme-quartz"
+          style={
+            {
+              width: "100%",
+              ...(height ? { height: computedHeight } : {}),
+            } as React.CSSProperties
+          }
+          role="grid"
+          aria-label={`${title} data table`}
+          aria-rowcount={data.length}
+          aria-colcount={columnDefs.length}
+          data-testid="ag-grid-container"
+          onContextMenu={(e) => e.preventDefault()}
+        >
         <AgGridReact
           theme="legacy"
           rowData={data}
@@ -558,7 +583,8 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           onSortChanged={saveColumnState}
           onFilterChanged={saveColumnState}
         />
-      </div>
+        </div>
+      )}
 
       {contextMenu && (
         <ContextMenu
