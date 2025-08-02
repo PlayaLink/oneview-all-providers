@@ -104,7 +104,7 @@ function GridsSection({
   return (
     <section className="flex-1 min-h-0 flex flex-row" role="region" aria-label="Grids list" data-testid="grids-list">
       {/* Grids List, Scroll Arrows, and SidePanel Side by Side */}
-      <div className="flex-1 min-h-0 flex flex-row pl-4">
+      <div className="flex-1 min-h-0 flex flex-row px-4">
         {/* Grids List */}
         <div className="flex-1 min-h-0 overflow-y-auto" data-testid="grids-scroll-container" ref={scrollContainerRef} onScroll={handleScroll}>
           {gridsLoading ? (
@@ -139,6 +139,7 @@ function GridsSection({
                     selectedGridKey={selectedRow?.gridName}
                     onOpenDetailModal={onOpenDetailModal}
                     pinActionsColumn={!selectedRow}
+                    isSidePanelOpen={!!selectedRow}
                   />
                 </div>
               ))}

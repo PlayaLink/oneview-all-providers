@@ -90,6 +90,8 @@ interface DataGridProps {
   pinActionsColumn?: boolean;
   /** Callback to open the detail modal */
   onOpenDetailModal?: (rowData: any) => void;
+  /** Whether the side panel is open */
+  isSidePanelOpen?: boolean;
 }
 
 const DataGrid: React.FC<DataGridProps> = (props) => {
@@ -115,6 +117,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     onMoreHeaderActions,
     pinActionsColumn = true,
     onOpenDetailModal,
+    isSidePanelOpen = false,
   } = props;
 
   // Collapsible state
@@ -435,7 +438,9 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     >
       {/* Grid Header */}
       <header
-        className="flex items-center justify-between pl-1 pr-3 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 rounded-t overflow-hidden cursor-pointer hover:bg-[#B0BEC5] transition-colors"
+        className={`flex items-center justify-between pl-1 pr-3 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 overflow-hidden cursor-pointer hover:bg-[#B0BEC5] transition-colors ${
+          isSidePanelOpen ? 'rounded-tl' : 'rounded-t'
+        }`}
         role="button"
         tabIndex={0}
         aria-expanded={isExpanded}
