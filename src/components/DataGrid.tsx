@@ -458,18 +458,6 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           <h2 className="text-[#545454] font-semibold text-xs tracking-wider">
             {title}
           </h2>
-          <div
-            className="flex w-[18px] py-[6px] flex-col items-center gap-[10px] hover:opacity-70 transition-opacity"
-            aria-hidden="true"
-          >
-            <div className="flex h-2 pb-[1px] justify-center items-center">
-              <Icon
-                icon={isExpanded ? "angle-up" : "angle-down"}
-                className="text-[#545454] text-xl"
-                aria-label={isExpanded ? "Collapse grid" : "Expand grid"}
-              />
-            </div>
-          </div>
         </div>
 
         <div className="flex items-center gap-3">
