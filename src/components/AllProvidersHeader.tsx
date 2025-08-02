@@ -213,7 +213,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
             />
           ) : (
             <button
-              className="bg-[#79AC48] hover:bg-[#6B9A3F] text-white font-semibold h-10 px-4 rounded flex items-center gap-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#79AC48] text-sm"
+              className="bg-[#545454] hover:bg-[#424242] text-white font-semibold py-2 px-4 rounded flex items-center gap-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#545454] text-sm"
               type="button"
               aria-label="Add Provider"
               data-testid="add-provider-button"
