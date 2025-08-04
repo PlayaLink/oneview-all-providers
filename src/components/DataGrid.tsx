@@ -556,14 +556,6 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           <h2 className="text-[#545454] font-semibold text-xs tracking-wider">
             {title}
           </h2>
-          {gridColumnsData && gridName && (
-            <span 
-              className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded"
-              title="Database width persistence enabled"
-            >
-              DB
-            </span>
-          )}
         </div>
 
         <div className="flex items-center gap-3">
