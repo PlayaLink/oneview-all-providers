@@ -569,7 +569,8 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
-      if (!target.closest('.expiring-dropdown')) {
+      // Check if click is on the dropdown or the expiring button
+      if (!target.closest('.expiring-dropdown') && !target.closest('[data-testid="expiring-button"]')) {
         setShowExpiringDropdown(false);
       }
     };
@@ -650,6 +651,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                       setShowExpiringDropdown(!showExpiringDropdown);
                     }}
                     aria-label={`${expirationStats.expiring} items expiring`}
+                    data-testid="expiring-button"
                   >
                     <span className="text-white font-bold text-xs">{expirationStats.expiring}</span>
                     <span className="text-white font-bold text-xs">Expiring</span>
@@ -666,7 +668,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                     >
                       <div className="p-3">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Expiring Within
+                          Highlight records expiring within
                         </label>
                         <select
                           value={expiringDaysFilter}
