@@ -94,7 +94,7 @@ interface DataGridProps {
   /** Whether the side panel is open */
   isSidePanelOpen?: boolean;
   /** Grid columns data from database for width persistence */
-  gridColumnsData?: Array<{ id: string; name: string; width?: number }>;
+  gridColumnsData?: Array<{ id: string; name: string; width?: number; visible?: boolean }>;
   /** Grid name/key for database operations */
   gridName?: string;
 }
@@ -467,14 +467,28 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       // Apply database widths to column state if available
       if (gridColumnsData) {
         const dbWidthsApplied = [];
-        columnState = columnState.map((col: any) => {
-          const dbColumn = gridColumnsData.find(dbCol => dbCol.name === col.colId);
-          if (dbColumn && dbColumn.width) {
-            dbWidthsApplied.push({ colId: col.colId, width: dbColumn.width });
-            return { ...col, width: dbColumn.width };
-          }
-          return col;
-        });
+        
+        // If we have localStorage data, merge database widths with it
+        if (columnState.length > 0) {
+          columnState = columnState.map((col: any) => {
+            const dbColumn = gridColumnsData.find(dbCol => dbCol.name === col.colId);
+            if (dbColumn && dbColumn.width) {
+              dbWidthsApplied.push({ colId: col.colId, width: dbColumn.width });
+              return { ...col, width: dbColumn.width };
+            }
+            return col;
+          });
+        } else {
+          // If no localStorage data, create column state from database widths
+          columnState = gridColumnsData
+            .filter(col => col.width)
+            .map(col => ({
+              colId: col.name,
+              width: col.width,
+              hide: col.visible === false
+            }));
+          dbWidthsApplied.push(...columnState.map(col => ({ colId: col.colId, width: col.width })));
+        }
         
         if (dbWidthsApplied.length > 0) {
           console.log(`Applied ${dbWidthsApplied.length} database column widths:`, dbWidthsApplied);
@@ -675,6 +689,9 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           cellSelection={false}
           maintainColumnOrder={true}
           onGridReady={(params) => {
+            console.log("Grid ready for:", title);
+            console.log("Grid columns data available:", !!gridColumnsData);
+            console.log("Grid name available:", !!gridName);
             setGridApi(params.api);
             params.api.sizeColumnsToFit();
             // Load saved column state after grid is ready
