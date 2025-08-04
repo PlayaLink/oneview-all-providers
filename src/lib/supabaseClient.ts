@@ -484,7 +484,7 @@ export async function fetchGridColumnsByGridName(gridName: string) {
   // First get the grid definition to get the grid_id
   const { data: gridDefs, error: gridError } = await supabase
     .from('grid_definitions')
-    .select('id, display_name, key, table_name')
+    .select('id, display_name, key, table_name, expiring_within')
     .or(`display_name.eq.${gridName},key.eq.${gridName},table_name.eq.${gridName}`)
     .limit(1);
   
@@ -504,7 +504,12 @@ export async function fetchGridColumnsByGridName(gridName: string) {
     .order('order');
   
   if (error) throw error;
-  return data;
+  
+  // Return both columns and grid definition info
+  return {
+    columns: data,
+    gridDefinition: gridDef
+  };
 }
 
 // Fetch field groups for a grid
@@ -1828,6 +1833,34 @@ export async function fetchAllGridActions() {
       grid:grid_definitions(display_name, table_name, key)
     `)
     .order('order');
+  if (error) throw error;
+  return data;
+}
+
+// Update expiring_within value for a grid definition
+export async function updateGridExpiringWithin(gridName: string, expiringWithin: number) {
+  // First get the grid definition to get the grid_id
+  const { data: gridDefs, error: gridError } = await supabase
+    .from('grid_definitions')
+    .select('id')
+    .or(`display_name.eq.${gridName},key.eq.${gridName},table_name.eq.${gridName}`)
+    .limit(1);
+  
+  if (gridError) throw gridError;
+  if (!gridDefs || gridDefs.length === 0) {
+    throw new Error(`No grid definition found for gridName: ${gridName}`);
+  }
+
+  const gridDef = gridDefs[0];
+  
+  // Update the expiring_within value
+  const { data, error } = await supabase
+    .from('grid_definitions')
+    .update({ expiring_within: expiringWithin })
+    .eq('id', gridDef.id)
+    .select()
+    .single();
+  
   if (error) throw error;
   return data;
 } 

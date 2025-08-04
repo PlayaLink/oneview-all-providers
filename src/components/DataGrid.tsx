@@ -4,7 +4,7 @@ import { ColDef } from "ag-grid-enterprise";
 import Icon from "@/components/ui/Icon";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import { useGridActions } from "@/hooks/useGridActions";
-import { updateGridColumnWidths } from "@/lib/supabaseClient";
+import { updateGridColumnWidths, updateGridExpiringWithin } from "@/lib/supabaseClient";
 import ContextMenu from "./ContextMenu";
 import ActionsColumn from "./ActionsColumn";
 
@@ -97,6 +97,8 @@ interface DataGridProps {
   gridColumnsData?: Array<{ id: string; name: string; width?: number; visible?: boolean }>;
   /** Grid name/key for database operations */
   gridName?: string;
+  /** Default expiring days filter from grid definition */
+  defaultExpiringDays?: number;
 }
 
 const DataGrid: React.FC<DataGridProps> = (props) => {
@@ -148,7 +150,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
   // Expiring dropdown state
   const [showExpiringDropdown, setShowExpiringDropdown] = React.useState(false);
-  const [expiringDaysFilter, setExpiringDaysFilter] = React.useState(30);
+  const [expiringDaysFilter, setExpiringDaysFilter] = React.useState(props.defaultExpiringDays || 30);
 
   // Column state persistence
   const [gridApi, setGridApi] = React.useState<any>(null);
@@ -672,7 +674,19 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                         </label>
                         <select
                           value={expiringDaysFilter}
-                          onChange={(e) => setExpiringDaysFilter(Number(e.target.value))}
+                          onChange={async (e) => {
+                            const newValue = Number(e.target.value);
+                            setExpiringDaysFilter(newValue);
+                            
+                            // Save to database if we have a grid name
+                            if (gridName) {
+                              try {
+                                await updateGridExpiringWithin(gridName, newValue);
+                              } catch (error) {
+                                console.warn("Failed to save expiring days to database:", error);
+                              }
+                            }
+                          }}
                           onClick={(e) => e.stopPropagation()}
                           className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >

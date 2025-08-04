@@ -2,7 +2,7 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   fetchGridDefinitions,
-  fetchGridColumns,
+  fetchGridColumnsByGridName,
   fetchGridData,
   supabase,
 } from "@/lib/supabaseClient";
@@ -92,13 +92,16 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
     : undefined;
 
   // Fetch columns for this grid
-  const { data: columns = [] } = useQuery({
-    queryKey: gridDef ? ["grid_columns", gridDef.id] : ["grid_columns", "none"],
+  const { data: gridColumnsData } = useQuery({
+    queryKey: gridDef ? ["grid_columns_by_name", gridKey] : ["grid_columns_by_name", "none"],
     queryFn: () =>
-      gridDef ? fetchGridColumns(gridDef.id) : Promise.resolve([]),
+      gridDef ? fetchGridColumnsByGridName(gridKey) : Promise.resolve({ columns: [], gridDefinition: null }),
     enabled: !!gridDef,
-    initialData: [],
+    initialData: { columns: [], gridDefinition: null },
   });
+  
+  const columns = (gridColumnsData as any)?.columns || [];
+  const gridDefinition = (gridColumnsData as any)?.gridDefinition;
 
   // Fetch data for this grid, filtered by providerIdFilter if present
   const {
@@ -261,6 +264,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
         isSidePanelOpen={isSidePanelOpen}
         gridColumnsData={columns}
         gridName={gridKey}
+        defaultExpiringDays={gridDefinition?.expiring_within}
       />
       {isLoading && <div className="text-gray-500 mt-4">Loading...</div>}
       {error && (
