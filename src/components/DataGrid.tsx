@@ -607,7 +607,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     >
       {/* Grid Header */}
       <header
-        className={`flex items-center justify-between pl-1 pr-3 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 overflow-hidden cursor-pointer hover:bg-[#B0BEC5] transition-colors ${
+        className={`flex items-center justify-between pl-1 pr-3 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 overflow-visible cursor-pointer hover:bg-[#B0BEC5] transition-colors ${
           isSidePanelOpen ? 'rounded-tl' : 'rounded-t'
         }`}
         role="button"
@@ -661,7 +661,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                   
                   {showExpiringDropdown && (
                     <div 
-                      className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-48 expiring-dropdown"
+                      className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg min-w-48 expiring-dropdown z-[10000]"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <div className="p-3">
