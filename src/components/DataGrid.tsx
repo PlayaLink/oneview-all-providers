@@ -670,7 +670,6 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
             });
           }}
           onColumnResized={(event) => {
-            console.log("Column resized:", event.column.getColId(), "New width:", event.column.getActualWidth());
             debouncedSave();
           }}
           onSortChanged={(event) => {
