@@ -159,15 +159,11 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   // Create a map of column names to their database IDs for width persistence
   const columnIdMap = React.useMemo(() => {
     if (!gridColumnsData) {
-      console.log("No grid columns data available for column ID map");
       return new Map();
     }
     const map = new Map(gridColumnsData.map(col => [col.name, col.id]));
-    console.log("Created column ID map:", Object.fromEntries(map));
-    console.log("Grid columns data received:", gridColumnsData);
-    console.log("Grid name received:", gridName);
     return map;
-  }, [gridColumnsData, gridName]);
+  }, [gridColumnsData]);
 
   // Calculate actions column width based on number of actions
   const minWidthActionsColumn = 165;
@@ -391,7 +387,6 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   const saveColumnState = React.useCallback(async () => {
     if (gridApi) {
       const columnState = gridApi.getColumnState();
-      console.log("Current column state:", columnState);
       localStorage.setItem(gridStateKey, JSON.stringify(columnState));
       
       // Save column widths to database if we have grid columns data
@@ -404,22 +399,12 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               width: col.width
             }));
           
-          console.log("Column ID map:", columnIdMap);
-          console.log("Grid columns data:", gridColumnsData);
-          console.log("Width updates to save:", widthUpdates);
-          
           if (widthUpdates.length > 0) {
-            console.log(`Saving column widths to database for grid ${gridName}:`, widthUpdates);
             await updateGridColumnWidths(widthUpdates);
-            console.log(`Successfully saved ${widthUpdates.length} column widths to database`);
-          } else {
-            console.log("No width updates to save - no columns with widths or no matching column IDs");
           }
         } catch (error) {
           console.warn("Failed to save column widths to database:", error);
         }
-      } else {
-        console.log("No grid columns data or grid name available for database save");
       }
     }
   }, [gridApi, gridStateKey, gridColumnsData, gridName, columnIdMap]);
@@ -466,14 +451,11 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       
       // Apply database widths to column state if available
       if (gridColumnsData) {
-        const dbWidthsApplied = [];
-        
         // If we have localStorage data, merge database widths with it
         if (columnState.length > 0) {
           columnState = columnState.map((col: any) => {
             const dbColumn = gridColumnsData.find(dbCol => dbCol.name === col.colId);
             if (dbColumn && dbColumn.width) {
-              dbWidthsApplied.push({ colId: col.colId, width: dbColumn.width });
               return { ...col, width: dbColumn.width };
             }
             return col;
@@ -487,16 +469,10 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               width: col.width,
               hide: col.visible === false
             }));
-          dbWidthsApplied.push(...columnState.map(col => ({ colId: col.colId, width: col.width })));
-        }
-        
-        if (dbWidthsApplied.length > 0) {
-          console.log(`Applied ${dbWidthsApplied.length} database column widths:`, dbWidthsApplied);
         }
       }
       
       if (columnState.length > 0) {
-        console.log("Applying column state:", columnState);
         gridApi.applyColumnState({
           state: columnState,
           applyOrder: true,
@@ -689,9 +665,6 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           cellSelection={false}
           maintainColumnOrder={true}
           onGridReady={(params) => {
-            console.log("Grid ready for:", title);
-            console.log("Grid columns data available:", !!gridColumnsData);
-            console.log("Grid name available:", !!gridName);
             setGridApi(params.api);
             params.api.sizeColumnsToFit();
             // Load saved column state after grid is ready

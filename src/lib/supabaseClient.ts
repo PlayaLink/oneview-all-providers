@@ -462,17 +462,21 @@ export async function updateGridColumnWidth(columnId: string, width: number) {
 export async function updateGridColumnWidths(updates: Array<{ columnId: string; width: number }>) {
   if (updates.length === 0) return [];
   
-  // Use a transaction to update all columns
-  const { data, error } = await supabase
-    .from('grid_columns')
-    .upsert(
-      updates.map(({ columnId, width }) => ({ id: columnId, width })),
-      { onConflict: 'id' }
-    )
-    .select();
+  // Update each column individually since we can't use upsert without grid_id
+  const results = [];
+  for (const { columnId, width } of updates) {
+    const { data, error } = await supabase
+      .from('grid_columns')
+      .update({ width })
+      .eq('id', columnId)
+      .select()
+      .single();
+    
+    if (error) throw error;
+    results.push(data);
+  }
   
-  if (error) throw error;
-  return data;
+  return results;
 }
 
 // Fetch columns for a grid by grid name/key
