@@ -168,7 +168,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
       const colDef: any = {
         field: col.name,
         headerName: col.display_name,
-        minWidth: col.width || 120,
+        minWidth: 120, // Set a reasonable minimum width that allows shrinking
         width: col.width, // Use database width if available
         flex: col.width ? undefined : 1, // Only use flex if no fixed width
         valueFormatter: getValueFormatterForType(col.type),
