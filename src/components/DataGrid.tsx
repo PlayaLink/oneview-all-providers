@@ -158,9 +158,16 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
   // Create a map of column names to their database IDs for width persistence
   const columnIdMap = React.useMemo(() => {
-    if (!gridColumnsData) return new Map();
-    return new Map(gridColumnsData.map(col => [col.name, col.id]));
-  }, [gridColumnsData]);
+    if (!gridColumnsData) {
+      console.log("No grid columns data available for column ID map");
+      return new Map();
+    }
+    const map = new Map(gridColumnsData.map(col => [col.name, col.id]));
+    console.log("Created column ID map:", Object.fromEntries(map));
+    console.log("Grid columns data received:", gridColumnsData);
+    console.log("Grid name received:", gridName);
+    return map;
+  }, [gridColumnsData, gridName]);
 
   // Calculate actions column width based on number of actions
   const minWidthActionsColumn = 165;
@@ -384,27 +391,36 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   const saveColumnState = React.useCallback(async () => {
     if (gridApi) {
       const columnState = gridApi.getColumnState();
+      console.log("Current column state:", columnState);
       localStorage.setItem(gridStateKey, JSON.stringify(columnState));
       
-              // Save column widths to database if we have grid columns data
-        if (gridColumnsData && gridName) {
-          try {
-            const widthUpdates = columnState
-              .filter((col: any) => col.width && columnIdMap.has(col.colId))
-              .map((col: any) => ({
-                columnId: columnIdMap.get(col.colId)!,
-                width: col.width
-              }));
-            
-            if (widthUpdates.length > 0) {
-              console.log(`Saving column widths to database for grid ${gridName}:`, widthUpdates);
-              await updateGridColumnWidths(widthUpdates);
-              console.log(`Successfully saved ${widthUpdates.length} column widths to database`);
-            }
-          } catch (error) {
-            console.warn("Failed to save column widths to database:", error);
+      // Save column widths to database if we have grid columns data
+      if (gridColumnsData && gridName) {
+        try {
+          const widthUpdates = columnState
+            .filter((col: any) => col.width && columnIdMap.has(col.colId))
+            .map((col: any) => ({
+              columnId: columnIdMap.get(col.colId)!,
+              width: col.width
+            }));
+          
+          console.log("Column ID map:", columnIdMap);
+          console.log("Grid columns data:", gridColumnsData);
+          console.log("Width updates to save:", widthUpdates);
+          
+          if (widthUpdates.length > 0) {
+            console.log(`Saving column widths to database for grid ${gridName}:`, widthUpdates);
+            await updateGridColumnWidths(widthUpdates);
+            console.log(`Successfully saved ${widthUpdates.length} column widths to database`);
+          } else {
+            console.log("No width updates to save - no columns with widths or no matching column IDs");
           }
+        } catch (error) {
+          console.warn("Failed to save column widths to database:", error);
         }
+      } else {
+        console.log("No grid columns data or grid name available for database save");
+      }
     }
   }, [gridApi, gridStateKey, gridColumnsData, gridName, columnIdMap]);
 
@@ -414,8 +430,23 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     return () => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
-        saveColumnState();
+        saveColumnState().catch(error => {
+          console.warn("Debounced save failed:", error);
+        });
       }, 500); // Debounce for 500ms
+    };
+  }, [saveColumnState]);
+
+  // Create the actual debounced function
+  const debouncedSave = React.useMemo(() => {
+    let timeoutId: NodeJS.Timeout;
+    return () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        saveColumnState().catch(error => {
+          console.warn("Debounced save failed:", error);
+        });
+      }, 500);
     };
   }, [saveColumnState]);
 
@@ -451,6 +482,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       }
       
       if (columnState.length > 0) {
+        console.log("Applying column state:", columnState);
         gridApi.applyColumnState({
           state: columnState,
           applyOrder: true,
@@ -534,6 +566,14 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           <h2 className="text-[#545454] font-semibold text-xs tracking-wider">
             {title}
           </h2>
+          {gridColumnsData && gridName && (
+            <span 
+              className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded"
+              title="Database width persistence enabled"
+            >
+              DB
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-3">
@@ -643,16 +683,22 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
             }, 100);
           }}
           onColumnMoved={(event) => {
-            saveColumnState();
+            saveColumnState().catch(error => {
+              console.warn("Column move save failed:", error);
+            });
           }}
           onColumnResized={(event) => {
-            debouncedSaveColumnState();
+            debouncedSave();
           }}
           onSortChanged={(event) => {
-            saveColumnState();
+            saveColumnState().catch(error => {
+              console.warn("Sort change save failed:", error);
+            });
           }}
           onFilterChanged={(event) => {
-            saveColumnState();
+            saveColumnState().catch(error => {
+              console.warn("Filter change save failed:", error);
+            });
           }}
         />
         </div>
