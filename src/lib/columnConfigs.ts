@@ -90,6 +90,41 @@ export const getColumnsForGrid = (gridKey: string): ColDef[] => {
       flex: 1,
       floatingFilter: true, // Show floating filter input for all columns
     };
+
+    // Custom filter configuration for expires_within field
+    if (columnName === "expires_within") {
+      colDef.filterParams = {
+        filterOptions: [
+          'equals',
+          'notEqual',
+          'contains',
+          'notContains',
+          'startsWith',
+          'endsWith',
+          'blank',
+          'notBlank'
+        ],
+        valueFormatter: (params: any) => {
+          // Format the value for display in the filter dropdown
+          return params.value || '';
+        },
+        // Custom filter values for expires_within
+        values: [
+          '7 days',
+          '14 days', 
+          '30 days',
+          '60 days',
+          'Expired'
+        ],
+        // Allow custom values to be entered
+        allowTyping: true,
+        // Show "Select All" and "Clear All" buttons
+        buttons: ['reset', 'apply'],
+        closeOnApply: true,
+        suppressApplyButton: false
+      };
+    }
+
     if (columnName === "provider_name") {
       colDef.valueGetter = (params: any) => {
         if (!params.data) return '';
@@ -210,7 +245,7 @@ export const standardColumns: ColDef[] = [
     flex: 1,
     valueFormatter: (params: any) => {
       const fullTitle = params.value;
-      return getTitleAcronym(fullTitle);
+      return extractTitleAcronym(fullTitle);
     },
   },
   {

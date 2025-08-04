@@ -169,7 +169,8 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
         field: col.name,
         headerName: col.display_name,
         minWidth: col.width || 120,
-        flex: 1,
+        width: col.width, // Use database width if available
+        flex: col.width ? undefined : 1, // Only use flex if no fixed width
         valueFormatter: getValueFormatterForType(col.type),
         hide: !col.visible,
         // ...add more as needed
@@ -258,6 +259,8 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
                   onMoreHeaderActions={() => {}}
         pinActionsColumn={pinActionsColumn}
         isSidePanelOpen={isSidePanelOpen}
+        gridColumnsData={columns}
+        gridName={gridKey}
       />
       {isLoading && <div className="text-gray-500 mt-4">Loading...</div>}
       {error && (

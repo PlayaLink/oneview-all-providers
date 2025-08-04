@@ -43,7 +43,6 @@ const HorizontalNavNew: React.FC<HorizontalNavNewProps> = ({
 
   return (
     <nav
-      className="bg-white border-b border-gray-300"
       role="navigation"
       aria-label="Section navigation"
       data-testid="horizontal-nav"
@@ -77,7 +76,7 @@ const HorizontalNavNew: React.FC<HorizontalNavNewProps> = ({
               trigger={
                 <div className="relative" role="group" aria-label="Section visibility controls" style={{ display: 'inline-block' }}>
                   <button
-                    className="flex items-center gap-2 text-xs font-medium tracking-wide border border-gray-300 rounded px-3 py-1 bg-white focus:outline-none focus:ring-0"
+                    className="flex items-center gap-2 text-[#545454] font-bold tracking-wide rounded px-3 py-1 bg-white focus:outline-none focus:ring-0"
                     type="button"
                     aria-haspopup="true"
                     aria-expanded={false}

@@ -4,6 +4,7 @@ import { ColDef } from "ag-grid-enterprise";
 import Icon from "@/components/ui/Icon";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import { useGridActions } from "@/hooks/useGridActions";
+import { updateGridColumnWidths } from "@/lib/supabaseClient";
 import ContextMenu from "./ContextMenu";
 import ActionsColumn from "./ActionsColumn";
 
@@ -92,6 +93,10 @@ interface DataGridProps {
   onOpenDetailModal?: (rowData: any) => void;
   /** Whether the side panel is open */
   isSidePanelOpen?: boolean;
+  /** Grid columns data from database for width persistence */
+  gridColumnsData?: Array<{ id: string; name: string; width?: number }>;
+  /** Grid name/key for database operations */
+  gridName?: string;
 }
 
 const DataGrid: React.FC<DataGridProps> = (props) => {
@@ -118,6 +123,8 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     pinActionsColumn = true,
     onOpenDetailModal,
     isSidePanelOpen = false,
+    gridColumnsData,
+    gridName,
   } = props;
 
   // Collapsible state
@@ -148,6 +155,12 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
   // Get actual actions for this grid
   const { gridActions } = useGridActions(title);
+
+  // Create a map of column names to their database IDs for width persistence
+  const columnIdMap = React.useMemo(() => {
+    if (!gridColumnsData) return new Map();
+    return new Map(gridColumnsData.map(col => [col.name, col.id]));
+  }, [gridColumnsData]);
 
   // Calculate actions column width based on number of actions
   const minWidthActionsColumn = 165;
@@ -196,6 +209,9 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
       // Data columns
       ...columns.map((col) => {
+        // Find database column data for width persistence
+        const dbColumn = gridColumnsData?.find(dbCol => dbCol.name === col.field);
+        
         const baseCol = {
           ...col,
           floatingFilter: showFloatingFilters,
@@ -203,6 +219,8 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           filter: true,
           resizable: true,
           sortable: true,
+          // Use database width if available, otherwise use column width or default
+          width: dbColumn?.width || col.width || 120,
         };
 
         // Set default sort for provider_name if no sort is specified
@@ -362,35 +380,88 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     setContextMenu(null);
   };
 
-  // Save column state to localStorage
-  const saveColumnState = React.useCallback(() => {
+  // Save column state to localStorage and database
+  const saveColumnState = React.useCallback(async () => {
     if (gridApi) {
       const columnState = gridApi.getColumnState();
       localStorage.setItem(gridStateKey, JSON.stringify(columnState));
+      
+              // Save column widths to database if we have grid columns data
+        if (gridColumnsData && gridName) {
+          try {
+            const widthUpdates = columnState
+              .filter((col: any) => col.width && columnIdMap.has(col.colId))
+              .map((col: any) => ({
+                columnId: columnIdMap.get(col.colId)!,
+                width: col.width
+              }));
+            
+            if (widthUpdates.length > 0) {
+              console.log(`Saving column widths to database for grid ${gridName}:`, widthUpdates);
+              await updateGridColumnWidths(widthUpdates);
+              console.log(`Successfully saved ${widthUpdates.length} column widths to database`);
+            }
+          } catch (error) {
+            console.warn("Failed to save column widths to database:", error);
+          }
+        }
     }
-  }, [gridApi, gridStateKey]);
+  }, [gridApi, gridStateKey, gridColumnsData, gridName, columnIdMap]);
 
-  // Load column state from localStorage
+  // Debounced save function to prevent too many database calls
+  const debouncedSaveColumnState = React.useCallback(() => {
+    let timeoutId: NodeJS.Timeout;
+    return () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        saveColumnState();
+      }, 500); // Debounce for 500ms
+    };
+  }, [saveColumnState]);
+
+  // Load column state from localStorage and database
   const loadColumnState = React.useCallback(() => {
     if (gridApi) {
       const savedState = localStorage.getItem(gridStateKey);
+      let columnState = [];
+      
       if (savedState) {
         try {
-          const columnState = JSON.parse(savedState);
-          gridApi.applyColumnState({
-            state: columnState,
-            applyOrder: true,
-            applyVisible: true,
-            applySize: true,
-            applySort: true,
-            applyFilter: true,
-          });
+          columnState = JSON.parse(savedState);
         } catch (error) {
-          console.warn("Failed to load column state:", error);
+          console.warn("Failed to parse saved column state:", error);
         }
       }
+      
+      // Apply database widths to column state if available
+      if (gridColumnsData) {
+        const dbWidthsApplied = [];
+        columnState = columnState.map((col: any) => {
+          const dbColumn = gridColumnsData.find(dbCol => dbCol.name === col.colId);
+          if (dbColumn && dbColumn.width) {
+            dbWidthsApplied.push({ colId: col.colId, width: dbColumn.width });
+            return { ...col, width: dbColumn.width };
+          }
+          return col;
+        });
+        
+        if (dbWidthsApplied.length > 0) {
+          console.log(`Applied ${dbWidthsApplied.length} database column widths:`, dbWidthsApplied);
+        }
+      }
+      
+      if (columnState.length > 0) {
+        gridApi.applyColumnState({
+          state: columnState,
+          applyOrder: true,
+          applyVisible: true,
+          applySize: true,
+          applySort: true,
+          applyFilter: true,
+        });
+      }
     }
-  }, [gridApi, gridStateKey]);
+  }, [gridApi, gridStateKey, gridColumnsData]);
 
   const getRowStyle = (params: any) => {
     const baseStyle = {
@@ -571,10 +642,18 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               loadColumnState();
             }, 100);
           }}
-          onColumnMoved={saveColumnState}
-          onColumnResized={saveColumnState}
-          onSortChanged={saveColumnState}
-          onFilterChanged={saveColumnState}
+          onColumnMoved={(event) => {
+            saveColumnState();
+          }}
+          onColumnResized={(event) => {
+            debouncedSaveColumnState();
+          }}
+          onSortChanged={(event) => {
+            saveColumnState();
+          }}
+          onFilterChanged={(event) => {
+            saveColumnState();
+          }}
         />
         </div>
       )}

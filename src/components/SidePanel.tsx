@@ -102,7 +102,7 @@ const SidePanel: React.FC<SidePanelProps> = (props) => {
       
       {/* SidePanel */}
       <div
-        className={`h-full bg-white border-l border-gray-300 flex flex-col ${isOpen ? "w-full" : "w-0 overflow-hidden"} ${isDragging ? "" : "transition-all duration-300 ease-in-out"}`}
+        className={`h-full bg-white border-t border-l border-gray-300 flex flex-col ${isOpen ? "w-full" : "w-0 overflow-hidden"} ${isDragging ? "" : "transition-all duration-300 ease-in-out"}`}
         role="dialog"
         aria-modal="true"
         aria-label="Side panel"

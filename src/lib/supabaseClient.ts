@@ -446,6 +446,63 @@ export async function fetchGridColumns(gridId: string) {
   return data;
 }
 
+// Update column width in the database
+export async function updateGridColumnWidth(columnId: string, width: number) {
+  const { data, error } = await supabase
+    .from('grid_columns')
+    .update({ width })
+    .eq('id', columnId)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+// Update multiple column widths in the database
+export async function updateGridColumnWidths(updates: Array<{ columnId: string; width: number }>) {
+  if (updates.length === 0) return [];
+  
+  // Use a transaction to update all columns
+  const { data, error } = await supabase
+    .from('grid_columns')
+    .upsert(
+      updates.map(({ columnId, width }) => ({ id: columnId, width })),
+      { onConflict: 'id' }
+    )
+    .select();
+  
+  if (error) throw error;
+  return data;
+}
+
+// Fetch columns for a grid by grid name/key
+export async function fetchGridColumnsByGridName(gridName: string) {
+  // First get the grid definition to get the grid_id
+  const { data: gridDefs, error: gridError } = await supabase
+    .from('grid_definitions')
+    .select('id, display_name, key, table_name')
+    .or(`display_name.eq.${gridName},key.eq.${gridName},table_name.eq.${gridName}`)
+    .limit(1);
+  
+  if (gridError) throw gridError;
+  if (!gridDefs || gridDefs.length === 0) {
+    console.warn(`No grid definition found for gridName: ${gridName}`);
+    return [];
+  }
+
+  const gridDef = gridDefs[0];
+  
+  // Then get the grid columns using the grid_id
+  const { data, error } = await supabase
+    .from('grid_columns')
+    .select('*')
+    .eq('grid_id', gridDef.id)
+    .order('order');
+  
+  if (error) throw error;
+  return data;
+}
+
 // Fetch field groups for a grid
 export async function fetchGridFieldGroups(gridId: string) {
   const { data, error } = await supabase
