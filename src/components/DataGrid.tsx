@@ -522,6 +522,45 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
   const computedHeight = typeof height === "number" ? `${height}px` : height;
 
+  // Calculate expiration statistics from data
+  const expirationStats = React.useMemo(() => {
+    if (!data || data.length === 0) {
+      return { expiring: 0, expired: 0, total: 0 };
+    }
+
+    const now = new Date();
+    let expiring = 0;
+    let expired = 0;
+
+    data.forEach((row: any) => {
+      // Check for various expiration date fields
+      const expirationDate = row.expiration_date || row.expires_within || row.end_date || row.expiry_date;
+      
+      if (expirationDate) {
+        const expDate = new Date(expirationDate);
+        
+        // Check if expired (past date)
+        if (expDate < now) {
+          expired++;
+        } else {
+          // Check if expiring within 30 days
+          const thirtyDaysFromNow = new Date();
+          thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
+          
+          if (expDate <= thirtyDaysFromNow) {
+            expiring++;
+          }
+        }
+      }
+    });
+
+    return {
+      expiring,
+      expired,
+      total: data.length
+    };
+  }, [data]);
+
   return (
     <section
       className="bg-white"
@@ -565,28 +604,34 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               role="group"
               aria-label="Status indicators"
             >
-              <div
-                className="flex items-center gap-1 px-2.5 py-0.5 bg-[#F48100] rounded-full"
-                role="status"
-                aria-label="1 item expiring"
-              >
-                <span className="text-white font-bold text-xs">1</span>
-                <span className="text-white font-bold text-xs">Expiring</span>
-              </div>
-              <div
-                className="flex items-center gap-1 px-2.5 py-0.5 bg-[#DB0D00] rounded-full"
-                role="status"
-                aria-label="1 item expired"
-              >
-                <span className="text-white font-bold text-xs">1</span>
-                <span className="text-white font-bold text-xs">Expired</span>
-              </div>
+              {expirationStats.expiring > 0 && (
+                <div
+                  className="flex items-center gap-1 px-2.5 py-0.5 bg-[#F48100] rounded-full"
+                  role="status"
+                  aria-label={`${expirationStats.expiring} items expiring`}
+                >
+                  <span className="text-white font-bold text-xs">{expirationStats.expiring}</span>
+                  <span className="text-white font-bold text-xs">Expiring</span>
+                </div>
+              )}
+              {expirationStats.expired > 0 && (
+                <div
+                  className="flex items-center gap-1 px-2.5 py-0.5 bg-[#DB0D00] rounded-full"
+                  role="status"
+                  aria-label={`${expirationStats.expired} items expired`}
+                >
+                  <span className="text-white font-bold text-xs">{expirationStats.expired}</span>
+                  <span className="text-white font-bold text-xs">Expired</span>
+                </div>
+              )}
               <div
                 className="flex items-center gap-1 px-2.5 py-0.5 bg-[#545454] rounded-full"
                 role="status"
-                aria-label="900+ total items"
+                aria-label={`${expirationStats.total} total items`}
               >
-                <span className="text-white font-bold text-xs">900+</span>
+                <span className="text-white font-bold text-xs">
+                  {expirationStats.total > 999 ? '999+' : expirationStats.total}
+                </span>
                 <span className="text-white font-bold text-xs">Total</span>
               </div>
             </div>
