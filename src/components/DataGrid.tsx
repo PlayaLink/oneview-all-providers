@@ -645,7 +645,10 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                 <div className="relative">
                   <button
                     className="flex items-center gap-1 px-2.5 py-0.5 bg-[#F48100] rounded-full hover:bg-[#E67300] transition-colors"
-                    onClick={() => setShowExpiringDropdown(!showExpiringDropdown)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowExpiringDropdown(!showExpiringDropdown);
+                    }}
                     aria-label={`${expirationStats.expiring} items expiring`}
                   >
                     <span className="text-white font-bold text-xs">{expirationStats.expiring}</span>
@@ -657,7 +660,10 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                   </button>
                   
                   {showExpiringDropdown && (
-                    <div className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-48 expiring-dropdown">
+                    <div 
+                      className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-48 expiring-dropdown"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <div className="p-3">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Expiring Within
@@ -665,6 +671,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                         <select
                           value={expiringDaysFilter}
                           onChange={(e) => setExpiringDaysFilter(Number(e.target.value))}
+                          onClick={(e) => e.stopPropagation()}
                           className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           {expiringDaysOptions.map((option) => (
