@@ -146,6 +146,10 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     rowData: any;
   } | null>(null);
 
+  // Expiring dropdown state
+  const [showExpiringDropdown, setShowExpiringDropdown] = React.useState(false);
+  const [expiringDaysFilter, setExpiringDaysFilter] = React.useState(30);
+
   // Column state persistence
   const [gridApi, setGridApi] = React.useState<any>(null);
   const gridStateKey = `ag-grid-state-${title}`;
@@ -543,11 +547,11 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         if (expDate < now) {
           expired++;
         } else {
-          // Check if expiring within 30 days
-          const thirtyDaysFromNow = new Date();
-          thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
+          // Check if expiring within selected days
+          const daysFromNow = new Date();
+          daysFromNow.setDate(daysFromNow.getDate() + expiringDaysFilter);
           
-          if (expDate <= thirtyDaysFromNow) {
+          if (expDate <= daysFromNow) {
             expiring++;
           }
         }
@@ -559,7 +563,40 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       expired,
       total: data.length
     };
-  }, [data]);
+  }, [data, expiringDaysFilter]);
+
+  // Close dropdown when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('.expiring-dropdown')) {
+        setShowExpiringDropdown(false);
+      }
+    };
+
+    if (showExpiringDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showExpiringDropdown]);
+
+  // Expiring days options
+  const expiringDaysOptions = [
+    { value: 7, label: "7 Days" },
+    { value: 14, label: "14 Days" },
+    { value: 30, label: "30 Days" },
+    { value: 60, label: "60 Days" },
+    { value: 90, label: "90 Days" },
+    { value: 120, label: "120 Days" },
+    { value: 150, label: "150 Days" },
+    { value: 180, label: "180 Days" },
+    { value: 210, label: "210 Days" },
+    { value: 240, label: "240 Days" },
+    { value: 270, label: "270 Days" },
+    { value: 300, label: "300 Days" },
+    { value: 330, label: "330 Days" },
+    { value: 360, label: "360 Days" },
+  ];
 
   return (
     <section
@@ -605,13 +642,40 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               aria-label="Status indicators"
             >
               {expirationStats.expiring > 0 && (
-                <div
-                  className="flex items-center gap-1 px-2.5 py-0.5 bg-[#F48100] rounded-full"
-                  role="status"
-                  aria-label={`${expirationStats.expiring} items expiring`}
-                >
-                  <span className="text-white font-bold text-xs">{expirationStats.expiring}</span>
-                  <span className="text-white font-bold text-xs">Expiring</span>
+                <div className="relative">
+                  <button
+                    className="flex items-center gap-1 px-2.5 py-0.5 bg-[#F48100] rounded-full hover:bg-[#E67300] transition-colors"
+                    onClick={() => setShowExpiringDropdown(!showExpiringDropdown)}
+                    aria-label={`${expirationStats.expiring} items expiring`}
+                  >
+                    <span className="text-white font-bold text-xs">{expirationStats.expiring}</span>
+                    <span className="text-white font-bold text-xs">Expiring</span>
+                    <Icon 
+                      icon="chevron-down" 
+                      className={`w-3 h-3 text-white transition-transform ${showExpiringDropdown ? 'rotate-180' : ''}`}
+                    />
+                  </button>
+                  
+                  {showExpiringDropdown && (
+                    <div className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-48 expiring-dropdown">
+                      <div className="p-3">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Expiring Within
+                        </label>
+                        <select
+                          value={expiringDaysFilter}
+                          onChange={(e) => setExpiringDaysFilter(Number(e.target.value))}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                          {expiringDaysOptions.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
               {expirationStats.expired > 0 && (
