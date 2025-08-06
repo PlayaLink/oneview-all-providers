@@ -1839,6 +1839,8 @@ export async function fetchAllGridActions() {
 
 // Update expiring_within value for a grid definition
 export async function updateGridExpiringWithin(gridName: string, expiringWithin: number) {
+  console.log("updateGridExpiringWithin called with:", { gridName, expiringWithin });
+  
   // First get the grid definition to get the grid_id
   const { data: gridDefs, error: gridError } = await supabase
     .from('grid_definitions')
@@ -1846,12 +1848,18 @@ export async function updateGridExpiringWithin(gridName: string, expiringWithin:
     .or(`display_name.eq.${gridName},key.eq.${gridName},table_name.eq.${gridName}`)
     .limit(1);
   
-  if (gridError) throw gridError;
+  if (gridError) {
+    console.error("Error finding grid definition:", gridError);
+    throw gridError;
+  }
+  
   if (!gridDefs || gridDefs.length === 0) {
+    console.error("No grid definition found for gridName:", gridName);
     throw new Error(`No grid definition found for gridName: ${gridName}`);
   }
 
   const gridDef = gridDefs[0];
+  console.log("Found grid definition:", gridDef);
   
   // Update the expiring_within value
   const { data, error } = await supabase
@@ -1861,6 +1869,11 @@ export async function updateGridExpiringWithin(gridName: string, expiringWithin:
     .select()
     .single();
   
-  if (error) throw error;
+  if (error) {
+    console.error("Error updating grid definition:", error);
+    throw error;
+  }
+  
+  console.log("Update successful:", data);
   return data;
 } 

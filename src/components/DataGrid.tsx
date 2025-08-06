@@ -7,6 +7,7 @@ import { useGridActions } from "@/hooks/useGridActions";
 import { updateGridColumnWidths, updateGridExpiringWithin } from "@/lib/supabaseClient";
 import ContextMenu from "./ContextMenu";
 import ActionsColumn from "./ActionsColumn";
+import ExpiringCellRenderer from "./ExpiringCellRenderer";
 
 // Import AG Grid styles with Quartz theme
 import "ag-grid-enterprise/styles/ag-grid.css";
@@ -237,6 +238,18 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           baseCol.sort = "asc";
         }
 
+        // Add custom cell renderer for expires_within column
+        if (col.field === "expires_within") {
+          baseCol.cellRenderer = (params: any) => (
+            <ExpiringCellRenderer
+              value={params.value}
+              data={params.data}
+              colDef={params.colDef}
+              expiringDaysFilter={expiringDaysFilter}
+            />
+          );
+        }
+
         return baseCol;
       }),
 
@@ -324,6 +337,8 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     pinActionsColumn,
     onOpenDetailModal,
     calculateActionsColumnWidth,
+    expiringDaysFilter,
+    gridColumnsData,
   ]);
 
   const isActionsColumnClickedRef = React.useRef(false);
@@ -393,6 +408,13 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   const saveColumnState = React.useCallback(async () => {
     if (gridApi) {
       const columnState = gridApi.getColumnState();
+      
+      // Safety check for columnState
+      if (!columnState || !Array.isArray(columnState)) {
+        console.warn("No column state available to save");
+        return;
+      }
+      
       localStorage.setItem(gridStateKey, JSON.stringify(columnState));
       
       // Save column widths to database if we have grid columns data
@@ -676,15 +698,20 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                           value={expiringDaysFilter}
                           onChange={async (e) => {
                             const newValue = Number(e.target.value);
+                            console.log("Dropdown changed to:", newValue, "gridName:", gridName);
                             setExpiringDaysFilter(newValue);
                             
                             // Save to database if we have a grid name
                             if (gridName) {
                               try {
-                                await updateGridExpiringWithin(gridName, newValue);
+                                console.log("Attempting to save to database...");
+                                const result = await updateGridExpiringWithin(gridName, newValue);
+                                console.log("Save successful:", result);
                               } catch (error) {
-                                console.warn("Failed to save expiring days to database:", error);
+                                console.error("Failed to save expiring days to database:", error);
                               }
+                            } else {
+                              console.warn("No gridName available for saving");
                             }
                           }}
                           onClick={(e) => e.stopPropagation()}
