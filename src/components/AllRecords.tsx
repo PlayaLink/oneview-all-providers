@@ -437,6 +437,10 @@ const AllRecords: React.FC = () => {
     setIsCreateMode(true);
   };
 
+  const handleAddProvider = () => {
+    handleAddRecord("provider_info");
+  };
+
   const handleCloseDetailModal = () => {
     setShowDetailModal(false);
     setDetailModalRow(null);
@@ -543,6 +547,7 @@ const AllRecords: React.FC = () => {
             first_name: selectedProviderInfo.firstName,
             last_name: selectedProviderInfo.lastName,
           } : undefined}
+          onAddProvider={handleAddProvider}
         />
       </div>
       {/* Main Content */}
