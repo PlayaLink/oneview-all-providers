@@ -19,11 +19,13 @@ interface Provider {
 interface ProviderSearchProps {
   className?: string;
   placeholder?: string;
+  onSelect?: (provider: Provider) => void;
 }
 
 const ProviderSearch: React.FC<ProviderSearchProps> = ({ 
   className = "w-[350px]", 
-  placeholder = "Search by provider name or NPI #" 
+  placeholder = "Search by provider name or NPI #",
+  onSelect
 }) => {
   const [search, setSearch] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -50,7 +52,14 @@ const ProviderSearch: React.FC<ProviderSearchProps> = ({
   const handleSelect = (selected: Provider) => {
     setSearch("");
     setDropdownOpen(false);
-    navigate(`/${selected.id}`);
+    
+    if (onSelect) {
+      // If onSelect is provided, call it instead of navigating
+      onSelect(selected);
+    } else {
+      // Default behavior: navigate to provider page
+      navigate(`/${selected.id}`);
+    }
   };
 
   // Handle input changes

@@ -92,6 +92,32 @@ export async function updateRecord(tableName: string, id: string, updates: Recor
   return data;
 }
 
+export async function insertRecord(tableName: string, record: Record<string, any>) {
+  // Handle array fields - convert empty strings to null for array fields
+  const recordCopy = { ...record };
+  
+  // Common array fields that should be handled
+  const arrayFields = ['tags', 'classifications', 'taxonomy_codes', 'clinical_services', 'fluent_languages', 'cms_medicare_specialty_codes', 'other_specialties'];
+  
+  arrayFields.forEach(field => {
+    if (field in recordCopy) {
+      if (recordCopy[field] === "" || recordCopy[field] === null || recordCopy[field] === undefined) {
+        recordCopy[field] = null;
+      } else if (Array.isArray(recordCopy[field])) {
+        // If it's already an array, use fromIdLabelArray to convert it properly
+        recordCopy[field] = fromIdLabelArray(recordCopy[field]);
+      }
+    }
+  });
+
+  const { data, error } = await supabase
+    .from(tableName)
+    .insert([recordCopy])
+    .select();
+  if (error) throw error;
+  return data;
+}
+
 // Zod schemas for runtime data validation
 export const ProviderSchema = z.object({
   id: z.string(),
