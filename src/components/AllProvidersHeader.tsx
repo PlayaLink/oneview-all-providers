@@ -1,10 +1,8 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 import Icon from "@/components/ui/Icon";
-import { useQuery } from "@tanstack/react-query";
-import { fetchProviders } from "@/lib/supabaseClient";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import SectionsDropdown from "@/components/SectionsDropdown";
-import { extractTitleAcronym } from "@/lib/utils";
+import ProviderSearch from "@/components/ProviderSearch";
 
 interface Provider {
   id: string;
@@ -22,67 +20,7 @@ interface AllProvidersHeaderProps {
 }
 
 const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps>(({ provider }, ref) => {
-  const [search, setSearch] = useState("");
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
   const location = useLocation();
-
-  // Fetch all providers
-  const { data: providers = [], isLoading } = useQuery({
-    queryKey: ["providers"],
-    queryFn: fetchProviders,
-    initialData: [],
-  });
-
-  // Filter providers by name or NPI
-  const searchString = search.toLowerCase();
-  const filteredProviders = searchString.length > 0
-    ? providers.filter((p: Provider) =>
-        (p.provider_name && p.provider_name.toLowerCase().includes(searchString)) ||
-        (p.npi_number && p.npi_number.includes(searchString))
-      )
-    : providers;
-
-  // Handle selection
-  const handleSelect = (selected: Provider) => {
-    setSearch("");
-    setDropdownOpen(false);
-    navigate(`/${selected.id}`);
-  };
-
-  // Handle input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-    setDropdownOpen(true);
-  };
-
-  // Handle input focus
-  const handleInputFocus = () => {
-    setDropdownOpen(true);
-  };
-
-  // Handle clear
-  const handleClear = () => {
-    setSearch("");
-    setDropdownOpen(false);
-    inputRef.current?.focus();
-  };
-
-  // Close dropdown on click outside
-  React.useEffect(() => {
-    if (!dropdownOpen) return;
-    function handleClick(e: MouseEvent) {
-      if (
-        inputRef.current &&
-        !inputRef.current.contains(e.target as Node)
-      ) {
-        setDropdownOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [dropdownOpen]);
 
   // Determine title for non-provider view
   let headerTitle = "All Providers";
@@ -123,87 +61,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
         )}
         {/* Searchbox (always visible) */}
         <div className="flex-1 flex justify-center relative">
-          <div className="w-[350px] relative">
-            <label htmlFor="provider-search" className="sr-only">Search providers</label>
-            <input
-              id="provider-search"
-              ref={inputRef}
-              className="w-full rounded border border-gray-200 px-4 py-2 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-200 pr-8"
-              placeholder="Search by provider name or NPI #"
-              value={search}
-              onChange={handleInputChange}
-              onFocus={handleInputFocus}
-              role="combobox"
-              aria-expanded={dropdownOpen}
-              aria-autocomplete="list"
-              aria-controls="provider-search-results"
-              aria-activedescendant={dropdownOpen && filteredProviders.length > 0 ? "provider-option-0" : undefined}
-              autoComplete="off"
-            />
-            {search && (
-              <button
-                className="absolute right-8 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                onClick={handleClear}
-                type="button"
-                aria-label="Clear search"
-                data-testid="clear-search-button"
-              >
-                <Icon icon="times" className="w-4 h-4" aria-hidden="true" />
-              </button>
-            )}
-            <Icon
-              icon="search"
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-              aria-hidden="true"
-            />
-            {/* Dropdown */}
-            {dropdownOpen && search.trim().length > 0 && filteredProviders.length > 0 && (
-              <div
-                id="provider-search-results"
-                className="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded shadow-lg z-50 max-h-60 overflow-y-auto"
-                role="listbox"
-                aria-label="Provider search results"
-              >
-                {filteredProviders.map((prov, index) => (
-                  <div
-                    key={prov.id}
-                    id={`provider-option-${index}`}
-                    className="px-4 py-3 cursor-pointer hover:bg-gray-50 flex flex-col gap-1 border-b border-gray-100 last:border-b-0"
-                    onMouseDown={() => handleSelect(prov)}
-                    role="option"
-                    aria-selected="false"
-                    data-testid={`provider-option-${prov.id}`}
-                  >
-                    <div className="flex justify-between items-start">
-                      {/* Left side - Provider name, location, specialty, and email */}
-                      <div className="flex-1 min-w-0">
-                        {/* First line: Provider name and location/affiliation */}
-                        <div className="font-semibold text-[#545454] text-sm">
-                          {prov.provider_name} {prov.title ? `- ${extractTitleAcronym(prov.title)}` : ""}
-                        </div>
-                        {/* Second line: Specialty/Role in bold */}
-                        {prov.primary_specialty && (
-                          <div className="font-bold text-[#545454] text-sm mt-1">
-                            {prov.primary_specialty}
-                          </div>
-                        )}
-                        {/* Third line: Email in smaller gray text */}
-                        {prov.work_email && (
-                          <div className="text-xs text-gray-500 mt-1">
-                            {prov.work_email}
-                          </div>
-                        )}
-                      </div>
-                      {/* Right side - NPI number aligned with top line */}
-                      <div className="text-xs text-gray-500 font-medium ml-4 flex-shrink-0">
-                        NPI: {prov.npi_number || "N/A"}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <ProviderSearch />
         </div>
         {/* Right: Add Provider Button or SectionsDropdown */}
         <div className="flex items-center gap-4">
@@ -216,8 +74,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
                   aria-haspopup="true"
                   aria-expanded="false"
                   aria-label="Sections dropdown"
-                  data-testid="
-                  "
+                  data-testid="sections-dropdown"
                 >
                   Sections
                   <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-down" className="svg-inline--fa fa-chevron-down w-3 h-3 ml-1" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"></path></svg>
@@ -230,6 +87,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
               type="button"
               aria-label="Add Provider"
               data-testid="add-provider-button"
+              data-referenceid="add-provider"
               // onClick={handleAddProvider}
             >
               <Icon icon="plus" className="w-4 h-4" aria-hidden="true" />
