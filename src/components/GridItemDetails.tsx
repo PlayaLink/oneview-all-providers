@@ -236,8 +236,6 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   // Only reset form values if the selectedRow.id actually changes
   const lastInitializedId = React.useRef<any>(null);
   React.useEffect(() => {
-
-
     if (selectedRow && selectedRow.id !== lastInitializedId.current) {
       const initialValues: Record<string, any> = {};
       inputConfig.forEach((field) => {
@@ -255,6 +253,18 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
           value = value.map((v) => ({ id: v, label: v }));
         }
 
+        // Handle boolean fields: convert true/false to "Yes"/"No" for display
+        if (
+          field.type === "single-select" &&
+          field.options &&
+          field.options.includes("Yes") &&
+          field.options.includes("No")
+        ) {
+          if (value === true) value = "Yes";
+          else if (value === false) value = "No";
+          else value = "";
+        }
+
         // For single-select fields, ensure we have the raw value (string)
         if (
           field.type === "single-select" &&
@@ -266,9 +276,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         }
 
         initialValues[key] = value;
-
       });
-
 
       setFormValues(initialValues);
       setHasUnsavedChanges(false); // Reset unsaved changes when new row is selected
@@ -422,6 +430,18 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                   typeof v === "object" && v !== null ? v.id || v.label : v,
                 ),
               ];
+            }
+            // Handle boolean fields: convert "Yes"/"No" to true/false
+            if (
+              field &&
+              field.type === "single-select" &&
+              field.options &&
+              field.options.includes("Yes") &&
+              field.options.includes("No")
+            ) {
+              if (value === "Yes") return [key, true];
+              if (value === "No") return [key, false];
+              return [key, null];
             }
             // Handle empty date fields - convert empty strings to null for date fields
             const isDateField =
@@ -1165,44 +1185,59 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         data-testid={`grid-item-details-footer-${context}`}
         style={footerStyle}
       >
-        <div className="flex gap-3">
-          <button
-            className="flex-1 bg-gray-100 text-[#545454] py-2 px-4 rounded text-sm font-medium hover:bg-gray-200 transition-colors"
-            aria-label="Discard Changes"
-            data-testid={`grid-item-details-discard-changes-button-${context}`}
-            onClick={handleDiscardChanges}
-          >
-            Discard Changes
-          </button>
-          <button
-            className={`flex-1 py-2 px-4 rounded text-sm font-medium transition-colors ${
-              isSaving
-                ? "bg-gray-400 text-white cursor-not-allowed"
-                : saveSuccess
-                  ? "bg-[#79AC48] text-white cursor-default"
-                  : "bg-[#008BC9] text-white hover:bg-[#007399]"
-            }`}
-            onClick={handleSave}
-            disabled={isSaving || saveSuccess}
-            aria-label={
-              isSaving
-                ? "Saving changes..."
-                : saveSuccess
-                  ? "Changes saved successfully"
-                  : "Save changes"
-            }
-            aria-describedby={isSaving ? "saving-status" : undefined}
-            data-testid={`grid-item-details-save-button-${context}`}
-            role="button"
-            type="button"
-          >
-            {isSaving ? "Saving..." : saveSuccess ? "Saved!" : "Save"}
-            {isSaving && (
-              <span id="saving-status" className="sr-only">
-                Saving changes to database
-              </span>
-            )}
-          </button>
+        <div className="flex gap-3 justify-between">
+          <div className="flex gap-3 flex-1">
+            <button
+              className="flex-1 bg-gray-100 text-[#545454] py-2 px-4 rounded text-sm font-medium hover:bg-gray-200 transition-colors"
+              aria-label="Discard Changes"
+              data-testid={`grid-item-details-discard-changes-button-${context}`}
+              onClick={handleDiscardChanges}
+            >
+              Discard Changes
+            </button>
+            <button
+              className={`flex-1 py-2 px-4 rounded text-sm font-medium transition-colors ${
+                isSaving
+                  ? "bg-gray-400 text-white cursor-not-allowed"
+                  : saveSuccess
+                    ? "bg-[#79AC48] text-white cursor-default"
+                    : "bg-[#008BC9] text-white hover:bg-[#007399]"
+              }`}
+              onClick={handleSave}
+              disabled={isSaving || saveSuccess}
+              aria-label={
+                isSaving
+                  ? "Saving changes..."
+                  : saveSuccess
+                    ? "Changes saved successfully"
+                    : "Save changes"
+              }
+              aria-describedby={isSaving ? "saving-status" : undefined}
+              data-testid={`grid-item-details-save-button-${context}`}
+              role="button"
+              type="button"
+            >
+              {isSaving ? "Saving..." : saveSuccess ? "Saved!" : "Save"}
+              {isSaving && (
+                <span id="saving-status" className="sr-only">
+                  Saving changes to database
+                </span>
+              )}
+            </button>
+          </div>
+          {/* Cancel button - only for modal context */}
+          {context === "modal" && (
+            <button
+              className="text-[#008BC9] hover:text-[#007399] py-2 px-4 rounded text-sm font-medium transition-colors"
+              onClick={onClose}
+              aria-label="Cancel"
+              data-testid={`grid-item-details-cancel-button-${context}`}
+              role="button"
+              type="button"
+            >
+              Cancel
+            </button>
+          )}
         </div>
       </div>
     </div>

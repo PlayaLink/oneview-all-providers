@@ -71,6 +71,20 @@ export const stateLicenseFieldGroups = [
         required: true,
         options: ["Active", "Expired", "Pending", "Suspended", "Revoked"],
         key: "status"
+      },
+      {
+        label: "Taxonomy Code",
+        group: "License Details",
+        type: "text",
+        placeholder: "Enter taxonomy code",
+        key: "taxonomy_code"
+      },
+      {
+        label: "Fee Exemption",
+        group: "License Details",
+        type: "text",
+        placeholder: "Enter fee exemption details",
+        key: "fee_exemption"
       }
     ]
   },
@@ -98,6 +112,44 @@ export const stateLicenseFieldGroups = [
         type: "text",
         placeholder: "Days until expiration",
         key: "expires_within"
+      }
+    ]
+  },
+  {
+    id: "flags",
+    title: "License Flags",
+    fields: [
+      {
+        label: "Don't Renew",
+        group: "License Flags",
+        type: "single-select",
+        options: ["Yes", "No"],
+        placeholder: "Select renewal status",
+        key: "dont_renew"
+      },
+      {
+        label: "Is Primary",
+        group: "License Flags",
+        type: "single-select",
+        options: ["Yes", "No"],
+        placeholder: "Is this the primary license?",
+        key: "is_primary"
+      },
+      {
+        label: "Is Multistate",
+        group: "License Flags",
+        type: "single-select",
+        options: ["Yes", "No"],
+        placeholder: "Is this a multistate license?",
+        key: "is_multistate"
+      },
+      {
+        label: "Enrolled in PDMP",
+        group: "License Flags",
+        type: "single-select",
+        options: ["Yes", "No"],
+        placeholder: "Enrolled in Prescription Drug Monitoring Program?",
+        key: "enrolled_in_pdmp"
       }
     ]
   },
@@ -136,6 +188,7 @@ const generalInfoFields = [
   ...stateLicenseFieldGroups[0].fields.filter(f => !['state', 'license_type', 'license'].includes(f.key)),
   ...stateLicenseFieldGroups[1].fields,
   ...stateLicenseFieldGroups[2].fields,
+  ...stateLicenseFieldGroups[3].fields,
 ];
 
 const StateLicenseDetails = ({ formValues, handleChange }) => (
