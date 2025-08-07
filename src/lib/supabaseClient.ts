@@ -119,7 +119,13 @@ export const StateLicenseSchema = z.object({
   tags: z.array(z.string()).nullable().optional(),
   last_updated: z.string().nullable().optional(),
   provider: z.any().optional(),
-  // ...add other fields as needed
+  // Additional fields that exist in the database
+  dont_renew: z.boolean().nullable().optional(),
+  is_primary: z.boolean().nullable().optional(),
+  is_multistate: z.boolean().nullable().optional(),
+  taxonomy_code: z.string().nullable().optional(),
+  enrolled_in_pdmp: z.boolean().nullable().optional(),
+  fee_exemption: z.string().nullable().optional(),
 });
 export const BirthInfoSchema = z.object({
   id: z.string(),

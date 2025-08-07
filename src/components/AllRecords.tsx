@@ -477,8 +477,6 @@ const AllRecords: React.FC = () => {
     ? getTemplateConfigByGrid(detailModalRow.gridName, 'modal')
     : null;
 
-
-
   const modalInputConfig = modalTemplateConfig
     ? modalTemplateConfig.fieldGroups.flatMap(group =>
         group.fields.map(field => ({
@@ -487,7 +485,6 @@ const AllRecords: React.FC = () => {
         }))
       )
     : [];
-
 
 
   return (
