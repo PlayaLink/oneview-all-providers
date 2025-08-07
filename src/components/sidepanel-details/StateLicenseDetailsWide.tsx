@@ -172,9 +172,17 @@ const additionalInfoFields = stateLicenseWideFieldGroups[1].fields;
 
 const StateLicenseDetailsWide = ({ formValues, handleChange }) => {
   return (
-    <>
+    <div className="flex flex-col gap-7">
       {/* Search Criteria Section */}
-      <CollapsibleSection title="Search Criteria">
+      <div className="p-6 rounded-2xl border border-gray-200 bg-gray-50">
+        {/* Header */}
+        <div className="mb-4">
+          <h2 className="text-xs font-semibold text-[#008BC9] uppercase tracking-wide">
+            Search Criteria
+          </h2>
+        </div>
+
+        {/* Form Grid */}
         <div className="flex flex-row gap-4 w-full">
           {searchCriteriaFields.map((field) => (
             <div key={field.key || field.label} className="flex-1">
@@ -182,7 +190,7 @@ const StateLicenseDetailsWide = ({ formValues, handleChange }) => {
             </div>
           ))}
         </div>
-      </CollapsibleSection>
+      </div>
 
       {/* Additional Info Section */}
       <CollapsibleSection title="Additional Info">
@@ -208,7 +216,7 @@ const StateLicenseDetailsWide = ({ formValues, handleChange }) => {
           ))}
         </div>
       </CollapsibleSection>
-    </>
+    </div>
   );
 };
 
