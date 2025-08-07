@@ -68,7 +68,7 @@ export const MultiSelectDropdown = React.forwardRef<
               value={searchValue}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder={searchPlaceholder}
-              className="flex-1 bg-transparent text-xs font-poppins text-[#4C5564] placeholder:text-[#BABABA] tracking-[0.429px] border-none outline-none"
+              className="flex-1 text-xs font-poppins text-[#4C5564] placeholder:text-[#BABABA] tracking-[0.429px] border-none outline-none"
               autoFocus
             />
           </div>

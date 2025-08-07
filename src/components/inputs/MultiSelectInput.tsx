@@ -187,7 +187,7 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
               <div
                 ref={containerRef}
                 className={cn(
-                  "flex flex-wrap items-center gap-1 rounded px-2 min-h-[40px] bg-white cursor-pointer relative z-10",
+                  "flex flex-wrap items-center gap-1 rounded px-2 min-h-[40px] bg-white cursor-pointer relative z-10 border border-[#E6E6E6]",
                   disabled && "opacity-50 cursor-not-allowed",
                   labelPosition === "left" && "min-h-[38px]"
                 )}

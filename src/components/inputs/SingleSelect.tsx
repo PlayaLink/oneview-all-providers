@@ -192,7 +192,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
             <button
               type="button"
               className={cn(
-                "flex min-h-[38px] px-2 items-center flex-1 rounded border border-[#E6E6E6] cursor-pointer w-full text-left bg-transparent",
+                "flex min-h-[38px] px-2 items-center flex-1 rounded border border-[#E6E6E6] cursor-pointer w-full text-left bg-white",
                 disabled && "opacity-50 cursor-not-allowed",
                 open && "ring-1 ring-blue-400",
               )}
