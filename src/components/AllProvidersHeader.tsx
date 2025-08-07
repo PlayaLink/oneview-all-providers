@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchProviders } from "@/lib/supabaseClient";
 import { useNavigate, useLocation } from "react-router-dom";
 import SectionsDropdown from "@/components/SectionsDropdown";
+import { extractTitleAcronym } from "@/lib/utils";
 
 interface Provider {
   id: string;
@@ -178,7 +179,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
                       <div className="flex-1 min-w-0">
                         {/* First line: Provider name and location/affiliation */}
                         <div className="font-semibold text-[#545454] text-sm">
-                          {prov.provider_name} {prov.title ? `- ${prov.title}` : ""}
+                          {prov.provider_name} {prov.title ? `- ${extractTitleAcronym(prov.title)}` : ""}
                         </div>
                         {/* Second line: Specialty/Role in bold */}
                         {prov.primary_specialty && (
