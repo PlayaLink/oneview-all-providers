@@ -545,6 +545,9 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
 
       let result;
       if (isCreateMode) {
+        // Add last_updated timestamp for new records
+        filteredData.last_updated = new Date().toISOString();
+        
         // Create new record
         result = await insertRecord(tableName, filteredData);
         
@@ -560,7 +563,9 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
           onRecordCreated(result[0]);
         }
       } else {
-        // Update existing record
+        // Update existing record - also update last_updated timestamp
+        filteredData.last_updated = new Date().toISOString();
+        
         result = await updateRecord(tableName, selectedRow.id, filteredData);
         
         // Show success message
