@@ -167,26 +167,37 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
                   <div
                     key={prov.id}
                     id={`provider-option-${index}`}
-                    className="px-4 py-3 cursor-pointer hover:bg-blue-50 flex flex-col gap-1"
+                    className="px-4 py-3 cursor-pointer hover:bg-gray-50 flex flex-col gap-1 border-b border-gray-100 last:border-b-0"
                     onMouseDown={() => handleSelect(prov)}
                     role="option"
                     aria-selected="false"
                     data-testid={`provider-option-${prov.id}`}
                   >
-                    <div className="flex justify-between items-center">
-                      <span className="font-semibold text-[#545454]">
-                        {prov.provider_name} {prov.title ? `- ${prov.title}` : ""}
-                      </span>
-                      <span className="text-xs text-gray-500 font-medium">
-                        ID: {prov.id}
-                      </span>
+                    <div className="flex justify-between items-start">
+                      {/* Left side - Provider name, location, specialty, and email */}
+                      <div className="flex-1 min-w-0">
+                        {/* First line: Provider name and location/affiliation */}
+                        <div className="font-semibold text-[#545454] text-sm">
+                          {prov.provider_name} {prov.title ? `- ${prov.title}` : ""}
+                        </div>
+                        {/* Second line: Specialty/Role in bold */}
+                        {prov.primary_specialty && (
+                          <div className="font-bold text-[#545454] text-sm mt-1">
+                            {prov.primary_specialty}
+                          </div>
+                        )}
+                        {/* Third line: Email in smaller gray text */}
+                        {prov.work_email && (
+                          <div className="text-xs text-gray-500 mt-1">
+                            {prov.work_email}
+                          </div>
+                        )}
+                      </div>
+                      {/* Right side - NPI number aligned with top line */}
+                      <div className="text-xs text-gray-500 font-medium ml-4 flex-shrink-0">
+                        NPI: {prov.npi_number || "N/A"}
+                      </div>
                     </div>
-                    <span className="font-bold text-[#3BA8D1] text-sm">
-                      {prov.primary_specialty}
-                    </span>
-                    {prov.work_email && (
-                      <span className="text-xs text-gray-500">{prov.work_email}</span>
-                    )}
                   </div>
                 ))}
               </div>
