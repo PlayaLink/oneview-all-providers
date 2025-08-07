@@ -1,4 +1,5 @@
 import { stateLicenseTemplate } from '../components/sidepanel-details/StateLicenseDetails';
+import { stateLicenseWideTemplate } from '../components/sidepanel-details/StateLicenseDetailsWide';
 import { birthInfoTemplate } from '../components/sidepanel-details/BirthInfoDetails';
 import { providerInfoTemplate } from '../components/sidepanel-details/ProviderInfoDetails';
 import { providerInfoWideTemplate } from '../components/sidepanel-details/ProviderInfoDetailsWide';
@@ -95,7 +96,17 @@ export function getTemplateConfigByGrid(gridKey: string, context?: 'sidepanel' |
       }
       return providerInfoTemplate;
     }
-    case "state_licenses": return stateLicenseTemplate;
+    case "state_licenses": {
+      if (context === 'modal') {
+        return {
+          ...stateLicenseWideTemplate,
+          getDetailsComponent: (ctx: 'sidepanel' | 'modal') => {
+            return ctx === 'modal' ? stateLicenseWideTemplate.DetailsComponent : stateLicenseTemplate.DetailsComponent;
+          }
+        };
+      }
+      return stateLicenseTemplate;
+    }
     case "birth_info": return birthInfoTemplate;
     case "addresses": return addressTemplate;
     case "facility_affiliations": return facilityAffiliationsTemplate;
