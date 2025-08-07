@@ -966,6 +966,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                       <DetailsComponent
                         formValues={formValues}
                         handleChange={handleChange}
+                        provider={effectiveProvider}
                       />
                     </Suspense>
                   )}
@@ -1103,6 +1104,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                             <DetailsComponent
                               formValues={formValues}
                               handleChange={handleChange}
+                              provider={effectiveProvider}
                             />
                           </Suspense>
                         )}

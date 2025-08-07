@@ -170,7 +170,7 @@ const searchCriteriaFields = stateLicenseFieldGroups[0].fields;
 // 2. Gather the remaining fields for Additional Info
 const additionalInfoFields = stateLicenseFieldGroups[1].fields;
 
-const StateLicenseDetails = ({ formValues, handleChange }) => (
+const StateLicenseDetails = ({ formValues, handleChange, provider }) => (
   <div className="flex flex-col gap-4">
     {/* Custom Search Criteria Grouping */}
     <div className="p-6 rounded-2xl border border-gray-200 bg-gray-50">
@@ -183,13 +183,40 @@ const StateLicenseDetails = ({ formValues, handleChange }) => (
 
       {/* Form Grid */}
       <div className="flex flex-col gap-4">
-      {searchCriteriaFields.map((field) => (
-        <React.Fragment key={field.key || field.label}>
-          {renderFieldComponent({ field, formValues, handleChange })}
-        </React.Fragment>
-      ))}
+        {searchCriteriaFields.map((field) => (
+          <React.Fragment key={field.key || field.label}>
+            {renderFieldComponent({ field, formValues, handleChange })}
+          </React.Fragment>
+        ))}
+        {/* Provider fields */}
+        {provider && (
+          <div className="flex flex-row gap-4">
+            <div className="flex-1">
+              <TextInputField
+                label="First Name"
+                labelPosition="left"
+                value={provider.first_name || ''}
+                onChange={() => {}} // Read-only field
+                disabled={true}
+                data-testid="provider-first-name"
+                aria-label="Provider first name"
+              />
+            </div>
+            <div className="flex-1">
+              <TextInputField
+                label="Last Name"
+                labelPosition="left"
+                value={provider.last_name || ''}
+                onChange={() => {}} // Read-only field
+                disabled={true}
+                data-testid="provider-last-name"
+                aria-label="Provider last name"
+              />
+            </div>
+          </div>
+        )}
       </div>
-      </div>
+    </div>
     {/* Additional Info Section */}
     <CollapsibleSection title="Additional Info">
       <div className="flex flex-col gap-4 self-stretch">

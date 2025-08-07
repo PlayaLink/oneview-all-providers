@@ -170,7 +170,7 @@ const searchCriteriaFields = stateLicenseWideFieldGroups[0].fields;
 // Gather the remaining fields for Additional Info
 const additionalInfoFields = stateLicenseWideFieldGroups[1].fields;
 
-const StateLicenseDetailsWide = ({ formValues, handleChange }) => {
+const StateLicenseDetailsWide = ({ formValues, handleChange, provider }) => {
   return (
     <div className="flex flex-col gap-7">
       {/* Search Criteria Section */}
@@ -190,6 +190,33 @@ const StateLicenseDetailsWide = ({ formValues, handleChange }) => {
             </div>
           ))}
         </div>
+        {/* Provider fields */}
+        {provider && (
+          <div className="flex flex-row gap-4 w-full mt-4">
+            <div className="flex-1">
+              <TextInputField
+                label="First Name"
+                labelPosition="above"
+                value={provider.first_name || ''}
+                onChange={() => {}} // Read-only field
+                disabled={true}
+                data-testid="provider-first-name"
+                aria-label="Provider first name"
+              />
+            </div>
+            <div className="flex-1">
+              <TextInputField
+                label="Last Name"
+                labelPosition="above"
+                value={provider.last_name || ''}
+                onChange={() => {}} // Read-only field
+                disabled={true}
+                data-testid="provider-last-name"
+                aria-label="Provider last name"
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Additional Info Section */}
