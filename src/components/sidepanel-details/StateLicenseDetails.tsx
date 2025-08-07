@@ -6,15 +6,30 @@ import TextInputField from '../inputs/TextInputField';
 import { getInputType, renderFieldComponent } from './getInputType';
 import { extractTitleAcronym, generateProviderName } from '@/lib/utils';
 
-// State Licenses fieldGroups definition - Updated to match database schema
+// State Licenses fieldGroups definition - Updated to match screenshot layout
 export const stateLicenseFieldGroups = [
   {
-    id: "license_details",
-    title: "License Details",
+    id: "search_criteria",
+    title: "Search Criteria",
     fields: [
       {
+        label: "State",
+        group: "Search Criteria",
+        type: "single-select",
+        placeholder: "Select state",
+        required: true,
+        options: [
+          "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
+          "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
+          "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
+          "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
+          "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"
+        ],
+        key: "state"
+      },
+      {
         label: "License Type",
-        group: "License Details",
+        group: "Search Criteria",
         type: "single-select",
         placeholder: "Select license type",
         required: true,
@@ -33,39 +48,22 @@ export const stateLicenseFieldGroups = [
         key: "license_type"
       },
       {
-        label: "License Number",
-        group: "License Details",
+        label: "License",
+        group: "Search Criteria",
         type: "text",
         placeholder: "Enter license number",
         required: true,
         key: "license"
-      },
-      {
-        label: "Additional Info",
-        group: "License Details",
-        type: "single-select",
-        options: ["Yes", "No"],
-        placeholder: "Anything else?",
-        key: "license_additional_info"
-      },
-      {
-        label: "State",
-        group: "License Details",
-        type: "single-select",
-        placeholder: "Select state",
-        required: true,
-        options: [
-          "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
-          "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
-          "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
-          "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
-          "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"
-        ],
-        key: "state"
-      },
+      }
+    ]
+  },
+  {
+    id: "additional_info",
+    title: "Additional Info",
+    fields: [
       {
         label: "Status",
-        group: "License Details",
+        group: "Additional Info",
         type: "single-select",
         placeholder: "Select status",
         required: true,
@@ -73,93 +71,83 @@ export const stateLicenseFieldGroups = [
         key: "status"
       },
       {
-        label: "Taxonomy Code",
-        group: "License Details",
-        type: "text",
-        placeholder: "Enter taxonomy code",
-        key: "taxonomy_code"
-      },
-      {
-        label: "Fee Exemption",
-        group: "License Details",
-        type: "text",
-        placeholder: "Enter fee exemption details",
-        key: "fee_exemption"
-      }
-    ]
-  },
-  {
-    id: "dates",
-    title: "Important Dates",
-    fields: [
-      {
         label: "Issue Date",
-        group: "Important Dates",
+        group: "Additional Info",
         type: "date",
         placeholder: "Select issue date",
         key: "issue_date"
       },
       {
-        label: "Expiration Date",
-        group: "Important Dates",
+        label: "Exp. Date",
+        group: "Additional Info",
         type: "date",
         placeholder: "Select expiration date",
         key: "expiration_date"
       },
       {
-        label: "Expires Within",
-        group: "Important Dates",
-        type: "text",
-        placeholder: "Days until expiration",
-        key: "expires_within"
-      }
-    ]
-  },
-  {
-    id: "flags",
-    title: "License Flags",
-    fields: [
-      {
-        label: "Don't Renew",
-        group: "License Flags",
+        label: "Don't Renew?",
+        group: "Additional Info",
         type: "single-select",
         options: ["Yes", "No"],
         placeholder: "Select renewal status",
         key: "dont_renew"
       },
       {
-        label: "Is Primary",
-        group: "License Flags",
+        label: "Primary?",
+        group: "Additional Info",
         type: "single-select",
         options: ["Yes", "No"],
-        placeholder: "Is this the primary license?",
+        placeholder: "Is this a primary license?",
         key: "is_primary"
       },
       {
-        label: "Is Multistate",
-        group: "License Flags",
+        label: "Multi-state?",
+        group: "Additional Info",
         type: "single-select",
         options: ["Yes", "No"],
         placeholder: "Is this a multistate license?",
         key: "is_multistate"
       },
       {
-        label: "Enrolled in PDMP",
-        group: "License Flags",
+        label: "Taxonomy Code",
+        group: "Additional Info",
+        type: "text",
+        placeholder: "Enter taxonomy code",
+        key: "taxonomy_code"
+      },
+      {
+        label: "Enrolled in PDMP?",
+        group: "Additional Info",
         type: "single-select",
         options: ["Yes", "No"],
         placeholder: "Enrolled in Prescription Drug Monitoring Program?",
         key: "enrolled_in_pdmp"
-      }
-    ]
-  },
-  {
-    id: "metadata",
-    title: "Metadata",
-    fields: [
+      },
+      {
+        label: "Fee Exemption",
+        group: "Additional Info",
+        type: "text",
+        placeholder: "Enter fee exemption details",
+        key: "fee_exemption"
+      },
+      {
+        label: "Additional Info",
+        group: "Additional Info",
+        type: "single-select",
+        options: ["Yes", "No"],
+        placeholder: "Anything else?",
+        key: "license_additional_info"
+      },
+      {
+        label: "Expires Within",
+        group: "Additional Info",
+        type: "text",
+        placeholder: "Days until expiration",
+        key: "expires_within"
+      },
       {
         label: "Tags",
-        group: "Metadata",
+        group: "Additional Info",
         type: "multi-select",
         placeholder: "Select tags",
         options: ["urgent", "expiring", "renewal", "compliance", "audit", "pending", "primary", "secondary"],
@@ -167,7 +155,7 @@ export const stateLicenseFieldGroups = [
       },
       {
         label: "Last Updated",
-        group: "Metadata",
+        group: "Additional Info",
         type: "date",
         placeholder: "Last updated date",
         key: "last_updated"
@@ -177,19 +165,10 @@ export const stateLicenseFieldGroups = [
 ];
 
 // 1. Define the custom grouping for search criteria fields
-const searchCriteriaFields = [
-  stateLicenseFieldGroups[0].fields.find(f => f.key === 'state'),
-  stateLicenseFieldGroups[0].fields.find(f => f.key === 'license_type'),
-  stateLicenseFieldGroups[0].fields.find(f => f.key === 'license'),
-].filter(Boolean);
+const searchCriteriaFields = stateLicenseFieldGroups[0].fields;
 
-// 2. Gather the remaining fields for General Info
-const generalInfoFields = [
-  ...stateLicenseFieldGroups[0].fields.filter(f => !['state', 'license_type', 'license'].includes(f.key)),
-  ...stateLicenseFieldGroups[1].fields,
-  ...stateLicenseFieldGroups[2].fields,
-  ...stateLicenseFieldGroups[3].fields,
-];
+// 2. Gather the remaining fields for Additional Info
+const additionalInfoFields = stateLicenseFieldGroups[1].fields;
 
 const StateLicenseDetails = ({ formValues, handleChange }) => (
   <div className="flex flex-col gap-4">
@@ -211,10 +190,10 @@ const StateLicenseDetails = ({ formValues, handleChange }) => (
       ))}
       </div>
       </div>
-    {/* General Info Section */}
-    <CollapsibleSection title="General Info">
+    {/* Additional Info Section */}
+    <CollapsibleSection title="Additional Info">
       <div className="flex flex-col gap-4 self-stretch">
-        {generalInfoFields.map((field) => (
+        {additionalInfoFields.map((field) => (
           <React.Fragment key={field.key || field.label}>
             {renderFieldComponent({ field, formValues, handleChange })}
           </React.Fragment>
