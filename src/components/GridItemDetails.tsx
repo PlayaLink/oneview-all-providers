@@ -916,7 +916,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
               })}
             </TabsList>
             <div
-              className="flex-1 min-h-0 flex flex-col overflow-y-auto p-2"
+              className="flex-1 min-h-0 flex flex-col overflow-y-auto px-4 pt-1"
               data-testid={`grid-item-details-tabpanel-container-${context}`}
             >
               {/* Tab Title */}
