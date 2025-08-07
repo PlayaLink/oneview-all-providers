@@ -87,68 +87,19 @@ const StateLicenseDetailsWide = ({ formValues, handleChange }) => (
           />
         </div>
         <div className="flex-1">
-          <SingleSelect 
-            label="Don't Renew?" 
-            labelPosition="above" 
-            options={["Yes", "No"].map(opt => ({ id: opt, label: opt }))} 
-            {...getFieldProps('dont_renew', formValues, handleChange)} 
-          />
-        </div>
-      </div>
-      <div className="flex flex-row gap-4 w-full mt-2">
-        <div className="flex-1">
-          <SingleSelect 
-            label="Primary?" 
-            labelPosition="above" 
-            options={["Yes", "No"].map(opt => ({ id: opt, label: opt }))} 
-            {...getFieldProps('is_primary', formValues, handleChange)} 
-          />
-        </div>
-        <div className="flex-1">
-          <SingleSelect 
-            label="Multi-state?" 
-            labelPosition="above" 
-            options={["Yes", "No"].map(opt => ({ id: opt, label: opt }))} 
-            {...getFieldProps('is_multistate', formValues, handleChange)} 
-          />
-        </div>
-        <div className="flex-1">
-          <TextInputField 
-            label="Taxonomy Code" 
-            labelPosition="above" 
-            {...getFieldProps('taxonomy_code', formValues, handleChange)} 
-          />
-        </div>
-        <div className="flex-1">
-          <SingleSelect 
-            label="Enrolled in PDMP?" 
-            labelPosition="above" 
-            options={["Yes", "No"].map(opt => ({ id: opt, label: opt }))} 
-            {...getFieldProps('enrolled_in_pdmp', formValues, handleChange)} 
-          />
-        </div>
-      </div>
-      <div className="flex flex-row gap-4 w-full mt-2">
-        <div className="flex-1">
-          <TextInputField 
-            label="Fee Exemption" 
-            labelPosition="above" 
-            {...getFieldProps('fee_exemption', formValues, handleChange)} 
-          />
-        </div>
-        <div className="flex-1">
-          <SingleSelect 
-            label="Additional Info" 
-            labelPosition="above" 
-            options={["Yes", "No"].map(opt => ({ id: opt, label: opt }))} 
-            {...getFieldProps('license_additional_info', formValues, handleChange)} 
-          />
-        </div>
-        <div className="flex-1">
           <TextInputField 
             label="Expires Within" 
             labelPosition="above" 
             {...getFieldProps('expires_within', formValues, handleChange)} 
+          />
+        </div>
+      </div>
+      <div className="flex flex-row gap-4 w-full mt-2">
+        <div className="flex-1">
+          <TextInputField 
+            label="Additional Info" 
+            labelPosition="above" 
+            {...getFieldProps('license_additional_info', formValues, handleChange)} 
           />
         </div>
         <div className="flex-1">
@@ -159,8 +110,6 @@ const StateLicenseDetailsWide = ({ formValues, handleChange }) => (
             {...getFieldProps('tags', formValues, handleChange)} 
           />
         </div>
-      </div>
-      <div className="flex flex-row gap-4 w-full mt-2">
         <div className="flex-1">
           <TextInputField 
             label="Last Updated" 
@@ -168,8 +117,6 @@ const StateLicenseDetailsWide = ({ formValues, handleChange }) => (
             {...getFieldProps('last_updated', formValues, handleChange)} 
           />
         </div>
-        <div className="flex-1" />
-        <div className="flex-1" />
         <div className="flex-1" />
       </div>
     </CollapsibleSection>

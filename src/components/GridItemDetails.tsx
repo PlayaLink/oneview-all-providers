@@ -35,6 +35,7 @@ import {
 import ProviderInfoDetails from "./sidepanel-details/ProviderInfoDetails";
 import ProviderInfoDetailsWide from "./sidepanel-details/ProviderInfoDetailsWide";
 import StateLicenseDetails from "./sidepanel-details/StateLicenseDetails";
+import StateLicenseDetailsWide from "./sidepanel-details/StateLicenseDetailsWide";
 import Icon from "@/components/ui/Icon";
 import SidePanelTab from "./SidePanelTab";
 import FileDropzone from "./FileDropzone";
@@ -114,6 +115,7 @@ export const detailsComponentMap: Record<string, React.ComponentType<any>> = {
   ProviderInfoDetails,
   ProviderInfoDetailsWide,
   StateLicenseDetails,
+  StateLicenseDetailsWide,
   BirthInfoDetails,
   // Add more as needed
 };
