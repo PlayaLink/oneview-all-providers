@@ -150,7 +150,7 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
           className={cn(
             "w-full px-2 py-[10px] pr-8 text-xs font-poppins text-[#4C5564] border border-gray-300 rounded bg-white outline-none transition-colors",
             "focus:ring-2 focus:ring-blue-200",
-            disabled && "opacity-50 cursor-not-allowed bg-gray-100",
+            disabled && "opacity-50 bg-gray-100",
             className
           )}
           style={{ height: 38 }}
@@ -161,9 +161,8 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
             <button
               type="button"
               onClick={handleCopy}
-              disabled={disabled}
               className={cn(
-                "flex w-[20.5px] h-5 py-[1.667px] justify-center items-center gap-[6.667px] rounded-[3.333px] hover:bg-gray-50 transition-all disabled:opacity-50",
+                "flex w-[20.5px] h-5 py-[1.667px] justify-center items-center gap-[6.667px] rounded-[3.333px] hover:bg-gray-50 transition-all",
                 isHovered ? "opacity-100" : "opacity-0"
               )}
               tabIndex={-1}
