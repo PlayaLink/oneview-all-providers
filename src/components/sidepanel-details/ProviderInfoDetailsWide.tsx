@@ -4,6 +4,7 @@ import { MultiSelectInput } from '../inputs/MultiSelectInput';
 import { SingleSelect } from '../inputs/SingleSelect';
 import TextInputField from '../inputs/TextInputField';
 import { generateProviderName, generateDefaultHeaderText } from '@/lib/utils';
+import { providerInfoFieldGroups } from './ProviderInfoDetails';
 
 // Helper to get value and onChange for a field
 function getFieldProps(fieldKey, formValues, handleChange) {
@@ -165,7 +166,7 @@ export const providerInfoWideTemplate = {
     { id: 'team', label: 'Team', icon: 'users', enabled: true },
   ],
   DetailsComponent: ProviderInfoDetailsWide,
-  fieldGroups: [],
+  fieldGroups: providerInfoFieldGroups,
 };
 
 export default ProviderInfoDetailsWide; 

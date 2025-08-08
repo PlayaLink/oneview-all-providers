@@ -425,8 +425,16 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
     let previousProviderData: any = null;
 
     try {
+      // Debug logging
+      console.log("=== DEBUG: handleSave ===");
+      console.log("isCreateMode:", isCreateMode);
+      console.log("gridName:", gridName);
+      console.log("formValues:", formValues);
+      console.log("inputConfig:", inputConfig);
+
       // Only include valid DB columns in the update/insert
       const validColumns = inputConfig.map((f) => f.key).filter(Boolean);
+      console.log("validColumns:", validColumns);
 
       // Filter and clean the updates
       const filteredData = Object.fromEntries(
@@ -434,11 +442,13 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
           .filter(([key]) => validColumns.includes(key))
           .map(([key, value]) => {
             const field = inputConfig.find((f) => f.key === key);
+            console.log(`Processing field ${key}:`, value, "field type:", field?.type);
             
             // Handle empty strings - convert to null for most fields
             if (value === "" || value === null || value === undefined) {
               // For array fields, return null instead of empty string
               if (field && field.type === "multi-select") {
+                console.log(`Field ${key} is multi-select, converting to null`);
                 return [key, null];
               }
               // For date fields, return null
@@ -453,9 +463,16 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                   key === "expiration_date");
               
               if (isDateField) {
+                console.log(`Field ${key} is date field, converting to null`);
                 return [key, null];
               }
-              // For other fields, return null instead of empty string
+              // For create mode, keep empty strings as they are (user might want to save empty fields)
+              if (isCreateMode) {
+                console.log(`Field ${key} is empty in create mode, keeping as:`, value);
+                return [key, value];
+              }
+              // For other fields in edit mode, return null instead of empty string
+              console.log(`Field ${key} is empty in edit mode, converting to null`);
               return [key, null];
             }
 
@@ -467,14 +484,27 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
             ) {
               // If array is empty, return null
               if (value.length === 0) {
+                console.log(`Field ${key} is empty multi-select, converting to null`);
                 return [key, null];
               }
-              return [
-                key,
-                value.map((v: any) =>
-                  typeof v === "object" && v !== null ? v.id || v.label : v,
-                ),
-              ];
+              const processedValue = value.map((v: any) =>
+                typeof v === "object" && v !== null ? v.id || v.label : v,
+              );
+              console.log(`Field ${key} is multi-select, processed:`, processedValue);
+              return [key, processedValue];
+            }
+
+            // Handle single-select fields that return objects with id/label properties
+            if (
+              field &&
+              field.type === "single-select" &&
+              typeof value === "object" &&
+              value !== null &&
+              (value.id || value.label)
+            ) {
+              const processedValue = value.id || value.label;
+              console.log(`Field ${key} is single-select object, processed:`, processedValue);
+              return [key, processedValue];
             }
             
             // Handle boolean fields: convert "Yes"/"No" to true/false
@@ -485,8 +515,15 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
               field.options.includes("Yes") &&
               field.options.includes("No")
             ) {
-              if (value === "Yes") return [key, true];
-              if (value === "No") return [key, false];
+              if (value === "Yes") {
+                console.log(`Field ${key} is boolean, converting Yes to true`);
+                return [key, true];
+              }
+              if (value === "No") {
+                console.log(`Field ${key} is boolean, converting No to false`);
+                return [key, false];
+              }
+              console.log(`Field ${key} is boolean, converting to null`);
               return [key, null];
             }
             
@@ -505,6 +542,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
               isDateField &&
               (value === "" || value === null || value === undefined)
             ) {
+              console.log(`Field ${key} is date field and empty, converting to null`);
               return [key, null];
             }
 
@@ -514,26 +552,59 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
               typeof value === "string" &&
               value.trim() === ""
             ) {
+              console.log(`Field ${key} is date field with empty string, converting to null`);
               return [key, null];
             }
 
+            console.log(`Field ${key} keeping original value:`, value);
             return [key, value];
           }),
       );
 
+      console.log("filteredData:", filteredData);
+
+      // For create mode, filter out null values but keep the object structure
+      const finalData = isCreateMode 
+        ? Object.fromEntries(
+            Object.entries(filteredData).filter(([_, value]) => 
+              value !== null && value !== undefined
+            )
+          )
+        : filteredData;
+
+      console.log("finalData:", finalData);
+
       // Add provider_id for non-provider_info grids in create mode
       if (isCreateMode && gridName !== "provider_info" && selectedProvider) {
-        filteredData.provider_id = selectedProvider.id;
+        finalData.provider_id = selectedProvider.id;
       }
 
       // Check if there are any updates to save
-      if (Object.keys(filteredData).length === 0) {
-        toast({
-          title: "No Changes",
-          description: "No changes to save",
-          variant: "default",
-        });
-        return;
+      if (Object.keys(finalData).length === 0) {
+        // In create mode, we should allow saving even with minimal data
+        if (isCreateMode) {
+          // For create mode, check if we have at least some non-empty values
+          const hasAnyData = Object.values(formValues).some(value => 
+            value !== "" && value !== null && value !== undefined && 
+            (Array.isArray(value) ? value.length > 0 : true)
+          );
+          
+          if (!hasAnyData) {
+            toast({
+              title: "No Data",
+              description: "Please fill in at least one field before saving",
+              variant: "destructive",
+            });
+            return;
+          }
+        } else {
+          toast({
+            title: "No Changes",
+            description: "No changes to save",
+            variant: "default",
+          });
+          return;
+        }
       }
 
       const tableName = gridToTableMap[gridName];
@@ -546,10 +617,16 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       let result;
       if (isCreateMode) {
         // Add last_updated timestamp for new records
-        filteredData.last_updated = new Date().toISOString();
+        finalData.last_updated = new Date().toISOString();
+        
+        console.log("=== CREATING NEW RECORD ===");
+        console.log("tableName:", tableName);
+        console.log("finalData being sent to database:", finalData);
         
         // Create new record
-        result = await insertRecord(tableName, filteredData);
+        result = await insertRecord(tableName, finalData);
+        
+        console.log("insertRecord result:", result);
         
         // Show success message
         toast({
@@ -564,9 +641,9 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         }
       } else {
         // Update existing record - also update last_updated timestamp
-        filteredData.last_updated = new Date().toISOString();
+        finalData.last_updated = new Date().toISOString();
         
-        result = await updateRecord(tableName, selectedRow.id, filteredData);
+        result = await updateRecord(tableName, selectedRow.id, finalData);
         
         // Show success message
         toast({
@@ -584,7 +661,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
 
       // Update parent state as well
       if (onUpdateSelectedProvider && !isCreateMode) {
-        const updatedProvider = { ...selectedRow, ...filteredData };
+        const updatedProvider = { ...selectedRow, ...finalData };
         onUpdateSelectedProvider(gridName, updatedProvider);
       }
 
