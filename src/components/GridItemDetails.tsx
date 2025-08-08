@@ -373,28 +373,45 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
     }
   };
 
-  // Handle Discard Changes - reset form to original values
   const handleDiscardChanges = () => {
-    if (!selectedRow) return;
-
-    // Reset form values to original selectedRow values
-    const originalValues: Record<string, any> = {};
-    inputConfig.forEach((field) => {
-      const key = field.key || field.label;
-      const value =
-        selectedRow[key] ?? (field.type === "multi-select" ? [] : "");
-      originalValues[key] = value;
-    });
-
-    setFormValues(originalValues);
-
-    // Clear any success states and unsaved changes
-    setSaveSuccess(false);
+    if (isCreateMode) {
+      // For create mode, reset to blank form
+      const blankFormValues = Object.fromEntries(
+        inputConfig.map(field => [field.key || field.label, field.type === "multi-select" ? [] : ""])
+      );
+      setFormValues(blankFormValues);
+    } else {
+      // For edit mode, reset to original values
+      const originalValues: Record<string, any> = {};
+      inputConfig.forEach((field) => {
+        const key = field.key || field.label;
+        const value = selectedRow[key] ?? (field.type === "multi-select" ? [] : "");
+        originalValues[key] = value;
+      });
+      setFormValues(originalValues);
+    }
     setHasUnsavedChanges(false);
+    setSaveSuccess(false);
   };
 
-  // Handle Save (update parent and backend)
-  const handleSave = async () => {
+  const handleSaveAndAddNew = async () => {
+    try {
+      // Call handleSave with shouldCloseModal = false to keep modal open
+      await handleSave(false);
+      
+      // Reset the form to blank state for new record after successful save
+      const blankFormValues = Object.fromEntries(
+        inputConfig.map(field => [field.key || field.label, field.type === "multi-select" ? [] : ""])
+      );
+      setFormValues(blankFormValues);
+      setHasUnsavedChanges(false);
+      setSaveSuccess(false);
+    } catch (error) {
+      console.error("Error in handleSaveAndAddNew:", error);
+    }
+  };
+
+  const handleSave = async (shouldCloseModal: boolean = true) => {
     if (!selectedRow || !gridName) {
       console.error("Missing required data for save:", {
         selectedRow: !!selectedRow,
@@ -466,6 +483,20 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                 console.log(`Field ${key} is date field, converting to null`);
                 return [key, null];
               }
+              
+              // For boolean fields (Yes/No options), return null instead of empty string
+              const isBooleanField =
+                field &&
+                field.type === "single-select" &&
+                field.options &&
+                field.options.includes("Yes") &&
+                field.options.includes("No");
+              
+              if (isBooleanField) {
+                console.log(`Field ${key} is boolean field, converting to null`);
+                return [key, null];
+              }
+              
               // For create mode, keep empty strings as they are (user might want to save empty fields)
               if (isCreateMode) {
                 console.log(`Field ${key} is empty in create mode, keeping as:`, value);
@@ -687,7 +718,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       }, 1500); // Hide success message after 1.5 seconds
 
       // Close modal if in create mode
-      if (isCreateMode) {
+      if (isCreateMode && shouldCloseModal) {
         setTimeout(() => {
           onClose();
         }, 1500);
@@ -1391,38 +1422,101 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
             >
               Discard Changes
             </button>
-            <button
-              className={`flex-1 py-2 px-4 rounded text-sm font-medium transition-colors ${
-                isSaving
-                  ? "bg-gray-400 text-white cursor-not-allowed"
-                  : saveSuccess
-                    ? "bg-[#79AC48] text-white cursor-default"
-                    : "bg-[#008BC9] text-white hover:bg-[#007399]"
-              }`}
-              onClick={handleSave}
-              disabled={isSaving || saveSuccess}
-              aria-label={
-                isSaving
-                  ? "Saving changes..."
-                  : saveSuccess
-                    ? "Changes saved successfully"
-                    : "Save changes"
-              }
-              aria-describedby={isSaving ? "saving-status" : undefined}
-              data-testid={`grid-item-details-save-button-${context}`}
-              role="button"
-              type="button"
-            >
-              {isSaving ? "Saving..." : saveSuccess ? "Saved!" : "Save"}
-              {isSaving && (
-                <span id="saving-status" className="sr-only">
-                  Saving changes to database
-                </span>
-              )}
-            </button>
+            {isCreateMode ? (
+              <>
+                <button
+                  className={`flex-1 py-2 px-4 rounded text-sm font-medium transition-colors ${
+                    isSaving
+                      ? "bg-gray-400 text-white cursor-not-allowed"
+                      : saveSuccess
+                        ? "bg-[#79AC48] text-white cursor-default"
+                        : "bg-[#008BC9] text-white hover:bg-[#007399]"
+                  }`}
+                  onClick={() => handleSave(true)}
+                  disabled={isSaving || saveSuccess}
+                  aria-label={
+                    isSaving
+                      ? "Saving record..."
+                      : saveSuccess
+                        ? "Record saved successfully"
+                        : "Save record"
+                  }
+                  aria-describedby={isSaving ? "saving-status" : undefined}
+                  data-testid={`grid-item-details-save-record-button-${context}`}
+                  role="button"
+                  type="button"
+                >
+                  {isSaving ? "Saving..." : saveSuccess ? "Saved!" : "Save Record"}
+                  {isSaving && (
+                    <span id="saving-status" className="sr-only">
+                      Saving record to database
+                    </span>
+                  )}
+                </button>
+                <button
+                  className={`flex-1 py-2 px-4 rounded text-sm font-medium transition-colors ${
+                    isSaving
+                      ? "bg-gray-400 text-white cursor-not-allowed"
+                      : saveSuccess
+                        ? "bg-[#79AC48] text-white cursor-default"
+                        : "bg-[#008BC9] text-white hover:bg-[#007399]"
+                  }`}
+                  onClick={() => handleSaveAndAddNew()}
+                  disabled={isSaving || saveSuccess}
+                  aria-label={
+                    isSaving
+                      ? "Saving record..."
+                      : saveSuccess
+                        ? "Record saved successfully"
+                        : "Save record and add new"
+                  }
+                  aria-describedby={isSaving ? "saving-status" : undefined}
+                  data-testid={`grid-item-details-save-add-new-button-${context}`}
+                  role="button"
+                  type="button"
+                >
+                  {isSaving ? "Saving..." : saveSuccess ? "Saved!" : "Save & Add New"}
+                  {isSaving && (
+                    <span id="saving-status" className="sr-only">
+                      Saving record to database
+                    </span>
+                  )}
+                </button>
+              </>
+            ) : (
+              <button
+                className={`flex-1 py-2 px-4 rounded text-sm font-medium transition-colors ${
+                  isSaving
+                    ? "bg-gray-400 text-white cursor-not-allowed"
+                    : saveSuccess
+                      ? "bg-[#79AC48] text-white cursor-default"
+                      : "bg-[#008BC9] text-white hover:bg-[#007399]"
+                }`}
+                onClick={() => handleSave(true)}
+                disabled={isSaving || saveSuccess}
+                aria-label={
+                  isSaving
+                    ? "Saving changes..."
+                    : saveSuccess
+                      ? "Changes saved successfully"
+                      : "Save changes"
+                }
+                aria-describedby={isSaving ? "saving-status" : undefined}
+                data-testid={`grid-item-details-save-button-${context}`}
+                role="button"
+                type="button"
+              >
+                {isSaving ? "Saving..." : saveSuccess ? "Saved!" : "Save"}
+                {isSaving && (
+                  <span id="saving-status" className="sr-only">
+                    Saving changes to database
+                  </span>
+                )}
+              </button>
+            )}
           </div>
           {/* Cancel button - only for modal context */}
-          {context === "modal" && (
+          {context === "modal" && !isCreateMode && (
             <button
               className="text-[#008BC9] hover:text-[#007399] py-2 px-4 rounded text-sm font-medium transition-colors"
               onClick={onClose}
