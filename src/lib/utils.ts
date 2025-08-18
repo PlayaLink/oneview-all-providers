@@ -70,7 +70,7 @@ export const generateDefaultHeaderText = ({ gridName, provider, isCreateMode }: 
       'notes': 'Note',
       'documents': 'Document',
       'providers': 'Provider',
-      'provider info': 'Provider Info',
+      'provider info': 'Provider',
       'birth info': 'Birth Info'
     };
 
