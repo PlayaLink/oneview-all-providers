@@ -153,6 +153,9 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   const [showExpiringDropdown, setShowExpiringDropdown] = React.useState(false);
   const [expiringDaysFilter, setExpiringDaysFilter] = React.useState(props.defaultExpiringDays || 30);
 
+  // Row selection state for action bar
+  const [selectedRows, setSelectedRows] = React.useState<any[]>([]);
+
   // Column state persistence
   const [gridApi, setGridApi] = React.useState<any>(null);
   const gridStateKey = `ag-grid-state-${title}`;
@@ -339,6 +342,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     calculateActionsColumnWidth,
     expiringDaysFilter,
     gridColumnsData,
+    selectedRows.length, // Re-render when selection changes
   ]);
 
   const isActionsColumnClickedRef = React.useRef(false);
@@ -379,6 +383,11 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   };
 
   const handleSelectionChanged = (event: any) => {
+    // Update selected rows for action bar
+    const selectedNodes = event.api.getSelectedNodes();
+    const selectedData = selectedNodes.map((node: any) => node.data);
+    setSelectedRows(selectedData);
+
     if (onSelectionChanged) {
       onSelectionChanged(event);
     }
@@ -767,6 +776,76 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         </div>
       </header>
 
+      {/* Action Bar - Shows when rows are selected */}
+      {isExpanded && selectedRows.length > 0 && (
+        <div
+          className="flex items-center justify-between px-4 py-2 bg-[#CFD8DC] border-b border-gray-300"
+          style={{ height: '40px' }} // Match AG Grid header height
+          role="toolbar"
+          aria-label="Row actions"
+          data-testid="action-bar"
+        >
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 bg-gray-600 rounded flex items-center justify-center">
+              <div className="w-2 h-0.5 bg-white"></div>
+            </div>
+            <span className="text-sm font-medium text-gray-700">
+              {selectedRows.length} selected
+            </span>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <button
+              className="flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900 underline"
+              onClick={() => {
+                // Handle edit action
+                console.log('Edit selected rows:', selectedRows);
+              }}
+              data-testid="action-edit"
+            >
+              <Icon icon="pencil" className="w-3 h-3" />
+              Edit
+            </button>
+            
+            <button
+              className="flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900 underline"
+              onClick={() => {
+                // Handle share action
+                console.log('Share selected rows:', selectedRows);
+              }}
+              data-testid="action-share"
+            >
+              <Icon icon="paper-plane" className="w-3 h-3" />
+              Share
+            </button>
+            
+            <button
+              className="flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900 underline"
+              onClick={() => {
+                // Handle delete action
+                console.log('Delete selected rows:', selectedRows);
+              }}
+              data-testid="action-delete"
+            >
+              <Icon icon="trash" className="w-3 h-3" />
+              Delete
+            </button>
+            
+            <button
+              className="flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900 underline"
+              onClick={() => {
+                // Handle more actions
+                console.log('More actions for selected rows:', selectedRows);
+              }}
+              data-testid="action-more"
+            >
+              More
+              <Icon icon="chevron-down" className="w-3 h-3" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* AG Grid Container */}
       {isExpanded && (
         <div
@@ -793,7 +872,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           onCellClicked={handleCellClicked}
           onCellContextMenu={handleCellContextMenu}
           rowSelection={showCheckboxes ? "multiple" : undefined}
-          headerHeight={40}
+          headerHeight={selectedRows.length > 0 ? 0 : 40} // Hide headers when rows are selected
           rowHeight={42}
           suppressRowClickSelection={true}
           suppressCellFocus={true}
