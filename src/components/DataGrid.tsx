@@ -679,10 +679,10 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                   >
                     <span className="text-white font-bold text-xs">{expirationStats.expiring}</span>
                     <span className="text-white font-bold text-xs">Expiring</span>
-                    <Icon 
+                    {/* <Icon 
                       icon="chevron-down" 
                       className={`w-3 h-3 text-white`}
-                    />
+                    /> */}
                   </button>
                   
                   {showExpiringDropdown && (
