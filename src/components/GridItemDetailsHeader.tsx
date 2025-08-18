@@ -1,6 +1,7 @@
 import React from "react";
 import ActionsColumn from "./ActionsColumn";
 import Icon from "@/components/ui/Icon";
+import ProviderSearch from "./ProviderSearch";
 
 interface GridItemDetailsHeaderProps {
   headerText: string;
@@ -10,6 +11,11 @@ interface GridItemDetailsHeaderProps {
   gridName?: string;
   rowData?: any;
   onActionClick?: (actionName: string, rowData: any) => void;
+  isCreateMode?: boolean;
+  /** Provider selection controls for create mode on non-provider_info grids */
+  selectedProvider?: any;
+  onSelectProvider?: (provider: any) => void;
+  onClearSelectedProvider?: () => void;
 }
 
 const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
@@ -20,6 +26,10 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
   gridName,
   rowData,
   onActionClick,
+  isCreateMode = false,
+  selectedProvider,
+  onSelectProvider,
+  onClearSelectedProvider,
 }) => {
   const headerClassName =
     context === "sidepanel"
@@ -33,7 +43,25 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
     >
       <div className="flex-1 flex-col">
         <h2 className="text-lg font-bold text-gray-700 tracking-wider mr-2">{headerText}</h2>
-        {gridName && rowData && onActionClick && (
+        {/* Provider Search - create mode only for non-provider_info grids */}
+        {isCreateMode && gridName !== "provider_info" && onSelectProvider && (
+          <div
+            className="mt-4 mb-4"
+            role="region"
+            aria-label="Select Provider"
+            data-testid="provider-selector-header"
+            data-referenceid="provider-selector-header"
+          >
+            <ProviderSearch
+              className="w-[450px]"
+              placeholder="Search for a provider to associate with this new record..."
+              onSelect={onSelectProvider}
+              onClear={onClearSelectedProvider}
+              isCreateMode={isCreateMode}
+            />
+          </div>
+        )}
+        {gridName && rowData && onActionClick && !isCreateMode && (
           <div className="flex flex-row justify-start my-2">
             <ActionsColumn
               gridName={gridName}

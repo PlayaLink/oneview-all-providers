@@ -58,6 +58,7 @@ interface GridDataFetcherProps {
   selectedRowId?: string | null;
   selectedGridKey?: string | null;
   onOpenDetailModal?: (row: any, gridName: string) => void;
+  onAddRecord?: (gridName: string) => void;
   /** Whether to pin the actions column to the right */
   pinActionsColumn?: boolean;
   /** Whether the side panel is open */
@@ -75,6 +76,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
   selectedRowId,
   selectedGridKey,
   onOpenDetailModal,
+  onAddRecord,
   pinActionsColumn = true,
   isSidePanelOpen = false,
 }) => {
@@ -258,7 +260,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
         }}
                   onToggleFlag={(data, flagged) => {}}
         onOpenDetailModal={(data) => onOpenDetailModal?.(data, gridKey)}
-                  onAddRecord={() => {}}
+        onAddRecord={() => onAddRecord?.(gridKey)}
                   onMoreHeaderActions={() => {}}
         pinActionsColumn={pinActionsColumn}
         isSidePanelOpen={isSidePanelOpen}

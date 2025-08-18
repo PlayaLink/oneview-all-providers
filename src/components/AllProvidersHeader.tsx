@@ -17,9 +17,10 @@ interface Provider {
 
 interface AllProvidersHeaderProps {
   provider?: Provider;
+  onAddProvider?: () => void;
 }
 
-const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps>(({ provider }, ref) => {
+const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps>(({ provider, onAddProvider }, ref) => {
   const location = useLocation();
 
   // Determine title for non-provider view
@@ -88,7 +89,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
               aria-label="Add Provider"
               data-testid="add-provider-button"
               data-referenceid="add-provider"
-              // onClick={handleAddProvider}
+              onClick={onAddProvider}
             >
               <Icon icon="plus" className="w-4 h-4" aria-hidden="true" />
               Add Provider

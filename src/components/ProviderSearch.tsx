@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Icon from "@/components/ui/Icon";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProviders } from "@/lib/supabaseClient";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { extractTitleAcronym } from "@/lib/utils";
 
 interface Provider {
@@ -19,16 +19,24 @@ interface Provider {
 interface ProviderSearchProps {
   className?: string;
   placeholder?: string;
+  onSelect?: (provider: Provider) => void;
+  onClear?: () => void;
+  isCreateMode?: boolean;
 }
 
 const ProviderSearch: React.FC<ProviderSearchProps> = ({ 
-  className = "w-[350px]", 
-  placeholder = "Search by provider name or NPI #" 
+  className = "w-[375px]", 
+  placeholder = "Search by provider name or NPI #",
+  onSelect,
+  onClear,
+  isCreateMode
 }) => {
   const [search, setSearch] = useState("");
+  const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const { provider_id } = useParams();
 
   // Fetch all providers
   const { data: providers = [], isLoading } = useQuery({
@@ -36,6 +44,19 @@ const ProviderSearch: React.FC<ProviderSearchProps> = ({
     queryFn: fetchProviders,
     initialData: [],
   });
+
+
+
+  // When on a single-provider route, keep the input reflecting the selected provider
+  useEffect(() => {
+    if (!provider_id) return;
+    const match = (providers as Provider[]).find((p) => p.id === provider_id);
+    if (match) {
+      setSelectedProvider(match);
+      const fullName = `${match.first_name || ""} ${match.last_name || ""}`.trim();
+      setSearch(fullName || match.provider_name || "");
+    }
+  }, [provider_id, providers]);
 
   // Filter providers by name or NPI
   const searchString = search.toLowerCase();
@@ -46,11 +67,23 @@ const ProviderSearch: React.FC<ProviderSearchProps> = ({
       )
     : providers;
 
+
+
   // Handle selection
   const handleSelect = (selected: Provider) => {
-    setSearch("");
+    setSelectedProvider(selected);
+    // Prefer explicit first and last name in the input after selection
+    const fullName = `${selected.first_name || ""} ${selected.last_name || ""}`.trim();
+    setSearch(fullName || selected.provider_name || "");
     setDropdownOpen(false);
-    navigate(`/${selected.id}`);
+    
+    if (onSelect) {
+      // If onSelect is provided, call it instead of navigating
+      onSelect(selected);
+    } else {
+      // Default behavior: navigate to provider page
+      navigate(`/${selected.id}`);
+    }
   };
 
   // Handle input changes
@@ -66,9 +99,20 @@ const ProviderSearch: React.FC<ProviderSearchProps> = ({
 
   // Handle clear
   const handleClear = () => {
+    setSelectedProvider(null);
     setSearch("");
     setDropdownOpen(false);
     inputRef.current?.focus();
+    
+    // Call onClear callback if provided
+    if (onClear) {
+      onClear();
+    }
+    
+    // If we're on the single-provider page, navigate back to all providers
+    if (provider_id) {
+      navigate("/all-records");
+    }
   };
 
   // Close dropdown on click outside
@@ -92,7 +136,7 @@ const ProviderSearch: React.FC<ProviderSearchProps> = ({
       <input
         id="provider-search"
         ref={inputRef}
-        className="w-full rounded border border-gray-200 px-4 py-2 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-200 pr-8"
+        className="w-full rounded border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 pr-8"
         placeholder={placeholder}
         value={search}
         onChange={handleInputChange}

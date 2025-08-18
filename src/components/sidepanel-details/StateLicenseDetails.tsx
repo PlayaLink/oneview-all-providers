@@ -4,7 +4,7 @@ import { MultiSelectInput } from '../inputs/MultiSelectInput';
 import { SingleSelect } from '../inputs/SingleSelect';
 import TextInputField from '../inputs/TextInputField';
 import { getInputType, renderFieldComponent } from './getInputType';
-import { extractTitleAcronym, generateProviderName } from '@/lib/utils';
+import { extractTitleAcronym, generateProviderName, generateDefaultHeaderText } from '@/lib/utils';
 
 // State Licenses fieldGroups definition - Updated to match screenshot layout
 export const stateLicenseFieldGroups = [
@@ -235,11 +235,7 @@ export const stateLicenseTemplate = {
   id: 'state_licenses',
   name: 'State Licenses',
   description: 'Template for displaying state license details',
-  header: ({ gridName, row, provider }) => {
-    const name = provider ? generateProviderName(provider) : '';
-    const title = provider ? extractTitleAcronym(provider.title || '') : extractTitleAcronym(row.title || '');
-    return `${gridName} ${row.license || ''} for ${name} ${title}`.trim();
-  },
+  header: ({ gridName, row, provider, isCreateMode }) => generateDefaultHeaderText({ gridName, provider, isCreateMode }),
   tabs: [
     { id: 'details', label: 'Details', icon: 'bars-staggered', enabled: true },
     { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true },

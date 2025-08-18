@@ -42,6 +42,7 @@ function GridsSection({
   handleProviderSelect,
   handleShowFacilityDetails,
   onOpenDetailModal,
+  handleAddRecord,
   inputConfig,
   setDetailModalRow,
   setSelectedRow,
@@ -138,6 +139,7 @@ function GridsSection({
                     selectedRowId={selectedRow?.id}
                     selectedGridKey={selectedRow?.gridName}
                     onOpenDetailModal={onOpenDetailModal}
+                    onAddRecord={handleAddRecord}
                     pinActionsColumn={!selectedRow}
                     isSidePanelOpen={!!selectedRow}
                   />
@@ -200,7 +202,8 @@ const AllRecords: React.FC = () => {
   // const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
   const [selectedRow, setSelectedRow] = useState<(any & { gridName: string }) | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
-  const [detailModalRow, setDetailModalRow] = useState<(any & { gridName: string }) | null>(null);
+  const [detailModalRow, setDetailModalRow] = useState<any>(null);
+  const [isCreateMode, setIsCreateMode] = useState(false);
 
   // Facility details modal state
   const [facilityDetailsModal, setFacilityDetailsModal] = useState<{
@@ -424,6 +427,31 @@ const AllRecords: React.FC = () => {
     const rowWithGridName = { ...row, gridName };
     setDetailModalRow(rowWithGridName);
     setShowDetailModal(true);
+    setIsCreateMode(false);
+  };
+
+  const handleAddRecord = (gridName: string) => {
+    const rowWithGridName = { gridName };
+    setDetailModalRow(rowWithGridName);
+    setShowDetailModal(true);
+    setIsCreateMode(true);
+  };
+
+  const handleAddProvider = () => {
+    handleAddRecord("provider_info");
+  };
+
+  const handleCloseDetailModal = () => {
+    setShowDetailModal(false);
+    setDetailModalRow(null);
+    setIsCreateMode(false);
+    setSelectedRow(null); // Clear the main selectedRow when modal closes
+  };
+
+  const handleRecordCreated = (newRecord: any) => {
+    // Refresh the grid data after creating a new record
+    // This will be handled by the query invalidation in GridItemDetails
+    console.log("New record created:", newRecord);
   };
 
   // Use sectionFilters for filtering
@@ -492,11 +520,7 @@ const AllRecords: React.FC = () => {
       {/* GridItemDetailModal (expandable modal) */}
       <GridItemDetailModal
         isOpen={showDetailModal}
-        onClose={() => {
-          setShowDetailModal(false);
-          setDetailModalRow(null);
-          setSelectedRow(null); // Clear the main selectedRow when modal closes
-        }}
+        onClose={handleCloseDetailModal}
         selectedRow={detailModalRow}
         inputConfig={modalInputConfig}
         title={modalTemplateConfig?.name || detailModalRow?.gridName || "Details"}
@@ -505,6 +529,8 @@ const AllRecords: React.FC = () => {
           // Update the detailModalRow state when changes are saved
           setDetailModalRow(updatedProvider);
         }}
+        isCreateMode={isCreateMode}
+        onRecordCreated={handleRecordCreated}
       />
       {/* Global Navigation (add ref) */}
       <div ref={globalNavRef} id="global-navigation-ref" />
@@ -521,6 +547,7 @@ const AllRecords: React.FC = () => {
             first_name: selectedProviderInfo.firstName,
             last_name: selectedProviderInfo.lastName,
           } : undefined}
+          onAddProvider={handleAddProvider}
         />
       </div>
       {/* Main Content */}
@@ -582,6 +609,7 @@ const AllRecords: React.FC = () => {
               setDetailModalRow={setDetailModalRow}
               setSelectedRow={setSelectedRow}
               setShowDetailModal={setShowDetailModal}
+              handleAddRecord={handleAddRecord}
               // Remove visibleSections and handleSectionVisibilityChange props
               // visibleSections={visibleSections}
               // handleSectionVisibilityChange={handleSectionVisibilityChange}
@@ -617,6 +645,7 @@ const AllRecords: React.FC = () => {
               setDetailModalRow={setDetailModalRow}
               setSelectedRow={setSelectedRow}
               setShowDetailModal={setShowDetailModal}
+              handleAddRecord={handleAddRecord}
             />
         </div>
       )}

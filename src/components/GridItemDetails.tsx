@@ -24,6 +24,7 @@ import {
   updateProvider,
   updateStateLicense,
   updateRecord,
+  insertRecord,
 } from "@/lib/supabaseClient";
 import { useQueryClient } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
@@ -84,6 +85,10 @@ interface GridItemDetailsProps {
   isOpen?: boolean;
   /** Whether the modal is open (for modal context) */
   isModalOpen?: boolean;
+  /** Whether this component is in create mode (for new records) */
+  isCreateMode?: boolean;
+  /** Callback when a new record is created */
+  onRecordCreated?: (newRecord: any) => void;
 }
 
 function getInputType(field: InputField) {
@@ -194,6 +199,8 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
     panelWidth = 484,
     isOpen = true,
     isModalOpen = true,
+    isCreateMode = false,
+    onRecordCreated,
   } = props;
 
   // Use gridName from selectedRow
@@ -215,12 +222,13 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   const [editingDocument, setEditingDocument] = useState<any | null>(null);
   const [notesCount, setNotesCount] = useState<number>(0);
   const [teamCount, setTeamCount] = useState<number>(0);
+  const [selectedProvider, setSelectedProvider] = React.useState<any>(null);
 
   // Select template based on gridName and context
   const template = gridName ? getTemplateConfigByGrid(gridName, context) : null;
 
-  // Fetch provider using provider_id from selectedRow
-  const providerId = gridName === "provider_info" ? selectedRow?.id : selectedRow?.provider_id || null;
+  // Fetch provider using provider_id from selectedRow (only for existing records)
+  const providerId = !isCreateMode && (gridName === "provider_info" ? selectedRow?.id : selectedRow?.provider_id || null);
   const {
     data: provider,
     isLoading: providerLoading,
@@ -232,18 +240,17 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // Use the fetched provider data
-  const effectiveProvider = provider;
+  // Use the fetched provider data or selected provider for create mode
+  const effectiveProvider = isCreateMode ? selectedProvider : provider;
 
-  // Only reset form values if the selectedRow.id actually changes
+  // Only reset form values if the selectedRow.id actually changes or if we're in create mode
   const lastInitializedId = React.useRef<any>(null);
   React.useEffect(() => {
-    if (selectedRow && selectedRow.id !== lastInitializedId.current) {
+    if (isCreateMode || (selectedRow && selectedRow.id !== lastInitializedId.current)) {
       const initialValues: Record<string, any> = {};
       inputConfig.forEach((field) => {
         const key = field.key || field.label;
-        let value =
-          selectedRow[key] ?? (field.type === "multi-select" ? [] : "");
+        let value = isCreateMode ? "" : (selectedRow[key] ?? (field.type === "multi-select" ? [] : ""));
 
         // Deserialize multi-select fields: convert array of strings to array of {id, label}
         if (
@@ -281,13 +288,9 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       });
 
       setFormValues(initialValues);
-      setHasUnsavedChanges(false); // Reset unsaved changes when new row is selected
-      lastInitializedId.current = selectedRow.id;
-    } else if (!selectedRow) {
-      setFormValues({});
-      lastInitializedId.current = null;
+      lastInitializedId.current = selectedRow?.id;
     }
-  }, [selectedRow, inputConfig, context]);
+  }, [selectedRow, inputConfig, isCreateMode]);
 
 
 
@@ -369,28 +372,45 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
     }
   };
 
-  // Handle Discard Changes - reset form to original values
   const handleDiscardChanges = () => {
-    if (!selectedRow) return;
-
-    // Reset form values to original selectedRow values
-    const originalValues: Record<string, any> = {};
-    inputConfig.forEach((field) => {
-      const key = field.key || field.label;
-      const value =
-        selectedRow[key] ?? (field.type === "multi-select" ? [] : "");
-      originalValues[key] = value;
-    });
-
-    setFormValues(originalValues);
-
-    // Clear any success states and unsaved changes
-    setSaveSuccess(false);
+    if (isCreateMode) {
+      // For create mode, reset to blank form
+      const blankFormValues = Object.fromEntries(
+        inputConfig.map(field => [field.key || field.label, field.type === "multi-select" ? [] : ""])
+      );
+      setFormValues(blankFormValues);
+    } else {
+      // For edit mode, reset to original values
+      const originalValues: Record<string, any> = {};
+      inputConfig.forEach((field) => {
+        const key = field.key || field.label;
+        const value = selectedRow[key] ?? (field.type === "multi-select" ? [] : "");
+        originalValues[key] = value;
+      });
+      setFormValues(originalValues);
+    }
     setHasUnsavedChanges(false);
+    setSaveSuccess(false);
   };
 
-  // Handle Save (update parent and backend)
-  const handleSave = async () => {
+  const handleSaveAndAddNew = async () => {
+    try {
+      // Call handleSave with shouldCloseModal = false to keep modal open
+      await handleSave(false);
+      
+      // Reset the form to blank state for new record after successful save
+      const blankFormValues = Object.fromEntries(
+        inputConfig.map(field => [field.key || field.label, field.type === "multi-select" ? [] : ""])
+      );
+      setFormValues(blankFormValues);
+      setHasUnsavedChanges(false);
+      setSaveSuccess(false);
+    } catch (error) {
+      console.error("Error in handleSaveAndAddNew:", error);
+    }
+  };
+
+  const handleSave = async (shouldCloseModal: boolean = true) => {
     if (!selectedRow || !gridName) {
       console.error("Missing required data for save:", {
         selectedRow: !!selectedRow,
@@ -404,6 +424,16 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       return;
     }
 
+    // For create mode, check if provider is selected for non-provider_info grids
+    if (isCreateMode && gridName !== "provider_info" && !selectedProvider) {
+      toast({
+        title: "Provider Required",
+        description: "Please select a provider for this record",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSaving(true);
 
     // Store the previous data for rollback in case of error
@@ -411,28 +441,102 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
     let previousProviderData: any = null;
 
     try {
-      // Only include valid DB columns in the update
+      // Debug logging
+      console.log("=== DEBUG: handleSave ===");
+      console.log("isCreateMode:", isCreateMode);
+      console.log("gridName:", gridName);
+      console.log("formValues:", formValues);
+      console.log("inputConfig:", inputConfig);
+
+      // Only include valid DB columns in the update/insert
       const validColumns = inputConfig.map((f) => f.key).filter(Boolean);
+      console.log("validColumns:", validColumns);
 
       // Filter and clean the updates
-      const filteredUpdates = Object.fromEntries(
+      const filteredData = Object.fromEntries(
         Object.entries(formValues)
           .filter(([key]) => validColumns.includes(key))
           .map(([key, value]) => {
             const field = inputConfig.find((f) => f.key === key);
+            console.log(`Processing field ${key}:`, value, "field type:", field?.type);
+            
+            // Handle empty strings - convert to null for most fields
+            if (value === "" || value === null || value === undefined) {
+              // For array fields, return null instead of empty string
+              if (field && field.type === "multi-select") {
+                console.log(`Field ${key} is multi-select, converting to null`);
+                return [key, null];
+              }
+              // For date fields, return null
+              const isDateField =
+                field &&
+                (field.type === "date" ||
+                  key.includes("date") ||
+                  key.includes("Date") ||
+                  key === "last_updated" ||
+                  key === "enumeration_date" ||
+                  key === "issue_date" ||
+                  key === "expiration_date");
+              
+              if (isDateField) {
+                console.log(`Field ${key} is date field, converting to null`);
+                return [key, null];
+              }
+              
+              // For boolean fields (Yes/No options), return null instead of empty string
+              const isBooleanField =
+                field &&
+                field.type === "single-select" &&
+                field.options &&
+                field.options.includes("Yes") &&
+                field.options.includes("No");
+              
+              if (isBooleanField) {
+                console.log(`Field ${key} is boolean field, converting to null`);
+                return [key, null];
+              }
+              
+              // For create mode, keep empty strings as they are (user might want to save empty fields)
+              if (isCreateMode) {
+                console.log(`Field ${key} is empty in create mode, keeping as:`, value);
+                return [key, value];
+              }
+              // For other fields in edit mode, return null instead of empty string
+              console.log(`Field ${key} is empty in edit mode, converting to null`);
+              return [key, null];
+            }
+
             // Serialize multi-select fields: convert array of {id, label} to array of strings
             if (
               field &&
               field.type === "multi-select" &&
               Array.isArray(value)
             ) {
-              return [
-                key,
-                value.map((v: any) =>
-                  typeof v === "object" && v !== null ? v.id || v.label : v,
-                ),
-              ];
+              // If array is empty, return null
+              if (value.length === 0) {
+                console.log(`Field ${key} is empty multi-select, converting to null`);
+                return [key, null];
+              }
+              const processedValue = value.map((v: any) =>
+                typeof v === "object" && v !== null ? v.id || v.label : v,
+              );
+              console.log(`Field ${key} is multi-select, processed:`, processedValue);
+              return [key, processedValue];
             }
+
+            // Handle single-select fields that return objects with id/label properties
+            if (
+              field &&
+              field.type === "single-select" &&
+              typeof value === "object" &&
+              value !== null &&
+              (value.id || value.label)
+            ) {
+              const processedValue = value.id || value.label;
+              console.log(`Field ${key} is single-select object, processed:`, processedValue);
+              return [key, processedValue];
+            }
+            
             // Handle boolean fields: convert "Yes"/"No" to true/false
             if (
               field &&
@@ -441,10 +545,18 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
               field.options.includes("Yes") &&
               field.options.includes("No")
             ) {
-              if (value === "Yes") return [key, true];
-              if (value === "No") return [key, false];
+              if (value === "Yes") {
+                console.log(`Field ${key} is boolean, converting Yes to true`);
+                return [key, true];
+              }
+              if (value === "No") {
+                console.log(`Field ${key} is boolean, converting No to false`);
+                return [key, false];
+              }
+              console.log(`Field ${key} is boolean, converting to null`);
               return [key, null];
             }
+            
             // Handle empty date fields - convert empty strings to null for date fields
             const isDateField =
               field &&
@@ -456,13 +568,11 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                 key === "issue_date" ||
                 key === "expiration_date");
 
-            if (isDateField) {
-            }
-
             if (
               isDateField &&
               (value === "" || value === null || value === undefined)
             ) {
+              console.log(`Field ${key} is date field and empty, converting to null`);
               return [key, null];
             }
 
@@ -472,59 +582,60 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
               typeof value === "string" &&
               value.trim() === ""
             ) {
+              console.log(`Field ${key} is date field with empty string, converting to null`);
               return [key, null];
             }
 
+            console.log(`Field ${key} keeping original value:`, value);
             return [key, value];
           }),
       );
 
-      // Log fields that are being excluded
-      const excludedFields = Object.entries(formValues).filter(
-        ([key]) => !validColumns.includes(key),
-      );
-      if (excludedFields.length > 0) {
-  
+      console.log("filteredData:", filteredData);
+
+      // For create mode, filter out null values but keep the object structure
+      const finalData = isCreateMode 
+        ? Object.fromEntries(
+            Object.entries(filteredData).filter(([_, value]) => 
+              value !== null && value !== undefined
+            )
+          )
+        : filteredData;
+
+      console.log("finalData:", finalData);
+
+      // Add provider_id for non-provider_info grids in create mode
+      if (isCreateMode && gridName !== "provider_info" && selectedProvider) {
+        finalData.provider_id = selectedProvider.id;
       }
 
       // Check if there are any updates to save
-      if (Object.keys(filteredUpdates).length === 0) {
-  
-        return;
-      }
-
-      // Optimistic update: Update the cache immediately (optional, can be expanded for more grids)
-      if (gridName === "State_Licenses") {
-        queryClient.setQueryData(["stateLicenses"], (oldData: any[]) => {
-          if (!oldData) return oldData;
-          previousData = oldData;
-          return oldData.map((item) =>
-            item.id === selectedRow.id ? { ...item, ...filteredUpdates } : item,
+      if (Object.keys(finalData).length === 0) {
+        // In create mode, we should allow saving even with minimal data
+        if (isCreateMode) {
+          // For create mode, check if we have at least some non-empty values
+          const hasAnyData = Object.values(formValues).some(value => 
+            value !== "" && value !== null && value !== undefined && 
+            (Array.isArray(value) ? value.length > 0 : true)
           );
-        });
-        if (selectedRow.provider_id) {
-          queryClient.setQueryData(
-            ["providerStateLicenses", selectedRow.provider_id],
-            (oldData: any[]) => {
-              if (!oldData) return oldData;
-              return oldData.map((item) =>
-                item.id === selectedRow.id
-                  ? { ...item, ...filteredUpdates }
-                  : item,
-              );
-            },
-          );
+          
+          if (!hasAnyData) {
+            toast({
+              title: "No Data",
+              description: "Please fill in at least one field before saving",
+              variant: "destructive",
+            });
+            return;
+          }
+        } else {
+          toast({
+            title: "No Changes",
+            description: "No changes to save",
+            variant: "default",
+          });
+          return;
         }
-      } else if (gridName === "provider_info") {
-        queryClient.setQueryData(["providers"], (oldData: any[]) => {
-          if (!oldData) return oldData;
-          previousData = oldData;
-          return oldData.map((item) =>
-            item.id === selectedRow.id ? { ...item, ...filteredUpdates } : item,
-          );
-        });
       }
-      // --- DYNAMIC TABLE UPDATE LOGIC ---
 
       const tableName = gridToTableMap[gridName];
       if (!tableName) {
@@ -533,27 +644,57 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         throw new Error(`No table mapping found for gridName: ${gridName}`);
       }
 
-
-      // Remove optimistic update: do not call setQueryData for legacy keys
-      // Only refetch the grid_data queries after save
       let result;
-      try {
-        result = await updateRecord(tableName, selectedRow.id, filteredUpdates);
-
-        // Refetch all grid data queries so GridDataFetcher and side panel get fresh data
-        await queryClient.refetchQueries({
-          queryKey: ["grid_data"],
-          exact: false,
+      if (isCreateMode) {
+        // Add last_updated timestamp for new records
+        finalData.last_updated = new Date().toISOString();
+        
+        console.log("=== CREATING NEW RECORD ===");
+        console.log("tableName:", tableName);
+        console.log("finalData being sent to database:", finalData);
+        
+        // Create new record
+        result = await insertRecord(tableName, finalData);
+        
+        console.log("insertRecord result:", result);
+        
+        // Show success message
+        toast({
+          title: "Record Created",
+          description: "New record has been created successfully",
+          variant: "default",
         });
-      } catch (updateError) {
-        console.error("Supabase updateRecord error:", updateError);
-        throw updateError;
+
+        // Call the onRecordCreated callback if provided
+        if (onRecordCreated && result && result.length > 0) {
+          onRecordCreated(result[0]);
+        }
+      } else {
+        // Update existing record - also update last_updated timestamp
+        finalData.last_updated = new Date().toISOString();
+        
+        result = await updateRecord(tableName, selectedRow.id, finalData);
+        
+        // Show success message
+        toast({
+          title: "Record Updated",
+          description: "Record has been updated successfully",
+          variant: "default",
+        });
       }
+
+      // Refetch all grid data queries so GridDataFetcher and side panel get fresh data
+      await queryClient.refetchQueries({
+        queryKey: ["grid_data"],
+        exact: false,
+      });
+
       // Update parent state as well
-      if (onUpdateSelectedProvider) {
-        const updatedProvider = { ...selectedRow, ...filteredUpdates };
+      if (onUpdateSelectedProvider && !isCreateMode) {
+        const updatedProvider = { ...selectedRow, ...finalData };
         onUpdateSelectedProvider(gridName, updatedProvider);
       }
+
       // Invalidate and refetch the appropriate query cache to ensure consistency
       const queryKeyMap: Record<string, string> = {
         Provider_Info: "providers",
@@ -574,6 +715,13 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         setSaveSuccess(false);
         // Footer will be hidden by hasUnsavedChanges being false
       }, 1500); // Hide success message after 1.5 seconds
+
+      // Close modal if in create mode
+      if (isCreateMode && shouldCloseModal) {
+        setTimeout(() => {
+          onClose();
+        }, 1500);
+      }
     } catch (err: any) {
       console.error("Failed to save:", err);
 
@@ -762,6 +910,8 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         gridName: displayGridName,
         row: selectedRow,
         provider: effectiveProvider,
+        // @ts-expect-error extended parameter used by our generator
+        isCreateMode,
       });
     }
   } else {
@@ -892,6 +1042,10 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
     
           // You can add specific action handling logic here
         }}
+        isCreateMode={isCreateMode}
+        selectedProvider={selectedProvider}
+        onSelectProvider={(provider) => setSelectedProvider(provider)}
+        onClearSelectedProvider={() => setSelectedProvider(null)}
       />
 
       {/* Tabs and Content */}
@@ -961,6 +1115,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                   aria-label="Details Tab"
                   data-testid={`grid-item-details-tabpanel-details-${context}`}
                 >
+                  
                   {DetailsComponent && (
                     <Suspense fallback={<div>Loading details...</div>}>
                       <DetailsComponent
@@ -1199,38 +1354,101 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
             >
               Discard Changes
             </button>
-            <button
-              className={`flex-1 py-2 px-4 rounded text-sm font-medium transition-colors ${
-                isSaving
-                  ? "bg-gray-400 text-white cursor-not-allowed"
-                  : saveSuccess
-                    ? "bg-[#79AC48] text-white cursor-default"
-                    : "bg-[#008BC9] text-white hover:bg-[#007399]"
-              }`}
-              onClick={handleSave}
-              disabled={isSaving || saveSuccess}
-              aria-label={
-                isSaving
-                  ? "Saving changes..."
-                  : saveSuccess
-                    ? "Changes saved successfully"
-                    : "Save changes"
-              }
-              aria-describedby={isSaving ? "saving-status" : undefined}
-              data-testid={`grid-item-details-save-button-${context}`}
-              role="button"
-              type="button"
-            >
-              {isSaving ? "Saving..." : saveSuccess ? "Saved!" : "Save"}
-              {isSaving && (
-                <span id="saving-status" className="sr-only">
-                  Saving changes to database
-                </span>
-              )}
-            </button>
+            {isCreateMode ? (
+              <>
+                <button
+                  className={`flex-1 py-2 px-4 rounded text-sm font-medium transition-colors ${
+                    isSaving
+                      ? "bg-gray-400 text-white cursor-not-allowed"
+                      : saveSuccess
+                        ? "bg-[#79AC48] text-white cursor-default"
+                        : "bg-[#008BC9] text-white hover:bg-[#007399]"
+                  }`}
+                  onClick={() => handleSave(true)}
+                  disabled={isSaving || saveSuccess}
+                  aria-label={
+                    isSaving
+                      ? "Saving record..."
+                      : saveSuccess
+                        ? "Record saved successfully"
+                        : "Save record"
+                  }
+                  aria-describedby={isSaving ? "saving-status" : undefined}
+                  data-testid={`grid-item-details-save-record-button-${context}`}
+                  role="button"
+                  type="button"
+                >
+                  {isSaving ? "Saving..." : saveSuccess ? "Saved!" : "Save Record"}
+                  {isSaving && (
+                    <span id="saving-status" className="sr-only">
+                      Saving record to database
+                    </span>
+                  )}
+                </button>
+                <button
+                  className={`flex-1 py-2 px-4 rounded text-sm font-medium transition-colors ${
+                    isSaving
+                      ? "bg-gray-400 text-white cursor-not-allowed"
+                      : saveSuccess
+                        ? "bg-[#79AC48] text-white cursor-default"
+                        : "bg-[#008BC9] text-white hover:bg-[#007399]"
+                  }`}
+                  onClick={() => handleSaveAndAddNew()}
+                  disabled={isSaving || saveSuccess}
+                  aria-label={
+                    isSaving
+                      ? "Saving record..."
+                      : saveSuccess
+                        ? "Record saved successfully"
+                        : "Save record and add new"
+                  }
+                  aria-describedby={isSaving ? "saving-status" : undefined}
+                  data-testid={`grid-item-details-save-add-new-button-${context}`}
+                  role="button"
+                  type="button"
+                >
+                  {isSaving ? "Saving..." : saveSuccess ? "Saved!" : "Save & Add New"}
+                  {isSaving && (
+                    <span id="saving-status" className="sr-only">
+                      Saving record to database
+                    </span>
+                  )}
+                </button>
+              </>
+            ) : (
+              <button
+                className={`flex-1 py-2 px-4 rounded text-sm font-medium transition-colors ${
+                  isSaving
+                    ? "bg-gray-400 text-white cursor-not-allowed"
+                    : saveSuccess
+                      ? "bg-[#79AC48] text-white cursor-default"
+                      : "bg-[#008BC9] text-white hover:bg-[#007399]"
+                }`}
+                onClick={() => handleSave(true)}
+                disabled={isSaving || saveSuccess}
+                aria-label={
+                  isSaving
+                    ? "Saving changes..."
+                    : saveSuccess
+                      ? "Changes saved successfully"
+                      : "Save changes"
+                }
+                aria-describedby={isSaving ? "saving-status" : undefined}
+                data-testid={`grid-item-details-save-button-${context}`}
+                role="button"
+                type="button"
+              >
+                {isSaving ? "Saving..." : saveSuccess ? "Saved!" : "Save"}
+                {isSaving && (
+                  <span id="saving-status" className="sr-only">
+                    Saving changes to database
+                  </span>
+                )}
+              </button>
+            )}
           </div>
           {/* Cancel button - only for modal context */}
-          {context === "modal" && (
+          {context === "modal" && !isCreateMode && (
             <button
               className="text-[#008BC9] hover:text-[#007399] py-2 px-4 rounded text-sm font-medium transition-colors"
               onClick={onClose}

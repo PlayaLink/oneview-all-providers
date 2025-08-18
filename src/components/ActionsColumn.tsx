@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef } from 'react';
 import Icon from "@/components/ui/Icon";
 import { useGridActions, GridAction } from "@/hooks/useGridActions";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -20,16 +20,6 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
 }) => {
   const { gridActions, isLoading, error } = useGridActions(gridName);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [allowTooltips, setAllowTooltips] = useState(false);
-
-  // Bug fix: Prevents tooltips from showing immediately when component mounts
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setAllowTooltips(true);
-    }, 1000); // Allow tooltips after 1 second
-
-    return () => clearTimeout(timer);
-  }, []);
 
   if (isLoading) {
     return (
@@ -77,7 +67,7 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
           }
 
           return (
-            <Tooltip key={gridAction.id} open={allowTooltips ? undefined : false}>
+            <Tooltip key={gridAction.id}>
               <TooltipTrigger asChild>
                 <button
                   onClick={() => onActionClick(action.name, rowData)}
