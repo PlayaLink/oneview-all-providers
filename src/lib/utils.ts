@@ -50,9 +50,48 @@ export const generateProviderName = (provider?: any): string => {
 export const generateDefaultHeaderText = ({ gridName, provider, isCreateMode }: { gridName: string; provider?: any; isCreateMode?: boolean }): string => {
   const prefix = isCreateMode ? 'Create new ' : '';
   // Convert grid name to Capital Case and replace underscores with spaces
-  const displayName = (gridName || '')
+  const rawDisplayName = (gridName || '')
     .replace(/_/g, ' ')
     .replace(/\b\w/g, (c) => c.toUpperCase());
+
+  // Singularize helper for phrases (operate on the last word, with exceptions)
+  const singularizePhrase = (phrase: string): string => {
+    const exceptions: Record<string, string> = {
+      'state licenses': 'State License',
+      'addresses': 'Address',
+      'facility affiliations': 'Facility Affiliation',
+      'facility properties': 'Facility Property',
+      'facility property values': 'Facility Property Value',
+      'facility requirements': 'Facility Requirement',
+      'facility requirement values': 'Facility Requirement Value',
+      'requirements': 'Requirement',
+      'requirement data': 'Requirement Data',
+      'contacts': 'Contact',
+      'notes': 'Note',
+      'documents': 'Document',
+      'providers': 'Provider',
+      'provider info': 'Provider Info',
+      'birth info': 'Birth Info'
+    };
+
+    const lower = phrase.toLowerCase();
+    if (exceptions[lower]) return exceptions[lower];
+
+    const parts = phrase.split(' ');
+    const last = parts[parts.length - 1];
+    let singular = last;
+    if (/.*ies$/i.test(last)) {
+      singular = last.replace(/ies$/i, 'y');
+    } else if (/.*ses$/i.test(last) || /.*xes$/i.test(last) || /.*zes$/i.test(last) || /.*ches$/i.test(last) || /.*shes$/i.test(last)) {
+      singular = last.replace(/es$/i, '');
+    } else if (/.*s$/i.test(last) && !/.*ss$/i.test(last)) {
+      singular = last.replace(/s$/i, '');
+    }
+    parts[parts.length - 1] = singular;
+    return parts.join(' ');
+  };
+
+  const displayName = singularizePhrase(rawDisplayName);
 
   if (!provider) {
     return `${prefix}${displayName} record`.trim();
