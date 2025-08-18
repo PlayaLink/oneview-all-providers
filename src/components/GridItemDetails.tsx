@@ -911,6 +911,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         gridName: displayGridName,
         row: selectedRow,
         provider: effectiveProvider,
+        isCreateMode,
       });
     }
   } else {

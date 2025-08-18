@@ -251,7 +251,7 @@ export const stateLicenseWideTemplate = {
   id: 'state_licenses_wide',
   name: 'State Licenses (Wide)',
   description: 'Template for displaying state license details in wide format',
-  header: ({ gridName, row, provider }) => generateDefaultHeaderText({ gridName, provider }),
+  header: ({ gridName, row, provider, isCreateMode }) => generateDefaultHeaderText({ gridName, provider, isCreateMode }),
   tabs: [
     { id: 'details', label: 'Details', icon: 'bars-staggered', enabled: true },
     { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true },

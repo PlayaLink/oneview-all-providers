@@ -47,14 +47,15 @@ export const generateProviderName = (provider?: any): string => {
 // generateProviderName() -> throws Error: "Provider object is required"
 
 // Reusable helper function for default header text generation
-export const generateDefaultHeaderText = ({ gridName, provider }: { gridName: string; provider?: any }): string => {
+export const generateDefaultHeaderText = ({ gridName, provider, isCreateMode }: { gridName: string; provider?: any; isCreateMode?: boolean }): string => {
+  const prefix = isCreateMode ? 'Create new ' : '';
   if (!provider) {
-    return `${gridName}`;
+    return `${prefix}${gridName}`.trim();
   }
   
   const name = generateProviderName(provider);
   const title = extractTitleAcronym(provider.title || '');
-  return `${gridName} for ${name} ${title}`.trim();
+  return `${prefix}${gridName} for ${name} ${title}`.trim();
 };
 
 // Test cases for generateDefaultHeaderText:
