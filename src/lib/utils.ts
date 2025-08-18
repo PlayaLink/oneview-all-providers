@@ -49,13 +49,18 @@ export const generateProviderName = (provider?: any): string => {
 // Reusable helper function for default header text generation
 export const generateDefaultHeaderText = ({ gridName, provider, isCreateMode }: { gridName: string; provider?: any; isCreateMode?: boolean }): string => {
   const prefix = isCreateMode ? 'Create new ' : '';
+  // Convert grid name to Capital Case and replace underscores with spaces
+  const displayName = (gridName || '')
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+
   if (!provider) {
-    return `${prefix}${gridName}`.trim();
+    return `${prefix}${displayName} record`.trim();
   }
   
   const name = generateProviderName(provider);
   const title = extractTitleAcronym(provider.title || '');
-  return `${prefix}${gridName} for ${name} ${title}`.trim();
+  return `${prefix}${displayName} record for ${name} ${title}`.trim();
 };
 
 // Test cases for generateDefaultHeaderText:
