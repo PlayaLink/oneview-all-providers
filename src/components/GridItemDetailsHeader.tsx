@@ -1,6 +1,7 @@
 import React from "react";
 import ActionsColumn from "./ActionsColumn";
 import Icon from "@/components/ui/Icon";
+import ProviderSearch from "./ProviderSearch";
 
 interface GridItemDetailsHeaderProps {
   headerText: string;
@@ -11,6 +12,10 @@ interface GridItemDetailsHeaderProps {
   rowData?: any;
   onActionClick?: (actionName: string, rowData: any) => void;
   isCreateMode?: boolean;
+  /** Provider selection controls for create mode on non-provider_info grids */
+  selectedProvider?: any;
+  onSelectProvider?: (provider: any) => void;
+  onClearSelectedProvider?: () => void;
 }
 
 const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
@@ -22,6 +27,9 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
   rowData,
   onActionClick,
   isCreateMode = false,
+  selectedProvider,
+  onSelectProvider,
+  onClearSelectedProvider,
 }) => {
   const headerClassName =
     context === "sidepanel"
@@ -35,6 +43,49 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
     >
       <div className="flex-1 flex-col">
         <h2 className="text-lg font-bold text-gray-700 tracking-wider mr-2">{headerText}</h2>
+        {/* Provider Search - create mode only for non-provider_info grids */}
+        {isCreateMode && gridName !== "provider_info" && onSelectProvider && (
+          <div
+            className="mt-4 mb-4"
+            role="region"
+            aria-label="Select Provider"
+            data-testid="provider-selector-header"
+            data-referenceid="provider-selector-header"
+          >
+            <ProviderSearch
+              className="w-full"
+              placeholder="Search for a provider to associate with this record..."
+              onSelect={onSelectProvider}
+            />
+            {selectedProvider && (
+              <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-blue-900">
+                      {selectedProvider.provider_name}
+                    </p>
+                    {selectedProvider.primary_specialty && (
+                      <p className="text-xs text-blue-700">
+                        {selectedProvider.primary_specialty}
+                      </p>
+                    )}
+                  </div>
+                  {onClearSelectedProvider && (
+                    <button
+                      onClick={onClearSelectedProvider}
+                      className="text-blue-600 hover:text-blue-800"
+                      aria-label="Clear selected provider"
+                      data-testid="clear-selected-provider-header"
+                      data-referenceid="clear-selected-provider-header"
+                    >
+                      <Icon icon="times" className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
         {gridName && rowData && onActionClick && !isCreateMode && (
           <div className="flex flex-row justify-start my-2">
             <ActionsColumn

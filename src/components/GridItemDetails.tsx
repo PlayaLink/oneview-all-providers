@@ -54,7 +54,6 @@ import NavItem from "./NavItem";
 import SidePanelTabLegacy from "./SidePanelTabLegacy";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import GridItemDetailsHeader from "./GridItemDetailsHeader";
-import ProviderSearch from "./ProviderSearch";
 
 // Types for input fields
 export interface InputField {
@@ -911,6 +910,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         gridName: displayGridName,
         row: selectedRow,
         provider: effectiveProvider,
+        // @ts-expect-error extended parameter used by our generator
         isCreateMode,
       });
     }
@@ -1043,6 +1043,9 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
           // You can add specific action handling logic here
         }}
         isCreateMode={isCreateMode}
+        selectedProvider={selectedProvider}
+        onSelectProvider={(provider) => setSelectedProvider(provider)}
+        onClearSelectedProvider={() => setSelectedProvider(null)}
       />
 
       {/* Tabs and Content */}
@@ -1112,42 +1115,6 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                   aria-label="Details Tab"
                   data-testid={`grid-item-details-tabpanel-details-${context}`}
                 >
-                  {/* Provider Search for create mode (non-provider_info grids) */}
-                  {isCreateMode && gridName !== "provider_info" && (
-                    <div className="mb-6 p-4 rounded-lg border border-gray-200">
-                      <h3 className="text-sm font-semibold text-gray-700 mb-3">
-                        Select Provider
-                      </h3>
-                      <ProviderSearch 
-                        className="w-full"
-                        placeholder="Search for a provider to associate with this record..."
-                        onSelect={(provider) => setSelectedProvider(provider)}
-                      />
-                      {selectedProvider && (
-                        <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-sm font-medium text-blue-900">
-                                {selectedProvider.provider_name}
-                              </p>
-                              {selectedProvider.primary_specialty && (
-                                <p className="text-xs text-blue-700">
-                                  {selectedProvider.primary_specialty}
-                                </p>
-                              )}
-                            </div>
-                            <button
-                              onClick={() => setSelectedProvider(null)}
-                              className="text-blue-600 hover:text-blue-800"
-                              data-testid="clear-selected-provider"
-                            >
-                              <Icon icon="times" className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
                   
                   {DetailsComponent && (
                     <Suspense fallback={<div>Loading details...</div>}>
@@ -1287,43 +1254,6 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                   {tabs.some((t) => t.id === "details") &&
                     tab === "details" && (
                       <div data-testid="grid-item-details-content">
-                        {/* Provider Search for create mode (non-provider_info grids) */}
-                        {isCreateMode && gridName !== "provider_info" && (
-                          <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                            <h3 className="text-sm font-semibold text-gray-700 mb-3">
-                              Select Provider
-                            </h3>
-                            <ProviderSearch 
-                              className="w-full"
-                              placeholder="Search for a provider to associate with this record..."
-                              onSelect={(provider) => setSelectedProvider(provider)}
-                            />
-                            {selectedProvider && (
-                              <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
-                                <div className="flex items-center justify-between">
-                                  <div>
-                                    <p className="text-sm font-medium text-blue-900">
-                                      {selectedProvider.provider_name}
-                                    </p>
-                                    {selectedProvider.primary_specialty && (
-                                      <p className="text-xs text-blue-700">
-                                        {selectedProvider.primary_specialty}
-                                      </p>
-                                    )}
-                                  </div>
-                                  <button
-                                    onClick={() => setSelectedProvider(null)}
-                                    className="text-blue-600 hover:text-blue-800"
-                                    data-testid="clear-selected-provider"
-                                  >
-                                    <Icon icon="times" className="w-4 h-4" />
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                        
                         {DetailsComponent && (
                           <Suspense fallback={<div>Loading details...</div>}>
                             <DetailsComponent
