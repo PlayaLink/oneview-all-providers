@@ -1041,6 +1041,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
     
           // You can add specific action handling logic here
         }}
+        isCreateMode={isCreateMode}
       />
 
       {/* Tabs and Content */}

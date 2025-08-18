@@ -10,6 +10,7 @@ interface GridItemDetailsHeaderProps {
   gridName?: string;
   rowData?: any;
   onActionClick?: (actionName: string, rowData: any) => void;
+  isCreateMode?: boolean;
 }
 
 const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
@@ -20,6 +21,7 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
   gridName,
   rowData,
   onActionClick,
+  isCreateMode = false,
 }) => {
   const headerClassName =
     context === "sidepanel"
@@ -33,7 +35,7 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
     >
       <div className="flex-1 flex-col">
         <h2 className="text-lg font-bold text-gray-700 tracking-wider mr-2">{headerText}</h2>
-        {gridName && rowData && onActionClick && (
+        {gridName && rowData && onActionClick && !isCreateMode && (
           <div className="flex flex-row justify-start my-2">
             <ActionsColumn
               gridName={gridName}
