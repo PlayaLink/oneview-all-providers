@@ -662,7 +662,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         toast({
           title: "Record Created",
           description: "New record has been created successfully",
-          variant: "default",
+          variant: "success",
         });
 
         // Call the onRecordCreated callback if provided
