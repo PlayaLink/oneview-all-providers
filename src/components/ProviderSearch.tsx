@@ -28,6 +28,7 @@ const ProviderSearch: React.FC<ProviderSearchProps> = ({
   onSelect
 }) => {
   const [search, setSearch] = useState("");
+  const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -50,7 +51,10 @@ const ProviderSearch: React.FC<ProviderSearchProps> = ({
 
   // Handle selection
   const handleSelect = (selected: Provider) => {
-    setSearch("");
+    setSelectedProvider(selected);
+    // Prefer explicit first and last name in the input after selection
+    const fullName = `${selected.first_name || ""} ${selected.last_name || ""}`.trim();
+    setSearch(fullName || selected.provider_name || "");
     setDropdownOpen(false);
     
     if (onSelect) {
@@ -75,6 +79,7 @@ const ProviderSearch: React.FC<ProviderSearchProps> = ({
 
   // Handle clear
   const handleClear = () => {
+    setSelectedProvider(null);
     setSearch("");
     setDropdownOpen(false);
     inputRef.current?.focus();

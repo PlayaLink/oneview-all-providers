@@ -58,7 +58,7 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
               onSelect={onSelectProvider}
             />
             {selectedProvider && (
-              <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
+              <div className="mt-3 p-3 border border-blue-200 rounded-md">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-blue-900">
