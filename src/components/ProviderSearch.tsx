@@ -23,7 +23,7 @@ interface ProviderSearchProps {
 }
 
 const ProviderSearch: React.FC<ProviderSearchProps> = ({ 
-  className = "w-[350px]", 
+  className = "w-[375px]", 
   placeholder = "Search by provider name or NPI #",
   onSelect
 }) => {

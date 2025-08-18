@@ -53,37 +53,10 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
             data-referenceid="provider-selector-header"
           >
             <ProviderSearch
-              className="w-full"
-              placeholder="Search for a provider to associate with this record..."
+              className="w-[450px]"
+              placeholder="Search for a provider to associate with this new record..."
               onSelect={onSelectProvider}
             />
-            {selectedProvider && (
-              <div className="mt-3 p-3 border border-blue-200 rounded-md">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-blue-900">
-                      {selectedProvider.provider_name}
-                    </p>
-                    {selectedProvider.primary_specialty && (
-                      <p className="text-xs text-blue-700">
-                        {selectedProvider.primary_specialty}
-                      </p>
-                    )}
-                  </div>
-                  {onClearSelectedProvider && (
-                    <button
-                      onClick={onClearSelectedProvider}
-                      className="text-blue-600 hover:text-blue-800"
-                      aria-label="Clear selected provider"
-                      data-testid="clear-selected-provider-header"
-                      data-referenceid="clear-selected-provider-header"
-                    >
-                      <Icon icon="times" className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
         )}
         {gridName && rowData && onActionClick && !isCreateMode && (
