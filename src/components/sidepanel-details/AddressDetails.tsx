@@ -48,7 +48,7 @@ export const addressTemplate = {
     { id: 'documents', label: 'Documents', icon: 'folder', enabled: true },
   ],
   fieldGroups: [addressFieldGroup],
-  header: ({ gridName, provider }) => generateDefaultHeaderText({ gridName, provider }),
+  header: ({ gridName, provider, isCreateMode }) => generateDefaultHeaderText({ gridName, provider, isCreateMode }),
   DetailsComponent: AddressDetails,
 };
 
