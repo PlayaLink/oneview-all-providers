@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Icon from "@/components/ui/Icon";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProviders } from "@/lib/supabaseClient";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { extractTitleAcronym } from "@/lib/utils";
 
 interface Provider {
@@ -32,6 +32,7 @@ const ProviderSearch: React.FC<ProviderSearchProps> = ({
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const { provider_id } = useParams();
 
   // Fetch all providers
   const { data: providers = [], isLoading } = useQuery({
@@ -39,6 +40,17 @@ const ProviderSearch: React.FC<ProviderSearchProps> = ({
     queryFn: fetchProviders,
     initialData: [],
   });
+
+  // When on a single-provider route, keep the input reflecting the selected provider
+  useEffect(() => {
+    if (!provider_id) return;
+    const match = (providers as Provider[]).find((p) => p.id === provider_id);
+    if (match) {
+      setSelectedProvider(match);
+      const fullName = `${match.first_name || ""} ${match.last_name || ""}`.trim();
+      setSearch(fullName || match.provider_name || "");
+    }
+  }, [provider_id, providers]);
 
   // Filter providers by name or NPI
   const searchString = search.toLowerCase();
@@ -83,6 +95,10 @@ const ProviderSearch: React.FC<ProviderSearchProps> = ({
     setSearch("");
     setDropdownOpen(false);
     inputRef.current?.focus();
+    // If we're on the single-provider page, navigate back to all providers
+    if (provider_id) {
+      navigate("/all-records");
+    }
   };
 
   // Close dropdown on click outside
