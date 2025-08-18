@@ -56,6 +56,8 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
               className="w-[450px]"
               placeholder="Search for a provider to associate with this new record..."
               onSelect={onSelectProvider}
+              onClear={onClearSelectedProvider}
+              isCreateMode={isCreateMode}
             />
           </div>
         )}

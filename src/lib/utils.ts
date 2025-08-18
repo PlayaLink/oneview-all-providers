@@ -94,12 +94,12 @@ export const generateDefaultHeaderText = ({ gridName, provider, isCreateMode }: 
   const displayName = singularizePhrase(rawDisplayName);
 
   if (!provider) {
-    return `${prefix}${displayName} for`.trim();
+    return `${prefix}${displayName}`;
   }
   
   const name = generateProviderName(provider);
   const title = extractTitleAcronym(provider.title || '');
-  return `${prefix}${displayName} record for ${name} ${title}`.trim();
+  return `${prefix}${displayName} for ${name} ${title}`.trim();
 };
 
 // Test cases for generateDefaultHeaderText:

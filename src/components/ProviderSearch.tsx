@@ -20,12 +20,16 @@ interface ProviderSearchProps {
   className?: string;
   placeholder?: string;
   onSelect?: (provider: Provider) => void;
+  onClear?: () => void;
+  isCreateMode?: boolean;
 }
 
 const ProviderSearch: React.FC<ProviderSearchProps> = ({ 
   className = "w-[375px]", 
   placeholder = "Search by provider name or NPI #",
-  onSelect
+  onSelect,
+  onClear,
+  isCreateMode
 }) => {
   const [search, setSearch] = useState("");
   const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);
@@ -40,6 +44,8 @@ const ProviderSearch: React.FC<ProviderSearchProps> = ({
     queryFn: fetchProviders,
     initialData: [],
   });
+
+
 
   // When on a single-provider route, keep the input reflecting the selected provider
   useEffect(() => {
@@ -60,6 +66,8 @@ const ProviderSearch: React.FC<ProviderSearchProps> = ({
         (p.npi_number && p.npi_number.includes(searchString))
       )
     : providers;
+
+
 
   // Handle selection
   const handleSelect = (selected: Provider) => {
@@ -95,6 +103,12 @@ const ProviderSearch: React.FC<ProviderSearchProps> = ({
     setSearch("");
     setDropdownOpen(false);
     inputRef.current?.focus();
+    
+    // Call onClear callback if provided
+    if (onClear) {
+      onClear();
+    }
+    
     // If we're on the single-provider page, navigate back to all providers
     if (provider_id) {
       navigate("/all-records");
