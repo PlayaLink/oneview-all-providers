@@ -1112,7 +1112,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                 >
                   {/* Provider Search for create mode (non-provider_info grids) */}
                   {isCreateMode && gridName !== "provider_info" && (
-                    <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <div className="mb-6 p-4 rounded-lg border border-gray-200">
                       <h3 className="text-sm font-semibold text-gray-700 mb-3">
                         Select Provider
                       </h3>
