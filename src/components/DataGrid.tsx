@@ -239,16 +239,16 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         }
 
         // Add custom cell renderer for expires_within column
-        if (col.field === "expires_within") {
-          baseCol.cellRenderer = (params: any) => (
-            <ExpiringCellRenderer
-              value={params.value}
-              data={params.data}
-              colDef={params.colDef}
-              expiringDaysFilter={expiringDaysFilter}
-            />
-          );
-        }
+        // if (col.field === "expires_within") {
+        //   baseCol.cellRenderer = (params: any) => (
+        //     <ExpiringCellRenderer
+        //       value={params.value}
+        //       data={params.data}
+        //       colDef={params.colDef}
+        //       expiringDaysFilter={expiringDaysFilter}
+        //     />
+        //   );
+        // }
 
         return baseCol;
       }),
