@@ -779,8 +779,11 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       {/* Action Bar - Shows when rows are selected */}
       {isExpanded && selectedRows.length > 0 && (
         <div
-          className="flex px-4 py-2 bg-[#CFD8DC] border-b border-gray-300 gap-4"
-          style={{ height: '40px' }} // Match AG Grid header height
+          className="flex px-4 py-2 border-b border-gray-300 gap-4"
+          style={{ 
+            height: '40px', // Match AG Grid header height
+            backgroundColor: '#C4D8F7' // Match selected row background color
+          }}
           role="toolbar"
           aria-label="Row actions"
           data-testid="action-bar"
