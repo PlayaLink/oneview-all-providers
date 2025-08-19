@@ -81,7 +81,7 @@ export default {
 
         // Neutral Gray Scale
         gray: {
-          00: "var(--gray-00)",
+          '00': "var(--gray-00)",
           50: "var(--gray-50)",
           100: "var(--gray-100)",
           200: "var(--gray-200)",

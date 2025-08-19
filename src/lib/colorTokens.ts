@@ -25,7 +25,7 @@ export const colorTokens = {
 
   // Neutral Gray Palette (from designer)
   gray: {
-    00: '#FFFFFF', // Pure white
+    '00': '#FFFFFF', // Pure white
     50: '#F9FAFC',
     100: '#F3F4F6',
     200: '#E6E7EB',
@@ -88,7 +88,7 @@ export const semanticColors = {
   // Text colors
   text: {
     body: colorTokens.gray[800],
-    bodyReversed: colorTokens.gray[00],
+    bodyReversed: colorTokens.gray['00'],
     secondary: colorTokens.gray[600],
     secondaryReversed: colorTokens.gray[300],
     disabled: colorTokens.gray[400],
@@ -107,7 +107,7 @@ export const semanticColors = {
     hover: colorTokens.blue[700],
     selected: colorTokens.blue[600],
     disabled: colorTokens.gray[400],
-    reversed: colorTokens.gray[00],
+    reversed: colorTokens.gray['00'],
     reversedHover: colorTokens.blue[200],
     reversedSelected: colorTokens.blue[300],
     activeReversed: colorTokens.blue[100],
@@ -125,7 +125,7 @@ export const semanticColors = {
     add: colorTokens.green[600],
     addHover: colorTokens.green[700],
     disabled: colorTokens.gray[200],
-    reversed: colorTokens.gray[00],
+    reversed: colorTokens.gray['00'],
     warning: colorTokens.orange[50],
     alert: colorTokens.red[100],
     light: colorTokens.gray[50],
@@ -134,7 +134,7 @@ export const semanticColors = {
 
   // Background colors
   background: {
-    default: colorTokens.gray[00],
+    default: colorTokens.gray['00'],
     light: colorTokens.gray[50],
     lightBlue: colorTokens.blue[50],
     med: colorTokens.gray[100],
@@ -182,7 +182,7 @@ export const cssCustomProperties = {
   '--blue-900': colorTokens.blue[900],
 
   // Gray scale
-  '--gray-00': colorTokens.gray[00],
+  '--gray-00': colorTokens.gray['00'],
   '--gray-50': colorTokens.gray[50],
   '--gray-100': colorTokens.gray[100],
   '--gray-200': colorTokens.gray[200],

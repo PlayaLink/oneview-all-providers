@@ -64,7 +64,7 @@ const UserAccount: React.FC<UserAccountProps> = ({ user, onLogout }) => {
             data-testid="user-account-header"
           >
             <div
-              className="flex-1 text-gray-400 text-xs font-medium tracking-[0.429px]"
+              className="flex-1 text-gray-400 text-xs font-medium tracking-wide"
               style={{
                 fontFamily:
                   "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -84,7 +84,7 @@ const UserAccount: React.FC<UserAccountProps> = ({ user, onLogout }) => {
             {/* User Info */}
             <div className="flex flex-col justify-center items-start flex-1">
               <div
-                className="self-stretch text-gray-600 text-xs font-medium tracking-[0.429px]"
+                className="self-stretch text-gray-600 text-xs font-medium tracking-wide"
                 style={{
                   fontFamily:
                     "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -93,7 +93,7 @@ const UserAccount: React.FC<UserAccountProps> = ({ user, onLogout }) => {
                 {user?.user_metadata?.full_name || "John Smith"}
               </div>
               <div
-                className="self-stretch text-gray-400 text-xs font-medium tracking-[0.429px] truncate"
+                className="self-stretch text-gray-400 text-xs font-medium tracking-wide truncate"
                 style={{
                   fontFamily:
                     "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -122,7 +122,7 @@ const UserAccount: React.FC<UserAccountProps> = ({ user, onLogout }) => {
               />
             </div>
             <div
-              className="flex-1 text-red-500 text-xs font-medium tracking-[0.429px] underline"
+              className="flex-1 text-red-500 text-xs font-medium tracking-wide underline"
               style={{
                 fontFamily:
                   "Poppins, -apple-system, Roboto, Helvetica, sans-serif",

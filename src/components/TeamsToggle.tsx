@@ -80,7 +80,7 @@ const TeamsToggle: React.FC = () => {
             {selectedTeam.name}
           </div>
           <div
-            className="text-white text-[10.5px] leading-normal tracking-[0.429px]"
+            className="text-white text-[10px] leading-normal tracking-wide"
             style={{
               fontFamily:
                 "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -108,7 +108,7 @@ const TeamsToggle: React.FC = () => {
             data-testid="teams-header"
           >
             <div
-              className="flex-1 text-gray-500 text-xs font-medium tracking-[0.429px]"
+              className="flex-1 text-gray-500 text-xs font-medium tracking-wide"
               style={{
                 fontFamily:
                   "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -128,7 +128,7 @@ const TeamsToggle: React.FC = () => {
               data-testid={`team-option-${team.id}`}
             >
               <div
-                className="flex-1 text-xs font-medium tracking-[0.429px]"
+                className="flex-1 text-xs font-medium tracking-wide"
                 style={{
                   fontFamily:
                     "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -166,7 +166,7 @@ const TeamsToggle: React.FC = () => {
             </div>
             <div className="flex items-center gap-2 flex-1">
               <div
-                className="text-gray-600 text-xs font-medium tracking-[0.429px]"
+                className="text-gray-600 text-xs font-medium tracking-wide"
                 style={{
                   fontFamily:
                     "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -190,7 +190,7 @@ const TeamsToggle: React.FC = () => {
             </div>
             <div className="flex items-center gap-2 flex-1">
               <div
-                className="text-gray-600 text-xs font-medium tracking-[0.429px]"
+                className="text-gray-600 text-xs font-medium tracking-wide"
                 style={{
                   fontFamily:
                     "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -214,7 +214,7 @@ const TeamsToggle: React.FC = () => {
             </div>
             <div className="flex items-center gap-2 flex-1">
               <div
-                className="text-gray-600 text-xs font-medium tracking-[0.429px]"
+                className="text-gray-600 text-xs font-medium tracking-wide"
                 style={{
                   fontFamily:
                     "Poppins, -apple-system, Roboto, Helvetica, sans-serif",

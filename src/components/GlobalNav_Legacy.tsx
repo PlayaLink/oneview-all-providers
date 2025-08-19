@@ -85,7 +85,7 @@ const GlobalNav_Legacy: React.FC<GlobalNav_LegacyProps> = ({ user }) => {
             <img
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/045bcc3b8f1e2829d44e88fc2c2155dfab17ea83?width=229"
               alt="Modio"
-              className="flex items-start gap-[7.436px]"
+              className="flex items-start gap-2"
             />
             {/* CompHealth Dropdown */}
             <div className="flex items-center gap-2 px-2 rounded-lg" role="button" tabIndex={0} aria-label="CompHealth organization selector">
@@ -99,7 +99,7 @@ const GlobalNav_Legacy: React.FC<GlobalNav_LegacyProps> = ({ user }) => {
               <div className="text-white font-bold text-base leading-7" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
                 CompHealth
               </div>
-              <div className="text-white text-[10.5px] leading-normal tracking-[0.429px]" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
+              <div className="text-white text-[10px] leading-normal tracking-wide" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
                 (Salt Lake City, Utah)
               </div>
               <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" aria-hidden="true" />
@@ -111,10 +111,10 @@ const GlobalNav_Legacy: React.FC<GlobalNav_LegacyProps> = ({ user }) => {
               {/* New Features Dropdown */}
               <FeatureFlags/>
              
-              <a href="#" className="text-white text-center text-xs leading-normal tracking-[0.429px] hover:underline" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
+              <a href="#" className="text-white text-center text-xs leading-normal tracking-wide hover:underline" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
                 Modio U
               </a>
-              <a href="#" className="text-white text-center text-xs leading-normal tracking-[0.429px] hover:underline" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
+              <a href="#" className="text-white text-center text-xs leading-normal tracking-wide hover:underline" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
                 Support
               </a>
             </nav>
@@ -126,7 +126,7 @@ const GlobalNav_Legacy: React.FC<GlobalNav_LegacyProps> = ({ user }) => {
                 </svg>
               </div>
               <button
-                className="text-white text-center text-xs font-bold leading-normal tracking-[0.429px] bg-transparent border-none cursor-pointer"
+                className="text-white text-center text-xs font-bold leading-normal tracking-wide bg-transparent border-none cursor-pointer"
                 style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
                 onClick={() => setProfileDropdownOpen((open) => !open)}
                 aria-label="Toggle user profile menu"
