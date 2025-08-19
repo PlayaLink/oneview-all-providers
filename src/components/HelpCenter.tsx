@@ -33,7 +33,7 @@ const HelpCenter: React.FC = () => {
             data-testid="help-center-header"
           >
             <div
-              className="flex-1 text-gray-400 text-xs font-medium tracking-[0.429px]"
+              className="flex-1 text-gray-400 text-xs font-medium tracking-wide"
               style={{
                 fontFamily:
                   "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -50,7 +50,7 @@ const HelpCenter: React.FC = () => {
             data-testid="training-support-item"
           >
             <div
-              className="flex-1 text-gray-600 text-xs font-medium tracking-[0.429px]"
+              className="flex-1 text-gray-600 text-xs font-medium tracking-wide"
               style={{
                 fontFamily:
                   "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -66,7 +66,7 @@ const HelpCenter: React.FC = () => {
             data-testid="modio-u-item"
           >
             <div
-              className="flex-1 text-gray-600 text-xs font-medium tracking-[0.429px]"
+              className="flex-1 text-gray-600 text-xs font-medium tracking-wide"
               style={{
                 fontFamily:
                   "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -82,7 +82,7 @@ const HelpCenter: React.FC = () => {
             data-testid="refer-friend-item"
           >
             <div
-              className="flex-1 text-gray-600 text-xs font-medium tracking-[0.429px]"
+              className="flex-1 text-gray-600 text-xs font-medium tracking-wide"
               style={{
                 fontFamily:
                   "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -98,7 +98,7 @@ const HelpCenter: React.FC = () => {
             data-testid="privacy-policy-item"
           >
             <div
-              className="flex-1 text-gray-600 text-xs font-medium tracking-[0.429px]"
+              className="flex-1 text-gray-600 text-xs font-medium tracking-wide"
               style={{
                 fontFamily:
                   "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -114,7 +114,7 @@ const HelpCenter: React.FC = () => {
             data-testid="terms-conditions-item"
           >
             <div
-              className="flex-1 text-gray-600 text-xs font-medium tracking-[0.429px]"
+              className="flex-1 text-gray-600 text-xs font-medium tracking-wide"
               style={{
                 fontFamily:
                   "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -133,7 +133,7 @@ const HelpCenter: React.FC = () => {
             data-testid="modio-website-item"
           >
             <div
-              className="flex-1 text-gray-600 text-xs font-medium tracking-[0.429px]"
+              className="flex-1 text-gray-600 text-xs font-medium tracking-wide"
               style={{
                 fontFamily:
                   "Poppins, -apple-system, Roboto, Helvetica, sans-serif",

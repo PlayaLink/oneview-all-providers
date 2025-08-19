@@ -222,7 +222,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
             <div className="flex items-center gap-2 flex-1">
               <span
                 className={cn(
-                  "text-xs font-medium tracking-[0.429px]",
+                  "text-xs font-medium tracking-wide",
                   isEnabled ? "text-gray-600" : "text-gray-400",
                 )}
                 style={{
@@ -237,7 +237,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
             {item.shortcut && (
               <span
                 className={cn(
-                  "text-xs font-medium tracking-[0.429px] text-right flex-1",
+                  "text-xs font-medium tracking-wide text-right flex-1",
                   isEnabled ? "text-gray-600" : "text-gray-400",
                 )}
                 style={{

@@ -54,7 +54,7 @@ export function getSemanticCategory<T extends keyof typeof semanticColors>(categ
 export const accessibleColorPairs = {
   // Text on backgrounds
   'text-on-white': {
-    background: colorTokens.gray[00],
+    background: colorTokens.gray['00'],
     text: colorTokens.gray[800],
     contrast: 'high',
   },
@@ -65,27 +65,27 @@ export const accessibleColorPairs = {
   },
   'text-on-blue': {
     background: colorTokens.blue[600],
-    text: colorTokens.gray[00],
+    text: colorTokens.gray['00'],
     contrast: 'high',
   },
   'text-on-dark': {
     background: colorTokens.gray[900],
-    text: colorTokens.gray[00],
+    text: colorTokens.gray['00'],
     contrast: 'high',
   },
   'text-on-success': {
     background: colorTokens.green[600],
-    text: colorTokens.gray[00],
+    text: colorTokens.gray['00'],
     contrast: 'high',
   },
   'text-on-warning': {
     background: colorTokens.orange[500],
-    text: colorTokens.gray[00],
+    text: colorTokens.gray['00'],
     contrast: 'high',
   },
   'text-on-error': {
     background: colorTokens.red[600],
-    text: colorTokens.gray[00],
+    text: colorTokens.gray['00'],
     contrast: 'high',
   },
 } as const;
@@ -108,7 +108,7 @@ export const buttonColorSchemes = {
   primary: {
     background: colorTokens.blue[600],
     backgroundHover: colorTokens.blue[700],
-    text: colorTokens.gray[00],
+    text: colorTokens.gray['00'],
     border: colorTokens.blue[600],
   },
   secondary: {
@@ -120,19 +120,19 @@ export const buttonColorSchemes = {
   success: {
     background: colorTokens.green[600],
     backgroundHover: colorTokens.green[700],
-    text: colorTokens.gray[00],
+    text: colorTokens.gray['00'],
     border: colorTokens.green[600],
   },
   warning: {
     background: colorTokens.orange[500],
     backgroundHover: colorTokens.orange[600],
-    text: colorTokens.gray[00],
+    text: colorTokens.gray['00'],
     border: colorTokens.orange[500],
   },
   error: {
     background: colorTokens.red[600],
     backgroundHover: colorTokens.red[700],
-    text: colorTokens.gray[00],
+    text: colorTokens.gray['00'],
     border: colorTokens.red[600],
   },
   disabled: {

@@ -14,7 +14,7 @@ const FeatureFlags: React.FC = () => {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
-          className="text-white text-center text-xs leading-normal tracking-[0.429px] hover:underline bg-transparent border-none cursor-pointer px-2 py-1 rounded hover:bg-white/10 transition-colors"
+          className="text-white text-center text-xs leading-normal tracking-wide hover:underline bg-transparent border-none cursor-pointer px-2 py-1 rounded hover:bg-white/10 transition-colors"
           style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}
           aria-label="New Features and settings"
           aria-haspopup="true"

@@ -180,7 +180,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
           </div>
         ) : (
           <div className="mb-1" role="single-select-label">
-            <div className="text-gray-600 text-xs font-semibold leading-normal tracking-[0.429px] font-['Poppins',sans-serif] break-words whitespace-normal">
+            <div className="text-gray-600 text-xs font-semibold leading-normal tracking-wide font-['Poppins',sans-serif] break-words whitespace-normal">
               {label}
             </div>
           </div>
@@ -213,7 +213,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
             >
               {/* Content + Copy button */}
               <div className="flex items-center gap-1">
-                <div className="text-gray-900 text-xs font-normal leading-normal tracking-[0.429px] font-['Poppins',sans-serif]">
+                <div className="text-gray-900 text-xs font-normal leading-normal tracking-wide font-['Poppins',sans-serif]">
                   {value ? value.label : (open ? placeholder : "")}
                 </div>
                 {value && (
@@ -221,7 +221,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                     <div
                       onClick={handleCopy}
                       className={cn(
-                        "flex w-[20.5px] h-5 py-[1.667px] justify-center items-center gap-[6.667px] rounded-[3.333px] hover:bg-gray-50 transition-all disabled:opacity-50 ml-1 cursor-pointer",
+                        "flex w-5 h-5 py-1 justify-center items-center gap-1 rounded hover:bg-gray-50 transition-all disabled:opacity-50 ml-1 cursor-pointer",
                         isHovered ? "opacity-100" : "opacity-0",
                         disabled && "opacity-50 cursor-not-allowed"
                       )}
@@ -236,13 +236,13 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                     {/* Tooltip */}
                     {showCopied && isHovered && (
                       <div className="absolute -top-[35px] left-1/2 transform -translate-x-1/2 z-50">
-                        <div className="flex py-[6.667px] px-[13.333px] flex-col justify-end items-center gap-[13.333px] rounded-[3.333px] border border-gray-200 bg-white shadow-md">
-                          <div className="text-gray-600 text-center text-[10px] font-normal leading-normal tracking-[0.357px] font-['Poppins',sans-serif]">
+                        <div className="flex py-1 px-3 flex-col justify-end items-center gap-1 rounded border border-gray-200 bg-white shadow-md">
+                          <div className="text-gray-600 text-center text-[10px] font-normal leading-normal tracking-wide font-['Poppins',sans-serif]">
                             Copied
                           </div>
                           {/* Arrow pointing down */}
-                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[3.75px] border-r-[3.75px] border-t-[8.333px] border-l-transparent border-r-transparent border-t-gray-200" />
-                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[3.75px] border-r-[3.75px] border-t-[7.5px] border-l-transparent border-r-transparent border-t-white translate-y-[-1px]" />
+                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-1 border-r-1 border-t-2 border-l-transparent border-r-transparent border-t-gray-200" />
+                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-1 border-r-1 border-t-2 border-l-transparent border-r-transparent border-t-white translate-y-[-1px]" />
                         </div>
                       </div>
                     )}

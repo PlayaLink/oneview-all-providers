@@ -68,7 +68,7 @@ export const MultiSelectDropdown = React.forwardRef<
               value={searchValue}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder={searchPlaceholder}
-              className="flex-1 text-xs font-poppins text-gray-600 placeholder:text-gray-400 tracking-[0.429px] border-none outline-none"
+              className="flex-1 text-xs font-poppins text-gray-600 placeholder:text-gray-400 tracking-wide border-none outline-none"
               autoFocus
             />
           </div>
@@ -128,7 +128,7 @@ export const MultiSelectDropdown = React.forwardRef<
                     {/* Label */}
                     <span
                       className={cn(
-                        "flex-1 text-xs font-medium font-poppins tracking-[0.429px]",
+                        "flex-1 text-xs font-medium font-poppins tracking-wide",
                         isDisabled ? "text-gray-400" : "text-gray-600",
                       )}
                     >
@@ -146,7 +146,7 @@ export const MultiSelectDropdown = React.forwardRef<
                     onSearchChange("");
                   }}
                 >
-                  <span className="flex-1 text-xs font-normal text-gray-600 font-poppins tracking-[0.429px]">
+                  <span className="flex-1 text-xs font-normal text-gray-600 font-poppins tracking-wide">
                     Create tag "{searchValue}"
                   </span>
                 </div>

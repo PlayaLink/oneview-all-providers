@@ -76,7 +76,7 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
     <>
       {/* Black Header */}
       <header
-        className="bg-black text-white"
+        className="bg-gray-700 text-white"
         role="banner"
         aria-label="Application Header"
         onContextMenu={handleContextMenu}

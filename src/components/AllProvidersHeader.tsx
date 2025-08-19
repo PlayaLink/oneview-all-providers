@@ -84,15 +84,15 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
             />
           ) : (
             <button
-              className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded flex items-center gap-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-600 text-sm"
+              className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-3 rounded flex items-center gap-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-600 text-sm"
               type="button"
               aria-label="Add Provider"
               data-testid="add-provider-button"
               data-referenceid="add-provider"
               onClick={onAddProvider}
             >
-              <Icon icon="plus" className="w-4 h-4" aria-hidden="true" />
               Add Provider
+              <Icon icon="plus" className="w-4 h-4" aria-hidden="true" />
             </button>
           )}
         </div>

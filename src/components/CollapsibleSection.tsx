@@ -52,7 +52,7 @@ const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
         <div className="flex items-center gap-[10px] flex-1">
           <h3 
             id={`${sectionId}-header`}
-            className="text-gray-600 text-xs font-bold leading-normal tracking-[0.429px] font-['Poppins',sans-serif]"
+            className="text-gray-600 text-xs font-bold leading-normal tracking-wide font-['Poppins',sans-serif]"
           >
             {toSentenceCase(title)}
           </h3>

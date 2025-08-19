@@ -580,7 +580,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
   const getRowStyle = (params: any) => {
     const baseStyle = {
-      borderBottom: `0.5px solid ${colorTokens.gray[300]}`,
+      borderBottom: `1px solid ${colorTokens.gray[300]}`,
       backgroundColor: "white",
     };
 
