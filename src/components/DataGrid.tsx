@@ -779,45 +779,34 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       {/* Action Bar - Shows when rows are selected */}
       {isExpanded && selectedRows.length > 0 && (
         <div
-          className="flex items-center justify-between px-4 py-2 bg-[#CFD8DC] border-b border-gray-300"
+          className="flex px-4 py-2 bg-[#CFD8DC] border-b border-gray-300 gap-4"
           style={{ height: '40px' }} // Match AG Grid header height
           role="toolbar"
           aria-label="Row actions"
           data-testid="action-bar"
         >
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-gray-600 rounded flex items-center justify-center">
+          <div className="flex items-center gap-4">
+            <button
+              className="w-4 h-4 bg-gray-600 rounded flex items-center justify-center hover:bg-gray-700 transition-colors cursor-pointer"
+              onClick={() => {
+                if (gridApi) {
+                  gridApi.deselectAll();
+                  setSelectedRows([]);
+                }
+              }}
+              data-testid="unselect-all"
+              aria-label="Unselect all rows"
+              title="Unselect all rows"
+            >
               <div className="w-2 h-0.5 bg-white"></div>
-            </div>
+            </button>
             <span className="text-sm font-medium text-gray-700">
               {selectedRows.length} selected
             </span>
           </div>
           
           <div className="flex items-center gap-3">
-            <button
-              className="flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900 underline"
-              onClick={() => {
-                // Handle edit action
-                console.log('Edit selected rows:', selectedRows);
-              }}
-              data-testid="action-edit"
-            >
-              <Icon icon="pencil" className="w-3 h-3" />
-              Edit
-            </button>
             
-            <button
-              className="flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900 underline"
-              onClick={() => {
-                // Handle share action
-                console.log('Share selected rows:', selectedRows);
-              }}
-              data-testid="action-share"
-            >
-              <Icon icon="paper-plane" className="w-3 h-3" />
-              Share
-            </button>
             
             <button
               className="flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900 underline"
@@ -827,7 +816,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               }}
               data-testid="action-delete"
             >
-              <Icon icon="trash" className="w-3 h-3" />
+              <Icon icon="trash-can" className="w-3 h-3" />
               Delete
             </button>
             
