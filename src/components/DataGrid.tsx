@@ -4,7 +4,7 @@ import { ColDef } from "ag-grid-enterprise";
 import Icon from "@/components/ui/Icon";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import { useGridActions } from "@/hooks/useGridActions";
-import { updateGridColumnWidths, updateGridExpiringWithin } from "@/lib/supabaseClient";
+import { updateGridColumnWidths, updateGridExpiringWithin, supabase } from "@/lib/supabaseClient";
 import ContextMenu from "./ContextMenu";
 import ActionsColumn from "./ActionsColumn";
 import ExpiringCellRenderer from "./ExpiringCellRenderer";
@@ -100,6 +100,10 @@ interface DataGridProps {
   gridName?: string;
   /** Default expiring days filter from grid definition */
   defaultExpiringDays?: number;
+  /** Table name for database operations (e.g., 'state_licenses', 'addresses') */
+  tableName?: string;
+  /** Callback when records are deleted */
+  onRecordsDeleted?: (deletedIds: string[]) => void;
 }
 
 const DataGrid: React.FC<DataGridProps> = (props) => {
@@ -128,7 +132,14 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     isSidePanelOpen = false,
     gridColumnsData,
     gridName,
+    tableName,
+    onRecordsDeleted,
   } = props;
+
+  // Debug logging for props
+  React.useEffect(() => {
+    console.log('DataGrid props:', { title, tableName, gridName });
+  }, [title, tableName, gridName]);
 
   // Collapsible state
   const [isExpanded, setIsExpanded] = React.useState(true);
@@ -155,10 +166,62 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
   // Row selection state for action bar
   const [selectedRows, setSelectedRows] = React.useState<any[]>([]);
+  
+
 
   // Column state persistence
   const [gridApi, setGridApi] = React.useState<any>(null);
   const gridStateKey = `ag-grid-state-${title}`;
+
+  // Handle bulk deletion of selected rows
+  const handleBulkDelete = React.useCallback(async () => {
+    console.log('handleBulkDelete called with:', { tableName, selectedRowsCount: selectedRows.length });
+    
+    if (!tableName || selectedRows.length === 0) {
+      console.warn('No table name or selected rows for deletion:', { tableName, selectedRowsCount: selectedRows.length });
+      return;
+    }
+
+    try {
+      // Show confirmation dialog
+      const confirmed = window.confirm(
+        `Are you sure you want to delete ${selectedRows.length} selected record${selectedRows.length > 1 ? 's' : ''}? This action cannot be undone.`
+      );
+
+      if (!confirmed) return;
+
+      // Delete each record individually
+      const deletedIds: string[] = [];
+      for (const row of selectedRows) {
+        try {
+          await supabase
+            .from(tableName)
+            .delete()
+            .eq('id', row.id);
+          deletedIds.push(row.id);
+        } catch (error) {
+          console.error(`Failed to delete record ${row.id}:`, error);
+        }
+      }
+
+      if (deletedIds.length > 0) {
+        // Clear selection
+        if (gridApi) {
+          gridApi.deselectAll();
+        }
+        setSelectedRows([]);
+        
+        // Notify parent component
+        onRecordsDeleted?.(deletedIds);
+        
+        // Show success message
+        console.log(`Successfully deleted ${deletedIds.length} record(s)`);
+      }
+    } catch (error) {
+      console.error('Bulk deletion failed:', error);
+      alert('An error occurred while deleting records. Please try again.');
+    }
+  }, [tableName, selectedRows, gridApi, onRecordsDeleted]);
 
   // Use feature flag for floating filters
   const { value: showFloatingFilters } = useFeatureFlag("floating_filters");
@@ -343,6 +406,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     expiringDaysFilter,
     gridColumnsData,
     selectedRows.length, // Re-render when selection changes
+    handleBulkDelete, // Re-render when function changes
   ]);
 
   const isActionsColumnClickedRef = React.useRef(false);
@@ -813,10 +877,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
             
             <button
               className="flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900 underline"
-              onClick={() => {
-                // Handle delete action
-                console.log('Delete selected rows:', selectedRows);
-              }}
+              onClick={handleBulkDelete}
               data-testid="action-delete"
             >
               <Icon icon="trash-can" className="w-3 h-3" />
