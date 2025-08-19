@@ -4,7 +4,7 @@ import { ColDef } from "ag-grid-enterprise";
 import Icon from "@/components/ui/Icon";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import { useGridActions } from "@/hooks/useGridActions";
-import { updateGridColumnWidths, updateGridExpiringWithin } from "@/lib/supabaseClient";
+import { updateGridColumnWidths, updateGridExpiringWithin, bulkDeleteRecords } from "@/lib/supabaseClient";
 import ContextMenu from "./ContextMenu";
 import ActionsColumn from "./ActionsColumn";
 import ExpiringCellRenderer from "./ExpiringCellRenderer";
@@ -100,6 +100,10 @@ interface DataGridProps {
   gridName?: string;
   /** Default expiring days filter from grid definition */
   defaultExpiringDays?: number;
+  /** Table name for database operations (e.g., 'state_licenses', 'addresses') */
+  tableName?: string;
+  /** Callback when records are deleted */
+  onRecordsDeleted?: (deletedIds: string[]) => void;
 }
 
 const DataGrid: React.FC<DataGridProps> = (props) => {
@@ -128,7 +132,14 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     isSidePanelOpen = false,
     gridColumnsData,
     gridName,
+    tableName,
+    onRecordsDeleted,
   } = props;
+
+  // Debug logging for props
+  React.useEffect(() => {
+    console.log('DataGrid props:', { title, tableName, gridName });
+  }, [title, tableName, gridName]);
 
   // Collapsible state
   const [isExpanded, setIsExpanded] = React.useState(true);
@@ -153,9 +164,58 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   const [showExpiringDropdown, setShowExpiringDropdown] = React.useState(false);
   const [expiringDaysFilter, setExpiringDaysFilter] = React.useState(props.defaultExpiringDays || 30);
 
+  // Row selection state for action bar
+  const [selectedRows, setSelectedRows] = React.useState<any[]>([]);
   // Column state persistence
   const [gridApi, setGridApi] = React.useState<any>(null);
   const gridStateKey = `ag-grid-state-${title}`;
+
+  // Handle bulk deletion of selected rows
+  const handleBulkDelete = React.useCallback(async () => {
+    console.log('handleBulkDelete called with:', { tableName, selectedRowsCount: selectedRows.length });
+    
+    if (!tableName || selectedRows.length === 0) {
+      console.warn('No table name or selected rows for deletion:', { tableName, selectedRowsCount: selectedRows.length });
+      return;
+    }
+
+    try {
+      // Show confirmation dialog
+      const confirmed = window.confirm(
+        `Are you sure you want to delete ${selectedRows.length} selected record${selectedRows.length > 1 ? 's' : ''}? This action cannot be undone.`
+      );
+
+      if (!confirmed) return;
+
+      // Extract record IDs from selected rows
+      const recordIds = selectedRows.map(row => row.id);
+      
+      // Call the bulk delete function from supabaseClient
+      const result = await bulkDeleteRecords(tableName, recordIds);
+
+      if (result.totalDeleted > 0) {
+        // Clear selection
+        if (gridApi) {
+          gridApi.deselectAll();
+        }
+        setSelectedRows([]);
+        
+        // Notify parent component
+        onRecordsDeleted?.(result.deletedIds);
+        
+        // Show success message
+        console.log(`Successfully deleted ${result.totalDeleted} record(s)`);
+        
+        // Show warning if there were errors
+        if (result.totalErrors > 0) {
+          console.warn(`${result.totalErrors} records failed to delete:`, result.errors);
+        }
+      }
+    } catch (error) {
+      console.error('Bulk deletion failed:', error);
+      alert('An error occurred while deleting records. Please try again.');
+    }
+  }, [tableName, selectedRows, gridApi, onRecordsDeleted]);
 
   // Use feature flag for floating filters
   const { value: showFloatingFilters } = useFeatureFlag("floating_filters");
@@ -339,6 +399,8 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     calculateActionsColumnWidth,
     expiringDaysFilter,
     gridColumnsData,
+    selectedRows.length, // Re-render when selection changes
+    handleBulkDelete, // Re-render when function changes
   ]);
 
   const isActionsColumnClickedRef = React.useRef(false);
@@ -379,6 +441,11 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   };
 
   const handleSelectionChanged = (event: any) => {
+    // Update selected rows for action bar
+    const selectedNodes = event.api.getSelectedNodes();
+    const selectedData = selectedNodes.map((node: any) => node.data);
+    setSelectedRows(selectedData);
+
     if (onSelectionChanged) {
       onSelectionChanged(event);
     }
@@ -767,6 +834,50 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         </div>
       </header>
 
+      {/* Action Bar - Shows when rows are selected */}
+      {isExpanded && selectedRows.length > 0 && (
+        <div
+          className="flex px-4 py-2 border-b border-gray-300 gap-4"
+          style={{ 
+            height: '40px', // Match AG Grid header height
+            backgroundColor: '#C4D8F7' // Match selected row background color
+          }}
+          role="toolbar"
+          aria-label="Row actions"
+          data-testid="action-bar"
+        >
+          <div className="flex items-center gap-4">
+            <button
+              className="w-4 h-4 bg-gray-600 rounded flex items-center justify-center hover:bg-gray-700 transition-colors cursor-pointer"
+              onClick={() => {
+                if (gridApi) {
+                  gridApi.deselectAll();
+                  setSelectedRows([]);
+                }
+              }}
+              data-testid="unselect-all"
+              aria-label="Unselect all rows"
+              title="Unselect all rows"
+            >
+              <Icon icon="square-minus" className="w-3 h-3 text-white" />
+            </button>
+            <span className="text-sm font-medium text-gray-700">
+              {selectedRows.length} selected
+            </span>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <button
+              className="flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900 underline"
+              onClick={handleBulkDelete}
+              data-testid="action-delete"
+            >
+              <Icon icon="trash-can" className="w-3 h-3" />
+              Delete
+            </button>
+          </div>
+        </div>
+      )}
       {/* AG Grid Container */}
       {isExpanded && (
         <div
@@ -793,7 +904,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           onCellClicked={handleCellClicked}
           onCellContextMenu={handleCellContextMenu}
           rowSelection={showCheckboxes ? "multiple" : undefined}
-          headerHeight={40}
+          headerHeight={selectedRows.length > 0 ? 0 : 40} // Hide headers when rows are selected
           rowHeight={42}
           suppressRowClickSelection={true}
           suppressCellFocus={true}

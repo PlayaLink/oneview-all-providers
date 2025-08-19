@@ -1909,3 +1909,87 @@ export async function updateGridExpiringWithin(gridName: string, expiringWithin:
   console.log("Update successful:", data);
   return data;
 } 
+
+// Bulk delete records from a table
+export async function bulkDeleteRecords(tableName: string, recordIds: string[]) {
+  if (!recordIds || recordIds.length === 0) {
+    return { totalDeleted: 0, totalErrors: 0, deletedIds: [], errors: [] };
+  }
+
+  // Map view names to base table names for proper deletion
+  const getBaseTableName = (viewName: string): string => {
+    const viewToTableMap: Record<string, string> = {
+      'state_licenses_with_provider': 'state_licenses',
+      'addresses_with_provider': 'addresses',
+      'birth_info_with_provider': 'birth_info',
+      'contacts_with_provider': 'contacts',
+      'facilities_with_provider': 'facilities',
+      'facility_affiliations_with_provider': 'facility_affiliations',
+      'facility_property_values_with_provider': 'facility_property_values',
+      'facility_requirements_with_provider': 'facility_requirements',
+      'notes_with_provider': 'notes',
+      'requirements_with_provider': 'requirements',
+      'state_licenses_with_provider_info': 'state_licenses',
+      'addresses_with_provider_info': 'addresses',
+      'birth_info_with_provider_info': 'birth_info',
+      'contacts_with_provider_info': 'contacts',
+      'facilities_with_provider_info': 'facilities',
+      'facility_affiliations_with_provider_info': 'facility_affiliations',
+      'facility_property_values_with_provider_info': 'facility_property_values',
+      'facility_requirements_with_provider_info': 'facility_requirements',
+      'notes_with_provider_info': 'notes',
+      'requirements_with_provider_info': 'requirements'
+    };
+    
+    return viewToTableMap[viewName] || tableName;
+  };
+
+  const actualTableName = getBaseTableName(tableName);
+  console.log(`Bulk deleting from table: ${actualTableName} (original: ${tableName})`);
+
+  const batchSize = 100; // Process in batches to avoid timeouts
+  const deletedIds: string[] = [];
+  const errors: Array<{ id: string; error: any }> = [];
+  let totalDeleted = 0;
+  let totalErrors = 0;
+
+  try {
+    // Process records in batches
+    for (let i = 0; i < recordIds.length; i += batchSize) {
+      const batch = recordIds.slice(i, i + batchSize);
+      
+      const { data, error } = await supabase
+        .from(actualTableName)
+        .delete()
+        .in('id', batch)
+        .select('id');
+
+      if (error) {
+        console.error(`Batch deletion error:`, error);
+        // Add all IDs in this batch as errors
+        batch.forEach(id => {
+          errors.push({ id, error });
+          totalErrors++;
+        });
+      } else if (data) {
+        // Successfully deleted records
+        const deletedBatchIds = data.map(record => record.id);
+        deletedIds.push(...deletedBatchIds);
+        totalDeleted += deletedBatchIds.length;
+        console.log(`Successfully deleted batch: ${deletedBatchIds.length} records`);
+      }
+    }
+
+    console.log(`Bulk delete completed: ${totalDeleted} deleted, ${totalErrors} errors`);
+    
+    return {
+      totalDeleted,
+      totalErrors,
+      deletedIds,
+      errors
+    };
+  } catch (error) {
+    console.error('Bulk delete operation failed:', error);
+    throw error;
+  }
+} 
