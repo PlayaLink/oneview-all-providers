@@ -1,5 +1,5 @@
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   fetchGridDefinitions,
   fetchGridColumnsByGridName,
@@ -80,7 +80,9 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
   pinActionsColumn = true,
   isSidePanelOpen = false,
 }) => {
+  const queryClient = useQueryClient();
   const lowerKey = gridKey.toLowerCase();
+  
   // Fetch all grid definitions and find the one for this gridKey
   const { data: gridDefs = [] } = useQuery({
     queryKey: ["grid_definitions"],
@@ -92,6 +94,18 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
         (g: any) => (g.key || g.table_name)?.toLowerCase() === lowerKey,
       )
     : undefined;
+
+  // Function to invalidate grid data cache after deletion
+  const handleRecordsDeleted = React.useCallback((deletedIds: string[]) => {
+    console.log('Records deleted, invalidating cache for:', gridDef?.table_name);
+    
+    // Invalidate the specific grid data query
+    if (gridDef?.table_name) {
+      queryClient.invalidateQueries({
+        queryKey: ["grid_data", gridDef.table_name, providerIdFilter]
+      });
+    }
+  }, [queryClient, gridDef?.table_name, providerIdFilter]);
 
   // Fetch columns for this grid
   const { data: gridColumnsData } = useQuery({
@@ -288,6 +302,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
         gridColumnsData={columns}
         gridName={gridKey}
         tableName={getBaseTableName(gridDef.table_name)}
+        onRecordsDeleted={handleRecordsDeleted}
         defaultExpiringDays={gridDefinition?.expiring_within}
       />
       {isLoading && <div className="text-gray-500 mt-4">Loading...</div>}
