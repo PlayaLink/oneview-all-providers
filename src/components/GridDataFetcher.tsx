@@ -198,6 +198,27 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
     });
   }, [columns]);
 
+  // Helper function to get base table name from view names
+  const getBaseTableName = (tableOrViewName: string): string => {
+    // Map view names to their base table names
+    const viewToTableMap: Record<string, string> = {
+      'state_licenses_with_provider': 'state_licenses',
+      'providers_with_full_name': 'providers',
+      'facility_affiliations_with_provider': 'facility_affiliations',
+      'addresses_with_provider': 'addresses',
+      'birth_info_with_provider': 'birth_info',
+      'facilities_with_properties': 'facilities',
+      'facilities_with_all_data': 'facilities',
+      'facilities_with_property_values': 'facilities',
+      'facilities_with_property_values_json': 'facilities',
+      'contacts_with_facility': 'contacts',
+      'requirements_with_data': 'requirements'
+    };
+    
+    // If it's a view, return the base table name, otherwise return as-is
+    return viewToTableMap[tableOrViewName] || tableOrViewName;
+  };
+
   // Check for field mismatches
   if (mappedData.length > 0 && agGridColumns.length > 0) {
     const columnFields = agGridColumns.map((col) => col.field);
@@ -266,7 +287,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
         isSidePanelOpen={isSidePanelOpen}
         gridColumnsData={columns}
         gridName={gridKey}
-        tableName={gridDef.table_name}
+        tableName={getBaseTableName(gridDef.table_name)}
         defaultExpiringDays={gridDefinition?.expiring_within}
       />
       {isLoading && <div className="text-gray-500 mt-4">Loading...</div>}
