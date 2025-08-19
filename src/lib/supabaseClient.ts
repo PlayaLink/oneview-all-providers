@@ -1908,4 +1908,49 @@ export async function updateGridExpiringWithin(gridName: string, expiringWithin:
   
   console.log("Update successful:", data);
   return data;
+}
+
+// Bulk delete records from a table
+export async function bulkDeleteRecords(tableName: string, recordIds: string[]) {
+  if (!tableName || recordIds.length === 0) {
+    throw new Error('Table name and record IDs are required for bulk deletion');
+  }
+
+  console.log(`Bulk deleting ${recordIds.length} records from table: ${tableName}`);
+
+  // Delete records in batches to avoid overwhelming the database
+  const batchSize = 100;
+  const deletedIds: string[] = [];
+  const errors: Array<{ id: string; error: any }> = [];
+
+  for (let i = 0; i < recordIds.length; i += batchSize) {
+    const batch = recordIds.slice(i, i + batchSize);
+    
+    try {
+      const { error } = await supabase
+        .from(tableName)
+        .delete()
+        .in('id', batch);
+      
+      if (error) {
+        console.error(`Batch deletion error:`, error);
+        // Add all IDs in this batch to errors
+        batch.forEach(id => errors.push({ id, error }));
+      } else {
+        deletedIds.push(...batch);
+      }
+    } catch (error) {
+      console.error(`Batch deletion exception:`, error);
+      // Add all IDs in this batch to errors
+      batch.forEach(id => errors.push({ id, error }));
+    }
+  }
+
+  return {
+    deletedIds,
+    errors,
+    totalRequested: recordIds.length,
+    totalDeleted: deletedIds.length,
+    totalErrors: errors.length
+  };
 } 

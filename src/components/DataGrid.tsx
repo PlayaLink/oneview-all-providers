@@ -4,7 +4,7 @@ import { ColDef } from "ag-grid-enterprise";
 import Icon from "@/components/ui/Icon";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import { useGridActions } from "@/hooks/useGridActions";
-import { updateGridColumnWidths, updateGridExpiringWithin, supabase } from "@/lib/supabaseClient";
+import { updateGridColumnWidths, updateGridExpiringWithin, bulkDeleteRecords } from "@/lib/supabaseClient";
 import ContextMenu from "./ContextMenu";
 import ActionsColumn from "./ActionsColumn";
 import ExpiringCellRenderer from "./ExpiringCellRenderer";
@@ -190,21 +190,13 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
       if (!confirmed) return;
 
-      // Delete each record individually
-      const deletedIds: string[] = [];
-      for (const row of selectedRows) {
-        try {
-          await supabase
-            .from(tableName)
-            .delete()
-            .eq('id', row.id);
-          deletedIds.push(row.id);
-        } catch (error) {
-          console.error(`Failed to delete record ${row.id}:`, error);
-        }
-      }
+      // Extract record IDs from selected rows
+      const recordIds = selectedRows.map(row => row.id);
+      
+      // Call the bulk delete function from supabaseClient
+      const result = await bulkDeleteRecords(tableName, recordIds);
 
-      if (deletedIds.length > 0) {
+      if (result.totalDeleted > 0) {
         // Clear selection
         if (gridApi) {
           gridApi.deselectAll();
@@ -212,10 +204,15 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         setSelectedRows([]);
         
         // Notify parent component
-        onRecordsDeleted?.(deletedIds);
+        onRecordsDeleted?.(result.deletedIds);
         
         // Show success message
-        console.log(`Successfully deleted ${deletedIds.length} record(s)`);
+        console.log(`Successfully deleted ${result.totalDeleted} record(s)`);
+        
+        // Show warning if there were errors
+        if (result.totalErrors > 0) {
+          console.warn(`${result.totalErrors} records failed to delete:`, result.errors);
+        }
       }
     } catch (error) {
       console.error('Bulk deletion failed:', error);
