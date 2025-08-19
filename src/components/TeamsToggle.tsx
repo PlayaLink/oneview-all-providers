@@ -108,7 +108,7 @@ const TeamsToggle: React.FC = () => {
             data-testid="teams-header"
           >
             <div
-              className="flex-1 text-[#6C757D] text-xs font-medium tracking-[0.429px]"
+              className="flex-1 text-gray-500 text-xs font-medium tracking-[0.429px]"
               style={{
                 fontFamily:
                   "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -134,13 +134,13 @@ const TeamsToggle: React.FC = () => {
                     "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
                 }}
               >
-                <span className="text-[#545454]">{team.name} </span>
-                <span className="text-[#6C757D]">({team.location})</span>
+                <span className="text-gray-600">{team.name} </span>
+                <span className="text-gray-500">({team.location})</span>
               </div>
               <div className="flex items-center justify-center">
                 <FontAwesomeIcon
                   icon={faAsterisk}
-                  className="w-4 h-4 text-[#F48100]"
+                  className="w-4 h-4 text-orange-500"
                   aria-label="Required indicator"
                 />
               </div>
@@ -149,7 +149,7 @@ const TeamsToggle: React.FC = () => {
 
           {/* Separator */}
           <div className="flex items-center justify-center py-1">
-            <div className="w-full h-px bg-[#EAECEF]"></div>
+            <div className="w-full h-px bg-gray-200"></div>
           </div>
 
           {/* Action Items */}
@@ -161,12 +161,12 @@ const TeamsToggle: React.FC = () => {
             <div className="flex items-center justify-center w-5 h-4">
               <FontAwesomeIcon
                 icon={faCloudArrowUp}
-                className="w-4 h-4 text-[#F48100]"
+                className="w-4 h-4 text-orange-500"
               />
             </div>
             <div className="flex items-center gap-2 flex-1">
               <div
-                className="text-[#545454] text-xs font-medium tracking-[0.429px]"
+                className="text-gray-600 text-xs font-medium tracking-[0.429px]"
                 style={{
                   fontFamily:
                     "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -185,12 +185,12 @@ const TeamsToggle: React.FC = () => {
             <div className="flex items-center justify-center w-5 h-4">
               <FontAwesomeIcon
                 icon={faCircleInfo}
-                className="w-4 h-4 text-[#79AC48]"
+                className="w-4 h-4 text-green-500"
               />
             </div>
             <div className="flex items-center gap-2 flex-1">
               <div
-                className="text-[#545454] text-xs font-medium tracking-[0.429px]"
+                className="text-gray-600 text-xs font-medium tracking-[0.429px]"
                 style={{
                   fontFamily:
                     "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -209,12 +209,12 @@ const TeamsToggle: React.FC = () => {
             <div className="flex items-center justify-center w-5 h-4">
               <FontAwesomeIcon
                 icon={faScrewdriverWrench}
-                className="w-4 h-4 text-[#79AC48]"
+                className="w-4 h-4 text-green-500"
               />
             </div>
             <div className="flex items-center gap-2 flex-1">
               <div
-                className="text-[#545454] text-xs font-medium tracking-[0.429px]"
+                className="text-gray-600 text-xs font-medium tracking-[0.429px]"
                 style={{
                   fontFamily:
                     "Poppins, -apple-system, Roboto, Helvetica, sans-serif",

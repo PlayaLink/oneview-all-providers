@@ -184,7 +184,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
               key={item.id}
               className="flex justify-center items-center py-1"
             >
-              <div className="w-full h-px bg-[#EAECEF]" />
+              <div className="w-full h-px bg-gray-200" />
             </div>
           );
         }
@@ -212,7 +212,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
                   icon={IconComponent}
                   className={cn(
                     "w-4 h-4",
-                    isEnabled ? "text-[#545454]" : "text-[#BABABA]",
+                    isEnabled ? "text-gray-600" : "text-gray-400",
                   )}
                   aria-hidden="true"
                 />
@@ -223,7 +223,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
               <span
                 className={cn(
                   "text-xs font-medium tracking-[0.429px]",
-                  isEnabled ? "text-[#545454]" : "text-[#BABABA]",
+                  isEnabled ? "text-gray-600" : "text-gray-400",
                 )}
                 style={{
                   fontFamily:
@@ -238,7 +238,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
               <span
                 className={cn(
                   "text-xs font-medium tracking-[0.429px] text-right flex-1",
-                  isEnabled ? "text-[#545454]" : "text-[#BABABA]",
+                  isEnabled ? "text-gray-600" : "text-gray-400",
                 )}
                 style={{
                   fontFamily:

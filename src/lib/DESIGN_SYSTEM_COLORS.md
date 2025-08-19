@@ -151,18 +151,18 @@ The color system is designed to meet WCAG AA contrast requirements:
 
 ```tsx
 // Body Text
-<p className="text-text-body">Standard body text</p>
+<p className="text-body">Standard body text</p>
 
 // Secondary Text
-<p className="text-text-secondary">Less prominent information</p>
+<p className="text-secondary">Less prominent information</p>
 
 // Hyperlinks
-<a href="#" className="text-text-hyperlink hover:text-text-link-hover">
+<a href="#" className="text-hyperlink hover:text-link-hover">
   Click here
 </a>
 
 // Disabled Text
-<span className="text-text-disabled">Unavailable option</span>
+<span className="text-disabled">Unavailable option</span>
 ```
 
 ### Backgrounds

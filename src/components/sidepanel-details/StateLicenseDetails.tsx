@@ -176,7 +176,7 @@ const StateLicenseDetails = ({ formValues, handleChange, provider }) => (
     <div className="p-6 rounded-2xl border border-gray-200 bg-gray-50">
       {/* Header */}
       <div className="mb-4">
-        <h2 className="text-xs font-semibold text-[#008BC9] uppercase tracking-wide">
+                    <h2 className="text-xs font-semibold text-blue-600 uppercase tracking-wide">
           Search Criteria
         </h2>
       </div>

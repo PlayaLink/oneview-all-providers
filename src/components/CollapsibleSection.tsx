@@ -40,7 +40,7 @@ const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
         aria-expanded={isExpanded}
         aria-controls={contentId}
         aria-label={`Toggle ${title} section`}
-        className="flex py-2 px-4 items-center gap-3 self-stretch rounded bg-[#CFD8DC] cursor-pointer hover:bg-[#B0BEC5] transition-colors focus:outline-none"
+        className="flex py-2 px-4 items-center gap-3 self-stretch rounded bg-gray-200 cursor-pointer hover:bg-gray-300 transition-colors focus:outline-none"
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
@@ -52,7 +52,7 @@ const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
         <div className="flex items-center gap-[10px] flex-1">
           <h3 
             id={`${sectionId}-header`}
-            className="text-[#545454] text-xs font-bold leading-normal tracking-[0.429px] font-['Poppins',sans-serif]"
+            className="text-gray-600 text-xs font-bold leading-normal tracking-[0.429px] font-['Poppins',sans-serif]"
           >
             {toSentenceCase(title)}
           </h3>
@@ -64,7 +64,7 @@ const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
           <div className="flex h-2 pb-[1px] justify-center items-center">
             <FontAwesomeIcon
               icon={isExpanded ? faAngleUp : faAngleDown}
-              className="text-[#545454] text-xl"
+              className="text-gray-600 text-xl"
               aria-label={isExpanded ? "Collapse section" : "Expand section"}
             />
           </div>

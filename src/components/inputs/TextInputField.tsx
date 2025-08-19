@@ -148,7 +148,7 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
           placeholder={showPlaceholder ? placeholder : ""}
           disabled={disabled}
           className={cn(
-            "w-full px-2 py-[10px] pr-8 text-xs font-poppins text-[#4C5564] border border-gray-300 rounded bg-white outline-none transition-colors",
+            "w-full px-2 py-[10px] pr-8 text-xs font-poppins text-gray-600 border border-gray-300 rounded bg-white outline-none transition-colors",
             "focus:ring-2 focus:ring-blue-200",
             disabled && "opacity-50 bg-gray-100",
             className
@@ -167,17 +167,17 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
               )}
               tabIndex={-1}
             >
-              <FontAwesomeIcon icon={faCopy} className="text-[14px] text-[#3E88D5]" />
+              <FontAwesomeIcon icon={faCopy} className="text-[14px] text-blue-600" />
             </button>
             {/* Tooltip */}
             {showCopied && isHovered && (
               <div className="absolute -top-[35px] left-1/2 transform -translate-x-1/2 z-50">
-                <div className="flex py-[6.667px] px-[13.333px] flex-col justify-end items-center gap-[13.333px] rounded-[3.333px] border border-[#E6E6E6] bg-white shadow-md">
-                  <div className="text-[#545454] text-center text-[10px] font-normal leading-normal tracking-[0.357px] font-['Poppins',sans-serif]">
+                <div className="flex py-[6.667px] px-[13.333px] flex-col justify-end items-center gap-[13.333px] rounded-[3.333px] border border-gray-200 bg-white shadow-md">
+                  <div className="text-gray-600 text-center text-[10px] font-normal leading-normal tracking-[0.357px] font-['Poppins',sans-serif]">
                     Copied
                   </div>
                   {/* Arrow pointing down */}
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[3.75px] border-r-[3.75px] border-t-[8.333px] border-l-transparent border-r-transparent border-t-[#E6E6E6]" />
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[3.75px] border-r-[3.75px] border-t-[8.333px] border-l-transparent border-r-transparent border-t-gray-200" />
                   <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[3.75px] border-r-[3.75px] border-t-[7.5px] border-l-transparent border-r-transparent border-t-white translate-y-[-1px]" />
                 </div>
               </div>

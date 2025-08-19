@@ -19,21 +19,21 @@ interface NavItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 const NAVITEM_VARIANTS = {
   global: {
     base: "font-bold rounded transition-colors select-none px-4 py-2 text-sm w-full flex items-center gap-2",
-    active: "bg-white text-[#3BA8D1]",
-    inactive: "text-white hover:bg-[#5CB9DA]",
+    active: "bg-white text-blue-500",
+    inactive: "text-white hover:bg-blue-400",
     alignment: "justify-start",
   },
   horizontal: {
     base: "transition-colors select-none px-4 py-2.5 text-xs tracking-[0.429px] w-full flex items-center gap-2 rounded-t border border-gray-300 border-transparent border-b-0 font-normal",
     active:
       "bg-white border-gray-300 border-t border-r border-l",
-    inactive: "text-[#1565c0] font-normal hover:bg-[#E0F2FB]",
+    inactive: "text-blue-700 font-normal hover:bg-blue-50",
     alignment: "justify-center",
   },
   sidenav: {
     base: "font-bold rounded transition-colors select-none px-4 py-2 text-sm w-full flex items-center gap-2",
-    active: "bg-[#008BC9] text-white",
-    inactive: "text-[#545454] hover:bg-gray-50",
+    active: "bg-blue-600 text-white",
+    inactive: "text-gray-600 hover:bg-gray-50",
     alignment: "justify-start",
   },
 };

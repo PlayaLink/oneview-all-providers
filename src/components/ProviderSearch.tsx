@@ -190,12 +190,12 @@ const ProviderSearch: React.FC<ProviderSearchProps> = ({
                 {/* Left side - Provider name, location, specialty, and email */}
                 <div className="flex-1 min-w-0">
                   {/* First line: Provider name and location/affiliation */}
-                  <div className="font-semibold text-[#545454] text-sm">
+                  <div className="font-semibold text-gray-600 text-sm">
                     {prov.provider_name} {prov.title ? `- ${extractTitleAcronym(prov.title)}` : ""}
                   </div>
                   {/* Second line: Specialty/Role in bold */}
                   {prov.primary_specialty && (
-                    <div className="font-bold text-[#545454] text-sm mt-1">
+                    <div className="font-bold text-gray-600 text-sm mt-1">
                       {prov.primary_specialty}
                     </div>
                   )}

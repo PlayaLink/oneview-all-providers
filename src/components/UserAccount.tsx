@@ -22,7 +22,7 @@ const UserAccount: React.FC<UserAccountProps> = ({ user, onLogout }) => {
       <PopoverTrigger asChild>
         <button className="flex w-9 h-9 min-w-9 min-h-9 justify-center items-center relative">
           <div
-            className="flex w-9 h-9 min-w-9 min-h-9 px-1.5 py-1.5 justify-center items-center flex-shrink-0 rounded-full bg-[#00A7E1] transition-colors hover:opacity-80"
+            className="flex w-9 h-9 min-w-9 min-h-9 px-1.5 py-1.5 justify-center items-center flex-shrink-0 rounded-full bg-blue-500 transition-colors hover:opacity-80"
             aria-label="User account"
             data-testid="user-avatar"
           >
@@ -51,7 +51,7 @@ const UserAccount: React.FC<UserAccountProps> = ({ user, onLogout }) => {
             data-testid="user-account-header"
           >
             <div
-              className="flex-1 text-[#BABABA] text-xs font-medium tracking-[0.429px]"
+              className="flex-1 text-gray-400 text-xs font-medium tracking-[0.429px]"
               style={{
                 fontFamily:
                   "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -65,13 +65,13 @@ const UserAccount: React.FC<UserAccountProps> = ({ user, onLogout }) => {
           <div className="flex items-center justify-end px-2 pb-2 pt-1 gap-2">
             {/* Profile Icon */}
             <div style={{ width: "36px", minWidth: "36px", height: "36px"}} className="flex justify-center items-center rounded-full border border-gray-300 overflow-hidden">
-              <Icon icon="user" className="w-8 h-8 text-[#AEAEAE]" />
+              <Icon icon="user" className="w-8 h-8 text-gray-400" />
             </div>
 
             {/* User Info */}
             <div className="flex flex-col justify-center items-start flex-1">
               <div
-                className="self-stretch text-[#545454] text-xs font-medium tracking-[0.429px]"
+                className="self-stretch text-gray-600 text-xs font-medium tracking-[0.429px]"
                 style={{
                   fontFamily:
                     "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -80,7 +80,7 @@ const UserAccount: React.FC<UserAccountProps> = ({ user, onLogout }) => {
                 {user?.user_metadata?.full_name || "John Smith"}
               </div>
               <div
-                className="self-stretch text-[#BABABA] text-xs font-medium tracking-[0.429px] truncate"
+                className="self-stretch text-gray-400 text-xs font-medium tracking-[0.429px] truncate"
                 style={{
                   fontFamily:
                     "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -93,7 +93,7 @@ const UserAccount: React.FC<UserAccountProps> = ({ user, onLogout }) => {
 
           {/* Separator */}
           <div className="flex items-center justify-center py-1">
-            <div className="w-[251px] h-px bg-[#EAECEF]"></div>
+            <div className="w-[251px] h-px bg-gray-200"></div>
           </div>
 
           {/* Logout Button */}
@@ -105,11 +105,11 @@ const UserAccount: React.FC<UserAccountProps> = ({ user, onLogout }) => {
             <div className="flex h-4 justify-center items-center">
               <FontAwesomeIcon
                 icon={faSignOut}
-                className="w-4 h-4 text-[#DB0D00]"
+                className="w-4 h-4 text-red-500"
               />
             </div>
             <div
-              className="flex-1 text-[#DB0D00] text-xs font-medium tracking-[0.429px] underline"
+              className="flex-1 text-red-500 text-xs font-medium tracking-[0.429px] underline"
               style={{
                 fontFamily:
                   "Poppins, -apple-system, Roboto, Helvetica, sans-serif",

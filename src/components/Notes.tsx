@@ -217,7 +217,7 @@ const Notes: React.FC<NotesProps> = ({ recordId, recordType, user, className }) 
                         Cancel
                       </button>
                       <button
-                        className="bg-[#79AC48] hover:bg-[#6B9A3F] text-white px-4 py-2 rounded text-base font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-base font-bold disabled:opacity-50 disabled:cursor-not-allowed"
                         onClick={handleSaveEdit}
                         disabled={!editValue.trim()}
                         type="button"
@@ -267,7 +267,7 @@ const Notes: React.FC<NotesProps> = ({ recordId, recordType, user, className }) 
                     Cancel
                   </button>
                   <button
-                    className="bg-[#79AC48] hover:bg-[#6B9A3F] text-white px-6 py-2 rounded text-base font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded text-base font-bold disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={handleAddNote}
                     disabled={!input.trim()}
                     type="button"

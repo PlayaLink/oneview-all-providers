@@ -61,27 +61,27 @@ export const MultiSelectDropdown = React.forwardRef<
         {...props}
       >
         {/* Search Box */}
-        <div className="flex min-h-[32px] items-center border-t border-r border-l border-[#008BC9] bg-white rounded-t">
+        <div className="flex min-h-[32px] items-center border-t border-r border-l border-blue-600 bg-white rounded-t">
           <div className="flex flex-1 items-center px-2 py-1.5">
             <input
               type="text"
               value={searchValue}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder={searchPlaceholder}
-              className="flex-1 text-xs font-poppins text-[#4C5564] placeholder:text-[#BABABA] tracking-[0.429px] border-none outline-none"
+              className="flex-1 text-xs font-poppins text-gray-600 placeholder:text-gray-400 tracking-[0.429px] border-none outline-none"
               autoFocus
             />
           </div>
           <div className="flex items-center justify-center px-2 py-1">
-            <ChevronDown className="h-4 w-4 text-[#545454]" />
+            <ChevronDown className="h-4 w-4 text-gray-600" />
           </div>
         </div>
         {/* Separator */}
-        <div className="h-px bg-[#E6E6E6]" />
+        <div className="h-px bg-gray-200" />
         {/* Options List */}
-        <div className="flex flex-col border-r border-b border-l border-[#008BC9] bg-white rounded-b-lg py-1 max-h-[200px] overflow-y-auto">
+        <div className="flex flex-col border-r border-b border-l border-blue-600 bg-white rounded-b-lg py-1 max-h-[200px] overflow-y-auto">
           {filteredOptions.length === 0 && !showCreateOption ? (
-            <div className="px-2 py-2 text-xs text-[#BABABA] font-poppins">
+            <div className="px-2 py-2 text-xs text-gray-400 font-poppins">
               {searchValue
                 ? "No matching options found"
                 : "No options available"}
@@ -112,8 +112,8 @@ export const MultiSelectDropdown = React.forwardRef<
                         className={cn(
                           "relative h-[18px] w-[18px] rounded-sm border flex items-center justify-center transition-colors",
                           isSelected
-                            ? "bg-[#545454] border-[#545454]"
-                            : "bg-white border-[#BABABA]",
+                            ? "bg-gray-600 border-gray-600"
+                            : "bg-white border-gray-400",
                           isDisabled && "opacity-50",
                         )}
                       >
@@ -129,7 +129,7 @@ export const MultiSelectDropdown = React.forwardRef<
                     <span
                       className={cn(
                         "flex-1 text-xs font-medium font-poppins tracking-[0.429px]",
-                        isDisabled ? "text-[#BABABA]" : "text-[#4C5564]",
+                        isDisabled ? "text-gray-400" : "text-gray-600",
                       )}
                     >
                       {option.label}
@@ -146,7 +146,7 @@ export const MultiSelectDropdown = React.forwardRef<
                     onSearchChange("");
                   }}
                 >
-                  <span className="flex-1 text-xs font-normal text-[#4C5564] font-poppins tracking-[0.429px]">
+                  <span className="flex-1 text-xs font-normal text-gray-600 font-poppins tracking-[0.429px]">
                     Create tag "{searchValue}"
                   </span>
                 </div>
