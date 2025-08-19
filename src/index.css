@@ -88,6 +88,7 @@ body {
 
 @layer base {
   :root {
+    /* Legacy semantic colors (maintained for backward compatibility) */
     --background: 0 0% 100%;
     --foreground: #545454;
 
@@ -133,6 +134,130 @@ body {
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* OneView Design System Color Palette */
+    /* Brand Blue Scale */
+    --blue-50: #EAF6FA;
+    --blue-100: #D6EDF5;
+    --blue-200: #ACDBEC;
+    --blue-300: #83C9E2;
+    --blue-400: #5AB7D8;
+    --blue-500: #3BA8D1;
+    --blue-600: #2784A5;
+    --blue-700: #1F6984;
+    --blue-800: #174F63;
+    --blue-900: #113B4A;
+
+    /* Neutral Gray Scale */
+    --gray-00: #FFFFFF;
+    --gray-50: #F9FAFC;
+    --gray-100: #F3F4F6;
+    --gray-200: #E6E7EB;
+    --gray-300: #D2D5DC;
+    --gray-400: #9CA2AE;
+    --gray-500: #6B7380;
+    --gray-600: #4C5564;
+    --gray-700: #384152;
+    --gray-800: #202938;
+    --gray-900: #111828;
+
+    /* Semantic Green Scale */
+    --green-50: #F2F8ED;
+    --green-100: #E6F1DB;
+    --green-200: #CCE3B7;
+    --green-300: #B3D593;
+    --green-400: #99C76F;
+    --green-500: #79AC48;
+    --green-600: #6B9A3F;
+    --green-700: #5D8836;
+    --green-800: #4F762D;
+    --green-900: #416424;
+
+    /* Semantic Orange Scale */
+    --orange-50: #FEF6E7;
+    --orange-100: #FDEDCF;
+    --orange-200: #FBDB9F;
+    --orange-300: #F9C96F;
+    --orange-400: #F7B73F;
+    --orange-500: #F48100;
+    --orange-600: #E67300;
+    --orange-700: #D86500;
+    --orange-800: #CA5700;
+    --orange-900: #BC4900;
+
+    /* Semantic Red Scale */
+    --red-50: #FFEBE7;
+    --red-100: #FFD7CF;
+    --red-200: #FFAF9F;
+    --red-300: #FF876F;
+    --red-400: #FF5F3F;
+    --red-500: #DB0D00;
+    --red-600: #C50C00;
+    --red-700: #AF0B00;
+    --red-800: #990A00;
+    --red-900: #830900;
+
+    /* Semantic Color Mappings */
+    --text-body: var(--gray-800);
+    --text-body-reversed: var(--gray-00);
+    --text-secondary: var(--gray-600);
+    --text-secondary-reversed: var(--gray-300);
+    --text-disabled: var(--gray-400);
+    --text-hyperlink: var(--blue-600);
+    --text-link-hover: var(--blue-700);
+    --text-link-reversed: var(--blue-100);
+    --text-reversed-link-hover: var(--blue-200);
+    --text-notice: var(--blue-800);
+    --text-warning: var(--orange-800);
+    --text-alert: var(--red-800);
+
+    --icon-default: var(--gray-800);
+    --icon-hover: var(--blue-700);
+    --icon-selected: var(--blue-600);
+    --icon-disabled: var(--gray-400);
+    --icon-reversed: var(--gray-00);
+    --icon-reversed-hover: var(--blue-200);
+    --icon-reversed-selected: var(--blue-300);
+    --icon-active-reversed: var(--blue-100);
+    --icon-accent-reversed: var(--blue-100);
+
+    --button-primary: var(--blue-600);
+    --button-primary-hover: var(--blue-700);
+    --button-secondary: var(--gray-100);
+    --button-secondary-hover: var(--blue-100);
+    --button-secondary-reversed: var(--blue-100);
+    --button-secondary-reversed-hover: var(--blue-100);
+    --button-add: var(--green-600);
+    --button-add-hover: var(--green-700);
+    --button-disabled: var(--gray-200);
+    --button-reversed: var(--gray-00);
+    --button-warning: var(--orange-50);
+    --button-alert: var(--red-100);
+    --button-light: var(--gray-50);
+    --button-light-blue: var(--blue-50);
+
+    --background-default: var(--gray-00);
+    --background-light: var(--gray-50);
+    --background-light-blue: var(--blue-50);
+    --background-med: var(--gray-100);
+    --background-med-blue: var(--blue-100);
+    --background-dark: var(--gray-700);
+    --background-darkest: var(--gray-900);
+    --background-notice: var(--blue-700);
+    --background-success: var(--green-700);
+    --background-error: var(--red-700);
+    --background-div-item-hover: var(--blue-50);
+    --background-div-item-selected: var(--blue-100);
+
+    --stroke-dark: var(--gray-300);
+    --stroke-med: var(--gray-200);
+    --stroke-focused: var(--blue-400);
+    --stroke-error: var(--red-500);
+
+    --status-success: var(--green-500);
+    --status-warning: var(--orange-500);
+    --status-error: var(--red-500);
+    --status-info: var(--blue-500);
   }
 
   .dark {
