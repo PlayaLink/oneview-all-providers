@@ -819,18 +819,6 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               <Icon icon="trash-can" className="w-3 h-3" />
               Delete
             </button>
-            
-            <button
-              className="flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900 underline"
-              onClick={() => {
-                // Handle more actions
-                console.log('More actions for selected rows:', selectedRows);
-              }}
-              data-testid="action-more"
-            >
-              More
-              <Icon icon="chevron-down" className="w-3 h-3" />
-            </button>
           </div>
         </div>
       )}
