@@ -266,6 +266,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
         isSidePanelOpen={isSidePanelOpen}
         gridColumnsData={columns}
         gridName={gridKey}
+        tableName={gridDef.table_name}
         defaultExpiringDays={gridDefinition?.expiring_within}
       />
       {isLoading && <div className="text-gray-500 mt-4">Loading...</div>}

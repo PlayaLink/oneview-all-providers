@@ -72,6 +72,7 @@ import {
   faUserPlus,
   faSearch,
   faUpRightAndDownLeftFromCenter,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Unified icon mapping that can contain either FontAwesome icons or SVG file paths
@@ -155,6 +156,11 @@ const iconMap: Record<string, IconDefinition | string> = {
   "search": faSearch,
   "up-right-and-down-left-from-center": faUpRightAndDownLeftFromCenter,
   "expand": faUpRightAndDownLeftFromCenter, // Alias for expand
+  
+  // Delete and trash icons
+  "trash": faTrash,
+  "trash-can": faTrash, // Alias for trash
+  "delete": faTrash, // Alias for trash
   
   // Toggle icons
   "toggle-on": faToggleOn,
