@@ -114,7 +114,7 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
                   location.pathname === "/team" ? "page" : undefined
                 }
                 active={location.pathname === "/team"}
-                onClick={() => navigate("/team")}
+                // onClick={() => navigate("/team")}
                 data-testid="nav-item-team"
               >
                 Team
