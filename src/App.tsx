@@ -55,8 +55,8 @@ const AuthWrapper = ({ user, loading }: { user: any, loading: boolean }) => {
     <Routes>
       {/* Login route always accessible */}
       <Route path="/login" element={<AuthPage />} />
-      {/* Redirect home to /team */}
-      <Route path="/" element={<Navigate to="/team" replace />} />
+      {/* Redirect home to /all-records */}
+      <Route path="/" element={<Navigate to="/all-records" replace />} />
       {/* Main app layout and routes */}
       <Route element={<AppLayout user={effectiveUser} />}>
         <Route path=":provider_id" element={<SingleProvider />} />
