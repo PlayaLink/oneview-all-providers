@@ -12,6 +12,19 @@ interface UserAccountProps {
 const UserAccount: React.FC<UserAccountProps> = ({ user, onLogout }) => {
   const [userAccountOpen, setUserAccountOpen] = useState(false);
 
+  // Function to generate initials from user's full name
+  const generateInitials = (fullName: string | undefined): string => {
+    if (!fullName) return "U";
+    
+    const nameParts = fullName.trim().split(/\s+/);
+    if (nameParts.length === 1) {
+      return nameParts[0].charAt(0).toUpperCase();
+    } else if (nameParts.length >= 2) {
+      return (nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0)).toUpperCase();
+    }
+    return "U";
+  };
+
   const handleLogout = () => {
     onLogout();
     setUserAccountOpen(false);
@@ -33,7 +46,7 @@ const UserAccount: React.FC<UserAccountProps> = ({ user, onLogout }) => {
                   "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
               }}
             >
-              JS
+              {generateInitials(user?.user_metadata?.full_name)}
             </div>
           </div>
         </button>
