@@ -101,8 +101,7 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
         aria-label="Primary navigation"
       >
         <div className="flex items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-5 flex-1 self-stretch">
-            <TeamsToggle />
+          <div className="flex justify-between gap-5 flex-1 self-stretch">
             <div
               className="flex items-center gap-2 self-stretch"
               role="menubar"
@@ -147,6 +146,7 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
                 Tasks
               </NavItem>
             </div>
+            <TeamsToggle />
           </div>
         </div>
       </nav>
