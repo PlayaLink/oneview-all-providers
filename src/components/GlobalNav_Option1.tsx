@@ -84,25 +84,8 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
         <div className="flex flex-1 px-4 py-3">
           <div className="flex flex-1 justify-between items-center">
             {/* Left side - Logo */}
+            <div className="flex items-center gap-2">
             <ModioLogo />
-             {/* Right side nav items */}
-             <div className="flex items-center gap-5">
-              <HelpCenter />
-              <UserAccount user={user} onLogout={handleLogout} />
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Blue Navigation Bar */}
-      <nav
-        className="bg-[#3BA8D1] text-white"
-        role="navigation"
-        aria-label="Primary navigation"
-      >
-        <div className="flex items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-5 flex-1 self-stretch">
-            <TeamsToggle />
             <div
               className="flex items-center gap-2 self-stretch"
               role="menubar"
@@ -115,7 +98,6 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
                   location.pathname === "/team" ? "page" : undefined
                 }
                 active={location.pathname === "/team"}
-                onClick={() => navigate("/team")}
                 data-testid="nav-item-team"
               >
                 Team
@@ -147,6 +129,25 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
                 Tasks
               </NavItem>
             </div>
+            </div>
+            {/* Right side nav items */}
+            <div className="flex items-center gap-5">
+              <HelpCenter />
+              <UserAccount user={user} onLogout={handleLogout} />
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Blue Navigation Bar */}
+      <nav
+        className="bg-[#3BA8D1] text-white"
+        role="navigation"
+        aria-label="Primary navigation"
+      >
+        <div className="flex items-center justify-between px-4 py-3">
+          <div className="flex items-center gap-5 flex-1 self-stretch">
+            <TeamsToggle />
           </div>
         </div>
       </nav>
