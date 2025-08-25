@@ -257,6 +257,9 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   // Prepare column definitions
   const columnDefs = React.useMemo(() => {
     const hasSort = columns.some((col) => col.sort);
+    
+    // Debug: Log all columns being processed
+    console.log('Processing columns for DataGrid:', columns.map(col => ({ field: col.field, headerName: col.headerName })));
 
     return [
       // Checkbox column
@@ -298,8 +301,14 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           baseCol.sort = "asc";
         }
 
-        // Add custom cell renderer for expires_within column
+        // Add custom cell renderer only for expires_within column (not for expiration_date)
         if (col.field === "expires_within") {
+          console.log('Setting up expires_within column renderer for:', col);
+          // For expires_within column, we don't need the raw value since we calculate it
+          baseCol.valueGetter = (params: any) => {
+            // Return the row data so the ExpiringCellRenderer can calculate the days
+            return params.data;
+          };
           baseCol.cellRenderer = (params: any) => (
             <ExpiringCellRenderer
               value={params.value}
@@ -623,7 +632,6 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       return { expiring: 0, expired: 0, total: 0 };
     }
 
-    const now = new Date();
     let expiring = 0;
     let expired = 0;
 
@@ -632,19 +640,25 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       const expirationDate = row.expiration_date || row.expires_within || row.end_date || row.expiry_date;
       
       if (expirationDate) {
-        const expDate = new Date(expirationDate);
-        
-        // Check if expired (past date)
-        if (expDate < now) {
-          expired++;
-        } else {
-          // Check if expiring within selected days
-          const daysFromNow = new Date();
-          daysFromNow.setDate(daysFromNow.getDate() + expiringDaysFilter);
+        try {
+          const expDate = new Date(expirationDate);
           
-          if (expDate <= daysFromNow) {
-            expiring++;
+          // Check if the date is valid
+          if (!isNaN(expDate.getTime())) {
+            const now = new Date();
+            const timeDiff = expDate.getTime() - now.getTime();
+            const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            
+            // Check if expired (past date)
+            if (daysDiff < 0) {
+              expired++;
+            } else if (daysDiff <= expiringDaysFilter) {
+              // Check if expiring within selected days
+              expiring++;
+            }
           }
+        } catch (error) {
+          console.warn("Error parsing expiration date:", expirationDate, error);
         }
       }
     });
