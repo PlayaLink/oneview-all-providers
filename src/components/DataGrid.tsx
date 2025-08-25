@@ -859,7 +859,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               aria-label="Unselect all rows"
               title="Unselect all rows"
             >
-              <Icon icon="square-minus" className="w-3 h-3 text-white" />
+              <div className="w-2 h-0.5 bg-white"></div>
             </button>
             <span className="text-sm font-medium text-gray-700">
               {selectedRows.length} selected
