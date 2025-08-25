@@ -166,6 +166,8 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
   // Row selection state for action bar
   const [selectedRows, setSelectedRows] = React.useState<any[]>([]);
+  // Expiration filter state
+  const [expirationFilter, setExpirationFilter] = React.useState<string | null>(null);
   // Column state persistence
   const [gridApi, setGridApi] = React.useState<any>(null);
   const gridStateKey = `ag-grid-state-${title}`;
@@ -220,6 +222,53 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   // Use feature flag for floating filters
   const { value: showFloatingFilters } = useFeatureFlag("floating_filters");
 
+  // External filter function for expiration dates
+  const isExternalFilterPresent = React.useCallback(() => {
+    console.log('isExternalFilterPresent called, expirationFilter:', expirationFilter);
+    const result = expirationFilter !== null && expirationFilter !== 'All records';
+    console.log('isExternalFilterPresent result:', result);
+    return result;
+  }, [expirationFilter]);
+
+  const doesExternalFilterPass = React.useCallback((node: any) => {
+    console.log('doesExternalFilterPass called for node:', node?.data?.id, 'expirationFilter:', expirationFilter);
+    
+    if (!expirationFilter || expirationFilter === 'All records') {
+      console.log('No filter or All records selected, showing row');
+      return true;
+    }
+
+    // Get the expiration date from the row data
+    const data = node.data;
+    const expirationDate = data.expiration_date || data.expires_within || data.end_date || data.expiry_date;
+    if (!expirationDate) {
+      console.log('No expiration date found, hiding row');
+      return false; // Hide records without expiration dates
+    }
+
+    // Calculate days until expiration
+    const today = new Date();
+    const expDate = new Date(expirationDate);
+    const timeDiff = expDate.getTime() - today.getTime();
+    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+    // Parse the filter value (e.g., "7 Days" -> 7)
+    const daysMatch = expirationFilter.match(/(\d+)\s*Days?/);
+    if (!daysMatch) {
+      console.log('Could not parse filter value:', expirationFilter);
+      return false;
+    }
+
+    const filterDays = parseInt(daysMatch[1]);
+    console.log('Days until expiration:', daysDiff, 'Filter days:', filterDays);
+
+    // Filter based on the selected timeframe
+    // Show records that expire within the specified number of days
+    const shouldShow = daysDiff >= 0 && daysDiff <= filterDays;
+    console.log('Should show row:', shouldShow);
+    return shouldShow;
+  }, [expirationFilter]);
+
   // Get actual actions for this grid
   const { gridActions } = useGridActions(title);
 
@@ -254,12 +303,22 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     );
   }, [showActionsColumn, pinActionsColumn, title, gridActions]);
 
-  // Prepare column definitions
+    // Prepare column definitions
   const columnDefs = React.useMemo(() => {
     const hasSort = columns.some((col) => col.sort);
-
+    
     // Debug: Log all columns being processed
     console.log('Processing columns for DataGrid:', columns.map(col => ({ field: col.field, headerName: col.headerName })));
+    
+    // Debug: Look for expiration-related columns
+    columns.forEach(col => {
+      if (col.field && col.field.toLowerCase().includes('expir')) {
+        console.log('Found expiration-related column:', {
+          field: col.field,
+          headerName: col.headerName
+        });
+      }
+    });
 
     return [
       // Checkbox column
@@ -301,9 +360,11 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           baseCol.sort = "asc";
         }
 
-        // Add custom cell renderer only for expires_within column (not for expiration_date)
+                // Add custom cell renderer only for expires_within column (not for expiration_date)
         if (col.field === "expires_within") {
           console.log('Setting up expires_within column renderer for:', col);
+          console.log('Column field name:', col.field, 'Column header:', col.headerName);
+          
           // For expires_within column, we don't need the raw value since we calculate it
           baseCol.valueGetter = (params: any) => {
             // Return the row data so the ExpiringCellRenderer can calculate the days
@@ -321,9 +382,19 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           // Add custom sorting for expires_within column using expiration_date
           baseCol.sortable = true;
           baseCol.comparator = (valueA: any, valueB: any, nodeA: any, nodeB: any) => {
+            // Handle cases where nodes might be undefined (e.g., during filtering)
+            if (!nodeA || !nodeB) {
+              return 0;
+            }
+            
+            // Safely access node data with null checks
+            if (!nodeA.data || !nodeB.data) {
+              return 0;
+            }
+            
             // Get the expiration dates from the row data
-            const dateA = nodeA.data?.expiration_date || nodeA.data?.expires_within || nodeA.data?.end_date || nodeA.data?.expiry_date;
-            const dateB = nodeB.data?.expiration_date || nodeB.data?.expires_within || nodeB.data?.end_date || nodeB.data?.expiry_date;
+            const dateA = nodeA.data.expiration_date || nodeA.data.expires_within || nodeA.data.end_date || nodeA.data.expiry_date;
+            const dateB = nodeB.data.expiration_date || nodeB.data.expires_within || nodeB.data.end_date || nodeB.data.expiry_date;
             
             // If either date is missing, handle appropriately
             if (!dateA && !dateB) return 0;
@@ -346,6 +417,42 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               return 0;
             }
           };
+          
+          // Add custom filter for expires_within column
+          baseCol.filter = true;
+          baseCol.filterParams = {
+            // Use AG Grid's built-in set filter with custom values
+            filterType: 'set',
+            buttons: ['reset', 'apply'],
+            closeOnApply: true,
+            suppressAndOrCondition: true,
+            // Provide custom filter values
+            values: [
+              'All records',
+              '7 Days',
+              '14 Days', 
+              '30 Days',
+              '60 Days',
+              '90 Days',
+              '120 Days',
+              '150 Days',
+              '180 Days',
+              '210 Days',
+              '240 Days',
+              '270 Days',
+              '300 Days',
+              '330 Days',
+              '360 Days'
+            ],
+
+          };
+          
+          // Debug logging
+          console.log('Expires within column filter config:', {
+            field: baseCol.field,
+            filter: baseCol.filter,
+            filterParams: baseCol.filterParams
+          });
         }
 
         return baseCol;
@@ -1010,10 +1117,34 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               });
             }}
             onFilterChanged={(event) => {
+              console.log('Grid filter changed event:', event);
+              
+              // Save column state
               saveColumnState().catch(error => {
                 console.warn("Filter change save failed:", error);
               });
+              
+              // Check if the expires_within column filter changed
+              const filterModel = event.api.getFilterModel();
+              console.log('Filter model from event:', filterModel);
+              
+              // Look for the expires_within column filter
+              const expiresWithinFilter = filterModel.expires_within;
+              console.log('Expires within filter from event:', expiresWithinFilter);
+              
+              if (expiresWithinFilter && expiresWithinFilter.values && expiresWithinFilter.values.length > 0) {
+                // Get the first selected value
+                const selectedValue = expiresWithinFilter.values[0];
+                console.log('Setting expiration filter to:', selectedValue);
+                setExpirationFilter(selectedValue);
+              } else {
+                console.log('Clearing expiration filter');
+                setExpirationFilter(null);
+              }
             }}
+            // External filter for expiration dates
+            isExternalFilterPresent={isExternalFilterPresent}
+            doesExternalFilterPass={doesExternalFilterPass}
           />
         </div>
       )}
