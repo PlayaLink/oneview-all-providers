@@ -317,6 +317,35 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               expiringDaysFilter={expiringDaysFilter}
             />
           );
+          
+          // Add custom sorting for expires_within column using expiration_date
+          baseCol.sortable = true;
+          baseCol.comparator = (valueA: any, valueB: any, nodeA: any, nodeB: any) => {
+            // Get the expiration dates from the row data
+            const dateA = nodeA.data?.expiration_date || nodeA.data?.expires_within || nodeA.data?.end_date || nodeA.data?.expiry_date;
+            const dateB = nodeB.data?.expiration_date || nodeB.data?.expires_within || nodeB.data?.end_date || nodeB.data?.expiry_date;
+            
+            // If either date is missing, handle appropriately
+            if (!dateA && !dateB) return 0;
+            if (!dateA) return 1;  // Missing dates go to the end
+            if (!dateB) return -1; // Missing dates go to the end
+            
+            try {
+              const timeA = new Date(dateA).getTime();
+              const timeB = new Date(dateB).getTime();
+              
+              // Check if dates are valid
+              if (isNaN(timeA) && isNaN(timeB)) return 0;
+              if (isNaN(timeA)) return 1;  // Invalid dates go to the end
+              if (isNaN(timeB)) return -1; // Invalid dates go to the end
+              
+              // Sort by expiration date (ascending = earliest first, descending = latest first)
+              return timeA - timeB;
+            } catch (error) {
+              console.warn("Error comparing expiration dates:", error);
+              return 0;
+            }
+          };
         }
 
         return baseCol;
