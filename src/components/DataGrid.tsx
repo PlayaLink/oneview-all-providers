@@ -173,7 +173,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   // Handle bulk deletion of selected rows
   const handleBulkDelete = React.useCallback(async () => {
     console.log('handleBulkDelete called with:', { tableName, selectedRowsCount: selectedRows.length });
-    
+
     if (!tableName || selectedRows.length === 0) {
       console.warn('No table name or selected rows for deletion:', { tableName, selectedRowsCount: selectedRows.length });
       return;
@@ -189,7 +189,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
       // Extract record IDs from selected rows
       const recordIds = selectedRows.map(row => row.id);
-      
+
       // Call the bulk delete function from supabaseClient
       const result = await bulkDeleteRecords(tableName, recordIds);
 
@@ -199,13 +199,13 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           gridApi.deselectAll();
         }
         setSelectedRows([]);
-        
+
         // Notify parent component
         onRecordsDeleted?.(result.deletedIds);
-        
+
         // Show success message
         console.log(`Successfully deleted ${result.totalDeleted} record(s)`);
-        
+
         // Show warning if there were errors
         if (result.totalErrors > 0) {
           console.warn(`${result.totalErrors} records failed to delete:`, result.errors);
@@ -257,7 +257,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   // Prepare column definitions
   const columnDefs = React.useMemo(() => {
     const hasSort = columns.some((col) => col.sort);
-    
+
     // Debug: Log all columns being processed
     console.log('Processing columns for DataGrid:', columns.map(col => ({ field: col.field, headerName: col.headerName })));
 
@@ -265,26 +265,26 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       // Checkbox column
       ...(showCheckboxes
         ? [
-            {
-              headerName: "",
-              headerCheckboxSelection: true,
-              checkboxSelection: true,
-              width: 50,
-              pinned: "left" as const,
-              lockPosition: true,
-              suppressMenu: true,
-              sortable: false,
-              filter: false,
-              resizable: false,
-            },
-          ]
+          {
+            headerName: "",
+            headerCheckboxSelection: true,
+            checkboxSelection: true,
+            width: 50,
+            pinned: "left" as const,
+            lockPosition: true,
+            suppressMenu: true,
+            sortable: false,
+            filter: false,
+            resizable: false,
+          },
+        ]
         : []),
 
       // Data columns
       ...columns.map((col) => {
         // Find database column data for width persistence
         const dbColumn = gridColumnsData?.find(dbCol => dbCol.name === col.field);
-        
+
         const baseCol = {
           ...col,
           floatingFilter: showFloatingFilters,
@@ -325,70 +325,70 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       // Actions column - only show when pinActionsColumn is true
       ...(showActionsColumn && pinActionsColumn
         ? [
-            {
-              headerName: "",
-              field: "actions",
-              width: calculateActionsColumnWidth(), // Dynamic width: 32px per action + 16px padding
-              minWidth: minWidthActionsColumn, // Minimum width
-              maxWidth: 300, // Maximum width
-              suppressSizeToFit: true, // Prevent AG Grid from auto-sizing this column
-              pinned: "right" as const,
-              lockPosition: true,
-              suppressMenu: true,
-              sortable: false,
-              filter: false,
-              resizable: false,
-              floatingFilter: false,
-              suppressRowClickSelection: true,
-              headerComponent: (params: any) => (
-                <ActionsHeader
-                  onAddRecord={onAddRecord}
-                  onMoreActions={onMoreHeaderActions}
-                  onHelp={() => {}}
-                />
-              ),
-              cellRenderer: (params: any) => (
-                <ActionsColumn
-                  gridName={title}
-                  rowData={params.data}
-                  onActionClick={(actionName, rowData) => {
-                    switch (actionName) {
-                      case "download":
-                        onDownload?.(rowData);
-                        break;
-                      case "activate":
-                        onDownload?.(rowData);
-                        break;
-                      case "alert":
-                        onToggleAlert?.(rowData, true);
-                        break;
-                      case "side_panel":
-                        onToggleSidebar?.(rowData);
-                        break;
-                      case "verifications":
-                        onToggleFlag?.(rowData, true);
-                        break;
-                      case "flag":
-                        onToggleFlag?.(rowData, true);
-                        break;
-                      case "view_details":
-                        // Open the grid item details modal
-                        onOpenDetailModal?.(rowData);
-                        break;
-                      case "deactivate":
-                        break;
-                      case "exclude":
-                        break;
-                      case "tracking":
-                        break;
-                      default:
-                    }
-                  }}
-                  className="h-full flex items-center justify-center"
-                />
-              ),
-            },
-          ]
+          {
+            headerName: "",
+            field: "actions",
+            width: calculateActionsColumnWidth(), // Dynamic width: 32px per action + 16px padding
+            minWidth: minWidthActionsColumn, // Minimum width
+            maxWidth: 300, // Maximum width
+            suppressSizeToFit: true, // Prevent AG Grid from auto-sizing this column
+            pinned: "right" as const,
+            lockPosition: true,
+            suppressMenu: true,
+            sortable: false,
+            filter: false,
+            resizable: false,
+            floatingFilter: false,
+            suppressRowClickSelection: true,
+            headerComponent: (params: any) => (
+              <ActionsHeader
+                onAddRecord={onAddRecord}
+                onMoreActions={onMoreHeaderActions}
+                onHelp={() => { }}
+              />
+            ),
+            cellRenderer: (params: any) => (
+              <ActionsColumn
+                gridName={title}
+                rowData={params.data}
+                onActionClick={(actionName, rowData) => {
+                  switch (actionName) {
+                    case "download":
+                      onDownload?.(rowData);
+                      break;
+                    case "activate":
+                      onDownload?.(rowData);
+                      break;
+                    case "alert":
+                      onToggleAlert?.(rowData, true);
+                      break;
+                    case "side_panel":
+                      onToggleSidebar?.(rowData);
+                      break;
+                    case "verifications":
+                      onToggleFlag?.(rowData, true);
+                      break;
+                    case "flag":
+                      onToggleFlag?.(rowData, true);
+                      break;
+                    case "view_details":
+                      // Open the grid item details modal
+                      onOpenDetailModal?.(rowData);
+                      break;
+                    case "deactivate":
+                      break;
+                    case "exclude":
+                      break;
+                    case "tracking":
+                      break;
+                    default:
+                  }
+                }}
+                className="h-full flex items-center justify-center"
+              />
+            ),
+          },
+        ]
         : []),
     ];
   }, [
@@ -484,15 +484,15 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   const saveColumnState = React.useCallback(async () => {
     if (gridApi) {
       const columnState = gridApi.getColumnState();
-      
+
       // Safety check for columnState
       if (!columnState || !Array.isArray(columnState)) {
         console.warn("No column state available to save");
         return;
       }
-      
+
       localStorage.setItem(gridStateKey, JSON.stringify(columnState));
-      
+
       // Save column widths to database if we have grid columns data
       if (gridColumnsData && gridName) {
         try {
@@ -502,7 +502,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               columnId: columnIdMap.get(col.colId)!,
               width: col.width
             }));
-          
+
           if (widthUpdates.length > 0) {
             await updateGridColumnWidths(widthUpdates);
           }
@@ -544,7 +544,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     if (gridApi) {
       const savedState = localStorage.getItem(gridStateKey);
       let columnState = [];
-      
+
       if (savedState) {
         try {
           columnState = JSON.parse(savedState);
@@ -552,7 +552,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           console.warn("Failed to parse saved column state:", error);
         }
       }
-      
+
       // Apply database widths to column state if available
       if (gridColumnsData) {
         // If we have localStorage data, merge database widths with it
@@ -575,7 +575,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
             }));
         }
       }
-      
+
       if (columnState.length > 0) {
         gridApi.applyColumnState({
           state: columnState,
@@ -638,17 +638,17 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     data.forEach((row: any) => {
       // Check for various expiration date fields
       const expirationDate = row.expiration_date || row.expires_within || row.end_date || row.expiry_date;
-      
+
       if (expirationDate) {
         try {
           const expDate = new Date(expirationDate);
-          
+
           // Check if the date is valid
           if (!isNaN(expDate.getTime())) {
             const now = new Date();
             const timeDiff = expDate.getTime() - now.getTime();
             const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-            
+
             // Check if expired (past date)
             if (daysDiff < 0) {
               expired++;
@@ -713,9 +713,8 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     >
       {/* Grid Header */}
       <header
-        className={`flex items-center justify-between pl-1 pr-3 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 overflow-visible cursor-pointer hover:bg-[#B0BEC5] transition-colors ${
-          isSidePanelOpen ? 'rounded-tl' : 'rounded-t'
-        }`}
+        className={`flex items-center justify-between pl-1 pr-3 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 overflow-visible cursor-pointer hover:bg-[#B0BEC5] transition-colors ${isSidePanelOpen ? 'rounded-tl' : 'rounded-t'
+          }`}
         role="button"
         tabIndex={0}
         aria-expanded={isExpanded}
@@ -760,28 +759,35 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                   >
                     <span className="text-white font-bold text-xs">{expirationStats.expiring}</span>
                     <span className="text-white font-bold text-xs">Expiring</span>
-                    <Icon 
-                      icon="chevron-down" 
+                    <Icon
+                      icon="ellipsis-vertical"
                       className={`w-3 h-3 text-white`}
                     />
                   </button>
-                  
+
                   {showExpiringDropdown && (
-                    <div 
-                      className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg min-w-48 expiring-dropdown z-[10000]"
+                    <div
+                      className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow- min-w-52 expiring-dropdown z-[10000] text-xs"
                       onClick={(e) => e.stopPropagation()}
+                      role="dialog"
+                      aria-label="Expiring days filter settings"
+                      aria-modal="true"
+                      data-testid="expiring-dropdown"
                     >
-                      <div className="flex items-center gap-2 p-3">
-                        <label className="block text-sm font-medium text-gray-700">
-                          Within
-                        </label>
+
+                      <div className="p-3 flex flex-col leading-6">
+                        <div className="">
+                          Mark records as <span className="gap-1 px-2.5 py-0.5 bg-[#F48100] rounded-full hover:bg-[#E67300] transition-colors text-white font-bold text-xs">Expiring</span> if Exp. Date is within
+                        </div>
+
                         <select
+                          id="expiring-days-select"
                           value={expiringDaysFilter}
                           onChange={async (e) => {
                             const newValue = Number(e.target.value);
                             console.log("Dropdown changed to:", newValue, "gridName:", gridName);
                             setExpiringDaysFilter(newValue);
-                            
+
                             // Save to database if we have a grid name
                             if (gridName) {
                               try {
@@ -796,14 +802,27 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                             }
                           }}
                           onClick={(e) => e.stopPropagation()}
-                          className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          data-testid="expiring-days-select"
+                          aria-describedby="expiring-days-description"
                         >
                           {expiringDaysOptions.map((option) => (
-                            <option key={option.value} value={option.value}>
+                            <option
+                              key={option.value}
+                              value={option.value}
+                              data-testid={`expiring-option-${option.value}`}
+                            >
                               {option.label}
                             </option>
                           ))}
                         </select>
+                        <div
+                          id="expiring-days-description"
+                          className="sr-only"
+                          aria-live="polite"
+                        >
+                          Select the number of days to filter expiring records
+                        </div>
                       </div>
                     </div>
                   )}
@@ -852,7 +871,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       {isExpanded && selectedRows.length > 0 && (
         <div
           className="flex px-4 py-2 border-b border-gray-300 gap-4"
-          style={{ 
+          style={{
             height: '40px', // Match AG Grid header height
             backgroundColor: '#C4D8F7' // Match selected row background color
           }}
@@ -879,7 +898,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               {selectedRows.length} selected
             </span>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <button
               className="flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900 underline"
@@ -909,64 +928,64 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           data-testid="ag-grid-container"
           onContextMenu={(e) => e.preventDefault()}
         >
-        <AgGridReact
-          theme="legacy"
-          rowData={data}
-          columnDefs={columnDefs}
-          onSelectionChanged={handleSelectionChanged}
-          onRowClicked={handleRowClicked}
-          onCellClicked={handleCellClicked}
-          onCellContextMenu={handleCellContextMenu}
-          rowSelection={showCheckboxes ? "multiple" : undefined}
-          headerHeight={selectedRows.length > 0 ? 0 : 40} // Hide headers when rows are selected
-          rowHeight={42}
-          suppressRowClickSelection={true}
-          suppressCellFocus={true}
-          {...(!height ? { domLayout: "autoHeight" } : {})}
-          getRowStyle={getRowStyle}
-          getRowClass={getRowClass}
-          defaultColDef={{
-            resizable: true,
-            sortable: true,
-            filter: true,
-            floatingFilter: showFloatingFilters,
-            cellClass: "ag-cell-vertically-centered",
-            filterParams: {
-              buttons: ["reset"],
-              closeOnApply: true,
-              suppressApplyButton: true,
-            },
-          }}
-          suppressColumnVirtualisation={false}
-          cellSelection={false}
-          maintainColumnOrder={true}
-          onGridReady={(params) => {
-            setGridApi(params.api);
-            params.api.sizeColumnsToFit();
-            // Load saved column state after grid is ready
-            setTimeout(() => {
-              loadColumnState();
-            }, 100);
-          }}
-          onColumnMoved={(event) => {
-            saveColumnState().catch(error => {
-              console.warn("Column move save failed:", error);
-            });
-          }}
-          onColumnResized={(event) => {
-            debouncedSave();
-          }}
-          onSortChanged={(event) => {
-            saveColumnState().catch(error => {
-              console.warn("Sort change save failed:", error);
-            });
-          }}
-          onFilterChanged={(event) => {
-            saveColumnState().catch(error => {
-              console.warn("Filter change save failed:", error);
-            });
-          }}
-        />
+          <AgGridReact
+            theme="legacy"
+            rowData={data}
+            columnDefs={columnDefs}
+            onSelectionChanged={handleSelectionChanged}
+            onRowClicked={handleRowClicked}
+            onCellClicked={handleCellClicked}
+            onCellContextMenu={handleCellContextMenu}
+            rowSelection={showCheckboxes ? "multiple" : undefined}
+            headerHeight={selectedRows.length > 0 ? 0 : 40} // Hide headers when rows are selected
+            rowHeight={42}
+            suppressRowClickSelection={true}
+            suppressCellFocus={true}
+            {...(!height ? { domLayout: "autoHeight" } : {})}
+            getRowStyle={getRowStyle}
+            getRowClass={getRowClass}
+            defaultColDef={{
+              resizable: true,
+              sortable: true,
+              filter: true,
+              floatingFilter: showFloatingFilters,
+              cellClass: "ag-cell-vertically-centered",
+              filterParams: {
+                buttons: ["reset"],
+                closeOnApply: true,
+                suppressApplyButton: true,
+              },
+            }}
+            suppressColumnVirtualisation={false}
+            cellSelection={false}
+            maintainColumnOrder={true}
+            onGridReady={(params) => {
+              setGridApi(params.api);
+              params.api.sizeColumnsToFit();
+              // Load saved column state after grid is ready
+              setTimeout(() => {
+                loadColumnState();
+              }, 100);
+            }}
+            onColumnMoved={(event) => {
+              saveColumnState().catch(error => {
+                console.warn("Column move save failed:", error);
+              });
+            }}
+            onColumnResized={(event) => {
+              debouncedSave();
+            }}
+            onSortChanged={(event) => {
+              saveColumnState().catch(error => {
+                console.warn("Sort change save failed:", error);
+              });
+            }}
+            onFilterChanged={(event) => {
+              saveColumnState().catch(error => {
+                console.warn("Filter change save failed:", error);
+              });
+            }}
+          />
         </div>
       )}
 
