@@ -888,7 +888,36 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                     className="flex items-center gap-1 px-2.5 py-0.5 bg-[#F48100] rounded-full hover:bg-[#E67300] transition-colors"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setShowExpiringDropdown(!showExpiringDropdown);
+                      const newDropdownState = !showExpiringDropdown;
+                      setShowExpiringDropdown(newDropdownState);
+                      
+                      // If opening the dropdown, scroll to the Expires Within column
+                      if (newDropdownState && gridApi) {
+                        try {
+                          // First, ensure the column is visible
+                          gridApi.ensureColumnVisible('expires_within');
+                          
+                          // Get the column to calculate its position
+                          const column = gridApi.getColumn('expires_within');
+                          if (column) {
+                            // Get the grid's scroll container
+                            const gridBody = document.querySelector('.ag-body-viewport');
+                            if (gridBody) {
+                              // Calculate the right edge position of the column
+                              const columnRight = column.getLeft() + column.getActualWidth();
+                              const containerWidth = gridBody.clientWidth;
+                              
+                              // Scroll so the right edge of the column aligns with the right edge of the container
+                              const scrollLeft = columnRight - containerWidth;
+                              gridBody.scrollLeft = Math.max(0, scrollLeft);
+                              
+                              console.log('Scrolled Expires Within column into view, right edge aligned');
+                            }
+                          }
+                        } catch (error) {
+                          console.error('Error scrolling to Expires Within column:', error);
+                        }
+                      }
                     }}
                     aria-label={`${expirationStats.expiring} items expiring`}
                     data-testid="expiring-button"
@@ -936,6 +965,8 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                             } else {
                               console.warn("No gridName available for saving");
                             }
+
+
                           }}
                           onClick={(e) => e.stopPropagation()}
                           className="mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
