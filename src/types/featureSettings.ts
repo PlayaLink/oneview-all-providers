@@ -17,6 +17,7 @@ export interface FeatureSettings {
   all_providers_tab: boolean; // Feature flag for all providers tab
   new_nav_option_1: boolean; // Feature flag for new navigation option
   new_sidepanel: boolean; // Feature flag for new side panel
+  scroll_to_expires_within: boolean; // Feature flag for scrolling to Expires Within column
 }
 
 export type FeatureSettingKey = keyof FeatureSettings;
@@ -30,4 +31,5 @@ export const DEFAULT_FEATURE_SETTINGS: FeatureSettings = {
   all_providers_tab: true, // Default to true (tab visible)
   new_nav_option_1: false, // Default to false (legacy nav)
   new_sidepanel: true, // Default to true (use new side panel)
+  scroll_to_expires_within: false, // Default to false (scroll behavior off)
 }; 

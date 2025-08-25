@@ -221,6 +221,9 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
   // Use feature flag for floating filters
   const { value: showFloatingFilters } = useFeatureFlag("floating_filters");
+  
+  // Use feature flag for scrolling to Expires Within column
+  const { value: scrollToExpiresWithin } = useFeatureFlag("scroll_to_expires_within");
 
   // External filter function for expiration dates
   const isExternalFilterPresent = React.useCallback(() => {
@@ -891,8 +894,9 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                       const newDropdownState = !showExpiringDropdown;
                       setShowExpiringDropdown(newDropdownState);
                       
-                      // If opening the dropdown, scroll to the Expires Within column
-                      if (newDropdownState && gridApi) {
+                      // If opening the dropdown and feature flag is enabled, scroll to the Expires Within column
+                      // This behavior is controlled by the 'scroll_to_expires_within' feature flag
+                      if (newDropdownState && gridApi && scrollToExpiresWithin) {
                         try {
                           // First, ensure the column is visible
                           gridApi.ensureColumnVisible('expires_within');
