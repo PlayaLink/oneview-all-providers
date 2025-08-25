@@ -966,9 +966,75 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               )}
               {expirationStats.expired > 0 && (
                 <div
-                  className="flex items-center gap-1 px-2.5 py-0.5 bg-[#DB0D00] rounded-full"
-                  role="status"
-                  aria-label={`${expirationStats.expired} items expired`}
+                  className="flex items-center gap-1 px-2.5 py-0.5 bg-[#DB0D00] rounded-full cursor-pointer hover:bg-[#B00A00] transition-colors"
+                  role="button"
+                  aria-label={`${expirationStats.expired} items expired - Click to sort by Expires Within`}
+                  data-testid="expired-records-button"
+                  onClick={(e) => {
+                    // Stop event propagation to prevent header collapse/expand
+                    e.stopPropagation();
+                    
+                    if (gridApi) {
+                      console.log('Grid API methods available:', Object.getOwnPropertyNames(gridApi));
+                      
+                      // Try different sorting methods that might be available
+                      try {
+                        // Method 1: Try setSortModel (newer AG Grid versions)
+                        if (typeof gridApi.setSortModel === 'function') {
+                          gridApi.setSortModel([
+                            {
+                              colId: 'expires_within',
+                              sort: 'asc'
+                            }
+                          ]);
+                          console.log('Sorted using setSortModel');
+                        }
+                        // Method 2: Try setSortModel (older AG Grid versions)
+                        else if (typeof gridApi.setSortModel === 'function') {
+                          gridApi.setSortModel('expires_within', 'asc');
+                          console.log('Sorted using setSortModel (old syntax)');
+                        }
+                        // Method 3: Try sortColumn (alternative method)
+                        else if (typeof gridApi.sortColumn === 'function') {
+                          gridApi.sortColumn('expires_within', 'asc');
+                          console.log('Sorted using sortColumn');
+                        }
+                        // Method 4: Try setSort (alternative method)
+                        else if (typeof gridApi.setSort === 'function') {
+                          gridApi.setSort('expires_within', 'asc');
+                          console.log('Sorted using setSort');
+                        }
+                        // Method 5: Try using column state (AG Grid v28+)
+                        else if (typeof gridApi.applyColumnState === 'function') {
+                          gridApi.applyColumnState({
+                            state: [
+                              {
+                                colId: 'expires_within',
+                                sort: 'asc'
+                              }
+                            ],
+                            defaultState: { sort: null }
+                          });
+                          console.log('Sorted using applyColumnState');
+                        }
+                        // Method 6: Try using the column directly
+                        else {
+                          const column = gridApi.getColumn('expires_within');
+                          if (column) {
+                            column.setSort('asc');
+                            console.log('Sorted using column.setSort');
+                          } else {
+                            console.error('Could not find expires_within column');
+                          }
+                        }
+                      } catch (error) {
+                        console.error('Error while sorting:', error);
+                      }
+                    } else {
+                      console.warn('Grid API not ready yet');
+                    }
+                  }}
+                  title="Click to sort by Expires Within (ascending)"
                 >
                   <span className="text-white font-bold text-xs">{expirationStats.expired}</span>
                   <span className="text-white font-bold text-xs">Expired</span>
