@@ -25,6 +25,7 @@ export function useAnnotationMode() {
   const setAnnotationMode = (value: boolean) => {
     setIsAnnotationMode(value);
     sessionStorage.setItem(ANNOTATION_MODE_KEY, JSON.stringify(value));
+    console.log(`📝 Annotation mode set to: ${value}`);
   };
 
   // Function to clear annotation mode

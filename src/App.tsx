@@ -1,7 +1,6 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AllRecords from "./components/AllRecords";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -14,8 +13,8 @@ import { FeatureFlagProvider, useFeatureFlag } from "./contexts/FeatureFlagConte
 import SingleProvider from "./components/SingleProvider";
 import { faker } from '@faker-js/faker';
 import { useAnnotationMode } from "./hooks/useAnnotationMode";
-
-const queryClient = new QueryClient();
+import { AnnotationOverlay } from "./components/AnnotationOverlay";
+import { AnnotationDisplay } from "./components/AnnotationDisplay";
 
 const AuthWrapper = ({ user, loading }: { user: any, loading: boolean }) => {
   const { value: requireAuth, isLoading: flagLoading } = useFeatureFlag("user_authentication");
@@ -160,13 +159,15 @@ const App = () => {
   // Inject dummy user if auth is off and no real user
   const effectiveUser = (!requireAuth && !user) ? getOrCreateDummyUser() : user;
 
-  if (loading || flagLoading) return <div>Loading...</div>;
+  if (loading || flagLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <AnnotationOverlay isAnnotationMode={isAnnotationMode} toggleAnnotationMode={toggleAnnotationMode}>
         <BrowserRouter>
           <UserProvider user={effectiveUser}>
             <FeatureFlagProvider>
@@ -174,8 +175,9 @@ const App = () => {
             </FeatureFlagProvider>
           </UserProvider>
         </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
+      </AnnotationOverlay>
+      <AnnotationDisplay />
+    </TooltipProvider>
   );
 };
 
