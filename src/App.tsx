@@ -13,6 +13,7 @@ import { UserProvider } from "./contexts/UserContext";
 import { FeatureFlagProvider, useFeatureFlag } from "./contexts/FeatureFlagContext";
 import SingleProvider from "./components/SingleProvider";
 import { faker } from '@faker-js/faker';
+import { useAnnotationMode } from "./hooks/useAnnotationMode";
 
 const queryClient = new QueryClient();
 
@@ -74,6 +75,7 @@ const App = () => {
   const [loading, setLoading] = useState(true);
   const [requireAuth, setRequireAuth] = useState(true);
   const [flagLoading, setFlagLoading] = useState(true);
+  const { isAnnotationMode, toggleAnnotationMode, setAnnotationMode, clearAnnotationMode } = useAnnotationMode();
 
   // Helper to get or create a dummy user for the session
   function getOrCreateDummyUser() {
@@ -141,6 +143,19 @@ const App = () => {
     fetchFlag();
     return () => { cancelled = true; };
   }, []);
+
+  // Add keyboard shortcut for annotation mode (Ctrl+Shift+A)
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.shiftKey && event.key === 'A') {
+        event.preventDefault();
+        toggleAnnotationMode();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [toggleAnnotationMode]);
 
   // Inject dummy user if auth is off and no real user
   const effectiveUser = (!requireAuth && !user) ? getOrCreateDummyUser() : user;

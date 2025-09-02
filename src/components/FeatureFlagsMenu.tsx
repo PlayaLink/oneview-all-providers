@@ -1,14 +1,20 @@
 import React from 'react';
 import { Switch } from "@/components/ui/switch";
 import { useFeatureFlags } from "@/contexts/FeatureFlagContext";
+import { useAnnotationMode } from "@/hooks/useAnnotationMode";
 
 const FeatureFlagsMenu: React.FC = () => {
   const { allSettings, updateFlag, isLoading } = useFeatureFlags();
+  const { isAnnotationMode, setAnnotationMode } = useAnnotationMode();
 
   return (
-    <div className="p-4 flex flex-col gap-4 border-b border-gray-200">
+    <div className="p-4 flex flex-col gap-4 border-b border-gray-200" data-testid="feature-flags-menu">
       {/* Feature Flags */}
       <div className="pt-2 pb-1">
+        <div className="mb-4 flex items-center justify-between">
+          <label htmlFor="annotation-mode-toggle">Annotation Mode</label>
+          <Switch id="annotation-mode-toggle" checked={isAnnotationMode} onCheckedChange={setAnnotationMode} />
+        </div>
         <h3 className="text-md font-semibold text-gray-900 mb-1">Feature Flags</h3>
       </div>
       {allSettings.map(setting => (
