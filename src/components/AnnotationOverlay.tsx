@@ -128,9 +128,9 @@ export function AnnotationOverlay({ children, isAnnotationMode, toggleAnnotation
 
       // Add outline to current element with more visible styling
       target.setAttribute('data-annotation-outline', 'true');
-      target.style.setProperty('outline', '3px solid #3BA8D1', 'important');
+      target.style.setProperty('outline', '3px solid #F48100', 'important');
       target.style.setProperty('outline-offset', '2px', 'important');
-      target.style.setProperty('box-shadow', '0 0 0 2px rgba(59, 168, 209, 0.3)', 'important');
+      target.style.setProperty('box-shadow', '0 0 0 2px rgba(244, 129, 0, 0.3)', 'important');
       
       console.log('🔍 Applied outline to:', target.tagName, target.className);
       console.log('🔍 Element style after outline:', target.style.outline, target.style.boxShadow);
@@ -221,7 +221,7 @@ export function AnnotationOverlay({ children, isAnnotationMode, toggleAnnotation
             bottom: '20px',
             left: '50%',
             transform: 'translateX(-50%)',
-            backgroundColor: '#3BA8D1',
+            backgroundColor: '#F48100',
             color: 'white',
             padding: '8px 16px',
             borderRadius: '20px',
