@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAnnotations } from '../hooks/useAnnotations';
 import { Annotation } from '../types/annotations';
 import { Button } from './ui/button';
-import { X, MessageSquare, Edit2, Check, X as XIcon } from 'lucide-react';
+import Icon from '@/components/ui/Icon';
 
 interface AnnotationDisplayProps {
   isAnnotationMode: boolean;
@@ -224,7 +224,7 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
                        className="h-6 w-6 p-0 flex-shrink-0"
                        title="Edit annotation"
                      >
-                       <Edit2 className="h-3 w-3" />
+                       <Icon icon="pen-to-square" size="sm" />
                      </Button>
                      <Button
                        variant="ghost"
@@ -241,7 +241,7 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
                        className="h-6 w-6 p-0 flex-shrink-0"
                        title="Delete annotation"
                      >
-                       <X className="h-4 w-4" />
+                       <Icon icon="trash" size="sm" />
                      </Button>
                    </div>
                  </div>
@@ -263,23 +263,22 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
                        }}
                      />
                      <div className="flex gap-2 mt-2">
-
+                       <Button
+                         size="sm"
+                         onClick={() => handleSaveEdit(annotation.id)}
+                         className="h-6 px-2 text-xs"
+                       >
+                         <Icon icon="check" size="sm" />
+                         Save
+                       </Button>
                        <Button
                          variant="outline"
                          size="sm"
                          onClick={handleCancelEdit}
                          className="h-6 px-2 text-xs"
                        >
-                         <XIcon className="h-3 w-3 mr-1" />
+                         <Icon icon="xmark" size="sm" />
                          Cancel
-                       </Button>
-                       <Button
-                         size="sm"
-                         onClick={() => handleSaveEdit(annotation.id)}
-                         className="h-6 px-2 text-xs"
-                       >
-                         <Check className="h-3 w-3 mr-1" />
-                         Save
                        </Button>
                      </div>
                    </div>

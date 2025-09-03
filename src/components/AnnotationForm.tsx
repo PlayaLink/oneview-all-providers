@@ -3,7 +3,7 @@ import { useAnnotations } from '../hooks/useAnnotations';
 import { useAnnotationMode } from '../hooks/useAnnotationMode';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
-import { X } from 'lucide-react';
+import Icon from '@/components/ui/Icon';
 
 interface AnnotationFormProps {
   element: HTMLElement | null;
@@ -113,7 +113,7 @@ export function AnnotationForm({ element, position, onClose, isAnnotationMode }:
           onClick={handleCancel}
           className="h-6 w-6 p-0"
         >
-          <X className="h-4 w-4" />
+          <Icon icon="xmark" size="sm" />
         </Button>
       </div>
       
