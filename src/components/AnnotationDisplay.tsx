@@ -15,7 +15,9 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
   // Filter annotations for current page and branch
   useEffect(() => {
     const currentPageAnnotations = annotations.filter(ann => {
-      const pageMatch = true; // Show all annotations for debugging
+      // Only show annotations for the current page
+      const pageMatch = ann.pageUrl === window.location.pathname;
+      // Only show annotations that match the current branch (or have no branch specified)
       const branchMatch = !currentBranch || !ann.gitBranch || ann.gitBranch === currentBranch;
       
       return pageMatch && branchMatch;
@@ -143,6 +145,10 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
           {deploymentInfo.deploymentUrl && (
             <div>URL: {deploymentInfo.deploymentUrl}</div>
           )}
+          <div className="mt-1 pt-1 border-t border-gray-200">
+            <div>Total annotations: {annotations.length}</div>
+            <div>Filtered annotations: {visibleAnnotations.length}</div>
+          </div>
         </div>
       )}
       
