@@ -18,6 +18,7 @@ export function AnnotationOverlay({ children, isAnnotationMode, toggleAnnotation
   const [clickedElement, setClickedElement] = useState<HTMLElement | null>(null);
   const [clickPosition, setClickPosition] = useState<{ x: number; y: number } | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [isCreateMode, setIsCreateMode] = useState(false);
 
   // Listen for toggle events from the switch
   useEffect(() => {
@@ -33,12 +34,27 @@ export function AnnotationOverlay({ children, isAnnotationMode, toggleAnnotation
     };
   }, [isAnnotationMode, toggleAnnotationMode]);
 
+  // Handle ESC key to exit create mode
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isCreateMode) {
+        setIsCreateMode(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isCreateMode]);
+
   useEffect(() => {
     if (!isAnnotationMode) {
       setHoveredElement(null);
       setClickedElement(null);
       setClickPosition(null);
       setShowForm(false);
+      setIsCreateMode(false);
       
       // Re-enable all interactive elements
       const disabledElements = document.querySelectorAll('[data-annotation-disabled]');
@@ -60,104 +76,115 @@ export function AnnotationOverlay({ children, isAnnotationMode, toggleAnnotation
       
       // Remove annotation mode class from body
       document.body.classList.remove('annotation-mode-active');
+      document.body.classList.remove('create-mode-active');
       
       return;
     }
 
     // Add annotation mode class to body for CSS targeting
     document.body.classList.add('annotation-mode-active');
+    
+    // Add create mode class if in create mode
+    if (isCreateMode) {
+      document.body.classList.add('create-mode-active');
+    } else {
+      document.body.classList.remove('create-mode-active');
+    }
 
-    // Disable all interactive elements when annotation mode is active
-    const disableInteractiveElements = () => {
-      const interactiveSelectors = [
-        'button',
-        'input',
-        'select',
-        'textarea',
-        'a',
-        '[role="button"]',
-        '[role="tab"]',
-        '[role="menuitem"]',
-        '[onclick]',
-        '[data-testid]'
-      ];
-      
-      interactiveSelectors.forEach(selector => {
-        const elements = document.querySelectorAll(selector);
-        elements.forEach(el => {
-          const element = el as HTMLElement;
-          if (!element.closest('[data-annotation-form]') && 
-              !element.closest('[data-annotation-display]') &&
-              !element.closest('[data-annotation-overlay]')) {
-            element.setAttribute('data-annotation-disabled', 'true');
-            element.setAttribute('disabled', 'true');
-            element.style.pointerEvents = 'none';
-            element.style.opacity = '0.6';
-          }
+    // Only disable interactive elements and add hover handlers if in create mode
+    if (isCreateMode) {
+      // Disable all interactive elements when annotation mode is active
+      const disableInteractiveElements = () => {
+        const interactiveSelectors = [
+          'button',
+          'input',
+          'select',
+          'textarea',
+          'a',
+          '[role="button"]',
+          '[role="tab"]',
+          '[role="menuitem"]',
+          '[onclick]',
+          '[data-testid]'
+        ];
+        
+        interactiveSelectors.forEach(selector => {
+          const elements = document.querySelectorAll(selector);
+          elements.forEach(el => {
+            const element = el as HTMLElement;
+            if (!element.closest('[data-annotation-form]') && 
+                !element.closest('[data-annotation-display]') &&
+                !element.closest('[data-annotation-overlay]')) {
+              element.setAttribute('data-annotation-disabled', 'true');
+              element.setAttribute('disabled', 'true');
+              element.style.pointerEvents = 'none';
+              element.style.opacity = '0.6';
+            }
+          });
         });
-      });
-    };
+      };
 
-    const handleMouseOver = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      
-      // Skip if hovering over annotation form, display elements, or the annotation mode pill
-      if (target.closest('[data-annotation-form]') || 
-          target.closest('[data-annotation-display]') ||
-          target.closest('[data-annotation-mode-pill]')) {
-        return;
-      }
+      const handleMouseOver = (event: MouseEvent) => {
+        const target = event.target as HTMLElement;
+        
+        // Skip if hovering over annotation form, display elements, or the annotation mode pill
+        if (target.closest('[data-annotation-form]') || 
+            target.closest('[data-annotation-display]') ||
+            target.closest('[data-annotation-mode-pill]') ||
+            target.closest('[data-annotation-create-button]')) {
+          return;
+        }
 
-      // Remove previous outline
-      const previousOutlined = document.querySelector('[data-annotation-outline]');
-      if (previousOutlined) {
-        const element = previousOutlined as HTMLElement;
-        element.removeAttribute('data-annotation-outline');
-        element.style.outline = '';
-        element.style.boxShadow = '';
-      }
+        // Remove previous outline
+        const previousOutlined = document.querySelector('[data-annotation-outline]');
+        if (previousOutlined) {
+          const element = previousOutlined as HTMLElement;
+          element.removeAttribute('data-annotation-outline');
+          element.style.outline = '';
+          element.style.boxShadow = '';
+        }
 
-      // Add outline to current element with more visible styling
-      target.setAttribute('data-annotation-outline', 'true');
-      target.style.setProperty('outline', '3px solid #F48100', 'important');
-      target.style.setProperty('outline-offset', '2px', 'important');
-      target.style.setProperty('box-shadow', '0 0 0 2px rgba(244, 129, 0, 0.3)', 'important');
-      
-      setHoveredElement(target);
-    };
+        // Add outline to current element with more visible styling
+        target.setAttribute('data-annotation-outline', 'true');
+        target.style.setProperty('outline', '3px solid #F48100', 'important');
+        target.style.setProperty('outline-offset', '2px', 'important');
+        target.style.setProperty('box-shadow', '0 0 0 2px rgba(244, 129, 0, 0.3)', 'important');
+        
+        setHoveredElement(target);
+      };
 
-    const handleMouseOut = () => {
-      // Remove outline when mouse leaves element
-      const outlined = document.querySelector('[data-annotation-outline]');
-      if (outlined) {
-        const element = outlined as HTMLElement;
-        element.removeAttribute('data-annotation-outline');
-        element.style.outline = '';
-        element.style.boxShadow = '';
-      }
-      setHoveredElement(null);
-    };
+      const handleMouseOut = () => {
+        // Remove outline when mouse leaves element
+        const outlined = document.querySelector('[data-annotation-outline]');
+        if (outlined) {
+          const element = outlined as HTMLElement;
+          element.removeAttribute('data-annotation-outline');
+          element.style.outline = '';
+          element.style.boxShadow = '';
+        }
+        setHoveredElement(null);
+      };
 
-    const handleClick = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      
-      // Skip if clicking on annotation form, display elements, or the annotation mode pill
-      if (target.closest('[data-annotation-form]') || 
-          target.closest('[data-annotation-display]') ||
-          target.closest('[data-annotation-mode-pill]')) {
-        return;
-      }
+      const handleClick = (event: MouseEvent) => {
+        const target = event.target as HTMLElement;
+        
+        // Skip if clicking on annotation form, display elements, or the annotation mode pill
+        if (target.closest('[data-annotation-form]') || 
+            target.closest('[data-annotation-display]') ||
+            target.closest('[data-annotation-mode-pill]') ||
+            target.closest('[data-annotation-create-button]')) {
+          return;
+        }
 
-      event.preventDefault();
-      event.stopPropagation();
-      
-      // Store the clicked element and position for the annotation form
-      setClickedElement(target);
-      setClickPosition({ x: event.clientX, y: event.clientY });
-      setShowForm(true);
-    };
+        event.preventDefault();
+        event.stopPropagation();
+        
+        // Store the clicked element and position for the annotation form
+        setClickedElement(target);
+        setClickPosition({ x: event.clientX, y: event.clientY });
+        setShowForm(true);
+      };
 
-    if (isAnnotationMode) {
       // Disable interactive elements
       disableInteractiveElements();
       
@@ -165,14 +192,32 @@ export function AnnotationOverlay({ children, isAnnotationMode, toggleAnnotation
       document.addEventListener('mouseover', handleMouseOver);
       document.addEventListener('mouseout', handleMouseOut);
       document.addEventListener('click', handleClick, true);
-    }
 
-    return () => {
-      document.removeEventListener('mouseover', handleMouseOver);
-      document.removeEventListener('mouseout', handleMouseOut);
-      document.removeEventListener('click', handleClick, true);
-    };
-  }, [isAnnotationMode]);
+      return () => {
+        document.removeEventListener('mouseover', handleMouseOver);
+        document.removeEventListener('mouseout', handleMouseOut);
+        document.removeEventListener('click', handleClick, true);
+      };
+    } else {
+      // If not in create mode, remove any existing outlines and re-enable elements
+      const outlinedElements = document.querySelectorAll('[data-annotation-outline]');
+      outlinedElements.forEach(el => {
+        const element = el as HTMLElement;
+        element.removeAttribute('data-annotation-outline');
+        element.style.outline = '';
+        element.style.boxShadow = '';
+      });
+      
+      const disabledElements = document.querySelectorAll('[data-annotation-disabled]');
+      disabledElements.forEach(el => {
+        const element = el as HTMLElement;
+        element.removeAttribute('data-annotation-disabled');
+        element.removeAttribute('disabled');
+        element.style.pointerEvents = '';
+        element.style.opacity = '';
+      });
+    }
+  }, [isAnnotationMode, isCreateMode]);
 
   const handleFormClose = () => {
     setShowForm(false);
@@ -184,7 +229,7 @@ export function AnnotationOverlay({ children, isAnnotationMode, toggleAnnotation
     <div data-annotation-overlay="true">
       <style>
         {`
-          .annotation-mode-active *:not([data-annotation-form] *):not([data-annotation-display] *):not([data-annotation-overlay] *) {
+          .annotation-mode-active.create-mode-active *:not([data-annotation-form] *):not([data-annotation-display] *):not([data-annotation-overlay] *) {
             cursor: crosshair !important;
           }
           
@@ -235,7 +280,7 @@ export function AnnotationOverlay({ children, isAnnotationMode, toggleAnnotation
           position: 'fixed',
           bottom: '20px',
           left: '200px', // Position to the right of the pill
-          backgroundColor: '#F48100',
+          backgroundColor: isCreateMode ? '#DC2626' : '#F48100', // Red when in create mode, orange when not
           color: 'white',
           width: '40px',
           height: '40px',
@@ -251,14 +296,17 @@ export function AnnotationOverlay({ children, isAnnotationMode, toggleAnnotation
           border: 'none'
         }}
         onClick={() => {
-          // Enable annotation mode if not already enabled
-          if (!isAnnotationMode) {
-            window.dispatchEvent(new CustomEvent('toggleAnnotationMode', { detail: { checked: true } }));
+          if (isCreateMode) {
+            // Exit create mode
+            setIsCreateMode(false);
+          } else {
+            // Enter create mode
+            setIsCreateMode(true);
           }
         }}
-        title="Create new annotation"
+        title={isCreateMode ? "Exit create mode (ESC)" : "Create new annotation"}
       >
-        <Icon icon="plus" size="sm" />
+        <Icon icon={isCreateMode ? "xmark" : "plus"} size="sm" />
       </div>
       {children}
       {showForm && (
