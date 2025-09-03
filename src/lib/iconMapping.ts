@@ -73,6 +73,8 @@ import {
   faSearch,
   faUpRightAndDownLeftFromCenter,
   faTrash,
+  faStickyNote,
+  faCode,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Unified icon mapping that can contain either FontAwesome icons or SVG file paths
@@ -138,7 +140,10 @@ const iconMap: Record<string, IconDefinition | string> = {
   "shield-check": faShieldHalved,
   "pen-to-square": faPenToSquare,
   comment: faComment,
+  "comment-plus": faComment, // Using faComment as base, will combine with plus in component
   "file-lines": faFileLines,
+  "sticky-note": faStickyNote,
+  code: faCode,
   
   // Navigation and UI icons
   "chevron-up": faChevronUp,

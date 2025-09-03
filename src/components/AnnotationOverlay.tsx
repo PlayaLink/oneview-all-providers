@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AnnotationForm } from './AnnotationForm';
 import { Switch } from './ui/switch';
+import Icon from './ui/Icon';
 
 interface AnnotationOverlayProps {
   children: React.ReactNode;
@@ -193,40 +194,72 @@ export function AnnotationOverlay({ children, isAnnotationMode, toggleAnnotation
           }
         `}
       </style>
-      {isAnnotationMode && (
-        <div 
-          data-annotation-mode-pill="true"
-          style={{
-            position: 'fixed',
-            bottom: '20px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            backgroundColor: '#F48100',
-            color: 'white',
-            padding: '8px 16px',
-            borderRadius: '20px',
-            fontSize: '12px',
-            fontWeight: 'bold',
-            zIndex: 10000,
-            pointerEvents: 'auto',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
+      <div 
+        data-annotation-mode-pill="true"
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          left: '20px',
+          backgroundColor: isAnnotationMode ? '#F48100' : '#6B7280',
+          color: 'white',
+          padding: '8px 16px',
+          borderRadius: '20px',
+          fontSize: '12px',
+          fontWeight: 'bold',
+          zIndex: 10000,
+          pointerEvents: 'auto',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          transition: 'background-color 0.2s ease'
+        }}
+      >
+        <Icon icon="code" size="sm" />
+        <span className="uppercase">Dev Notes</span>
+        <Switch 
+          checked={isAnnotationMode} 
+          onCheckedChange={(checked) => {
+            // We need to access the toggle function from the parent
+            // For now, we'll use a custom event to communicate with the parent
+            window.dispatchEvent(new CustomEvent('toggleAnnotationMode', { detail: { checked } }));
           }}
-        >
-          🧪 ANNOTATION MODE
-          <Switch 
-            checked={isAnnotationMode} 
-            onCheckedChange={(checked) => {
-              // We need to access the toggle function from the parent
-              // For now, we'll use a custom event to communicate with the parent
-              window.dispatchEvent(new CustomEvent('toggleAnnotationMode', { detail: { checked } }));
-            }}
-            className="scale-75"
-          />
-        </div>
-      )}
+          className="scale-75"
+        />
+      </div>
+      
+      {/* Create New Annotation Button */}
+      <div 
+        data-annotation-create-button="true"
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          left: '200px', // Position to the right of the pill
+          backgroundColor: '#F48100',
+          color: 'white',
+          width: '40px',
+          height: '40px',
+          borderRadius: '50%',
+          zIndex: 10000,
+          pointerEvents: 'auto',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          transition: 'all 0.2s ease',
+          border: 'none'
+        }}
+        onClick={() => {
+          // Enable annotation mode if not already enabled
+          if (!isAnnotationMode) {
+            window.dispatchEvent(new CustomEvent('toggleAnnotationMode', { detail: { checked: true } }));
+          }
+        }}
+        title="Create new annotation"
+      >
+        <Icon icon="plus" size="sm" />
+      </div>
       {children}
       {showForm && (
         <>
