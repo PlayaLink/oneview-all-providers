@@ -48,78 +48,66 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
 
   const getAnnotationStyle = (annotation: Annotation): React.CSSProperties => {
     try {
-      const element = document.querySelector(annotation.elementSelector) as HTMLElement;
-      if (!element) {
-        console.warn('🔍 Annotation element not found:', annotation.elementSelector);
-        return { display: 'none' };
-      }
-
-      const rect = element.getBoundingClientRect();
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
       const isEditing = editingAnnotationId === annotation.id;
-
-      // Debug positioning
-      console.log('🔍 Annotation positioning debug:', {
-        id: annotation.id,
-        elementSelector: annotation.elementSelector,
-        elementRect: rect,
-        viewport: { width: viewportWidth, height: viewportHeight },
-        placement: annotation.placement,
-        isEditing
-      });
-
-      // Base positioning
-      let top = 0;
-      let left = 0;
-      let transform = '';
-
-      switch (annotation.placement) {
-        case 'right':
-          top = rect.top + rect.height / 2;
-          left = rect.right + 10;
-          transform = 'translateY(-50%)';
-          break;
-        case 'left':
-          top = rect.top + rect.height / 2;
-          left = rect.left - 10;
-          transform = 'translateY(-50%) translateX(-100%)';
-          break;
-        case 'bottom':
-          top = rect.bottom + 10;
-          left = rect.left + rect.width / 2;
-          transform = 'translateX(-50%)';
-          break;
-        case 'top':
-          top = rect.top - 10;
-          left = rect.left + rect.width / 2;
-          transform = 'translateX(-50%) translateY(-100%)';
-          break;
-      }
-
+      
+      // Use the original click position like the dots do
+      const baseX = annotation.position.x;
+      const baseY = annotation.position.y;
+      
       // Dynamic sizing based on edit mode
       const annotationWidth = isEditing ? 350 : 250;
       const annotationHeight = isEditing ? 200 : 100;
-
+      
+      // Calculate offset based on placement
+      let offsetX = 0;
+      let offsetY = 0;
+      
+      switch (annotation.placement) {
+        case 'right':
+          offsetX = 20; // Move right from the click point
+          offsetY = -annotationHeight / 2; // Center vertically
+          break;
+        case 'left':
+          offsetX = -annotationWidth - 20; // Move left from the click point
+          offsetY = -annotationHeight / 2; // Center vertically
+          break;
+        case 'bottom':
+          offsetX = -annotationWidth / 2; // Center horizontally
+          offsetY = 20; // Move down from the click point
+          break;
+        case 'top':
+          offsetX = -annotationWidth / 2; // Center horizontally
+          offsetY = -annotationHeight - 20; // Move up from the click point
+          break;
+      }
+      
+      const left = baseX + offsetX;
+      const top = baseY + offsetY;
+      
       // Ensure annotation stays within viewport
-      if (left + annotationWidth > viewportWidth) {
-        left = viewportWidth - annotationWidth - 10;
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      
+      let finalLeft = left;
+      let finalTop = top;
+      
+      if (finalLeft + annotationWidth > viewportWidth) {
+        finalLeft = viewportWidth - annotationWidth - 10;
       }
-      if (left < 10) {
-        left = 10;
+      if (finalLeft < 10) {
+        finalLeft = 10;
       }
-      if (top + annotationHeight > viewportHeight) {
-        top = viewportHeight - annotationHeight - 10;
+      if (finalTop + annotationHeight > viewportHeight) {
+        finalTop = viewportHeight - annotationHeight - 10;
       }
-      if (top < 10) {
-        top = 10;
+      if (finalTop < 10) {
+        finalTop = 10;
       }
 
       const finalStyle = {
         position: 'fixed' as const,
-        top: `${top}px`,
-        left: `${left}px`,
-        transform,
+        top: `${finalTop}px`,
+        left: `${finalLeft}px`,
         zIndex: 1000,
         width: isEditing ? '350px' : 'auto',
         maxWidth: isEditing ? '350px' : '250px',
@@ -134,9 +122,13 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
         pointerEvents: 'auto' as const
       };
 
-      console.log('🔍 Final annotation style:', {
+      console.log('🔍 Annotation positioning:', {
         id: annotation.id,
-        style: finalStyle
+        basePosition: { x: baseX, y: baseY },
+        placement: annotation.placement,
+        offset: { x: offsetX, y: offsetY },
+        finalPosition: { left: finalLeft, top: finalTop },
+        isEditing
       });
 
       return finalStyle;
