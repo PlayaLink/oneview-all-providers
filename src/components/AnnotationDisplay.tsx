@@ -13,6 +13,7 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
   const [visibleAnnotations, setVisibleAnnotations] = useState<Annotation[]>([]);
   const [editingAnnotationId, setEditingAnnotationId] = useState<string | null>(null);
   const [editText, setEditText] = useState<string>('');
+  const [hoveredAnnotationId, setHoveredAnnotationId] = useState<string | null>(null);
 
     // Filter annotations for current page and branch
   useEffect(() => {
@@ -234,109 +235,115 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
             }}
             title={`Annotation: ${annotation.text.substring(0, 50)}${annotation.text.length > 50 ? '...' : ''}`}
             onClick={() => handleAnnotationClick(annotation)}
+            onMouseEnter={() => setHoveredAnnotationId(annotation.id)}
+            onMouseLeave={() => setHoveredAnnotationId(null)}
           />
         );
       })}
 
       {/* Annotations */}
       <div data-annotation-display="true">
-        {visibleAnnotations.map((annotation) => (
-          <div
-            key={annotation.id}
-            style={getAnnotationStyle(annotation)}
-            onClick={() => handleAnnotationClick(annotation)}
-            title="Click to highlight the annotated element"
-          >
-                         <div className="flex items-start justify-between gap-2">
-               <div className="flex-1">
-                 <div className="flex items-center justify-between">
-                   <div className="font-medium text-gray-900">
-                     {annotation.gitBranch && (
-                       <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                         {annotation.gitBranch}
-                       </span>
-                     )}
-                   </div>
-                   <div className="flex items-center gap-1">
-                     <Button
-                       variant="ghost"
-                       size="sm"
-                       onClick={(e) => handleEditClick(e, annotation)}
-                       className="h-6 w-6 p-0 flex-shrink-0"
-                       title="Edit annotation"
-                     >
-                       <Icon icon="pen-to-square" size="sm" />
-                     </Button>
-                     <Button
-                       variant="ghost"
-                       size="sm"
-                       onClick={async (e) => {
-                         e.stopPropagation();
-                         try {
-                           await removeAnnotation(annotation.id);
-                         } catch (error) {
-                           console.error('Error removing annotation:', error);
-                           // You might want to show a toast notification here
-                         }
-                       }}
-                       className="h-6 w-6 p-0 flex-shrink-0"
-                       title="Delete annotation"
-                     >
-                       <Icon icon="trash" size="sm" />
-                     </Button>
-                   </div>
-                 </div>
+        {visibleAnnotations.map((annotation) => 
+          hoveredAnnotationId === annotation.id ? (
+            <div
+              key={annotation.id}
+              style={getAnnotationStyle(annotation)}
+              onClick={() => handleAnnotationClick(annotation)}
+              title="Click to highlight the annotated element"
+              onMouseEnter={() => setHoveredAnnotationId(annotation.id)}
+              onMouseLeave={() => setHoveredAnnotationId(null)}
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <div className="font-medium text-gray-900">
+                      {annotation.gitBranch && (
+                        <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                          {annotation.gitBranch}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => handleEditClick(e, annotation)}
+                        className="h-6 w-6 p-0 flex-shrink-0"
+                        title="Edit annotation"
+                      >
+                        <Icon icon="pen-to-square" size="sm" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          try {
+                            await removeAnnotation(annotation.id);
+                          } catch (error) {
+                            console.error('Error removing annotation:', error);
+                            // You might want to show a toast notification here
+                          }
+                        }}
+                        className="h-6 w-6 p-0 flex-shrink-0"
+                        title="Delete annotation"
+                      >
+                        <Icon icon="trash" size="sm" />
+                      </Button>
+                    </div>
+                  </div>
 
-                 {editingAnnotationId === annotation.id ? (
-                   <div className="mt-2">
-                     <textarea
-                       value={editText}
-                       onChange={(e) => setEditText(e.target.value)}
-                       className="w-full p-2 text-sm border border-gray-300 rounded resize-none"
-                       rows={3}
-                       autoFocus
-                       onKeyDown={(e) => {
-                         if (e.key === 'Enter' && e.metaKey) {
-                           handleSaveEdit(annotation.id);
-                         } else if (e.key === 'Escape') {
-                           handleCancelEdit();
-                         }
-                       }}
-                     />
-                     <div className="flex gap-2 mt-2 flex-1 justify-end">
-                       <Button
-                         variant="outline"
-                         size="sm"
-                         onClick={handleCancelEdit}
-                         className="h-6 px-2 text-xs"
-                       >
-                         <Icon icon="xmark" size="sm" />
-                         Cancel
-                       </Button>
-                       <Button
-                         size="sm"
-                         onClick={() => handleSaveEdit(annotation.id)}
-                         className="h-6 px-2 text-xs"
-                       >
-                         <Icon icon="check" size="sm" />
-                         Save
-                       </Button>
-                     </div>
-                   </div>
-                 ) : (
-                   <div 
-                     data-annotation-text="true" 
-                     className="ml-1 text-gray-700 text-sm leading-relaxed mt-1 cursor-pointer hover:bg-gray-50 p-1 rounded"
-                     onClick={(e) => handleEditClick(e, annotation)}
-                     title="Click to edit annotation"
-                   >
-                     {annotation.text}
-                   </div>
-                 )}
-               </div>
-             </div>
-          </div>
-        ))}
+                  {editingAnnotationId === annotation.id ? (
+                    <div className="mt-2">
+                      <textarea
+                        value={editText}
+                        onChange={(e) => setEditText(e.target.value)}
+                        className="w-full p-2 text-sm border border-gray-300 rounded resize-none"
+                        rows={3}
+                        autoFocus
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && e.metaKey) {
+                            handleSaveEdit(annotation.id);
+                          } else if (e.key === 'Escape') {
+                            handleCancelEdit();
+                          }
+                        }}
+                      />
+                      <div className="flex gap-2 mt-2 flex-1 justify-end">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleCancelEdit}
+                          className="h-6 px-2 text-xs"
+                        >
+                          <Icon icon="xmark" size="sm" />
+                          Cancel
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => handleSaveEdit(annotation.id)}
+                          className="h-6 px-2 text-xs"
+                        >
+                          <Icon icon="check" size="sm" />
+                          Save
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div 
+                      data-annotation-text="true" 
+                      className="ml-1 text-gray-700 text-sm leading-relaxed mt-1 cursor-pointer hover:bg-gray-50 p-1 rounded"
+                      onClick={(e) => handleEditClick(e, annotation)}
+                      title="Click to edit annotation"
+                    >
+                      {annotation.text}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : null
+        )}
       </div>
     </>
   );
