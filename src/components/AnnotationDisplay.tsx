@@ -2,15 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useAnnotations } from '../hooks/useAnnotations';
 import { Annotation } from '../types/annotations';
 import { Button } from './ui/button';
-import { X, MessageSquare } from 'lucide-react';
+import { X, MessageSquare, Edit2, Check, X as XIcon } from 'lucide-react';
 
 interface AnnotationDisplayProps {
   isAnnotationMode: boolean;
 }
 
 export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) {
-  const { annotations, removeAnnotation, currentBranch, deploymentInfo } = useAnnotations();
+  const { annotations, removeAnnotation, updateAnnotation, currentBranch, deploymentInfo } = useAnnotations();
   const [visibleAnnotations, setVisibleAnnotations] = useState<Annotation[]>([]);
+  const [editingAnnotationId, setEditingAnnotationId] = useState<string | null>(null);
+  const [editText, setEditText] = useState<string>('');
 
   // Filter annotations for current page and branch
   useEffect(() => {
@@ -128,6 +130,27 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
     }
   };
 
+  const handleEditClick = (e: React.MouseEvent, annotation: Annotation) => {
+    e.stopPropagation();
+    setEditingAnnotationId(annotation.id);
+    setEditText(annotation.text);
+  };
+
+  const handleSaveEdit = async (annotationId: string) => {
+    try {
+      await updateAnnotation(annotationId, { text: editText });
+      setEditingAnnotationId(null);
+      setEditText('');
+    } catch (error) {
+      console.error('Error updating annotation:', error);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingAnnotationId(null);
+    setEditText('');
+  };
+
   if (!isAnnotationMode || visibleAnnotations.length === 0) {
     return null;
   }
@@ -193,27 +216,82 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
                        </span>
                      )}
                    </div>
-                   <Button
-                     variant="ghost"
-                     size="sm"
-                     onClick={async (e) => {
-                       e.stopPropagation();
-                       try {
-                         await removeAnnotation(annotation.id);
-                       } catch (error) {
-                         console.error('Error removing annotation:', error);
-                         // You might want to show a toast notification here
-                       }
-                     }}
-                     className="h-6 w-6 p-0 flex-shrink-0"
-                   >
-                     <X className="h-4 w-4" />
-                   </Button>
+                   <div className="flex items-center gap-1">
+                     <Button
+                       variant="ghost"
+                       size="sm"
+                       onClick={(e) => handleEditClick(e, annotation)}
+                       className="h-6 w-6 p-0 flex-shrink-0"
+                       title="Edit annotation"
+                     >
+                       <Edit2 className="h-3 w-3" />
+                     </Button>
+                     <Button
+                       variant="ghost"
+                       size="sm"
+                       onClick={async (e) => {
+                         e.stopPropagation();
+                         try {
+                           await removeAnnotation(annotation.id);
+                         } catch (error) {
+                           console.error('Error removing annotation:', error);
+                           // You might want to show a toast notification here
+                         }
+                       }}
+                       className="h-6 w-6 p-0 flex-shrink-0"
+                       title="Delete annotation"
+                     >
+                       <X className="h-4 w-4" />
+                     </Button>
+                   </div>
                  </div>
 
-                 <div className="ml-1 text-gray-700 text-sm leading-relaxed mt-1">
-                   {annotation.text}
-                 </div>
+                 {editingAnnotationId === annotation.id ? (
+                   <div className="mt-2">
+                     <textarea
+                       value={editText}
+                       onChange={(e) => setEditText(e.target.value)}
+                       className="w-full p-2 text-sm border border-gray-300 rounded resize-none"
+                       rows={3}
+                       autoFocus
+                       onKeyDown={(e) => {
+                         if (e.key === 'Enter' && e.metaKey) {
+                           handleSaveEdit(annotation.id);
+                         } else if (e.key === 'Escape') {
+                           handleCancelEdit();
+                         }
+                       }}
+                     />
+                     <div className="flex gap-2 mt-2">
+                       <Button
+                         size="sm"
+                         onClick={() => handleSaveEdit(annotation.id)}
+                         className="h-6 px-2 text-xs"
+                       >
+                         <Check className="h-3 w-3 mr-1" />
+                         Save
+                       </Button>
+                       <Button
+                         variant="outline"
+                         size="sm"
+                         onClick={handleCancelEdit}
+                         className="h-6 px-2 text-xs"
+                       >
+                         <XIcon className="h-3 w-3 mr-1" />
+                         Cancel
+                       </Button>
+                     </div>
+                   </div>
+                 ) : (
+                   <div 
+                     data-annotation-text="true" 
+                     className="ml-1 text-gray-700 text-sm leading-relaxed mt-1 cursor-pointer hover:bg-gray-50 p-1 rounded"
+                     onClick={(e) => handleEditClick(e, annotation)}
+                     title="Click to edit annotation"
+                   >
+                     {annotation.text}
+                   </div>
+                 )}
                </div>
              </div>
           </div>

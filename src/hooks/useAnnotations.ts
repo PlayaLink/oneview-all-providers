@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Annotation } from '../types/annotations';
-import { fetchAnnotations, addAnnotation as addAnnotationToDb, deleteAnnotation as deleteAnnotationFromDb } from '../lib/supabaseClient';
+import { fetchAnnotations, addAnnotation as addAnnotationToDb, deleteAnnotation as deleteAnnotationFromDb, updateAnnotation as updateAnnotationInDb } from '../lib/supabaseClient';
 import { getCurrentGitBranch, getDeploymentBranchInfo } from '../lib/gitUtils';
 
 export function useAnnotations() {
@@ -108,6 +108,19 @@ export function useAnnotations() {
     }
   };
 
+  // Update an annotation
+  const updateAnnotation = async (id: string, updates: Partial<Pick<Annotation, 'text'>>) => {
+    try {
+      await updateAnnotationInDb(id, updates);
+      setAnnotations(prev => prev.map(ann => 
+        ann.id === id ? { ...ann, ...updates } : ann
+      ));
+    } catch (error) {
+      console.error('Error updating annotation:', error);
+      throw error;
+    }
+  };
+
   // Get annotations for current page
   const getPageAnnotations = (pageUrl: string) => {
     return annotations.filter(ann => ann.pageUrl === pageUrl);
@@ -135,6 +148,7 @@ export function useAnnotations() {
     deploymentInfo,
     addAnnotation,
     removeAnnotation,
+    updateAnnotation,
     getPageAnnotations,
     getCurrentPageAnnotations,
     getCurrentBranchAnnotations,
