@@ -6,7 +6,9 @@ export interface Annotation {
     x: number;
     y: number;
   };
+  placement: 'top' | 'bottom' | 'left' | 'right';
   pageUrl: string;
+  gitBranch?: string;
   timestamp: string;
 }
 

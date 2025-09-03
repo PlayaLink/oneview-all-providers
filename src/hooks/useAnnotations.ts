@@ -1,40 +1,95 @@
 import { useState, useEffect } from 'react';
-import { Annotation, AnnotationsData } from '../types/annotations';
-import annotationsData from '../data/annotations.json';
+import { Annotation } from '../types/annotations';
+import { fetchAnnotations, addAnnotation as addAnnotationToDb, deleteAnnotation as deleteAnnotationFromDb } from '../lib/supabaseClient';
+import { getCurrentGitBranch, getDeploymentBranchInfo } from '../lib/gitUtils';
 
 export function useAnnotations() {
-  const [annotations, setAnnotations] = useState<Annotation[]>(annotationsData.annotations);
+  const [annotations, setAnnotations] = useState<Annotation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [currentBranch, setCurrentBranch] = useState<string | null>(null);
+  const [deploymentInfo, setDeploymentInfo] = useState<{
+    branch: string | null;
+    environment: 'development' | 'preview' | 'production';
+    deploymentUrl: string | null;
+  } | null>(null);
 
-  // Save annotations to the JSON file (in a real app, this would write to disk)
-  const saveAnnotations = (newAnnotations: Annotation[]) => {
-    setAnnotations(newAnnotations);
-    // In a real implementation, you'd write to the JSON file here
-    // For now, we'll log the updated JSON so you can copy it to the file
-    const updatedData = {
-      annotations: newAnnotations
-    };
-    console.log('📝 Updated annotations.json:');
-    console.log(JSON.stringify(updatedData, null, 2));
-    console.log('📝 Copy the above JSON to src/data/annotations.json');
+  // Fetch annotations from Supabase
+  const fetchAllAnnotations = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchAnnotations();
+      setAnnotations(data);
+    } catch (error) {
+      console.error('Error fetching annotations:', error);
+      setAnnotations([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Add a new annotation
-  const addAnnotation = (annotation: Omit<Annotation, 'id' | 'timestamp'>) => {
-    const newAnnotation: Annotation = {
-      ...annotation,
-      id: `ann_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      timestamp: new Date().toISOString(),
+  // Load annotations on mount
+  useEffect(() => {
+    const initializeAnnotations = async () => {
+      try {
+        // Get deployment info first
+        const deploymentInfo = await getDeploymentBranchInfo();
+        setDeploymentInfo(deploymentInfo);
+        setCurrentBranch(deploymentInfo.branch);
+        
+        // Fetch all annotations
+        await fetchAllAnnotations();
+      } catch (error) {
+        console.error('Error initializing annotations:', error);
+        setLoading(false);
+      }
     };
     
-    const updatedAnnotations = [...annotations, newAnnotation];
-    saveAnnotations(updatedAnnotations);
-    return newAnnotation;
+    initializeAnnotations();
+  }, []);
+
+  // Add a new annotation
+  const addAnnotation = async (annotation: Omit<Annotation, 'id' | 'timestamp'>) => {
+    try {
+      const gitBranch = getCurrentGitBranch();
+      
+      const data = await addAnnotationToDb({
+        text: annotation.text,
+        element_selector: annotation.elementSelector,
+        position_x: annotation.position.x,
+        position_y: annotation.position.y,
+        placement: annotation.placement,
+        page_url: annotation.pageUrl,
+        git_branch: gitBranch || undefined,
+      });
+      
+      const newAnnotation: Annotation = {
+        id: data[0].id,
+        text: data[0].text,
+        elementSelector: data[0].element_selector,
+        position: { x: data[0].position_x, y: data[0].position_y },
+        placement: data[0].placement,
+        pageUrl: data[0].page_url,
+        gitBranch: data[0].git_branch,
+        timestamp: data[0].created_at,
+      };
+      
+      setAnnotations(prev => [newAnnotation, ...prev]);
+      return newAnnotation;
+    } catch (error) {
+      console.error('Error adding annotation:', error);
+      throw error;
+    }
   };
 
   // Remove an annotation
-  const removeAnnotation = (id: string) => {
-    const updatedAnnotations = annotations.filter(ann => ann.id !== id);
-    saveAnnotations(updatedAnnotations);
+  const removeAnnotation = async (id: string) => {
+    try {
+      await deleteAnnotationFromDb(id);
+      setAnnotations(prev => prev.filter(ann => ann.id !== id));
+    } catch (error) {
+      console.error('Error removing annotation:', error);
+      throw error;
+    }
   };
 
   // Get annotations for current page
@@ -42,11 +97,31 @@ export function useAnnotations() {
     return annotations.filter(ann => ann.pageUrl === pageUrl);
   };
 
+  // Get annotations for current page and branch
+  const getCurrentPageAnnotations = (pageUrl: string) => {
+    return annotations.filter(ann => {
+      const pageMatch = ann.pageUrl === pageUrl;
+      const branchMatch = !currentBranch || !ann.gitBranch || ann.gitBranch === currentBranch;
+      return pageMatch && branchMatch;
+    });
+  };
+
+  // Get all annotations for current branch
+  const getCurrentBranchAnnotations = () => {
+    if (!currentBranch) return annotations; // Show all if no branch detected
+    return annotations.filter(ann => !ann.gitBranch || ann.gitBranch === currentBranch);
+  };
+
   return {
     annotations,
+    loading,
+    currentBranch,
+    deploymentInfo,
     addAnnotation,
     removeAnnotation,
     getPageAnnotations,
-    saveAnnotations,
+    getCurrentPageAnnotations,
+    getCurrentBranchAnnotations,
+    refetch: fetchAllAnnotations,
   };
 }

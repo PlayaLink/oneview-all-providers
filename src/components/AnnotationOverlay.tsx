@@ -18,9 +18,6 @@ export function AnnotationOverlay({ children, isAnnotationMode, toggleAnnotation
   const [clickPosition, setClickPosition] = useState<{ x: number; y: number } | null>(null);
   const [showForm, setShowForm] = useState(false);
 
-  // Debug: Show annotation mode status
-  console.log('🔍 AnnotationOverlay - isAnnotationMode:', isAnnotationMode);
-
   // Listen for toggle events from the switch
   useEffect(() => {
     const handleToggleEvent = (event: CustomEvent) => {
@@ -36,7 +33,6 @@ export function AnnotationOverlay({ children, isAnnotationMode, toggleAnnotation
   }, [isAnnotationMode, toggleAnnotationMode]);
 
   useEffect(() => {
-    console.log('🔍 AnnotationOverlay - useEffect running, isAnnotationMode:', isAnnotationMode);
     if (!isAnnotationMode) {
       setHoveredElement(null);
       setClickedElement(null);
@@ -104,17 +100,12 @@ export function AnnotationOverlay({ children, isAnnotationMode, toggleAnnotation
     const handleMouseOver = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       
-      console.log('🔍 Mouse over:', target.tagName, target.className);
-      
       // Skip if hovering over annotation form, display elements, or the annotation mode pill
       if (target.closest('[data-annotation-form]') || 
           target.closest('[data-annotation-display]') ||
           target.closest('[data-annotation-mode-pill]')) {
-        console.log('🔍 Skipping annotation element');
         return;
       }
-
-      console.log('🔍 Processing mouse over for element:', target.tagName);
 
       // Remove previous outline
       const previousOutlined = document.querySelector('[data-annotation-outline]');
@@ -123,7 +114,6 @@ export function AnnotationOverlay({ children, isAnnotationMode, toggleAnnotation
         element.removeAttribute('data-annotation-outline');
         element.style.outline = '';
         element.style.boxShadow = '';
-        console.log('🔍 Removed previous outline');
       }
 
       // Add outline to current element with more visible styling
@@ -131,9 +121,6 @@ export function AnnotationOverlay({ children, isAnnotationMode, toggleAnnotation
       target.style.setProperty('outline', '3px solid #F48100', 'important');
       target.style.setProperty('outline-offset', '2px', 'important');
       target.style.setProperty('box-shadow', '0 0 0 2px rgba(244, 129, 0, 0.3)', 'important');
-      
-      console.log('🔍 Applied outline to:', target.tagName, target.className);
-      console.log('🔍 Element style after outline:', target.style.outline, target.style.boxShadow);
       
       setHoveredElement(target);
     };
@@ -153,27 +140,20 @@ export function AnnotationOverlay({ children, isAnnotationMode, toggleAnnotation
     const handleClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       
-      console.log('🔍 Click detected on:', target.tagName, target.className);
-      
       // Skip if clicking on annotation form, display elements, or the annotation mode pill
       if (target.closest('[data-annotation-form]') || 
           target.closest('[data-annotation-display]') ||
           target.closest('[data-annotation-mode-pill]')) {
-        console.log('🔍 Click skipped - annotation element');
         return;
       }
 
       event.preventDefault();
       event.stopPropagation();
       
-      console.log('🔍 Setting form state - element:', target.tagName, 'position:', { x: event.clientX, y: event.clientY });
-      
       // Store the clicked element and position for the annotation form
       setClickedElement(target);
       setClickPosition({ x: event.clientX, y: event.clientY });
       setShowForm(true);
-      
-      console.log('🔍 Form should now be visible');
     };
 
     if (isAnnotationMode) {
@@ -250,7 +230,6 @@ export function AnnotationOverlay({ children, isAnnotationMode, toggleAnnotation
       {children}
       {showForm && (
         <>
-          {console.log('🔍 Rendering AnnotationForm - showForm:', showForm, 'clickedElement:', clickedElement, 'clickPosition:', clickPosition)}
           <AnnotationForm
             element={clickedElement}
             position={clickPosition}

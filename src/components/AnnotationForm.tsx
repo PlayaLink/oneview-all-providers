@@ -16,8 +16,6 @@ export function AnnotationForm({ element, position, onClose, isAnnotationMode }:
   const [text, setText] = useState('');
   const { addAnnotation } = useAnnotations();
 
-  console.log('🔍 AnnotationForm component rendered with props:', { element, position, isAnnotationMode });
-
   useEffect(() => {
     if (!isAnnotationMode) {
       onClose();
@@ -25,11 +23,10 @@ export function AnnotationForm({ element, position, onClose, isAnnotationMode }:
   }, [isAnnotationMode, onClose]);
 
   if (!element || !position || !isAnnotationMode) {
-    console.log('🔍 AnnotationForm returning null - missing props:', { element: !!element, position: !!position, isAnnotationMode });
     return null;
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!text.trim()) return;
@@ -44,18 +41,45 @@ export function AnnotationForm({ element, position, onClose, isAnnotationMode }:
       return el.tagName.toLowerCase();
     };
 
+    // Calculate best placement for the annotation
+    const calculatePlacement = (el: HTMLElement, clickPos: { x: number; y: number }): 'top' | 'bottom' | 'left' | 'right' => {
+      const rect = el.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      
+      // Calculate available space in each direction
+      const spaceAbove = rect.top;
+      const spaceBelow = viewportHeight - rect.bottom;
+      const spaceLeft = rect.left;
+      const spaceRight = viewportWidth - rect.right;
+      
+      // Determine best placement based on available space
+      // Prefer right, then left, then bottom, then top
+      if (spaceRight >= 200) return 'right';
+      if (spaceLeft >= 200) return 'left';
+      if (spaceBelow >= 100) return 'bottom';
+      return 'top';
+    };
+
     const elementSelector = generateSelector(element);
     const pageUrl = window.location.pathname;
+    const placement = calculatePlacement(element, position);
 
-    addAnnotation({
-      text: text.trim(),
-      elementSelector,
-      position,
-      pageUrl,
-    });
+    try {
+      await addAnnotation({
+        text: text.trim(),
+        elementSelector,
+        position,
+        placement,
+        pageUrl,
+      });
 
-    setText('');
-    onClose();
+      setText('');
+      onClose();
+    } catch (error) {
+      console.error('Error saving annotation:', error);
+      // You might want to show a toast notification here
+    }
   };
 
   const handleCancel = () => {
@@ -78,8 +102,6 @@ export function AnnotationForm({ element, position, onClose, isAnnotationMode }:
     minWidth: '300px',
     maxWidth: '400px',
   };
-
-  console.log('🔍 AnnotationForm rendering with position:', position, 'style:', formStyle);
 
   return (
     <div data-annotation-form="true" style={formStyle}>

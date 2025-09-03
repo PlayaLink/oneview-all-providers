@@ -1143,6 +1143,96 @@ export async function searchFacilityProperties(searchTerm: string, filters?: {
   return FacilityPropertySchema.array().parse(data);
 }
 
+// --- ANNOTATIONS HELPERS ---
+
+export const AnnotationSchema = z.object({
+  id: z.string(),
+  text: z.string(),
+  element_selector: z.string(),
+  position_x: z.number(),
+  position_y: z.number(),
+  placement: z.enum(['top', 'bottom', 'left', 'right']),
+  page_url: z.string(),
+  git_branch: z.string().nullable().optional(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export function fetchAnnotations() {
+  return dbFetch('annotations', '*', AnnotationSchema).then(data => {
+    console.log('🔍 Raw annotation data from database:', data);
+    
+    // Transform the data to match the Annotation interface
+    const transformed = data.map(row => ({
+      ...row,
+      position: {
+        x: row.position_x,
+        y: row.position_y
+      }
+    }));
+    
+    console.log('🔍 Transformed annotation data:', transformed);
+    return transformed;
+  });
+}
+
+export async function fetchAnnotationsByPage(pageUrl: string) {
+  const { data, error } = await supabase
+    .from('annotations')
+    .select('*')
+    .eq('page_url', pageUrl)
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  
+  // Transform the data to match the Annotation interface
+  return data.map(row => ({
+    ...row,
+    position: {
+      x: row.position_x,
+      y: row.position_y
+    }
+  }));
+}
+
+export async function addAnnotation(data: {
+  text: string;
+  element_selector: string;
+  position_x: number;
+  position_y: number;
+  placement: 'top' | 'bottom' | 'left' | 'right';
+  page_url: string;
+  git_branch?: string;
+}) {
+  try {
+    return await dbInsert('annotations', [data], AnnotationSchema);
+  } catch (error) {
+    console.error('Error adding annotation:', error);
+    
+    // If it's an RLS error, provide helpful error message
+    if (error && typeof error === 'object' && 'code' in error && error.code === '42501') {
+      console.error('RLS policy blocked insert. Please run the update-annotations-rls.sql script in Supabase.');
+      throw new Error('Authentication required. Please check RLS policies or authenticate.');
+    }
+    
+    throw error;
+  }
+}
+
+export async function updateAnnotation(id: string, data: {
+  text?: string;
+  element_selector?: string;
+  position_x?: number;
+  position_y?: number;
+  placement?: 'top' | 'bottom' | 'left' | 'right';
+  page_url?: string;
+}) {
+  return dbUpdate('annotations', id, data, AnnotationSchema);
+}
+
+export async function deleteAnnotation(id: string) {
+  return dbDelete('annotations', id);
+}
+
 // --- CONTACTS HELPERS ---
 
 export const ContactSchema = z.object({
