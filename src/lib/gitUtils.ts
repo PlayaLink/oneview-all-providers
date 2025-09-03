@@ -39,10 +39,21 @@ export async function getDeploymentBranchInfo(): Promise<{
     const hostname = window.location.hostname;
     const isVercel = hostname.includes('vercel.app');
     
+    console.log('🔍 Git Utils Debug:', {
+      hostname,
+      isVercel,
+      VITE_GIT_BRANCH: import.meta.env.VITE_GIT_BRANCH,
+      VITE_VERCEL_GIT_COMMIT_REF: import.meta.env.VITE_VERCEL_GIT_COMMIT_REF,
+      metaBranch: document.querySelector('meta[name="git-branch"]')?.getAttribute('content'),
+      allEnvVars: Object.keys(import.meta.env).filter(key => key.includes('GIT') || key.includes('VERCEL'))
+    });
+    
     // Development environment
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      const branch = import.meta.env.VITE_GIT_BRANCH || null;
+      console.log('🔍 Development environment, branch:', branch);
       return {
-        branch: import.meta.env.VITE_GIT_BRANCH || null,
+        branch,
         environment: 'development',
         deploymentUrl: null
       };
