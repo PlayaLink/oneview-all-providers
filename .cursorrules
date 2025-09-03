@@ -2,8 +2,11 @@
 
 ## Git Commit Rules
 - **NEVER commit changes unless the user explicitly asks you to commit**
-- Always wait for the user to say "commit changes" or similar before running git commands
+- **EXPLICIT PERMISSION REQUIRED**: Only commit when user says "commit changes", "commit", "save changes", or similar explicit command
+- **DO NOT COMMIT** when user says "ok", "good", "thanks", "that works", or any other non-commit phrases
+- **DO NOT COMMIT** after making changes - always wait for explicit commit instruction
 - If you make changes, inform the user what was changed but don't commit automatically
+- When user asks to commit, ask for confirmation if there are console logs present
 
 ## Accessibility and Testing Requirements
 - **ALWAYS add semantic accessibility attributes to all new UI components and functionality:**
