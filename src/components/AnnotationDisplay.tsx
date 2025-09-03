@@ -14,16 +14,31 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
   const [editingAnnotationId, setEditingAnnotationId] = useState<string | null>(null);
   const [editText, setEditText] = useState<string>('');
 
-  // Filter annotations for current page and branch
+    // Filter annotations for current page and branch
   useEffect(() => {
     const currentPageAnnotations = annotations.filter(ann => {
       // Only show annotations for the current page
       const pageMatch = ann.pageUrl === window.location.pathname;
       // Only show annotations that match the current branch (or have no branch specified)
       const branchMatch = !currentBranch || !ann.gitBranch || ann.gitBranch === currentBranch;
-
+      
       return pageMatch && branchMatch;
     });
+    
+    console.log('🔍 Filtered annotations:', {
+      totalAnnotations: annotations.length,
+      currentPage: window.location.pathname,
+      currentBranch,
+      filteredCount: currentPageAnnotations.length,
+      annotations: currentPageAnnotations.map(ann => ({
+        id: ann.id,
+        pageUrl: ann.pageUrl,
+        gitBranch: ann.gitBranch,
+        elementSelector: ann.elementSelector,
+        placement: ann.placement
+      }))
+    });
+    
     setVisibleAnnotations(currentPageAnnotations);
   }, [annotations, currentBranch]);
 
@@ -34,12 +49,25 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
   const getAnnotationStyle = (annotation: Annotation): React.CSSProperties => {
     try {
       const element = document.querySelector(annotation.elementSelector) as HTMLElement;
-      if (!element) return { display: 'none' };
+      if (!element) {
+        console.warn('🔍 Annotation element not found:', annotation.elementSelector);
+        return { display: 'none' };
+      }
 
       const rect = element.getBoundingClientRect();
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
       const isEditing = editingAnnotationId === annotation.id;
+
+      // Debug positioning
+      console.log('🔍 Annotation positioning debug:', {
+        id: annotation.id,
+        elementSelector: annotation.elementSelector,
+        elementRect: rect,
+        viewport: { width: viewportWidth, height: viewportHeight },
+        placement: annotation.placement,
+        isEditing
+      });
 
       // Base positioning
       let top = 0;
@@ -87,8 +115,8 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
         top = 10;
       }
 
-      return {
-        position: 'fixed',
+      const finalStyle = {
+        position: 'fixed' as const,
         top: `${top}px`,
         left: `${left}px`,
         transform,
@@ -103,8 +131,15 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
         fontSize: '12px',
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
         cursor: isEditing ? 'default' : 'pointer',
-        pointerEvents: 'auto'
+        pointerEvents: 'auto' as const
       };
+
+      console.log('🔍 Final annotation style:', {
+        id: annotation.id,
+        style: finalStyle
+      });
+
+      return finalStyle;
     } catch (error) {
       console.error('Error calculating annotation position:', error);
       return { display: 'none' };
@@ -266,15 +301,7 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
                          }
                        }}
                      />
-                     <div className="flex gap-2 mt-2">
-                       <Button
-                         size="sm"
-                         onClick={() => handleSaveEdit(annotation.id)}
-                         className="h-6 px-2 text-xs"
-                       >
-                         <Icon icon="check" size="sm" />
-                         Save
-                       </Button>
+                     <div className="flex gap-2 mt-2 flex-1 justify-end">
                        <Button
                          variant="outline"
                          size="sm"
@@ -283,6 +310,14 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
                        >
                          <Icon icon="xmark" size="sm" />
                          Cancel
+                       </Button>
+                       <Button
+                         size="sm"
+                         onClick={() => handleSaveEdit(annotation.id)}
+                         className="h-6 px-2 text-xs"
+                       >
+                         <Icon icon="check" size="sm" />
+                         Save
                        </Button>
                      </div>
                    </div>
