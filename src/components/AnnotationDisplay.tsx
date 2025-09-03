@@ -19,7 +19,7 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
       const pageMatch = ann.pageUrl === window.location.pathname;
       // Only show annotations that match the current branch (or have no branch specified)
       const branchMatch = !currentBranch || !ann.gitBranch || ann.gitBranch === currentBranch;
-      
+
       return pageMatch && branchMatch;
     });
     setVisibleAnnotations(currentPageAnnotations);
@@ -37,12 +37,12 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
       const rect = element.getBoundingClientRect();
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
-      
+
       // Base positioning
       let top = 0;
       let left = 0;
       let transform = '';
-      
+
       switch (annotation.placement) {
         case 'right':
           top = rect.top + rect.height / 2;
@@ -65,11 +65,11 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
           transform = 'translateX(-50%) translateY(-100%)';
           break;
       }
-      
+
       // Ensure annotation stays within viewport
       const annotationWidth = 250;
       const annotationHeight = 100;
-      
+
       if (left + annotationWidth > viewportWidth) {
         left = viewportWidth - annotationWidth - 10;
       }
@@ -111,12 +111,12 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
       if (element) {
         // Scroll to the element
         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        
+
         // Temporarily highlight the element
         element.style.outline = '3px solid #F48100';
         element.style.outlineOffset = '2px';
         element.style.boxShadow = '0 0 0 2px rgba(244, 129, 0, 0.3)';
-        
+
         setTimeout(() => {
           element.style.outline = '';
           element.style.outlineOffset = '';
@@ -151,14 +151,14 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
           </div>
         </div>
       )}
-      
+
       {/* Annotation Location Dots */}
       {visibleAnnotations.map((annotation) => {
         // Safety check for missing position data
         if (!annotation.position || typeof annotation.position.x !== 'number' || typeof annotation.position.y !== 'number') {
           return null;
         }
-        
+
         return (
           <div
             key={`dot-${annotation.id}`}
@@ -173,50 +173,52 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
           />
         );
       })}
-      
+
       {/* Annotations */}
       <div data-annotation-display="true">
-      {visibleAnnotations.map((annotation) => (
-        <div
-          key={annotation.id}
-          style={getAnnotationStyle(annotation)}
-          onClick={() => handleAnnotationClick(annotation)}
-          title="Click to highlight the annotated element"
-        >
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex-1">
-              <div className="font-medium text-gray-900 mb-1">
-                📝 Annotation
-                {annotation.gitBranch && (
-                  <span className="ml-2 text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                    {annotation.gitBranch}
-                  </span>
-                )}
-              </div>
-              <div className="text-gray-700 text-sm leading-relaxed">
-                {annotation.text}
-              </div>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={async (e) => {
-                e.stopPropagation();
-                try {
-                  await removeAnnotation(annotation.id);
-                } catch (error) {
-                  console.error('Error removing annotation:', error);
-                  // You might want to show a toast notification here
-                }
-              }}
-              className="h-6 w-6 p-0 flex-shrink-0"
-            >
-              <X className="h-4 w-4" />
-            </Button>
+        {visibleAnnotations.map((annotation) => (
+          <div
+            key={annotation.id}
+            style={getAnnotationStyle(annotation)}
+            onClick={() => handleAnnotationClick(annotation)}
+            title="Click to highlight the annotated element"
+          >
+                         <div className="flex items-start justify-between gap-2">
+               <div className="flex-1">
+                 <div className="flex items-center justify-between">
+                   <div className="font-medium text-gray-900">
+                     {annotation.gitBranch && (
+                       <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                         {annotation.gitBranch}
+                       </span>
+                     )}
+                   </div>
+                   <Button
+                     variant="ghost"
+                     size="sm"
+                     onClick={async (e) => {
+                       e.stopPropagation();
+                       try {
+                         await removeAnnotation(annotation.id);
+                       } catch (error) {
+                         console.error('Error removing annotation:', error);
+                         // You might want to show a toast notification here
+                       }
+                     }}
+                     className="h-6 w-6 p-0 flex-shrink-0"
+                   >
+                     <X className="h-4 w-4" />
+                   </Button>
+                 </div>
+
+                 <div className="ml-1 text-gray-700 text-sm leading-relaxed mt-1">
+                   {annotation.text}
+                 </div>
+               </div>
+             </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
     </>
   );
 }
