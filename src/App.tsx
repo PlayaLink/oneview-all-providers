@@ -16,7 +16,12 @@ import { useAnnotationMode } from "./hooks/useAnnotationMode";
 import { AnnotationOverlay } from "./components/AnnotationOverlay";
 import { AnnotationDisplay } from "./components/AnnotationDisplay";
 
-const AuthWrapper = ({ user, loading }: { user: any, loading: boolean }) => {
+const AuthWrapper = ({ user, loading, isAnnotationMode, setAnnotationMode }: { 
+  user: any, 
+  loading: boolean,
+  isAnnotationMode: boolean,
+  setAnnotationMode: (value: boolean) => void
+}) => {
   const { value: requireAuth, isLoading: flagLoading } = useFeatureFlag("user_authentication");
 
   // Helper to get or create a dummy user for the session
@@ -58,7 +63,7 @@ const AuthWrapper = ({ user, loading }: { user: any, loading: boolean }) => {
       {/* Redirect home to /team */}
       <Route path="/" element={<Navigate to="/team" replace />} />
       {/* Main app layout and routes */}
-      <Route element={<AppLayout user={effectiveUser} />}>
+              <Route element={<AppLayout user={effectiveUser} isAnnotationMode={isAnnotationMode} setAnnotationMode={setAnnotationMode} />}>
         <Route path=":provider_id" element={<SingleProvider />} />
         <Route path="/all-records" element={<AllRecords />} />
         <Route path="/team" element={<TeamPage />} />
@@ -171,12 +176,12 @@ const App = () => {
         <BrowserRouter>
           <UserProvider user={effectiveUser}>
             <FeatureFlagProvider>
-              <AuthWrapper user={effectiveUser} loading={false} />
+              <AuthWrapper user={effectiveUser} loading={false} isAnnotationMode={isAnnotationMode} setAnnotationMode={setAnnotationMode} />
             </FeatureFlagProvider>
           </UserProvider>
         </BrowserRouter>
       </AnnotationOverlay>
-      <AnnotationDisplay />
+      <AnnotationDisplay isAnnotationMode={isAnnotationMode} />
     </TooltipProvider>
   );
 };

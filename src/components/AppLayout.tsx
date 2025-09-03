@@ -11,9 +11,11 @@ interface AppLayoutProps {
   user: any;
   children?: React.ReactNode;
   showFooter?: boolean;
+  isAnnotationMode?: boolean;
+  setAnnotationMode?: (value: boolean) => void;
 }
 
-const AppLayout: React.FC<AppLayoutProps> = ({ user, children, showFooter = true }) => {
+const AppLayout: React.FC<AppLayoutProps> = ({ user, children, showFooter = true, isAnnotationMode, setAnnotationMode }) => {
   const { value: showFooterFlag, isLoading } = useFeatureFlag("footer");
   const { value: useNewNav, isLoading: navFlagLoading } = useFeatureFlag("new_nav_option_1");
   let shouldShowFooter: boolean = showFooter;
@@ -26,7 +28,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ user, children, showFooter = true
   return (
     <div className="h-screen flex flex-col bg-white" data-testid="app-layout">
       {useNewNav ? (
-        <GlobalNav_Option1 user={user} />
+        <GlobalNav_Option1 user={user} isAnnotationMode={isAnnotationMode} setAnnotationMode={setAnnotationMode} />
       ) : (
         <GlobalNav_Legacy user={user} />
       )}

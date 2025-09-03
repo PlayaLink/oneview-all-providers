@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useAnnotations } from '../hooks/useAnnotations';
-import { useAnnotationMode } from '../hooks/useAnnotationMode';
 import { Annotation } from '../types/annotations';
 import { Button } from './ui/button';
 import { X, MessageSquare } from 'lucide-react';
 
-export function AnnotationDisplay() {
+interface AnnotationDisplayProps {
+  isAnnotationMode: boolean;
+}
+
+export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) {
   const { annotations, removeAnnotation, currentBranch, deploymentInfo } = useAnnotations();
-  const { isAnnotationMode } = useAnnotationMode();
   const [visibleAnnotations, setVisibleAnnotations] = useState<Annotation[]>([]);
+
+  // Debug the isAnnotationMode prop
+  console.log('🔍 AnnotationDisplay received isAnnotationMode:', isAnnotationMode);
 
   // Filter annotations for current page and branch
   useEffect(() => {

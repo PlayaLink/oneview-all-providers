@@ -1,11 +1,14 @@
 import React from 'react';
 import { Switch } from "@/components/ui/switch";
 import { useFeatureFlags } from "@/contexts/FeatureFlagContext";
-import { useAnnotationMode } from "@/hooks/useAnnotationMode";
 
-const FeatureFlagsMenu: React.FC = () => {
+interface FeatureFlagsMenuProps {
+  isAnnotationMode: boolean;
+  setAnnotationMode: (value: boolean) => void;
+}
+
+const FeatureFlagsMenu: React.FC<FeatureFlagsMenuProps> = ({ isAnnotationMode, setAnnotationMode }) => {
   const { allSettings, updateFlag, isLoading } = useFeatureFlags();
-  const { isAnnotationMode, setAnnotationMode } = useAnnotationMode();
 
   return (
     <div className="p-4 flex flex-col gap-4 border-b border-gray-200" data-testid="feature-flags-menu">

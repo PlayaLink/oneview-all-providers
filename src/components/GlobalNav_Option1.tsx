@@ -19,9 +19,11 @@ import { faker } from "@faker-js/faker";
 
 interface GlobalNav_Option1Props {
   user: any;
+  isAnnotationMode?: boolean;
+  setAnnotationMode?: (value: boolean) => void;
 }
 
-const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
+const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user, isAnnotationMode, setAnnotationMode }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [newFeaturesDropdownOpen, setNewFeaturesDropdownOpen] = useState(false);
@@ -160,7 +162,7 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user }) => {
             top: menuPosition.y,
           }}
         >
-          <FeatureFlagsMenu />
+          <FeatureFlagsMenu isAnnotationMode={isAnnotationMode} setAnnotationMode={setAnnotationMode} />
         </div>
       )}
 
