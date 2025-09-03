@@ -233,7 +233,6 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
               top: `${annotation.position.y}px`,
               transform: 'translate(-50%, -50%)'
             }}
-            title={`Annotation: ${annotation.text.substring(0, 50)}${annotation.text.length > 50 ? '...' : ''}`}
             onClick={() => handleAnnotationClick(annotation)}
             onMouseEnter={() => setHoveredAnnotationId(annotation.id)}
             onMouseLeave={() => setHoveredAnnotationId(null)}
