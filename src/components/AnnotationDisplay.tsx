@@ -263,14 +263,7 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
                        }}
                      />
                      <div className="flex gap-2 mt-2">
-                       <Button
-                         size="sm"
-                         onClick={() => handleSaveEdit(annotation.id)}
-                         className="h-6 px-2 text-xs"
-                       >
-                         <Check className="h-3 w-3 mr-1" />
-                         Save
-                       </Button>
+
                        <Button
                          variant="outline"
                          size="sm"
@@ -279,6 +272,14 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
                        >
                          <XIcon className="h-3 w-3 mr-1" />
                          Cancel
+                       </Button>
+                       <Button
+                         size="sm"
+                         onClick={() => handleSaveEdit(annotation.id)}
+                         className="h-6 px-2 text-xs"
+                       >
+                         <Check className="h-3 w-3 mr-1" />
+                         Save
                        </Button>
                      </div>
                    </div>

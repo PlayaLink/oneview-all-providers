@@ -1,0 +1,115 @@
+# Use System Icon Library
+
+## Description
+Always use the project's `@/components/ui/Icon` component for rendering icons instead of importing icons directly from external libraries like Lucide React, FontAwesome, or other icon libraries.
+
+## Rules
+- **NEVER** import icons directly from `lucide-react`, `@fortawesome/react-fontawesome`, or any other icon library
+- **ALWAYS** use the `Icon` component from `@/components/ui/Icon` for all icon rendering
+- **ALWAYS** import the Icon component as: `import Icon from '@/components/ui/Icon'`
+- Use the `icon` prop to specify the icon name as a string
+- Use the `size` prop for icon sizing: "xs", "sm", "lg", "1x", "2x", "3x", "4x", "5x", "6x", "7x", "8x", "9x", "10x"
+- Pass additional props like `className`, `onClick`, etc. as needed
+
+## Adding New Icons
+
+### FontAwesome Icons
+1. Import the icon from `@fortawesome/free-solid-svg-icons` in `src/lib/iconMapping.ts`
+2. Add the icon to the `iconMap` object with a descriptive key name
+3. Use kebab-case for icon names (e.g., `"user-plus"`, `"file-export"`)
+
+```tsx
+// In src/lib/iconMapping.ts
+import { faNewIcon } from "@fortawesome/free-solid-svg-icons";
+
+const iconMap: Record<string, IconDefinition | string> = {
+  // ... existing icons
+  "new-icon": faNewIcon,
+};
+```
+
+### Custom SVG Icons
+1. Place the SVG file in the `public/icons/` directory
+2. Add the icon to the `iconMap` object with the file path
+3. Use kebab-case for icon names
+
+```tsx
+// In src/lib/iconMapping.ts
+const iconMap: Record<string, IconDefinition | string> = {
+  // ... existing icons
+  "custom-icon": "/icons/custom-icon.svg",
+};
+```
+
+### Icon Naming Conventions
+- Use kebab-case for icon names: `"user-plus"`, `"file-export"`
+- Be descriptive and consistent with existing naming
+- Add aliases for common variations: `"trash"`, `"trash-can"`, `"delete"`
+
+## Examples
+
+### ✅ Correct Usage
+```tsx
+import Icon from '@/components/ui/Icon';
+
+// Basic usage
+<Icon icon="user" />
+
+// With size and className
+<Icon icon="settings" size="lg" className="text-blue-500" />
+
+// With click handler
+<Icon icon="trash" onClick={handleDelete} className="cursor-pointer" />
+
+// In buttons
+<Button>
+  <Icon icon="plus" size="sm" />
+  Add Item
+</Button>
+```
+
+### ❌ Incorrect Usage
+```tsx
+// Don't import icons directly
+import { User, Settings, Trash } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+// Don't use direct icon components
+<User />
+<FontAwesomeIcon icon={faUser} />
+```
+
+## Available Icons
+The Icon component supports both FontAwesome icons and custom SVG icons. Common icon names include:
+
+### Navigation & UI
+- `home`, `settings`, `user`, `search`, `menu`
+- `chevron-up`, `chevron-down`, `chevron-left`, `chevron-right`
+- `ellipsis`, `ellipsis-vertical`, `caret-down`
+
+### Actions
+- `plus`, `minus`, `edit`, `pen-to-square`, `trash`, `delete`
+- `save`, `cancel`, `check`, `xmark`, `times`
+- `upload`, `download`, `copy`, `search`
+
+### Status & Feedback
+- `check-circle`, `circle-exclamation`, `star`, `star-half`
+- `bell`, `bell-slash`, `flag`, `clock`
+
+### Medical & Professional
+- `user-doctor`, `hospital`, `briefcase`, `certificate`
+- `file-medical`, `clipboard`, `prescription`
+
+### And many more...
+
+## Benefits
+- Consistent icon rendering across the application
+- Centralized icon management
+- Easier icon updates and maintenance
+- Better performance through optimized icon loading
+- Unified styling and theming support
+- Type-safe icon usage with proper mapping
+description: Always use the project's `@/components/ui/Icon` component for rendering icons instead of importing icons directly from external libraries like Lucide React, FontAwesome, or other icon libraries.
+globs:
+alwaysApply: true
+---
