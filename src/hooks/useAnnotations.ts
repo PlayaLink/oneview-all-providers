@@ -18,7 +18,20 @@ export function useAnnotations() {
     try {
       setLoading(true);
       const data = await fetchAnnotations();
-      setAnnotations(data);
+      
+      // Transform the data to match the Annotation interface
+      const transformedAnnotations: Annotation[] = data.map(row => ({
+        id: row.id,
+        text: row.text,
+        elementSelector: row.element_selector,
+        position: { x: row.position_x, y: row.position_y },
+        placement: row.placement,
+        pageUrl: row.page_url,
+        gitBranch: row.git_branch,
+        timestamp: row.created_at,
+      }));
+      
+      setAnnotations(transformedAnnotations);
     } catch (error) {
       console.error('Error fetching annotations:', error);
       setAnnotations([]);
@@ -54,16 +67,6 @@ export function useAnnotations() {
       const deploymentInfo = await getDeploymentBranchInfo();
       const gitBranch = deploymentInfo.branch;
       
-      console.log('🔍 Creating annotation with branch info:', {
-        gitBranch,
-        deploymentInfo,
-        annotation: {
-          text: annotation.text.substring(0, 50),
-          pageUrl: annotation.pageUrl,
-          position: annotation.position
-        }
-      });
-      
       const data = await addAnnotationToDb({
         text: annotation.text,
         element_selector: annotation.elementSelector,
@@ -72,12 +75,6 @@ export function useAnnotations() {
         placement: annotation.placement,
         page_url: annotation.pageUrl,
         git_branch: gitBranch || undefined,
-      });
-      
-      console.log('🔍 Annotation created successfully:', {
-        id: data[0].id,
-        git_branch: data[0].git_branch,
-        text: data[0].text.substring(0, 50)
       });
       
       // Transform the database response to match the Annotation interface

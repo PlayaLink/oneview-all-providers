@@ -12,45 +12,15 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
   const { annotations, removeAnnotation, currentBranch, deploymentInfo } = useAnnotations();
   const [visibleAnnotations, setVisibleAnnotations] = useState<Annotation[]>([]);
 
-  // Debug the isAnnotationMode prop
-  console.log('🔍 AnnotationDisplay received isAnnotationMode:', isAnnotationMode);
-
   // Filter annotations for current page and branch
   useEffect(() => {
     const currentPageAnnotations = annotations.filter(ann => {
       const pageMatch = true; // Show all annotations for debugging
       const branchMatch = !currentBranch || !ann.gitBranch || ann.gitBranch === currentBranch;
       
-      // Debug each annotation
-      console.log('🔍 Checking annotation:', {
-        id: ann.id,
-        annotationPage: ann.pageUrl,
-        currentPage: window.location.pathname,
-        pageMatch,
-        branchMatch,
-        gitBranch: ann.gitBranch,
-        currentBranch
-      });
-      
       return pageMatch && branchMatch;
     });
     setVisibleAnnotations(currentPageAnnotations);
-    
-    // Debug logging
-    console.log('🔍 AnnotationDisplay Debug:', {
-      totalAnnotations: annotations.length,
-      currentPage: window.location.pathname,
-      currentBranch,
-      visibleAnnotations: currentPageAnnotations.length,
-      isAnnotationMode,
-      annotations: currentPageAnnotations.map(ann => ({
-        id: ann.id,
-        text: ann.text.substring(0, 30),
-        position: ann.position,
-        pageUrl: ann.pageUrl,
-        gitBranch: ann.gitBranch
-      }))
-    });
   }, [annotations, currentBranch]);
 
   if (!isAnnotationMode || visibleAnnotations.length === 0) {
@@ -176,25 +146,10 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
         </div>
       )}
       
-      {/* Test Dot - Always visible for debugging */}
-      <div
-        className="fixed z-[1000] w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow-md"
-        style={{
-          left: '50px',
-          top: '50px',
-          transform: 'translate(-50%, -50%)'
-        }}
-        title="Test dot - should always be visible"
-      />
-      
       {/* Annotation Location Dots */}
-      {console.log('🔍 Rendering dots for', visibleAnnotations.length, 'annotations')}
       {visibleAnnotations.map((annotation) => {
-        console.log('🔍 Rendering dot for annotation:', annotation.id, 'at position:', annotation.position);
-        
         // Safety check for missing position data
         if (!annotation.position || typeof annotation.position.x !== 'number' || typeof annotation.position.y !== 'number') {
-          console.warn('🔍 Skipping dot for annotation with invalid position:', annotation.id, annotation.position);
           return null;
         }
         

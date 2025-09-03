@@ -1160,8 +1160,6 @@ export const AnnotationSchema = z.object({
 
 export function fetchAnnotations() {
   return dbFetch('annotations', '*', AnnotationSchema).then(data => {
-    console.log('🔍 Raw annotation data from database:', data);
-    
     // Transform the data to match the Annotation interface
     const transformed = data.map(row => ({
       ...row,
@@ -1171,7 +1169,6 @@ export function fetchAnnotations() {
       }
     }));
     
-    console.log('🔍 Transformed annotation data:', transformed);
     return transformed;
   });
 }

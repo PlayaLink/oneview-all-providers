@@ -39,19 +39,38 @@ export async function getDeploymentBranchInfo(): Promise<{
     const hostname = window.location.hostname;
     const isVercel = hostname.includes('vercel.app');
     
-    console.log('🔍 Git Utils Debug:', {
-      hostname,
-      isVercel,
-      VITE_GIT_BRANCH: import.meta.env.VITE_GIT_BRANCH,
-      VITE_VERCEL_GIT_COMMIT_REF: import.meta.env.VITE_VERCEL_GIT_COMMIT_REF,
-      metaBranch: document.querySelector('meta[name="git-branch"]')?.getAttribute('content'),
-      allEnvVars: Object.keys(import.meta.env).filter(key => key.includes('GIT') || key.includes('VERCEL'))
-    });
-    
     // Development environment
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      const branch = import.meta.env.VITE_GIT_BRANCH || null;
-      console.log('🔍 Development environment, branch:', branch);
+      // Try to get branch from Vite environment variable first
+      let branch = import.meta.env.VITE_GIT_BRANCH;
+      
+      // If not available, try to get from a simple fetch
+      if (!branch) {
+        try {
+          // Try to get from a simple endpoint that returns the current branch
+          const response = await fetch('/api/git-branch-simple');
+          if (response.ok) {
+            const data = await response.json();
+            branch = data.branch;
+          }
+        } catch (error) {
+          console.warn('Could not fetch git branch from simple API:', error);
+        }
+      }
+      
+      // Final fallback: try to get from the original API endpoint
+      if (!branch) {
+        try {
+          const response = await fetch('/api/git-branch');
+          if (response.ok) {
+            const data = await response.json();
+            branch = data.branch;
+          }
+        } catch (error) {
+          console.warn('Could not fetch git branch from API:', error);
+        }
+      }
+      
       return {
         branch,
         environment: 'development',
@@ -68,6 +87,9 @@ export async function getDeploymentBranchInfo(): Promise<{
       const metaBranch = document.querySelector('meta[name="git-branch"]');
       const branchFromMeta = metaBranch?.getAttribute('content');
       
+      // Try to get from Vite environment variable
+      const viteBranch = import.meta.env.VITE_GIT_BRANCH;
+      
       // Determine environment based on URL pattern
       let environment: 'development' | 'preview' | 'production' = 'production';
       if (hostname.includes('-git-')) {
@@ -76,16 +98,19 @@ export async function getDeploymentBranchInfo(): Promise<{
         environment = 'development';
       }
       
+      const branch = vercelBranch || branchFromMeta || viteBranch || null;
+      
       return {
-        branch: vercelBranch || branchFromMeta || null,
+        branch,
         environment,
         deploymentUrl: window.location.origin
       };
     }
     
     // Other hosting platforms
+    const branch = import.meta.env.VITE_GIT_BRANCH || null;
     return {
-      branch: import.meta.env.VITE_GIT_BRANCH || null,
+      branch,
       environment: 'production',
       deploymentUrl: window.location.origin
     };

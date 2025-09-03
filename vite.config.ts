@@ -13,6 +13,9 @@ function getGitBranch(): string {
   }
 }
 
+const gitBranch = getGitBranch();
+console.log('🔍 Vite config: Setting VITE_GIT_BRANCH to:', gitBranch);
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
@@ -26,6 +29,8 @@ export default defineConfig(({ mode }) => ({
     },
   },
   define: {
-    'import.meta.env.VITE_GIT_BRANCH': JSON.stringify(getGitBranch()),
+    'import.meta.env.VITE_GIT_BRANCH': JSON.stringify(gitBranch),
   },
+  // Ensure environment variables are available in development
+  envPrefix: 'VITE_',
 }));
