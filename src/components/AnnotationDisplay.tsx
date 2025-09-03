@@ -35,7 +35,8 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
         pageUrl: ann.pageUrl,
         gitBranch: ann.gitBranch,
         elementSelector: ann.elementSelector,
-        placement: ann.placement
+        placement: ann.placement,
+        position: ann.position
       }))
     });
     
@@ -59,17 +60,19 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
       const annotationHeight = isEditing ? 200 : 100;
       
       // Calculate offset based on placement
+      // Since dots use transform: translate(-50%, -50%), we need to account for that
+      // The dots are centered on the click position, so we position relative to the center
       let offsetX = 0;
       let offsetY = 0;
       
       switch (annotation.placement) {
         case 'right':
-          offsetX = 20; // Move right from the click point
-          offsetY = -annotationHeight / 2; // Center vertically
+          offsetX = 10; // Move right from the click point
+          offsetY = -15; // Center vertically
           break;
         case 'left':
-          offsetX = -annotationWidth - 20; // Move left from the click point
-          offsetY = -annotationHeight / 2; // Center vertically
+          offsetX = -annotationWidth - 10; // Move left from the click point
+          offsetY = -15; // Center vertically
           break;
         case 'bottom':
           offsetX = -annotationWidth / 2; // Center horizontally
@@ -78,6 +81,11 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
         case 'top':
           offsetX = -annotationWidth / 2; // Center horizontally
           offsetY = -annotationHeight - 20; // Move up from the click point
+          break;
+        default:
+          // Default to right placement if no placement is specified
+          offsetX = 20;
+          offsetY = -annotationHeight / 2;
           break;
       }
       
@@ -128,7 +136,9 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
         placement: annotation.placement,
         offset: { x: offsetX, y: offsetY },
         finalPosition: { left: finalLeft, top: finalTop },
-        isEditing
+        isEditing,
+        annotationWidth,
+        annotationHeight
       });
 
       return finalStyle;
