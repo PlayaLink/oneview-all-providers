@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useAnnotations } from '../hooks/useAnnotations';
-import { useAnnotationMode } from '../hooks/useAnnotationMode';
+import { useAnnotations } from '@/hooks/useAnnotations';
+import { useAnnotationMode } from '@/hooks/useAnnotationMode';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 import Icon from '@/components/ui/Icon';

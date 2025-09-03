@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useAnnotations } from '../hooks/useAnnotations';
+import { useAnnotations } from '@/hooks/useAnnotations';
 import { Annotation } from '../types/annotations';
 import { Button } from './ui/button';
 import Icon from '@/components/ui/Icon';
@@ -39,6 +39,7 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
       const rect = element.getBoundingClientRect();
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
+      const isEditing = editingAnnotationId === annotation.id;
 
       // Base positioning
       let top = 0;
@@ -68,10 +69,11 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
           break;
       }
 
-      // Ensure annotation stays within viewport
-      const annotationWidth = 250;
-      const annotationHeight = 100;
+      // Dynamic sizing based on edit mode
+      const annotationWidth = isEditing ? 350 : 250;
+      const annotationHeight = isEditing ? 200 : 100;
 
+      // Ensure annotation stays within viewport
       if (left + annotationWidth > viewportWidth) {
         left = viewportWidth - annotationWidth - 10;
       }
@@ -91,14 +93,16 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
         left: `${left}px`,
         transform,
         zIndex: 1000,
-        maxWidth: '250px',
+        width: isEditing ? '350px' : 'auto',
+        maxWidth: isEditing ? '350px' : '250px',
+        minWidth: isEditing ? '350px' : 'auto',
         backgroundColor: 'white',
         border: '2px solid #F48100',
         borderRadius: '8px',
         padding: '8px 12px',
         fontSize: '12px',
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-        cursor: 'pointer',
+        cursor: isEditing ? 'default' : 'pointer',
         pointerEvents: 'auto'
       };
     } catch (error) {
