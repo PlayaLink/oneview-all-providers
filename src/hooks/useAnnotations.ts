@@ -50,7 +50,19 @@ export function useAnnotations() {
   // Add a new annotation
   const addAnnotation = async (annotation: Omit<Annotation, 'id' | 'timestamp'>) => {
     try {
-      const gitBranch = getCurrentGitBranch();
+      // Get the current git branch using the deployment info
+      const deploymentInfo = await getDeploymentBranchInfo();
+      const gitBranch = deploymentInfo.branch;
+      
+      console.log('🔍 Creating annotation with branch info:', {
+        gitBranch,
+        deploymentInfo,
+        annotation: {
+          text: annotation.text.substring(0, 50),
+          pageUrl: annotation.pageUrl,
+          position: annotation.position
+        }
+      });
       
       const data = await addAnnotationToDb({
         text: annotation.text,
@@ -62,6 +74,13 @@ export function useAnnotations() {
         git_branch: gitBranch || undefined,
       });
       
+      console.log('🔍 Annotation created successfully:', {
+        id: data[0].id,
+        git_branch: data[0].git_branch,
+        text: data[0].text.substring(0, 50)
+      });
+      
+      // Transform the database response to match the Annotation interface
       const newAnnotation: Annotation = {
         id: data[0].id,
         text: data[0].text,
