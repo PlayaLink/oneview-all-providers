@@ -16,6 +16,7 @@ export function AnnotationController({ children, isAnnotationMode, toggleAnnotat
   const [clickPosition, setClickPosition] = useState<{ x: number; y: number } | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [isCreateMode, setIsCreateMode] = useState(false);
+  const [editingAnnotationId, setEditingAnnotationId] = useState<string | null>(null);
 
   // Listen for toggle events from the switch
   useEffect(() => {
@@ -89,6 +90,7 @@ export function AnnotationController({ children, isAnnotationMode, toggleAnnotat
     }
 
     // Only disable interactive elements and add hover handlers if in create mode
+    // When editing an annotation, we only disable elements but don't add click handlers
     if (isCreateMode) {
       // Disable all interactive elements when annotation mode is active
       const disableInteractiveElements = () => {
@@ -195,8 +197,44 @@ export function AnnotationController({ children, isAnnotationMode, toggleAnnotat
         document.removeEventListener('mouseout', handleMouseOut);
         document.removeEventListener('click', handleClick, true);
       };
+    }
+    
+    // If editing an annotation, disable interactive elements but don't add click handlers
+    if (editingAnnotationId !== null) {
+      const disableInteractiveElements = () => {
+        const interactiveSelectors = [
+          'button',
+          'input',
+          'select',
+          'textarea',
+          'a',
+          '[role="button"]',
+          '[role="tab"]',
+          '[role="menuitem"]',
+          '[onclick]',
+          '[data-testid]'
+        ];
+        
+        interactiveSelectors.forEach(selector => {
+          const elements = document.querySelectorAll(selector);
+          elements.forEach(el => {
+            const element = el as HTMLElement;
+            if (!element.closest('[data-annotation-form]') && 
+                !element.closest('[data-annotation-display]') &&
+                !element.closest('[data-annotation-controller]')) {
+              element.setAttribute('data-annotation-disabled', 'true');
+              element.setAttribute('disabled', 'true');
+              element.style.pointerEvents = 'none';
+              element.style.opacity = '0.6';
+            }
+          });
+        });
+      };
+
+      // Disable interactive elements
+      disableInteractiveElements();
     } else {
-      // If not in create mode, remove any existing outlines and re-enable elements
+      // If not in create mode and not editing, remove any existing outlines and re-enable elements
       const outlinedElements = document.querySelectorAll('[data-annotation-outline]');
       outlinedElements.forEach(el => {
         const element = el as HTMLElement;
@@ -214,7 +252,7 @@ export function AnnotationController({ children, isAnnotationMode, toggleAnnotat
         element.style.opacity = '';
       });
     }
-  }, [isAnnotationMode, isCreateMode]);
+  }, [isAnnotationMode, isCreateMode, editingAnnotationId]);
 
   const handleFormClose = () => {
     setShowForm(false);
@@ -337,7 +375,11 @@ export function AnnotationController({ children, isAnnotationMode, toggleAnnotat
           />
         </>
       )}
-      <AnnotationDisplay isAnnotationMode={isAnnotationMode} />
+      <AnnotationDisplay 
+        isAnnotationMode={isAnnotationMode} 
+        editingAnnotationId={editingAnnotationId}
+        setEditingAnnotationId={setEditingAnnotationId}
+      />
     </div>
   );
 }

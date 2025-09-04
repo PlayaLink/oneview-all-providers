@@ -6,12 +6,13 @@ import Icon from '@/components/ui/Icon';
 
 interface AnnotationDisplayProps {
   isAnnotationMode: boolean;
+  editingAnnotationId: string | null;
+  setEditingAnnotationId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) {
+export function AnnotationDisplay({ isAnnotationMode, editingAnnotationId, setEditingAnnotationId }: AnnotationDisplayProps) {
   const { annotations, removeAnnotation, updateAnnotation, currentBranch, deploymentInfo } = useAnnotations();
   const [visibleAnnotations, setVisibleAnnotations] = useState<Annotation[]>([]);
-  const [editingAnnotationId, setEditingAnnotationId] = useState<string | null>(null);
   const [editText, setEditText] = useState<string>('');
   const [hoveredAnnotationId, setHoveredAnnotationId] = useState<string | null>(null);
 
