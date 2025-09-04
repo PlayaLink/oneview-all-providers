@@ -32,18 +32,88 @@ export function AnnotationForm({ element, position, onClose, isAnnotationMode, a
 
     // Generate CSS selector for the element
     const generateSelector = (el: HTMLElement): string => {
-      if (el.id) return `#${el.id}`;
+      // Try to find the most specific and stable selector
+      
+      // 1. First try data-testid (most stable)
+      if (el.getAttribute('data-testid')) {
+        return `[data-testid="${el.getAttribute('data-testid')}"]`;
+      }
+      
+      // 2. Try data-referenceid (also stable)
+      if (el.getAttribute('data-referenceid')) {
+        return `[data-referenceid="${el.getAttribute('data-referenceid')}"]`;
+      }
+      
+      // 3. Try ID (very specific)
+      if (el.id) {
+        return `#${el.id}`;
+      }
+      
+      // 4. Try to build a path-based selector using data attributes
+      const buildPathSelector = (element: HTMLElement): string => {
+        const path: string[] = [];
+        let current = element;
+        
+        while (current && current !== document.body) {
+          let selector = current.tagName.toLowerCase();
+          
+          // Add data attributes if available
+          const dataAttrs = Array.from(current.attributes)
+            .filter(attr => attr.name.startsWith('data-') && !attr.name.startsWith('data-testid') && !attr.name.startsWith('data-referenceid'))
+            .map(attr => `[${attr.name}="${attr.value}"]`);
+          
+          if (dataAttrs.length > 0) {
+            selector += dataAttrs.join('');
+          }
+          
+          // Add classes if available (but be selective)
+          if (current.className) {
+            const classNames = typeof current.className === 'string' 
+              ? current.className.split(' ').filter(c => c && !c.startsWith('css-') && !c.includes('__'))
+              : Array.from(current.classList).filter(c => c && !c.startsWith('css-') && !c.includes('__'));
+            
+            if (classNames.length > 0) {
+              // Only use classes that seem stable (not generated CSS-in-JS classes)
+              const stableClasses = classNames.filter(cls => cls.length > 2 && !cls.match(/^[a-f0-9]{8,}$/));
+              if (stableClasses.length > 0) {
+                selector += '.' + stableClasses.join('.');
+              }
+            }
+          }
+          
+          path.unshift(selector);
+          
+          // Stop if we find a good anchor point
+          if (current.getAttribute('data-testid') || current.getAttribute('data-referenceid') || current.id) {
+            break;
+          }
+          
+          current = current.parentElement as HTMLElement;
+        }
+        
+        return path.join(' > ');
+      };
+      
+      const pathSelector = buildPathSelector(el);
+      if (pathSelector && pathSelector !== el.tagName.toLowerCase()) {
+        return pathSelector;
+      }
+      
+      // 5. Fallback to class-based selector
       if (el.className) {
-        // Handle both string and DOMTokenList
         const classNames = typeof el.className === 'string' 
-          ? el.className.split(' ').filter(c => c)
-          : Array.from(el.classList).filter(c => c);
+          ? el.className.split(' ').filter(c => c && !c.startsWith('css-') && !c.includes('__'))
+          : Array.from(el.classList).filter(c => c && !c.startsWith('css-') && !c.includes('__'));
         
         if (classNames.length > 0) {
-          const classes = classNames.join('.');
-          return `${el.tagName.toLowerCase()}.${classes}`;
+          const stableClasses = classNames.filter(cls => cls.length > 2 && !cls.match(/^[a-f0-9]{8,}$/));
+          if (stableClasses.length > 0) {
+            return `${el.tagName.toLowerCase()}.${stableClasses.join('.')}`;
+          }
         }
       }
+      
+      // 6. Final fallback
       return el.tagName.toLowerCase();
     };
 
