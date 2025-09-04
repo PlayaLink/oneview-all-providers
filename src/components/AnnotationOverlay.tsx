@@ -274,40 +274,42 @@ export function AnnotationOverlay({ children, isAnnotationMode, toggleAnnotation
       </div>
       
       {/* Create New Annotation Button */}
-      <div 
-        data-annotation-create-button="true"
-        style={{
-          position: 'fixed',
-          bottom: '20px',
-          left: '200px', // Position to the right of the pill
-          backgroundColor: isCreateMode ? '#DC2626' : '#F48100', // Red when in create mode, orange when not
-          color: 'white',
-          width: '40px',
-          height: '40px',
-          borderRadius: '50%',
-          zIndex: 10000,
-          pointerEvents: 'auto',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          transition: 'all 0.2s ease',
-          border: 'none'
-        }}
-        onClick={() => {
-          if (isCreateMode) {
-            // Exit create mode
-            setIsCreateMode(false);
-          } else {
-            // Enter create mode
-            setIsCreateMode(true);
-          }
-        }}
-        title={isCreateMode ? "Exit create mode (ESC)" : "Create new annotation"}
-      >
-        <Icon icon={isCreateMode ? "xmark" : "plus"} size="sm" />
-      </div>
+      {isAnnotationMode && (
+        <div 
+          data-annotation-create-button="true"
+          style={{
+            position: 'fixed',
+            bottom: '20px',
+            left: '200px', // Position to the right of the pill
+            backgroundColor: isCreateMode ? '#6B7280' : '#F48100', // Red when in create mode, orange when not
+            color: 'white',
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            zIndex: 10000,
+            pointerEvents: 'auto',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            border: 'none'
+          }}
+          onClick={() => {
+            if (isCreateMode) {
+              // Exit create mode
+              setIsCreateMode(false);
+            } else {
+              // Enter create mode
+              setIsCreateMode(true);
+            }
+          }}
+          title={isCreateMode ? "Exit create mode (ESC)" : "Create new annotation"}
+        >
+          <Icon icon={isCreateMode ? "xmark" : "plus"} size="sm" />
+        </div>
+      )}
       {children}
       {showForm && (
         <>
