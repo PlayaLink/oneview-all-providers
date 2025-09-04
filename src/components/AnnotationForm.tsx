@@ -105,23 +105,12 @@ export function AnnotationForm({ element, position, onClose, isAnnotationMode }:
 
   return (
     <div data-annotation-form="true" style={formStyle}>
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold text-gray-900">Add Annotation</h3>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleCancel}
-          className="h-6 w-6 p-0"
-        >
-          <Icon icon="xmark" size="sm" />
-        </Button>
-      </div>
       
       <form onSubmit={handleSubmit}>
         <Textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Enter your annotation..."
+          placeholder="Add a note..."
           className="mb-3 min-h-[80px] resize-none"
           autoFocus
         />
