@@ -23,6 +23,10 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
       
       // If click is outside any annotation display, hide all annotations
       if (!annotationDisplay) {
+        // Don't hide annotation if user is editing or form is dirty
+        if (editingAnnotationId !== null || editText.trim() !== '') {
+          return;
+        }
         setHoveredAnnotationId(null);
       }
     };
@@ -35,7 +39,7 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
-  }, [hoveredAnnotationId]);
+  }, [hoveredAnnotationId, editingAnnotationId, editText]);
 
     // Filter annotations for current page and branch
   useEffect(() => {
@@ -215,6 +219,14 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
     setEditText('');
   };
 
+  const handleMouseLeave = () => {
+    // Don't hide annotation if user is editing or form is dirty
+    if (editingAnnotationId !== null || editText.trim() !== '') {
+      return;
+    }
+    setHoveredAnnotationId(null);
+  };
+
   if (!isAnnotationMode || visibleAnnotations.length === 0) {
     return null;
   }
@@ -271,7 +283,7 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
               onClick={() => handleAnnotationClick(annotation)}
               title="Click to highlight the annotated element"
               onMouseEnter={() => setHoveredAnnotationId(annotation.id)}
-              onMouseLeave={() => setHoveredAnnotationId(null)}
+              onMouseLeave={handleMouseLeave}
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1">
