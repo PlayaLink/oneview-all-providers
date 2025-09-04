@@ -230,7 +230,7 @@ export function AnnotationOverlay({ children, isAnnotationMode, toggleAnnotation
       <style>
         {`
           .annotation-mode-active.create-mode-active *:not([data-annotation-form] *):not([data-annotation-display] *):not([data-annotation-overlay] *) {
-            cursor: crosshair !important;
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 512 512' fill='%23F48100'><path d='M256 32C114.6 32 0 125.1 0 240c0 47.6 19.9 91.3 52.9 126.3C38 405.7 7 439.1 6.5 439.5c-6.6 7-8.4 17.2-4.6 26S14.4 480 24 480c61.5 0 110-25.7 139.1-46.3C192 442.8 223.5 448 256 448c141.4 0 256-93.1 256-208S397.4 32 256 32z'/></svg>") 10 10, crosshair !important;
           }
           
           .annotation-mode-active [data-annotation-disabled] {
