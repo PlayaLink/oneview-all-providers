@@ -15,6 +15,28 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
   const [editText, setEditText] = useState<string>('');
   const [hoveredAnnotationId, setHoveredAnnotationId] = useState<string | null>(null);
 
+  // Handle clicks outside annotation display to hide annotations
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      const annotationDisplay = target.closest('[data-annotation-display]');
+      
+      // If click is outside any annotation display, hide all annotations
+      if (!annotationDisplay) {
+        setHoveredAnnotationId(null);
+      }
+    };
+
+    // Only add listener when annotations are visible
+    if (hoveredAnnotationId) {
+      document.addEventListener('click', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [hoveredAnnotationId]);
+
     // Filter annotations for current page and branch
   useEffect(() => {
     const currentPageAnnotations = annotations.filter(ann => {
@@ -235,7 +257,6 @@ export function AnnotationDisplay({ isAnnotationMode }: AnnotationDisplayProps) 
             }}
             onClick={() => handleAnnotationClick(annotation)}
             onMouseEnter={() => setHoveredAnnotationId(annotation.id)}
-            onMouseLeave={() => setHoveredAnnotationId(null)}
           />
         );
       })}
