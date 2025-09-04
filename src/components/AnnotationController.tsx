@@ -406,7 +406,6 @@ export function AnnotationController({ children, isAnnotationMode, toggleAnnotat
         currentBranch={currentBranch}
         removeAnnotation={removeAnnotation}
         updateAnnotation={updateAnnotation}
-        deploymentInfo={deploymentInfo}
       />
     </div>
   );

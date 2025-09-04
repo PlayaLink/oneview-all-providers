@@ -12,11 +12,6 @@ interface AnnotationDisplayProps {
   currentBranch: string | null;
   removeAnnotation: (id: string) => Promise<void>;
   updateAnnotation: (id: string, updates: Partial<Pick<Annotation, 'text'>>) => Promise<void>;
-  deploymentInfo: {
-    branch: string | null;
-    environment: 'development' | 'preview' | 'production';
-    deploymentUrl: string | null;
-  } | null;
 }
 
 export function AnnotationDisplay({ 
@@ -26,8 +21,7 @@ export function AnnotationDisplay({
   annotations, 
   currentBranch, 
   removeAnnotation, 
-  updateAnnotation,
-  deploymentInfo
+  updateAnnotation
 }: AnnotationDisplayProps) {
   const [visibleAnnotations, setVisibleAnnotations] = useState<Annotation[]>([]);
   const [editText, setEditText] = useState<string>('');
@@ -274,23 +268,7 @@ export function AnnotationDisplay({
 
   return (
     <>
-      {/* Deployment Info Display */}
-      {deploymentInfo && (
-        <div className="fixed top-4 right-4 z-[1001] bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-600 shadow-sm">
-          <div className="font-medium">Deployment Info:</div>
-          <div>Environment: {deploymentInfo.environment}</div>
-          {deploymentInfo.branch && (
-            <div>Branch: {deploymentInfo.branch}</div>
-          )}
-          {deploymentInfo.deploymentUrl && (
-            <div>URL: {deploymentInfo.deploymentUrl}</div>
-          )}
-          <div className="mt-1 pt-1 border-t border-gray-200">
-            <div>Total annotations: {annotations.length}</div>
-            <div>Filtered annotations: {visibleAnnotations.length}</div>
-          </div>
-        </div>
-      )}
+
 
       {/* Annotation Location Dots */}
       {visibleAnnotations.map((annotation) => {
