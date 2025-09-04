@@ -13,8 +13,7 @@ import { FeatureFlagProvider, useFeatureFlag } from "./contexts/FeatureFlagConte
 import SingleProvider from "./components/SingleProvider";
 import { faker } from '@faker-js/faker';
 import { useAnnotationMode } from "./hooks/useAnnotationMode";
-import { AnnotationOverlay } from "./components/AnnotationOverlay";
-import { AnnotationDisplay } from "./components/AnnotationDisplay";
+import { AnnotationController } from "./components/AnnotationController";
 
 const AuthWrapper = ({ user, loading, isAnnotationMode, setAnnotationMode }: { 
   user: any, 
@@ -172,7 +171,7 @@ const App = () => {
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <AnnotationOverlay isAnnotationMode={isAnnotationMode} toggleAnnotationMode={toggleAnnotationMode}>
+      <AnnotationController isAnnotationMode={isAnnotationMode} toggleAnnotationMode={toggleAnnotationMode}>
         <BrowserRouter>
           <UserProvider user={effectiveUser}>
             <FeatureFlagProvider>
@@ -180,8 +179,7 @@ const App = () => {
             </FeatureFlagProvider>
           </UserProvider>
         </BrowserRouter>
-      </AnnotationOverlay>
-      <AnnotationDisplay isAnnotationMode={isAnnotationMode} />
+      </AnnotationController>
     </TooltipProvider>
   );
 };
