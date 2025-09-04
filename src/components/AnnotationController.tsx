@@ -43,12 +43,18 @@ export function AnnotationController({ children, isAnnotationMode, toggleAnnotat
     };
   }, [isAnnotationMode, toggleAnnotationMode]);
 
-  // Handle ESC key to exit create mode and annotation mode
+  // Handle keyboard shortcuts for annotation mode
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      // ESC: Exit both create mode and annotation mode
       if (event.key === 'Escape' && isCreateMode) {
         // Exit both create mode and annotation mode (equivalent to clicking X button)
         setIsCreateMode(false);
+      }
+      
+      // C or N: Enter create mode when in annotation mode but not in create mode
+      if ((event.key === 'c' || event.key === 'n') && isAnnotationMode && !isCreateMode) {
+        setIsCreateMode(true);
       }
     };
 
@@ -56,7 +62,7 @@ export function AnnotationController({ children, isAnnotationMode, toggleAnnotat
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isCreateMode, toggleAnnotationMode]);
+  }, [isAnnotationMode, isCreateMode, toggleAnnotationMode]);
 
   useEffect(() => {
     if (!isAnnotationMode) {
