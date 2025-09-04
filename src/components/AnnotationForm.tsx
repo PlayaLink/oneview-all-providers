@@ -128,6 +128,7 @@ export function AnnotationForm({ element, position, onClose, isAnnotationMode }:
             type="submit"
             size="sm"
             disabled={!text.trim()}
+            className="bg-orange-500 text-primary-foreground"
           >
             Save
           </Button>

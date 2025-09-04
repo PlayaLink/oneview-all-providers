@@ -264,32 +264,38 @@ export function AnnotationController({ children, isAnnotationMode, toggleAnnotat
     <div data-annotation-controller="true">
       <style>
         {`
-          .annotation-mode-active.create-mode-active *:not([data-annotation-form] *):not([data-annotation-display] *):not([data-annotation-controller] *) {
+          .annotation-mode-active.create-mode-active *:not([data-annotation-form] *):not([data-annotation-display] *):not([data-annotation-controller] *):not([data-annotation-mode-pill] *):not([data-annotation-create-button] *) {
             cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 512 512' fill='%23F48100'><path d='M256 32C114.6 32 0 125.1 0 240c0 47.6 19.9 91.3 52.9 126.3C38 405.7 7 439.1 6.5 439.5c-6.6 7-8.4 17.2-4.6 26S14.4 480 24 480c61.5 0 110-25.7 139.1-46.3C192 442.8 223.5 448 256 448c141.4 0 256-93.1 256-208S397.4 32 256 32z'/></svg>") 10 10, crosshair !important;
           }
           
           /* Disable all other cursor hover effects when in create mode */
-          .annotation-mode-active.create-mode-active *:not([data-annotation-form] *):not([data-annotation-display] *):not([data-annotation-controller] *) {
+          .annotation-mode-active.create-mode-active *:not([data-annotation-form] *):not([data-annotation-display] *):not([data-annotation-controller] *):not([data-annotation-mode-pill] *):not([data-annotation-create-button] *) {
             cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 512 512' fill='%23F48100'><path d='M256 32C114.6 32 0 125.1 0 240c0 47.6 19.9 91.3 52.9 126.3C38 405.7 7 439.1 6.5 439.5c-6.6 7-8.4 17.2-4.6 26S14.4 480 24 480c61.5 0 110-25.7 139.1-46.3C192 442.8 223.5 448 256 448c141.4 0 256-93.1 256-208S397.4 32 256 32z'/></svg>") 10 10, crosshair !important;
           }
           
           /* Override common hover cursor changes */
-          .annotation-mode-active.create-mode-active button:not([data-annotation-display] *):not([data-annotation-form] *),
-          .annotation-mode-active.create-mode-active a:not([data-annotation-display] *):not([data-annotation-form] *),
-          .annotation-mode-active.create-mode-active [role="button"]:not([data-annotation-display] *):not([data-annotation-form] *),
-          .annotation-mode-active.create-mode-active [role="tab"]:not([data-annotation-display] *):not([data-annotation-form] *),
-          .annotation-mode-active.create-mode-active [role="menuitem"]:not([data-annotation-display] *):not([data-annotation-form] *),
-          .annotation-mode-active.create-mode-active input:not([data-annotation-display] *):not([data-annotation-form] *),
-          .annotation-mode-active.create-mode-active select:not([data-annotation-display] *):not([data-annotation-form] *),
-          .annotation-mode-active.create-mode-active textarea:not([data-annotation-display] *):not([data-annotation-form] *),
-          .annotation-mode-active.create-mode-active label:not([data-annotation-display] *):not([data-annotation-form] *),
-          .annotation-mode-active.create-mode-active [data-testid]:not([data-annotation-display] *):not([data-annotation-form] *) {
+          .annotation-mode-active.create-mode-active button:not([data-annotation-display] *):not([data-annotation-form] *):not([data-annotation-mode-pill] *):not([data-annotation-create-button] *),
+          .annotation-mode-active.create-mode-active a:not([data-annotation-display] *):not([data-annotation-form] *):not([data-annotation-mode-pill] *):not([data-annotation-create-button] *),
+          .annotation-mode-active.create-mode-active [role="button"]:not([data-annotation-display] *):not([data-annotation-form] *):not([data-annotation-mode-pill] *):not([data-annotation-create-button] *),
+          .annotation-mode-active.create-mode-active [role="tab"]:not([data-annotation-display] *):not([data-annotation-form] *):not([data-annotation-mode-pill] *):not([data-annotation-create-button] *),
+          .annotation-mode-active.create-mode-active [role="menuitem"]:not([data-annotation-display] *):not([data-annotation-form] *):not([data-annotation-mode-pill] *):not([data-annotation-create-button] *),
+          .annotation-mode-active.create-mode-active input:not([data-annotation-display] *):not([data-annotation-form] *):not([data-annotation-mode-pill] *):not([data-annotation-create-button] *),
+          .annotation-mode-active.create-mode-active select:not([data-annotation-display] *):not([data-annotation-form] *):not([data-annotation-mode-pill] *):not([data-annotation-create-button] *),
+          .annotation-mode-active.create-mode-active textarea:not([data-annotation-display] *):not([data-annotation-form] *):not([data-annotation-mode-pill] *):not([data-annotation-create-button] *),
+          .annotation-mode-active.create-mode-active label:not([data-annotation-display] *):not([data-annotation-form] *):not([data-annotation-mode-pill] *):not([data-annotation-create-button] *),
+          .annotation-mode-active.create-mode-active [data-testid]:not([data-annotation-display] *):not([data-annotation-form] *):not([data-annotation-mode-pill] *):not([data-annotation-create-button] *) {
             cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 512 512' fill='%23F48100'><path d='M256 32C114.6 32 0 125.1 0 240c0 47.6 19.9 91.3 52.9 126.3C38 405.7 7 439.1 6.5 439.5c-6.6 7-8.4 17.2-4.6 26S14.4 480 24 480c61.5 0 110-25.7 139.1-46.3C192 442.8 223.5 448 256 448c141.4 0 256-93.1 256-208S397.4 32 256 32z'/></svg>") 10 10, crosshair !important;
           }
           
           .annotation-mode-active [data-annotation-disabled] {
             pointer-events: none !important;
             opacity: 0.6 !important;
+          }
+          
+          /* Ensure annotation mode pill and create button always show pointer cursor */
+          .annotation-mode-active.create-mode-active [data-annotation-mode-pill],
+          .annotation-mode-active.create-mode-active [data-annotation-create-button] {
+            cursor: pointer !important;
           }
         `}
       </style>
