@@ -34,8 +34,15 @@ export function AnnotationForm({ element, position, onClose, isAnnotationMode, a
     const generateSelector = (el: HTMLElement): string => {
       if (el.id) return `#${el.id}`;
       if (el.className) {
-        const classes = el.className.split(' ').filter(c => c).join('.');
-        return `${el.tagName.toLowerCase()}.${classes}`;
+        // Handle both string and DOMTokenList
+        const classNames = typeof el.className === 'string' 
+          ? el.className.split(' ').filter(c => c)
+          : Array.from(el.classList).filter(c => c);
+        
+        if (classNames.length > 0) {
+          const classes = classNames.join('.');
+          return `${el.tagName.toLowerCase()}.${classes}`;
+        }
       }
       return el.tagName.toLowerCase();
     };
