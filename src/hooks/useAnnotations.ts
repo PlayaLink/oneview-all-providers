@@ -16,8 +16,10 @@ export function useAnnotations() {
   // Fetch annotations from Supabase
   const fetchAllAnnotations = async () => {
     try {
+      console.log('🔄 fetchAllAnnotations: Starting...');
       setLoading(true);
       const data = await fetchAnnotations();
+      console.log('📊 fetchAllAnnotations: Raw data from database:', data.length, 'annotations');
       
       // Transform the data to match the Annotation interface
       const transformedAnnotations: Annotation[] = data.map(row => ({
@@ -31,7 +33,9 @@ export function useAnnotations() {
         timestamp: row.created_at,
       }));
       
+      console.log('📊 fetchAllAnnotations: Transformed annotations:', transformedAnnotations.length);
       setAnnotations(transformedAnnotations);
+      console.log('✅ fetchAllAnnotations: State updated with', transformedAnnotations.length, 'annotations');
     } catch (error) {
       console.error('Error fetching annotations:', error);
       setAnnotations([]);
@@ -63,6 +67,8 @@ export function useAnnotations() {
   // Add a new annotation
   const addAnnotation = async (annotation: Omit<Annotation, 'id' | 'timestamp'>) => {
     try {
+      console.log('🔄 Adding annotation:', annotation);
+      
       // Get the current git branch using the deployment info
       const deploymentInfo = await getDeploymentBranchInfo();
       const gitBranch = deploymentInfo.branch;
@@ -77,20 +83,14 @@ export function useAnnotations() {
         git_branch: gitBranch || undefined,
       });
       
-      // Transform the database response to match the Annotation interface
-      const newAnnotation: Annotation = {
-        id: data[0].id,
-        text: data[0].text,
-        elementSelector: data[0].element_selector,
-        position: { x: data[0].position_x, y: data[0].position_y },
-        placement: data[0].placement,
-        pageUrl: data[0].page_url,
-        gitBranch: data[0].git_branch,
-        timestamp: data[0].created_at,
-      };
+      console.log('✅ Annotation saved to database:', data[0]);
       
-      setAnnotations(prev => [newAnnotation, ...prev]);
-      return newAnnotation;
+      // Refresh annotations from database to ensure we have the latest data and proper ordering
+      console.log('🔄 Refreshing annotations from database...');
+      await fetchAllAnnotations();
+      console.log('✅ Annotations refreshed');
+      
+      return data[0];
     } catch (error) {
       console.error('Error adding annotation:', error);
       throw error;

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useAnnotations } from '@/hooks/useAnnotations';
 import { AnnotationForm } from './AnnotationForm';
 import { AnnotationDisplay } from './AnnotationDisplay';
 import { Switch } from './ui/switch';
@@ -17,6 +18,16 @@ export function AnnotationController({ children, isAnnotationMode, toggleAnnotat
   const [showForm, setShowForm] = useState(false);
   const [isCreateMode, setIsCreateMode] = useState(false);
   const [editingAnnotationId, setEditingAnnotationId] = useState<string | null>(null);
+  
+  // Use the annotations hook at the controller level
+  const { 
+    annotations, 
+    addAnnotation, 
+    removeAnnotation, 
+    updateAnnotation, 
+    currentBranch, 
+    deploymentInfo 
+  } = useAnnotations();
 
   // Listen for toggle events from the switch
   useEffect(() => {
@@ -376,6 +387,7 @@ export function AnnotationController({ children, isAnnotationMode, toggleAnnotat
             position={clickPosition}
             onClose={handleFormClose}
             isAnnotationMode={isAnnotationMode}
+            addAnnotation={addAnnotation}
           />
         </>
       )}
@@ -383,6 +395,11 @@ export function AnnotationController({ children, isAnnotationMode, toggleAnnotat
         isAnnotationMode={isAnnotationMode} 
         editingAnnotationId={editingAnnotationId}
         setEditingAnnotationId={setEditingAnnotationId}
+        annotations={annotations}
+        currentBranch={currentBranch}
+        removeAnnotation={removeAnnotation}
+        updateAnnotation={updateAnnotation}
+        deploymentInfo={deploymentInfo}
       />
     </div>
   );

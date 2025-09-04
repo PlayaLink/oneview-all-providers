@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAnnotations } from '@/hooks/useAnnotations';
-import { useAnnotationMode } from '@/hooks/useAnnotationMode';
+import { Annotation } from '../types/annotations';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 import Icon from '@/components/ui/Icon';
@@ -10,11 +9,11 @@ interface AnnotationFormProps {
   position: { x: number; y: number } | null;
   onClose: () => void;
   isAnnotationMode: boolean;
+  addAnnotation: (annotation: Omit<Annotation, 'id' | 'timestamp'>) => Promise<any>;
 }
 
-export function AnnotationForm({ element, position, onClose, isAnnotationMode }: AnnotationFormProps) {
+export function AnnotationForm({ element, position, onClose, isAnnotationMode, addAnnotation }: AnnotationFormProps) {
   const [text, setText] = useState('');
-  const { addAnnotation } = useAnnotations();
 
   useEffect(() => {
     if (!isAnnotationMode) {

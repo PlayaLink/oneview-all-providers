@@ -8,13 +8,37 @@ interface AnnotationDisplayProps {
   isAnnotationMode: boolean;
   editingAnnotationId: string | null;
   setEditingAnnotationId: React.Dispatch<React.SetStateAction<string | null>>;
+  annotations: Annotation[];
+  currentBranch: string | null;
+  removeAnnotation: (id: string) => Promise<void>;
+  updateAnnotation: (id: string, updates: Partial<Pick<Annotation, 'text'>>) => Promise<void>;
+  deploymentInfo: {
+    branch: string | null;
+    environment: 'development' | 'preview' | 'production';
+    deploymentUrl: string | null;
+  } | null;
 }
 
-export function AnnotationDisplay({ isAnnotationMode, editingAnnotationId, setEditingAnnotationId }: AnnotationDisplayProps) {
-  const { annotations, removeAnnotation, updateAnnotation, currentBranch, deploymentInfo } = useAnnotations();
+export function AnnotationDisplay({ 
+  isAnnotationMode, 
+  editingAnnotationId, 
+  setEditingAnnotationId, 
+  annotations, 
+  currentBranch, 
+  removeAnnotation, 
+  updateAnnotation,
+  deploymentInfo
+}: AnnotationDisplayProps) {
   const [visibleAnnotations, setVisibleAnnotations] = useState<Annotation[]>([]);
   const [editText, setEditText] = useState<string>('');
   const [hoveredAnnotationId, setHoveredAnnotationId] = useState<string | null>(null);
+
+  // Debug: Log when annotations change
+  console.log('🔍 AnnotationDisplay: annotations prop changed', {
+    count: annotations.length,
+    isAnnotationMode,
+    currentBranch
+  });
 
   // Handle clicks outside annotation display to hide annotations
   useEffect(() => {
@@ -67,6 +91,22 @@ export function AnnotationDisplay({ isAnnotationMode, editingAnnotationId, setEd
         position: ann.position
       }))
     });
+    
+    // Debug: Check if the new annotation is in the filtered results
+    const newAnnotation = currentPageAnnotations.find(ann => 
+      ann.text === 'forms' && ann.elementSelector.includes('button.font-bold')
+    );
+    if (newAnnotation) {
+      console.log('✅ New annotation found in filtered results:', newAnnotation);
+    } else {
+      console.log('❌ New annotation NOT found in filtered results');
+      console.log('All annotations:', annotations.map(ann => ({
+        id: ann.id,
+        text: ann.text,
+        pageUrl: ann.pageUrl,
+        gitBranch: ann.gitBranch
+      })));
+    }
     
     setVisibleAnnotations(currentPageAnnotations);
   }, [annotations, currentBranch]);
