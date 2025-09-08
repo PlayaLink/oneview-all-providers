@@ -83,6 +83,8 @@ Based on the screenshot analysis, I will generate a structured list of required 
 
 ### 2. Create Seeding Script
 - Generate TypeScript seeding script: `scripts/seed-{table_name}.ts`
+- Import dropdown options from `{GridName}SelectInputOptions.ts`
+- Use imported options for consistent data generation
 - Use faker.js for realistic dummy data generation
 - Include deterministic data generation using seed values
 - Generate 3-5 records per provider
@@ -105,18 +107,26 @@ Based on the screenshot analysis, I will generate a structured list of required 
 - Use helper functions to get grid_id and action_id by name
 - Include proper ordering for actions
 
-### 6. Create Details Components
+### 6. Create SelectInputOptions File
+- Generate `{GridName}SelectInputOptions.ts` file in `src/components/sidepanel-details/`
+- Export all dropdown options as named constants (e.g., `STATE_OPTIONS`, `STATUS_OPTIONS`, `YES_NO_OPTIONS`)
+- Include both simple options for forms and extended options for seeding scripts
+- Use descriptive constant names that match the field purpose
+- Include TypeScript comments explaining the purpose of each option set
+
+### 7. Create Details Components
 - Generate `{GridName}Details.tsx` component in `src/components/sidepanel-details/`
 - Generate `{GridName}DetailsWide.tsx` component in `src/components/sidepanel-details/`
+- Import dropdown options from `{GridName}SelectInputOptions.ts`
 - Include all fields with appropriate input types (text, select, date, etc.)
-- Add realistic dropdown options extracted from screenshots
+- Use imported options for single-select and multi-select fields
 - Include proper form validation and error handling
 - Add semantic markup with `data-testid` attributes
 - Use CollapsibleSection for field groups
 - Include proper TypeScript interfaces
 - Export template objects for both components (e.g., `{gridName}Template` and `{gridName}WideTemplate`)
 
-### 7. Update Template Configuration
+### 8. Update Template Configuration
 - Add new grid to `gridToTemplateMap` in `src/lib/templateConfigs.ts`
 - Import both template objects from the Details components
 - Add case in `getTemplateConfigByGrid` function to handle context switching
@@ -125,7 +135,7 @@ Based on the screenshot analysis, I will generate a structured list of required 
 - Include proper tab configuration (Details, Notes, Documents, History)
 - Use CollapsibleSection for field groups
 
-### 8. Add Semantic Markup
+### 9. Add Semantic Markup
 - Ensure all generated components include:
   - `data-testid` attributes with descriptive, hyphenated names
   - `role` attributes for accessibility
@@ -137,6 +147,7 @@ Based on the screenshot analysis, I will generate a structured list of required 
 - Seeding scripts: `seed-{table_name}.ts`
 - Grid config scripts: `setup-{table_name}-grid.sql`
 - Actions config scripts: `setup-{table_name}-actions.sql`
+- SelectInputOptions file: `{GridName}SelectInputOptions.ts`
 - Details components: `{GridName}Details.tsx` and `{GridName}DetailsWide.tsx`
 
 ## Database Schema Patterns
@@ -159,6 +170,15 @@ The rule follows the established pattern for context-aware components:
 - **Modal Context**: Uses `{GridName}DetailsWide.tsx` component
 - **Template Configuration**: Implements `getDetailsComponent` function to switch between contexts
 - **Import Pattern**: Both template objects are imported and used in `templateConfigs.ts`
+
+## SelectInputOptions Pattern
+The rule follows the established pattern for managing dropdown options:
+- **Single Source of Truth**: All dropdown options stored in `{GridName}SelectInputOptions.ts`
+- **Performance Benefits**: No database queries for dropdown options (hardcoded)
+- **DRY Principle**: No duplication between Details and DetailsWide components
+- **Seeding Consistency**: Same options used in seeding scripts for realistic data
+- **Easy Maintenance**: Change options in one place, updates everywhere
+- **Type Safety**: Exported TypeScript constants with descriptive names
 
 ## Example Workflow
 1. **You provide**: Screenshots of the grid to replicate

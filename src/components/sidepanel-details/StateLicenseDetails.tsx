@@ -1,9 +1,7 @@
 import React from 'react';
 import CollapsibleSection from '../CollapsibleSection';
-import { MultiSelectInput } from '../inputs/MultiSelectInput';
-import { SingleSelect } from '../inputs/SingleSelect';
-import TextInputField from '../inputs/TextInputField';
-import { getInputType, renderFieldComponent } from './getInputType';
+import SearchCriteriaSection from './SearchCriteriaSection';
+import { renderFieldComponent } from './getInputType';
 import { extractTitleAcronym, generateProviderName, generateDefaultHeaderText } from '@/lib/utils';
 import { STATE_OPTIONS, LICENSE_TYPE_OPTIONS, STATUS_OPTIONS, YES_NO_OPTIONS, TAG_OPTIONS } from './StateLicenseSelectInputOptions';
 
@@ -156,51 +154,15 @@ const additionalInfoFields = stateLicenseFieldGroups[1].fields;
 
 const StateLicenseDetails = ({ formValues, handleChange, provider }) => (
   <div className="flex flex-col gap-4">
-    {/* Custom Search Criteria Grouping */}
-    <div className="p-6 rounded-2xl border border-gray-200 bg-gray-50">
-      {/* Header */}
-      <div className="mb-4">
-        <h2 className="text-xs font-semibold text-[#008BC9] uppercase tracking-wide">
-          Search Criteria
-        </h2>
-      </div>
-
-      {/* Form Grid */}
-      <div className="flex flex-col gap-4">
-        {searchCriteriaFields.map((field) => (
-          <React.Fragment key={field.key || field.label}>
-            {renderFieldComponent({ field, formValues, handleChange })}
-          </React.Fragment>
-        ))}
-        {/* Provider fields */}
-        {provider && (
-          <div className="flex flex-col gap-4">
-            <div className="flex-1">
-              <TextInputField
-                label="First Name"
-                labelPosition="left"
-                value={provider.first_name || ''}
-                onChange={() => {}} // Read-only field
-                disabled={true}
-                data-testid="provider-first-name"
-                aria-label="Provider first name"
-              />
-            </div>
-            <div className="flex-1">
-              <TextInputField
-                label="Last Name"
-                labelPosition="left"
-                value={provider.last_name || ''}
-                onChange={() => {}} // Read-only field
-                disabled={true}
-                data-testid="provider-last-name"
-                aria-label="Provider last name"
-              />
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
+    {/* Search Criteria Section */}
+    <SearchCriteriaSection
+      title="Search Criteria"
+      fields={searchCriteriaFields}
+      formValues={formValues}
+      handleChange={handleChange}
+      provider={provider}
+    />
+    
     {/* Additional Info Section */}
     <CollapsibleSection title="Additional Info">
       <div className="flex flex-col gap-4 self-stretch">
