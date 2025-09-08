@@ -1,0 +1,193 @@
+---
+description: Automated workflow for creating new grids in the OneView All Providers app. This rule handles the complete process from screenshot analysis to full grid implementation including database migrations, seeding scripts, frontend configuration, and semantic markup.
+globs:
+alwaysApply: true
+---
+
+# Grid Creation Automation Rule
+
+When I ask you to create a new grid for the OneView All Providers app, follow this comprehensive workflow:
+
+## Phase 1: Screenshot Analysis & Information Gathering
+
+### Step 1: Analyze Screenshots
+When I provide screenshots of the grid I want to replicate:
+- Analyze the grid columns and their display names
+- Identify field groupings for the Details panel
+- Determine appropriate data types for each field
+- Identify which columns should be visible by default
+- Determine logical field ordering
+- Identify appropriate field groups for the Details panel
+- Determine which actions should be available for this grid type
+- **Extract dropdown/select options** from any dropdown fields visible in the screenshots
+- **Identify field validation rules** and constraints from the UI
+
+### Step 2: Generate Required Input Information
+Based on the screenshot analysis, I will generate a structured list of required information:
+
+**Grid Configuration:**
+- **Grid Name**: [Display name from screenshot]
+- **Table Name**: [Suggested snake_case table name]
+- **Grid Group**: [Suggested section/group]
+- **Icon**: [Suggested FontAwesome icon name]
+
+**Fields Array:**
+```javascript
+[
+  {
+    "name": "field_name",
+    "display_name": "Display Name",
+    "type": "text|number|boolean|date|email|url|phone|single-select|multi-select|file|oneview_record",
+    "order": 1,
+    "visible": true|false,
+    "group": "field_group_name",
+    "description": "Field description",
+    "options": ["option1", "option2", "option3"] // For single-select/multi-select fields
+  }
+]
+```
+
+**Field Groups Array:**
+```javascript
+[
+  {
+    "id": "group_id",
+    "title": "Group Title",
+    "fields": ["field1", "field2", "field3"]
+  }
+]
+```
+
+**Actions Array:**
+```javascript
+["download", "flag", "side_panel", "view_details"]
+```
+
+### Step 3: Confirmation Step
+**CRITICAL**: Before proceeding with the automated workflow, I will:
+1. Present the generated information in a clear, structured format
+2. Ask you to review and confirm each section
+3. Allow you to modify any field names, types, groupings, or actions
+4. Only proceed to Phase 2 after you explicitly confirm the information is correct
+
+## Phase 2: Automated Workflow (Only After Confirmation)
+
+### 1. Create Database Migration
+- Generate SQL migration file: `supabase/migrations/create_{table_name}_table.sql`
+- Include standard fields: id (uuid), provider_id (uuid), created_at, updated_at
+- Add all confirmed fields with appropriate data types
+- Include foreign key constraint to providers table
+- Add index on provider_id for performance
+- Include tags field as text[] array
+- Add last_updated timestamp field
+
+### 2. Create Seeding Script
+- Generate TypeScript seeding script: `scripts/seed-{table_name}.ts`
+- Use faker.js for realistic dummy data generation
+- Include deterministic data generation using seed values
+- Generate 3-5 records per provider
+- Include proper error handling and retry logic
+- Clear existing data before seeding
+
+### 3. Add Supabase Client Functions
+- Add Zod schema for type validation in `src/lib/supabaseClient.ts`
+- Add CRUD helper functions: fetch{TableName}, insert{TableName}, update{TableName}, delete{TableName}
+- Include proper error handling and type safety
+
+### 4. Create Grid Configuration
+- Generate SQL script to insert grid definition into `grid_definitions` table
+- Generate SQL script to insert all columns into `grid_columns` table
+- Include proper ordering, visibility, and grouping
+- Set appropriate column widths and types
+
+### 5. Create Grid Actions Configuration
+- Generate SQL script to link grid with specified actions in `grid_actions` table
+- Use helper functions to get grid_id and action_id by name
+- Include proper ordering for actions
+
+### 6. Create Details Components
+- Generate `{GridName}Details.tsx` component in `src/components/sidepanel-details/`
+- Generate `{GridName}DetailsWide.tsx` component in `src/components/sidepanel-details/`
+- Include all fields with appropriate input types (text, select, date, etc.)
+- Add realistic dropdown options extracted from screenshots
+- Include proper form validation and error handling
+- Add semantic markup with `data-testid` attributes
+- Use CollapsibleSection for field groups
+- Include proper TypeScript interfaces
+- Export template objects for both components (e.g., `{gridName}Template` and `{gridName}WideTemplate`)
+
+### 7. Update Template Configuration
+- Add new grid to `gridToTemplateMap` in `src/lib/templateConfigs.ts`
+- Import both template objects from the Details components
+- Add case in `getTemplateConfigByGrid` function to handle context switching
+- Implement `getDetailsComponent` function for modal vs sidepanel context
+- Create template configuration with field groups for Details panel
+- Include proper tab configuration (Details, Notes, Documents, History)
+- Use CollapsibleSection for field groups
+
+### 8. Add Semantic Markup
+- Ensure all generated components include:
+  - `data-testid` attributes with descriptive, hyphenated names
+  - `role` attributes for accessibility
+  - `aria-*` attributes as appropriate
+  - Semantic HTML elements (section, main, aside, etc.)
+
+## File Naming Conventions
+- Migration files: `create_{table_name}_table.sql`
+- Seeding scripts: `seed-{table_name}.ts`
+- Grid config scripts: `setup-{table_name}-grid.sql`
+- Actions config scripts: `setup-{table_name}-actions.sql`
+- Details components: `{GridName}Details.tsx` and `{GridName}DetailsWide.tsx`
+
+## Database Schema Patterns
+- All grids must include `provider_id` foreign key to providers table
+- Use `uuid` for primary keys with `gen_random_uuid()`
+- Include `created_at` and `updated_at` timestamps
+- Use `text[]` for tags fields
+- Include `last_updated` timestamp field
+- Add proper indexes for performance
+
+## Grid Actions Mapping
+Available actions: download, attachment, notification, side_panel, flag, delete, toggle, star, verified, view_details
+
+## Field Types
+Supported types: text, number, boolean, date, email, url, phone, single-select, multi-select, file, oneview_record
+
+## Context-Aware Component Pattern
+The rule follows the established pattern for context-aware components:
+- **Sidepanel Context**: Uses `{GridName}Details.tsx` component
+- **Modal Context**: Uses `{GridName}DetailsWide.tsx` component
+- **Template Configuration**: Implements `getDetailsComponent` function to switch between contexts
+- **Import Pattern**: Both template objects are imported and used in `templateConfigs.ts`
+
+## Example Workflow
+1. **You provide**: Screenshots of the grid to replicate
+2. **I analyze**: Screenshots and generate structured information
+3. **You review**: Generated information and make any necessary changes
+4. **You confirm**: Information is correct and ready to proceed
+5. **I execute**: Complete automated workflow to create the grid
+
+## Confirmation Template
+When presenting information for confirmation, I will use this format:
+
+```
+## Grid Configuration Review
+
+**Grid Name**: [Name]
+**Table Name**: [table_name]
+**Grid Group**: [group]
+**Icon**: [icon_name]
+
+## Fields Configuration
+[Structured list of all fields]
+
+## Field Groups Configuration  
+[Structured list of field groups]
+
+## Actions Configuration
+[Array of actions]
+
+**Please review the above information and confirm if it's correct, or let me know what changes you'd like me to make before proceeding with the automated workflow.**
+```
+
+This rule ensures accuracy by requiring explicit confirmation before proceeding with the automated workflow, while still maintaining the efficiency of the automated process once confirmed.

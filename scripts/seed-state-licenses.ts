@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import { faker } from '@faker-js/faker';
 import fetch from 'node-fetch';
 import https from 'https';
+import { STATE_OPTIONS, SEEDING_LICENSE_TYPE_OPTIONS, EXTENDED_STATUS_OPTIONS, TAG_OPTIONS } from '../src/components/sidepanel-details/StateLicenseSelectInputOptions';
 
 // Create a custom fetch that ignores SSL certificate issues for development
 const customFetch = (url: string, options: any) => {
@@ -26,72 +27,10 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   }
 });
 
-const US_STATES = [
-  "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"
-];
-
-const LICENSE_TYPES = ["MD", "DO", "NP", "PA", "RN", "LPN", "CRNA", "DPM", "DDS", "DMD"];
-const STATUS = [
-  // Active statuses
-  "Active (probation completed)",
-  "Active (Subject To Restrictions)",
-  "Active (Subject to Restrictions) *",
-  "Active (suspension completed)",
-  "Active - Consent Order",
-  "Active - Current",
-  "Active - Do Not Renew",
-  "Active - Fee Exempt",
-  "Active - Fully Licensed",
-  "Active - In Late Renewal",
-  "Active - In Renewal",
-  "Active - Not Practicing",
-  "Active - One Year",
-  "Active - One Year With Distinguished Professor Limitation",
-  "Active - Pending DEA",
-  "Active - Pending Renewal",
-  "Active - Prescribing",
-  "Active - Prior Discipline",
-  "Active - Pro Bono",
-  // Other statuses
-  "Semi-Active",
-  "Senior Active",
-  "Special Emeritus Certification",
-  "Special Status",
-  "Suspension Completed",
-  "Telemedicine",
-  "Telemedicine Active",
-  "Telemonitoring Active",
-  "Teleradiology Active",
-  "Temporary",
-  "Temporary Approval",
-  "Temporary License",
-  "Temporary Permit",
-  "Texas License Issued",
-  "Timely Renewal",
-  "Trainee/Student",
-  "Unencumbered (full unrestricted license to practice)",
-  "Unlimited",
-  "Valid",
-  // Cancelled statuses
-  "Canc Non-Payment",
-  "Canceled",
-  "Cancelled",
-  "Cancelled (board request)",
-  "Cancelled (by request)",
-  "Cancelled (considered)",
-  "Cancelled (did not renew)",
-  "Cancelled (non payment)",
-  "Cancelled - Deceased",
-  "Cancelled - Failure to Renew",
-  "Cancelled - Requested",
-  "Cancelled by Entity",
-  "Cancelled by Request",
-  "Cancelled Inactive",
-  "Cancelled Nonpayment",
-  "Cancelled Permit",
-  "Cancelled, Did Not Renew"
-];
-const TAG_OPTIONS = ['urgent', 'expiring', 'renewal', 'compliance', 'audit', 'pending', 'primary', 'secondary'];
+const US_STATES = STATE_OPTIONS;
+const LICENSE_TYPES = SEEDING_LICENSE_TYPE_OPTIONS;
+const STATUS = EXTENDED_STATUS_OPTIONS;
+const TAG_OPTIONS_ARRAY = TAG_OPTIONS;
 
 function getDeterministicItem<T>(array: T[], seed: number): T {
   return array[seed % array.length];
@@ -129,7 +68,7 @@ function randomTags() {
   // 50% chance of no tags, otherwise 1-2 random tags
   if (Math.random() < 0.5) return [];
   const count = Math.random() < 0.7 ? 1 : 2;
-  return Array.from({ length: count }, () => faker.helpers.arrayElement(TAG_OPTIONS));
+  return Array.from({ length: count }, () => faker.helpers.arrayElement(TAG_OPTIONS_ARRAY));
 }
 
 function generateStateLicense(provider_id: string, seed: number) {

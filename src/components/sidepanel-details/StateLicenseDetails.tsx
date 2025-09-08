@@ -5,6 +5,7 @@ import { SingleSelect } from '../inputs/SingleSelect';
 import TextInputField from '../inputs/TextInputField';
 import { getInputType, renderFieldComponent } from './getInputType';
 import { extractTitleAcronym, generateProviderName, generateDefaultHeaderText } from '@/lib/utils';
+import { STATE_OPTIONS, LICENSE_TYPE_OPTIONS, STATUS_OPTIONS, YES_NO_OPTIONS, TAG_OPTIONS } from './StateLicenseSelectInputOptions';
 
 // State Licenses fieldGroups definition - Updated to match screenshot layout
 export const stateLicenseFieldGroups = [
@@ -18,13 +19,7 @@ export const stateLicenseFieldGroups = [
         type: "single-select",
         placeholder: "Select state",
         required: true,
-        options: [
-          "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
-          "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
-          "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
-          "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
-          "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"
-        ],
+        options: STATE_OPTIONS,
         key: "state"
       },
       {
@@ -33,18 +28,7 @@ export const stateLicenseFieldGroups = [
         type: "single-select",
         placeholder: "Select license type",
         required: true,
-        options: [
-          "MD - Medical Doctor",
-          "DO - Doctor of Osteopathic Medicine",
-          "NP - Nurse Practitioner",
-          "PA - Physician Assistant",
-          "RN - Registered Nurse",
-          "LPN - Licensed Practical Nurse",
-          "CRNA - Certified Registered Nurse Anesthetist",
-          "DPM - Doctor of Podiatric Medicine",
-          "DDS - Doctor of Dental Surgery",
-          "DMD - Doctor of Dental Medicine"
-        ],
+        options: LICENSE_TYPE_OPTIONS,
         key: "license_type"
       },
       {
@@ -67,7 +51,7 @@ export const stateLicenseFieldGroups = [
         type: "single-select",
         placeholder: "Select status",
         required: true,
-        options: ["Active", "Expired", "Pending", "Suspended", "Revoked"],
+        options: STATUS_OPTIONS,
         key: "status"
       },
       {
@@ -88,7 +72,7 @@ export const stateLicenseFieldGroups = [
         label: "Don't Renew?",
         group: "Additional Info",
         type: "single-select",
-        options: ["Yes", "No"],
+        options: YES_NO_OPTIONS,
         placeholder: "Select renewal status",
         key: "dont_renew"
       },
@@ -96,7 +80,7 @@ export const stateLicenseFieldGroups = [
         label: "Primary?",
         group: "Additional Info",
         type: "single-select",
-        options: ["Yes", "No"],
+        options: YES_NO_OPTIONS,
         placeholder: "Is this a primary license?",
         key: "is_primary"
       },
@@ -104,7 +88,7 @@ export const stateLicenseFieldGroups = [
         label: "Multi-state?",
         group: "Additional Info",
         type: "single-select",
-        options: ["Yes", "No"],
+        options: YES_NO_OPTIONS,
         placeholder: "Is this a multistate license?",
         key: "is_multistate"
       },
@@ -119,7 +103,7 @@ export const stateLicenseFieldGroups = [
         label: "Enrolled in PDMP?",
         group: "Additional Info",
         type: "single-select",
-        options: ["Yes", "No"],
+        options: YES_NO_OPTIONS,
         placeholder: "Enrolled in Prescription Drug Monitoring Program?",
         key: "enrolled_in_pdmp"
       },
@@ -134,7 +118,7 @@ export const stateLicenseFieldGroups = [
         label: "Additional Info",
         group: "Additional Info",
         type: "single-select",
-        options: ["Yes", "No"],
+        options: YES_NO_OPTIONS,
         placeholder: "Anything else?",
         key: "license_additional_info"
       },
@@ -150,7 +134,7 @@ export const stateLicenseFieldGroups = [
         group: "Additional Info",
         type: "multi-select",
         placeholder: "Select tags",
-        options: ["urgent", "expiring", "renewal", "compliance", "audit", "pending", "primary", "secondary"],
+        options: TAG_OPTIONS,
         key: "tags"
       },
       {
