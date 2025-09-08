@@ -13,7 +13,7 @@ When I ask you to create a new grid for the OneView All Providers app, follow th
 ### Step 1: Analyze Screenshots
 When I provide screenshots of the grid I want to replicate:
 - Analyze the grid columns and their display names
-- Identify field groupings for the Details panel
+- **Identify field grouping patterns** for the Details panel (see Field Grouping Patterns below)
 - Determine appropriate data types for each field
 - Identify which columns should be visible by default
 - Determine logical field ordering
@@ -21,6 +21,31 @@ When I provide screenshots of the grid I want to replicate:
 - Determine which actions should be available for this grid type
 - **Extract dropdown/select options** from any dropdown fields visible in the screenshots
 - **Identify field validation rules** and constraints from the UI
+
+### Field Grouping Patterns
+Based on the screenshot analysis, determine which pattern to use:
+
+**Pattern 1: CollapsibleSection Pattern**
+- **When to use**: Screenshots show fields grouped under clear section headers (e.g., "PROVIDER NAME", "TYPE, SPECIALTY & CLASSIFICATIONS", "CONTACT INFO")
+- **Characteristics**: Multiple sections with uppercase, bold headers that group related fields together
+- **Implementation**: Use `CollapsibleSection.tsx` component to wrap field groups
+- **Example**: Provider Info Details components
+
+**Pattern 2: Simple Field List Pattern**
+- **When to use**: Screenshots show fields without section headers, just individual fields listed
+- **Characteristics**: No grouping headers, fields are simply listed vertically or in a grid layout
+- **Implementation**: Render fields directly without CollapsibleSection wrapper
+- **Layout**: 
+  - Sidepanel context: Vertical list
+  - Modal context: Use grid layout as shown in screenshot
+- **Example**: Birth Info Details components
+
+**Pattern 3: SearchCriteriaSection Pattern**
+- **When to use**: Screenshots show a "SEARCH CRITERIA" section with specific styling and layout
+- **Characteristics**: Distinct "SEARCH CRITERIA" header with fields arranged in a specific grid pattern
+- **Implementation**: Use `SearchCriteriaSection.tsx` component for the search criteria fields
+- **Additional sections**: May have other sections (like "ADDITIONAL INFO") that can use CollapsibleSection or simple field list
+- **Example**: State License Details components
 
 ### Step 2: Generate Required Input Information
 Based on the screenshot analysis, I will generate a structured list of required information:
@@ -122,7 +147,10 @@ Based on the screenshot analysis, I will generate a structured list of required 
 - Use imported options for single-select and multi-select fields
 - Include proper form validation and error handling
 - Add semantic markup with `data-testid` attributes
-- Use CollapsibleSection for field groups
+- **Apply the correct field grouping pattern** based on screenshot analysis:
+  - **Pattern 1 (CollapsibleSection)**: Wrap field groups in `CollapsibleSection` components
+  - **Pattern 2 (Simple Field List)**: Render fields directly, use grid layout for wide modal
+  - **Pattern 3 (SearchCriteriaSection)**: Use `SearchCriteriaSection` for search criteria, CollapsibleSection for other groups
 - Include proper TypeScript interfaces
 - Export template objects for both components (e.g., `{gridName}Template` and `{gridName}WideTemplate`)
 
@@ -170,6 +198,48 @@ The rule follows the established pattern for context-aware components:
 - **Modal Context**: Uses `{GridName}DetailsWide.tsx` component
 - **Template Configuration**: Implements `getDetailsComponent` function to switch between contexts
 - **Import Pattern**: Both template objects are imported and used in `templateConfigs.ts`
+
+## Field Grouping Implementation Patterns
+Based on screenshot analysis, implement the appropriate pattern:
+
+**Pattern 1: CollapsibleSection Implementation**
+```tsx
+// For grids with section headers like "PROVIDER NAME", "CONTACT INFO"
+<CollapsibleSection title="Provider Name">
+  {providerNameFields.map(field => renderFieldComponent({ field, formValues, handleChange }))}
+</CollapsibleSection>
+<CollapsibleSection title="Contact Info">
+  {contactFields.map(field => renderFieldComponent({ field, formValues, handleChange }))}
+</CollapsibleSection>
+```
+
+**Pattern 2: Simple Field List Implementation**
+```tsx
+// For grids without section headers, just individual fields
+<div className="flex flex-col gap-4 self-stretch">
+  {fields.map(field => renderFieldComponent({ field, formValues, handleChange }))}
+</div>
+
+// For wide modal context, use grid layout as shown in screenshot
+<div className="grid grid-cols-2 gap-4">
+  {fields.map(field => renderFieldComponent({ field, formValues, handleChange }))}
+</div>
+```
+
+**Pattern 3: SearchCriteriaSection Implementation**
+```tsx
+// For grids with "SEARCH CRITERIA" section
+<SearchCriteriaSection 
+  title="Search Criteria"
+  fields={searchCriteriaFields}
+  formValues={formValues}
+  handleChange={handleChange}
+  provider={provider}
+/>
+<CollapsibleSection title="Additional Info">
+  {additionalFields.map(field => renderFieldComponent({ field, formValues, handleChange }))}
+</CollapsibleSection>
+```
 
 ## SelectInputOptions Pattern
 The rule follows the established pattern for managing dropdown options:
