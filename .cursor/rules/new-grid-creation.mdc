@@ -108,15 +108,15 @@ Based on the screenshot analysis, I will generate a structured list of required 
 - Include proper ordering for actions
 
 ### 6. Create SelectInputOptions File
-- Generate `{GridName}SelectInputOptions.ts` file in `src/components/sidepanel-details/`
+- Generate `{GridName}SelectInputOptions.ts` file in `src/components/grid-item-details/`
 - Export all dropdown options as named constants (e.g., `STATE_OPTIONS`, `STATUS_OPTIONS`, `YES_NO_OPTIONS`)
 - Include both simple options for forms and extended options for seeding scripts
 - Use descriptive constant names that match the field purpose
 - Include TypeScript comments explaining the purpose of each option set
 
 ### 7. Create Details Components
-- Generate `{GridName}Details.tsx` component in `src/components/sidepanel-details/`
-- Generate `{GridName}DetailsWide.tsx` component in `src/components/sidepanel-details/`
+- Generate `{GridName}Details.tsx` component in `src/components/grid-item-details/`
+- Generate `{GridName}DetailsWide.tsx` component in `src/components/grid-item-details/`
 - Import dropdown options from `{GridName}SelectInputOptions.ts`
 - Include all fields with appropriate input types (text, select, date, etc.)
 - Use imported options for single-select and multi-select fields

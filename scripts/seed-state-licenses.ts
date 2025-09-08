@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import { faker } from '@faker-js/faker';
 import fetch from 'node-fetch';
 import https from 'https';
-import { STATE_OPTIONS, SEEDING_LICENSE_TYPE_OPTIONS, EXTENDED_STATUS_OPTIONS, TAG_OPTIONS } from '../src/components/sidepanel-details/StateLicenseSelectInputOptions';
+import { STATE_OPTIONS, SEEDING_LICENSE_TYPE_OPTIONS, EXTENDED_STATUS_OPTIONS, TAG_OPTIONS } from '../src/components/grid-item-details/StateLicenseSelectInputOptions';
 
 // Create a custom fetch that ignores SSL certificate issues for development
 const customFetch = (url: string, options: any) => {

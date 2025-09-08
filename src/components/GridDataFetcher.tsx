@@ -9,7 +9,7 @@ import {
 import DataGrid from "@/components/DataGrid";
 import { getIconByName } from "@/lib/iconMapping";
 import { extractTitleAcronym, generateProviderName } from "@/lib/utils";
-import { getTitleAcronym } from "./sidepanel-details/ProviderInfoDetails";
+import { getTitleAcronym } from "./grid-item-details/ProviderInfoDetails";
 
 // Example mapping functions for specific grids
 const gridDataMappers: Record<string, (row: any) => any> = {

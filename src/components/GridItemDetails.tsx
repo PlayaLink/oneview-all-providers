@@ -33,10 +33,10 @@ import {
   getTemplateConfigByGrid,
   gridToTemplateMap,
 } from "@/lib/templateConfigs";
-import ProviderInfoDetails from "./sidepanel-details/ProviderInfoDetails";
-import ProviderInfoDetailsWide from "./sidepanel-details/ProviderInfoDetailsWide";
-import StateLicenseDetails from "./sidepanel-details/StateLicenseDetails";
-import StateLicenseDetailsWide from "./sidepanel-details/StateLicenseDetailsWide";
+import ProviderInfoDetails from "./grid-item-details/ProviderInfoDetails";
+import ProviderInfoDetailsWide from "./grid-item-details/ProviderInfoDetailsWide";
+import StateLicenseDetails from "./grid-item-details/StateLicenseDetails";
+import StateLicenseDetailsWide from "./grid-item-details/StateLicenseDetailsWide";
 import Icon from "@/components/ui/Icon";
 import SidePanelTab from "./SidePanelTab";
 import FileDropzone from "./FileDropzone";
@@ -48,7 +48,7 @@ import {
   deleteDocument,
 } from "@/lib/supabaseClient";
 import { toast } from "@/hooks/use-toast";
-import BirthInfoDetails from "./sidepanel-details/BirthInfoDetails";
+import BirthInfoDetails from "./grid-item-details/BirthInfoDetails";
 import { sharedTabsById } from "./tabsRegistry";
 import NavItem from "./NavItem";
 import SidePanelTabLegacy from "./SidePanelTabLegacy";

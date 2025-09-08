@@ -1,10 +1,10 @@
-import { stateLicenseTemplate } from '../components/sidepanel-details/StateLicenseDetails';
-import { stateLicenseWideTemplate } from '../components/sidepanel-details/StateLicenseDetailsWide';
-import { birthInfoTemplate } from '../components/sidepanel-details/BirthInfoDetails';
-import { providerInfoTemplate } from '../components/sidepanel-details/ProviderInfoDetails';
-import { providerInfoWideTemplate } from '../components/sidepanel-details/ProviderInfoDetailsWide';
-import { addressTemplate } from '../components/sidepanel-details/AddressDetails';
-import { facilityAffiliationsTemplate } from '../components/sidepanel-details/FacilityAffiliationsDetails';
+import { stateLicenseTemplate } from '../components/grid-item-details/StateLicenseDetails';
+import { stateLicenseWideTemplate } from '../components/grid-item-details/StateLicenseDetailsWide';
+import { birthInfoTemplate } from '../components/grid-item-details/BirthInfoDetails';
+import { providerInfoTemplate } from '../components/grid-item-details/ProviderInfoDetails';
+import { providerInfoWideTemplate } from '../components/grid-item-details/ProviderInfoDetailsWide';
+import { addressTemplate } from '../components/grid-item-details/AddressDetails';
+import { facilityAffiliationsTemplate } from '../components/grid-item-details/FacilityAffiliationsDetails';
 import { generateDefaultHeaderText } from './utils';
 import React from 'react';
 
