@@ -105,6 +105,11 @@ Based on the screenshot analysis, I will generate a structured list of required 
 - Add index on provider_id for performance
 - Include tags field as text[] array
 - Add last_updated timestamp field
+- **ALWAYS** provide raw SQL scripts instead of using Supabase CLI
+- **ALWAYS** include debugging queries and orphaned record checks
+- **ALWAYS** add proper indexes on foreign keys for performance
+- **ALWAYS** include foreign key constraints and validation rules
+- **ALWAYS** test migrations with sample data and validation queries
 
 ### 2. Create Seeding Script
 - Generate TypeScript seeding script: `scripts/seed-{table_name}.ts`
@@ -113,13 +118,27 @@ Based on the screenshot analysis, I will generate a structured list of required 
 - Use faker.js for realistic dummy data generation
 - Include deterministic data generation using seed values
 - Generate 3-5 records per provider
-- Include proper error handling and retry logic
-- Clear existing data before seeding
+- **ALWAYS** include comprehensive error handling with try-catch blocks
+- **ALWAYS** use batch processing (batch size 100) for large data inserts
+- **ALWAYS** clear existing data before seeding to avoid conflicts
+- **ALWAYS** use faker.seed() for deterministic test data generation
+- **ALWAYS** include proper process.exit codes (0 for success, 1 for failure)
+- **ALWAYS** use custom fetch configuration for SSL certificate handling in development
+- **ALWAYS** import dropdown options from SelectInputOptions files for consistency
 
 ### 3. Add Supabase Client Functions
 - Add Zod schema for type validation in `src/lib/supabaseClient.ts`
 - Add CRUD helper functions: fetch{TableName}, insert{TableName}, update{TableName}, delete{TableName}
 - Include proper error handling and type safety
+- **ALWAYS** use Zod schemas for database operation validation
+- **ALWAYS** define proper TypeScript interfaces for all data structures
+- **ALWAYS** use generic functions for reusable database operations
+- **ALWAYS** validate data types before database operations
+- **ALWAYS** convert technical errors to user-friendly messages
+- **ALWAYS** implement rollback mechanisms for optimistic updates
+- **ALWAYS** handle RLS policy violations with specific error messages
+- **ALWAYS** use toast notifications for consistent error feedback
+- **ALWAYS** include proper error logging with context information
 
 ### 4. Create Grid Configuration
 - Generate SQL script to insert grid definition into `grid_definitions` table
@@ -153,6 +172,11 @@ Based on the screenshot analysis, I will generate a structured list of required 
   - **Pattern 3 (SearchCriteriaSection)**: Use `SearchCriteriaSection` for search criteria, CollapsibleSection for other groups
 - Include proper TypeScript interfaces
 - Export template objects for both components (e.g., `{gridName}Template` and `{gridName}WideTemplate`)
+- **ALWAYS** add comprehensive ARIA support: role, aria-label, aria-labelledby, aria-expanded attributes
+- **ALWAYS** use semantic HTML elements (nav, main, aside, header, footer, section)
+- **ALWAYS** support keyboard navigation (Enter/Space keys) in interactive elements
+- **ALWAYS** add data-testid attributes for DOM inspection and testing
+- **ALWAYS** include aria-hidden="true" for decorative icons
 
 ### 8. Update Template Configuration
 - Add new grid to `gridToTemplateMap` in `src/lib/templateConfigs.ts`
@@ -281,3 +305,48 @@ When presenting information for confirmation, I will use this format:
 ```
 
 This rule ensures accuracy by requiring explicit confirmation before proceeding with the automated workflow, while still maintaining the efficiency of the automated process once confirmed.
+
+## Best Practices from Recent Bug Fixes
+
+### Seeding Script Standards
+- **ALWAYS** include comprehensive error handling with try-catch blocks
+- **ALWAYS** use batch processing (batch size 100) for large data inserts
+- **ALWAYS** clear existing data before seeding to avoid conflicts
+- **ALWAYS** use faker.seed() for deterministic test data generation
+- **ALWAYS** include proper process.exit codes (0 for success, 1 for failure)
+- **ALWAYS** use custom fetch configuration for SSL certificate handling in development
+- **ALWAYS** import dropdown options from SelectInputOptions files for consistency
+
+### Database Migration Standards
+- **ALWAYS** provide raw SQL scripts instead of using Supabase CLI
+- **ALWAYS** include debugging queries and orphaned record checks
+- **ALWAYS** add proper indexes on foreign keys for performance
+- **ALWAYS** include foreign key constraints and validation rules
+- **ALWAYS** test migrations with sample data and validation queries
+
+### Feature Flag Implementation
+- **ALWAYS** use boolean-based feature flags instead of string-based
+- **ALWAYS** implement proper loading states and error handling
+- **ALWAYS** use React Query for feature flag management with caching
+- **ALWAYS** provide graceful fallbacks when feature flags fail to load
+- **ALWAYS** define feature flags in TypeScript interfaces for type safety
+
+### Error Handling Standards
+- **ALWAYS** convert technical errors to user-friendly messages
+- **ALWAYS** implement rollback mechanisms for optimistic updates
+- **ALWAYS** handle RLS policy violations with specific error messages
+- **ALWAYS** use toast notifications for consistent error feedback
+- **ALWAYS** include proper error logging with context information
+
+### Type Safety Requirements
+- **ALWAYS** use Zod schemas for database operation validation
+- **ALWAYS** define proper TypeScript interfaces for all data structures
+- **ALWAYS** use generic functions for reusable database operations
+- **ALWAYS** validate data types before database operations
+
+### Accessibility and Semantic Markup Standards
+- **ALWAYS** add comprehensive ARIA support: role, aria-label, aria-labelledby, aria-expanded attributes
+- **ALWAYS** use semantic HTML elements (nav, main, aside, header, footer, section)
+- **ALWAYS** support keyboard navigation (Enter/Space keys) in interactive elements
+- **ALWAYS** add data-testid attributes for DOM inspection and testing
+- **ALWAYS** include aria-hidden="true" for decorative icons

@@ -177,6 +177,32 @@ export const BirthInfoSchema = z.object({
   // ...add other fields as needed
 });
 
+export const DEALicenseSchema = z.object({
+  id: z.string(),
+  provider_id: z.string(),
+  state: z.string().nullable().optional(),
+  license_number: z.string(),
+  first_name: z.string().nullable().optional(),
+  last_name: z.string().nullable().optional(),
+  status: z.string().nullable().optional(),
+  payment_indicator: z.string().nullable().optional(),
+  issue_date: z.string().nullable().optional(),
+  expiration_date: z.string().nullable().optional(),
+  dont_renew: z.string().nullable().optional(),
+  dont_transfer: z.string().nullable().optional(),
+  primary_license: z.string().nullable().optional(),
+  approved_erx: z.string().nullable().optional(),
+  dea_schedules: z.string().nullable().optional(),
+  address: z.string().nullable().optional(),
+  address2: z.string().nullable().optional(),
+  city: z.string().nullable().optional(),
+  address_state: z.string().nullable().optional(),
+  zip_code: z.string().nullable().optional(),
+  tags: z.array(z.string()).nullable().optional(),
+  last_updated: z.string().nullable().optional(),
+  provider: z.any().optional(),
+});
+
 // Per-table helpers using dbFetch
 export function fetchStateLicenses() {
   return dbFetch(
@@ -196,6 +222,69 @@ export function fetchBirthInfo() {
   ).then(result => {
     return result;
   });
+}
+
+export function fetchDEALicenses() {
+  return dbFetch(
+    'dea_licenses',
+    '*,provider:providers(id,first_name,last_name,title,primary_specialty)',
+    DEALicenseSchema
+  ).then(result => {
+    return result;
+  });
+}
+
+export async function fetchDEALicensesByProvider(providerId: string) {
+  const { data, error } = await supabase
+    .from('dea_licenses')
+    .select(`
+      *,
+      provider:providers(
+        id,
+        first_name,
+        last_name,
+        title,
+        primary_specialty
+      )
+    `)
+    .eq('provider_id', providerId);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function insertDEALicense(deaLicense: Record<string, any>) {
+  const insertCopy = { ...deaLicense };
+  if ('tags' in insertCopy) insertCopy.tags = fromIdLabelArray(insertCopy.tags);
+  
+  const { data, error } = await supabase
+    .from('dea_licenses')
+    .insert([insertCopy])
+    .select();
+  if (error) throw error;
+  return data?.[0];
+}
+
+export async function updateDEALicense(id: string, updates: Record<string, any>) {
+  const updatesCopy = { ...updates };
+  if ('tags' in updatesCopy) updatesCopy.tags = fromIdLabelArray(updatesCopy.tags);
+  
+  const { data, error } = await supabase
+    .from('dea_licenses')
+    .update(updatesCopy)
+    .eq('id', id)
+    .select();
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteDEALicense(id: string) {
+  const { error } = await supabase
+    .from('dea_licenses')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
+  return true;
 }
 
 export async function fetchStateLicensesByProvider(providerId: string) {

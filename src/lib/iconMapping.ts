@@ -150,6 +150,7 @@ const iconMap: Record<string, IconDefinition | string> = {
   "chevron-down": faChevronDown,
   "chevron-left": faChevronLeft,
   "chevron-right": faChevronRight,
+  "clipboard": faClipboard,
   "user": faUser,
   "xmark": faXmark,
   "times": faTimes, // Alias for xmark

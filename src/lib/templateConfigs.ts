@@ -5,6 +5,8 @@ import { providerInfoTemplate } from '../components/grid-item-details/ProviderIn
 import { providerInfoWideTemplate } from '../components/grid-item-details/ProviderInfoDetailsWide';
 import { addressTemplate } from '../components/grid-item-details/AddressDetails';
 import { facilityAffiliationsTemplate } from '../components/grid-item-details/FacilityAffiliationsDetails';
+import { deaLicensesTemplate } from '../components/grid-item-details/DEALicensesDetails';
+import { deaLicensesWideTemplate } from '../components/grid-item-details/DEALicensesDetailsWide';
 import { generateDefaultHeaderText } from './utils';
 import React from 'react';
 
@@ -44,6 +46,7 @@ export const gridToTemplateMap: Record<string, string> = {
   "state_licenses": "state_licenses",
   "birth_info": "birth_info",
   "addresses": "addresses",
+  "dea_licenses": "dea_licenses",
   
   // Facility system grids
   "facility_affiliations": "facility_affiliations",
@@ -110,6 +113,17 @@ export function getTemplateConfigByGrid(gridKey: string, context?: 'sidepanel' |
     case "birth_info": return birthInfoTemplate;
     case "addresses": return addressTemplate;
     case "facility_affiliations": return facilityAffiliationsTemplate;
+    case "dea_licenses": {
+      if (context === 'modal') {
+        return {
+          ...deaLicensesWideTemplate,
+          getDetailsComponent: (ctx: 'sidepanel' | 'modal') => {
+            return ctx === 'modal' ? deaLicensesWideTemplate.DetailsComponent : deaLicensesTemplate.DetailsComponent;
+          }
+        };
+      }
+      return deaLicensesTemplate;
+    }
     
     // For grids without specific templates, return a default template
     default: {
