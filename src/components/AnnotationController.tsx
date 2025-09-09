@@ -18,6 +18,7 @@ export function AnnotationController({ children, isAnnotationMode, toggleAnnotat
   const [showForm, setShowForm] = useState(false);
   const [isCreateMode, setIsCreateMode] = useState(false);
   const [editingAnnotationId, setEditingAnnotationId] = useState<string | null>(null);
+  const [isPillHovered, setIsPillHovered] = useState(false);
   
   // Use the annotations hook at the controller level
   const { 
@@ -318,13 +319,15 @@ export function AnnotationController({ children, isAnnotationMode, toggleAnnotat
       </style>
       <div 
         data-annotation-mode-pill="true"
+        onMouseEnter={() => setIsPillHovered(true)}
+        onMouseLeave={() => setIsPillHovered(false)}
         style={{
           position: 'fixed',
           bottom: '20px',
           left: '20px',
           backgroundColor: isAnnotationMode ? '#F48100' : '#6B7280', // Orange when active, gray when inactive
           color: 'white',
-          padding: '8px 16px',
+          padding: isAnnotationMode || isPillHovered ? '8px 16px' : '8px', // Full padding when active or hovered, minimal when collapsed
           borderRadius: '20px',
           fontSize: '12px',
           fontWeight: 'bold',
@@ -333,21 +336,27 @@ export function AnnotationController({ children, isAnnotationMode, toggleAnnotat
           boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
-          transition: 'background-color 0.2s ease'
+          gap: isAnnotationMode || isPillHovered ? '8px' : '0', // Gap when expanded, no gap when collapsed
+          transition: 'all 0.2s ease',
+          width: isAnnotationMode || isPillHovered ? 'auto' : '32px', // Auto width when expanded, fixed width when collapsed
+          justifyContent: isAnnotationMode || isPillHovered ? 'flex-start' : 'center', // Center icon when collapsed
         }}
       >
         <Icon icon="code" size="sm" />
-        <span className="uppercase">Dev Notes</span>
-        <Switch 
-          checked={isAnnotationMode} 
-          onCheckedChange={(checked) => {
-            // We need to access the toggle function from the parent
-            // For now, we'll use a custom event to communicate with the parent
-            window.dispatchEvent(new CustomEvent('toggleAnnotationMode', { detail: { checked } }));
-          }}
-          className="scale-75 data-[state=checked]:bg-[#3BA8D1]"
-        />
+        {(isAnnotationMode || isPillHovered) && (
+          <>
+            <span className="uppercase">Dev Notes</span>
+            <Switch 
+              checked={isAnnotationMode} 
+              onCheckedChange={(checked) => {
+                // We need to access the toggle function from the parent
+                // For now, we'll use a custom event to communicate with the parent
+                window.dispatchEvent(new CustomEvent('toggleAnnotationMode', { detail: { checked } }));
+              }}
+              className="scale-75 data-[state=checked]:bg-[#3BA8D1]"
+            />
+          </>
+        )}
       </div>
       
       {/* Create New Annotation Button */}
