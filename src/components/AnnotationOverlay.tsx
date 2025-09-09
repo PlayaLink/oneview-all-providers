@@ -261,7 +261,7 @@ export function AnnotationController({ children, isAnnotationMode, toggleAnnotat
           position: 'fixed',
           bottom: '20px',
           left: '20px',
-          backgroundColor: '#6B7280', // Always gray regardless of state
+          backgroundColor: isAnnotationMode ? '#F48100' : '#6B7280',
           color: 'white',
           padding: '8px 16px',
           borderRadius: '20px',
@@ -285,7 +285,7 @@ export function AnnotationController({ children, isAnnotationMode, toggleAnnotat
             // For now, we'll use a custom event to communicate with the parent
             window.dispatchEvent(new CustomEvent('toggleAnnotationMode', { detail: { checked } }));
           }}
-          className="scale-75 data-[state=checked]:bg-[#F48100]"
+          className="scale-75"
         />
       </div>
       
