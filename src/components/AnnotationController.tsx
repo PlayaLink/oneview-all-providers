@@ -333,11 +333,12 @@ export function AnnotationController({ children, isAnnotationMode, toggleAnnotat
           fontWeight: 'bold',
           zIndex: 10000,
           pointerEvents: 'auto',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+          boxShadow: isPillHovered ? '0 6px 20px rgba(0, 0, 0, 0.25)' : '0 4px 12px rgba(0, 0, 0, 0.15)',
           display: 'flex',
           alignItems: 'center',
           gap: isAnnotationMode || isPillHovered ? '8px' : '0', // Gap when expanded, no gap when collapsed
-          transition: 'all 0.2s ease',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          transform: isPillHovered ? 'scale(1.05)' : 'scale(1)',
           width: isAnnotationMode || isPillHovered ? 'auto' : '32px', // Auto width when expanded, fixed width when collapsed
           justifyContent: isAnnotationMode || isPillHovered ? 'flex-start' : 'center', // Center icon when collapsed
         }}
