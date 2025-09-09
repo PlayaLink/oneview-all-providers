@@ -401,9 +401,9 @@ export function AnnotationDisplay({
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
                     <div className="font-medium text-gray-900">
-                      {annotation.gitBranch && (
+                      {annotation.userName && (
                         <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                          {annotation.gitBranch}
+                          {annotation.userName}
                         </span>
                       )}
                     </div>
