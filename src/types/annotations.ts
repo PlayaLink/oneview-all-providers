@@ -9,6 +9,7 @@ export interface Annotation {
   placement: 'top' | 'bottom' | 'left' | 'right';
   pageUrl: string;
   gitBranch?: string;
+  userName: string;
   timestamp: string;
 }
 

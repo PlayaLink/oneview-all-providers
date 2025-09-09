@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Annotation } from '../types/annotations';
 import { fetchAnnotations, addAnnotation as addAnnotationToDb, deleteAnnotation as deleteAnnotationFromDb, updateAnnotation as updateAnnotationInDb } from '../lib/supabaseClient';
 import { getCurrentGitBranch, getDeploymentBranchInfo } from '../lib/gitUtils';
+import { useUser } from '../contexts/UserContext';
 
 export function useAnnotations() {
   const [annotations, setAnnotations] = useState<Annotation[]>([]);
@@ -12,14 +13,24 @@ export function useAnnotations() {
     environment: 'development' | 'preview' | 'production';
     deploymentUrl: string | null;
   } | null>(null);
+  const { user } = useUser();
+
+  // Helper function to get user name
+  const getUserName = () => {
+    if (user?.user_metadata?.full_name) {
+      return user.user_metadata.full_name;
+    }
+    if (user?.email) {
+      return user.email;
+    }
+    return 'Unknown User';
+  };
 
   // Fetch annotations from Supabase
   const fetchAllAnnotations = async () => {
     try {
-      console.log('🔄 fetchAllAnnotations: Starting...');
       setLoading(true);
       const data = await fetchAnnotations();
-      console.log('📊 fetchAllAnnotations: Raw data from database:', data.length, 'annotations');
       
       // Transform the data to match the Annotation interface
       const transformedAnnotations: Annotation[] = data.map(row => ({
@@ -30,12 +41,11 @@ export function useAnnotations() {
         placement: row.placement,
         pageUrl: row.page_url,
         gitBranch: row.git_branch,
+        userName: row.user_name,
         timestamp: row.created_at,
       }));
       
-      console.log('📊 fetchAllAnnotations: Transformed annotations:', transformedAnnotations.length);
       setAnnotations(transformedAnnotations);
-      console.log('✅ fetchAllAnnotations: State updated with', transformedAnnotations.length, 'annotations');
     } catch (error) {
       console.error('Error fetching annotations:', error);
       setAnnotations([]);
@@ -67,7 +77,6 @@ export function useAnnotations() {
   // Add a new annotation
   const addAnnotation = async (annotation: Omit<Annotation, 'id' | 'timestamp'>) => {
     try {
-      console.log('🔄 Adding annotation:', annotation);
       
       // Get the current git branch using the deployment info
       const deploymentInfo = await getDeploymentBranchInfo();
@@ -81,14 +90,11 @@ export function useAnnotations() {
         placement: annotation.placement,
         page_url: annotation.pageUrl,
         git_branch: gitBranch || undefined,
+        user_name: getUserName(),
       });
       
-      console.log('✅ Annotation saved to database:', data[0]);
-      
       // Refresh annotations from database to ensure we have the latest data and proper ordering
-      console.log('🔄 Refreshing annotations from database...');
       await fetchAllAnnotations();
-      console.log('✅ Annotations refreshed');
       
       return data[0];
     } catch (error) {

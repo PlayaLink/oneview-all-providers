@@ -350,3 +350,11 @@ This rule ensures accuracy by requiring explicit confirmation before proceeding 
 - **ALWAYS** support keyboard navigation (Enter/Space keys) in interactive elements
 - **ALWAYS** add data-testid attributes for DOM inspection and testing
 - **ALWAYS** include aria-hidden="true" for decorative icons
+
+### Icon Mapping Standards
+- **ALWAYS** add new grid icons to `src/lib/iconMapping.ts` file
+- **ALWAYS** use FontAwesome icons from `@fortawesome/free-solid-svg-icons` package
+- **ALWAYS** import the icon at the top of the `iconMapping.ts` file
+- **ALWAYS** add the icon mapping to the `iconMap` object with kebab-case naming
+- **ALWAYS** provide fallback to `faTable` if icon not found
+- **ALWAYS** test icon rendering in the grid header after adding to mapping

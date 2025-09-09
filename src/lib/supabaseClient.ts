@@ -1243,6 +1243,7 @@ export const AnnotationSchema = z.object({
   placement: z.enum(['top', 'bottom', 'left', 'right']),
   page_url: z.string(),
   git_branch: z.string().nullable().optional(),
+  user_name: z.string(),
   created_at: z.string(),
   updated_at: z.string(),
 });
@@ -1288,6 +1289,7 @@ export async function addAnnotation(data: {
   placement: 'top' | 'bottom' | 'left' | 'right';
   page_url: string;
   git_branch?: string;
+  user_name: string;
 }) {
   try {
     return await dbInsert('annotations', [data], AnnotationSchema);
@@ -1311,6 +1313,7 @@ export async function updateAnnotation(id: string, data: {
   position_y?: number;
   placement?: 'top' | 'bottom' | 'left' | 'right';
   page_url?: string;
+  user_name?: string;
 }) {
   return dbUpdate('annotations', id, data, AnnotationSchema);
 }
@@ -2047,7 +2050,6 @@ export async function fetchAllGridActions() {
 
 // Update expiring_within value for a grid definition
 export async function updateGridExpiringWithin(gridName: string, expiringWithin: number) {
-  console.log("updateGridExpiringWithin called with:", { gridName, expiringWithin });
   
   // First get the grid definition to get the grid_id
   const { data: gridDefs, error: gridError } = await supabase
@@ -2067,7 +2069,6 @@ export async function updateGridExpiringWithin(gridName: string, expiringWithin:
   }
 
   const gridDef = gridDefs[0];
-  console.log("Found grid definition:", gridDef);
   
   // Update the expiring_within value
   const { data, error } = await supabase
@@ -2082,7 +2083,6 @@ export async function updateGridExpiringWithin(gridName: string, expiringWithin:
     throw error;
   }
   
-  console.log("Update successful:", data);
   return data;
 }
 
@@ -2091,8 +2091,6 @@ export async function bulkDeleteRecords(tableName: string, recordIds: string[]) 
   if (!tableName || recordIds.length === 0) {
     throw new Error('Table name and record IDs are required for bulk deletion');
   }
-
-  console.log(`Bulk deleting ${recordIds.length} records from table: ${tableName}`);
 
   // Delete records in batches to avoid overwhelming the database
   const batchSize = 100;

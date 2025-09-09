@@ -171,15 +171,15 @@ const App = () => {
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <AnnotationController isAnnotationMode={isAnnotationMode} toggleAnnotationMode={toggleAnnotationMode}>
-        <BrowserRouter>
-          <UserProvider user={effectiveUser}>
-            <FeatureFlagProvider>
+      <BrowserRouter>
+        <UserProvider user={effectiveUser}>
+          <FeatureFlagProvider>
+            <AnnotationController isAnnotationMode={isAnnotationMode} toggleAnnotationMode={toggleAnnotationMode}>
               <AuthWrapper user={effectiveUser} loading={false} isAnnotationMode={isAnnotationMode} setAnnotationMode={setAnnotationMode} />
-            </FeatureFlagProvider>
-          </UserProvider>
-        </BrowserRouter>
-      </AnnotationController>
+            </AnnotationController>
+          </FeatureFlagProvider>
+        </UserProvider>
+      </BrowserRouter>
     </TooltipProvider>
   );
 };
