@@ -239,3 +239,5 @@ export const deaLicensesWideTemplate = {
 
 export default DEALicensesDetailsWide;
 
+
+

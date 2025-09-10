@@ -111,7 +111,18 @@ Based on the screenshot analysis, I will generate a structured list of required 
 - **ALWAYS** include foreign key constraints and validation rules
 - **ALWAYS** test migrations with sample data and validation queries
 
-### 2. Create Seeding Script
+### 2. Create Provider View
+- Generate SQL migration file: `supabase/migrations/create_{table_name}_with_provider_view.sql`
+- Create view that joins the new table with `providers_with_full_name` table
+- Include provider data: `provider_name`, `title`, `primary_specialty`
+- Update `grid_definitions` table to use the new view instead of raw table
+- Follow the established pattern from existing grids (addresses_with_provider, state_licenses_with_provider, etc.)
+- **ALWAYS** use LEFT JOIN to ensure all records are included even if provider data is missing
+- **ALWAYS** update grid_definitions.table_name to point to the new view
+- **ALWAYS** include verification query to confirm the update
+- **ALWAYS** provide raw SQL scripts instead of using Supabase CLI
+
+### 3. Create Seeding Script
 - Generate TypeScript seeding script: `scripts/seed-{table_name}.ts`
 - Import dropdown options from `{GridName}SelectInputOptions.ts`
 - Use imported options for consistent data generation
@@ -126,7 +137,7 @@ Based on the screenshot analysis, I will generate a structured list of required 
 - **ALWAYS** use custom fetch configuration for SSL certificate handling in development
 - **ALWAYS** import dropdown options from SelectInputOptions files for consistency
 
-### 3. Add Supabase Client Functions
+### 4. Add Supabase Client Functions
 - Add Zod schema for type validation in `src/lib/supabaseClient.ts`
 - Add CRUD helper functions: fetch{TableName}, insert{TableName}, update{TableName}, delete{TableName}
 - Include proper error handling and type safety
@@ -140,25 +151,25 @@ Based on the screenshot analysis, I will generate a structured list of required 
 - **ALWAYS** use toast notifications for consistent error feedback
 - **ALWAYS** include proper error logging with context information
 
-### 4. Create Grid Configuration
+### 5. Create Grid Configuration
 - Generate SQL script to insert grid definition into `grid_definitions` table
 - Generate SQL script to insert all columns into `grid_columns` table
 - Include proper ordering, visibility, and grouping
 - Set appropriate column widths and types
 
-### 5. Create Grid Actions Configuration
+### 6. Create Grid Actions Configuration
 - Generate SQL script to link grid with specified actions in `grid_actions` table
 - Use helper functions to get grid_id and action_id by name
 - Include proper ordering for actions
 
-### 6. Create SelectInputOptions File
+### 7. Create SelectInputOptions File
 - Generate `{GridName}SelectInputOptions.ts` file in `src/components/grid-item-details/`
 - Export all dropdown options as named constants (e.g., `STATE_OPTIONS`, `STATUS_OPTIONS`, `YES_NO_OPTIONS`)
 - Include both simple options for forms and extended options for seeding scripts
 - Use descriptive constant names that match the field purpose
 - Include TypeScript comments explaining the purpose of each option set
 
-### 7. Create Details Components
+### 8. Create Details Components
 - Generate `{GridName}Details.tsx` component in `src/components/grid-item-details/`
 - Generate `{GridName}DetailsWide.tsx` component in `src/components/grid-item-details/`
 - Import dropdown options from `{GridName}SelectInputOptions.ts`
@@ -178,7 +189,7 @@ Based on the screenshot analysis, I will generate a structured list of required 
 - **ALWAYS** add data-testid attributes for DOM inspection and testing
 - **ALWAYS** include aria-hidden="true" for decorative icons
 
-### 8. Update Template Configuration
+### 9. Update Template Configuration
 - Add new grid to `gridToTemplateMap` in `src/lib/templateConfigs.ts`
 - Import both template objects from the Details components
 - Add case in `getTemplateConfigByGrid` function to handle context switching
@@ -187,7 +198,7 @@ Based on the screenshot analysis, I will generate a structured list of required 
 - Include proper tab configuration (Details, Notes, Documents, History)
 - Use CollapsibleSection for field groups
 
-### 9. Add Semantic Markup
+### 10. Add Semantic Markup
 - Ensure all generated components include:
   - `data-testid` attributes with descriptive, hyphenated names
   - `role` attributes for accessibility
@@ -196,6 +207,7 @@ Based on the screenshot analysis, I will generate a structured list of required 
 
 ## File Naming Conventions
 - Migration files: `create_{table_name}_table.sql`
+- Provider view files: `create_{table_name}_with_provider_view.sql`
 - Seeding scripts: `seed-{table_name}.ts`
 - Grid config scripts: `setup-{table_name}-grid.sql`
 - Actions config scripts: `setup-{table_name}-actions.sql`

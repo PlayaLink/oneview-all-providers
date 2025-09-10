@@ -73,3 +73,5 @@ CREATE TRIGGER trigger_update_dea_licenses_updated_at
     FOR EACH ROW
     EXECUTE FUNCTION update_dea_licenses_updated_at();
 
+
+

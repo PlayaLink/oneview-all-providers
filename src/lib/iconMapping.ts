@@ -171,7 +171,12 @@ const iconMap: Record<string, IconDefinition | string> = {
   // Toggle icons
   "toggle-on": faToggleOn,
   "toggle-off": faToggleOff,
-  
+
+  // File export icons (using file-export as fallback for free FontAwesome)
+  "file-excel": faFileExport,
+  "file-csv": faFileExport,
+  "file-pdf": faFileExport,
+
   // Premium FontAwesome icons (currently using custom SVG, replace with IconDefinition when available)
   "sidebar-flip": "/icons/sidebar-flip.svg",
 };
