@@ -8,6 +8,7 @@ import { updateGridColumnWidths, updateGridExpiringWithin, bulkDeleteRecords } f
 import ContextMenu from "./ContextMenu";
 import ActionsColumn from "./ActionsColumn";
 import ExpiringCellRenderer from "./ExpiringCellRenderer";
+import GridSettingsDropdownMenu from "./GridSettingsDropdownMenu";
 
 // Import AG Grid styles with Quartz theme
 import "ag-grid-enterprise/styles/ag-grid.css";
@@ -18,7 +19,8 @@ const ActionsHeader: React.FC<{
   onAddRecord?: () => void;
   onMoreActions?: () => void;
   onHelp?: () => void;
-}> = ({ onAddRecord, onMoreActions, onHelp }) => {
+  moreActionsRef?: React.RefObject<HTMLButtonElement>;
+}> = ({ onAddRecord, onMoreActions, onHelp, moreActionsRef }) => {
   return (
     <div
       className="flex items-center justify-between w-full h-full"
@@ -54,6 +56,7 @@ const ActionsHeader: React.FC<{
           <Icon icon="plus" className="w-3 h-3 text-white" />
         </button>
         <button
+          ref={moreActionsRef}
           onClick={onMoreActions}
           className="w-6 h-6 text-gray-600 hover:text-gray-800 transition-colors flex items-center justify-center"
           data-testid="actions-more-button"
@@ -166,6 +169,10 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
   // Row selection state for action bar
   const [selectedRows, setSelectedRows] = React.useState<any[]>([]);
+
+  // Grid settings dropdown state
+  const [isGridSettingsOpen, setIsGridSettingsOpen] = React.useState(false);
+  const moreActionsRef = React.useRef<HTMLButtonElement>(null);
   
 
 
@@ -234,6 +241,58 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     const map = new Map(gridColumnsData.map(col => [col.name, col.id]));
     return map;
   }, [gridColumnsData]);
+
+  // Grid settings dropdown handlers
+  const handleMoreActions = React.useCallback(() => {
+    setIsGridSettingsOpen(!isGridSettingsOpen);
+  }, [isGridSettingsOpen]);
+
+  const handleCloseGridSettings = React.useCallback(() => {
+    setIsGridSettingsOpen(false);
+  }, []);
+
+  // Export handlers (placeholder implementations)
+  const handleExportExcel = React.useCallback(() => {
+    console.log('Export to Excel clicked');
+    // TODO: Implement Excel export
+    setIsGridSettingsOpen(false);
+  }, []);
+
+  const handleExportCSV = React.useCallback(() => {
+    console.log('Export to CSV clicked');
+    // TODO: Implement CSV export
+    setIsGridSettingsOpen(false);
+  }, []);
+
+  const handleExportPDF = React.useCallback(() => {
+    console.log('Export to PDF clicked');
+    // TODO: Implement PDF export
+    setIsGridSettingsOpen(false);
+  }, []);
+
+  const handleDownloadAllFiltered = React.useCallback(() => {
+    console.log('Download All (Filtered) clicked');
+    // TODO: Implement filtered download
+    setIsGridSettingsOpen(false);
+  }, []);
+
+  const handleDownloadAll = React.useCallback(() => {
+    console.log('Download All clicked');
+    // TODO: Implement download all
+    setIsGridSettingsOpen(false);
+  }, []);
+
+  const handleResetGridSettings = React.useCallback(() => {
+    console.log('Reset Grid Settings clicked');
+    // TODO: Implement grid settings reset
+    if (gridApi) {
+      // Reset column state
+      gridApi.resetColumnState();
+      // Clear localStorage
+      localStorage.removeItem(`ag-grid-state-${title}`);
+    }
+    setIsGridSettingsOpen(false);
+  }, [gridApi, title]);
 
   // Calculate actions column width based on number of actions
   const minWidthActionsColumn = 165;
@@ -337,8 +396,9 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               headerComponent: (params: any) => (
                 <ActionsHeader
                   onAddRecord={onAddRecord}
-                  onMoreActions={onMoreHeaderActions}
+                  onMoreActions={handleMoreActions}
                   onHelp={() => {}}
+                  moreActionsRef={moreActionsRef}
                 />
               ),
               cellRenderer: (params: any) => (
@@ -972,6 +1032,18 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           handleShowFacilityDetails={handleShowFacilityDetails}
         />
       )}
+
+      <GridSettingsDropdownMenu
+        isOpen={isGridSettingsOpen}
+        onClose={handleCloseGridSettings}
+        anchorRef={moreActionsRef}
+        onExportExcel={handleExportExcel}
+        onExportCSV={handleExportCSV}
+        onExportPDF={handleExportPDF}
+        onDownloadAllFiltered={handleDownloadAllFiltered}
+        onDownloadAll={handleDownloadAll}
+        onResetGridSettings={handleResetGridSettings}
+      />
     </section>
   );
 };
