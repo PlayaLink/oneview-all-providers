@@ -55,6 +55,7 @@ Based on the screenshot analysis, I will generate a structured list of required 
 - **Table Name**: [Suggested snake_case table name]
 - **Grid Group**: [Suggested section/group]
 - **Icon**: [Suggested FontAwesome icon name]
+- **Order**: [What order should this grid appear in within its group?]
 
 **Fields Array:**
 ```javascript
@@ -320,6 +321,7 @@ When presenting information for confirmation, I will use this format:
 **Table Name**: [table_name]
 **Grid Group**: [group]
 **Icon**: [icon_name]
+**Order**: [order_number]
 
 ## Fields Configuration
 [Structured list of all fields]
