@@ -2,5 +2,8 @@
   "command": "npm run dev",
   "serverUrl": "http://localhost:8080/",
   "authenticateProxy": false,
-  "commitMode": "commits"
+  "commitMode": "commits",
+  "ssl": {
+    "rejectUnauthorized": false
+  }
 }
