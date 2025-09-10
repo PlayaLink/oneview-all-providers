@@ -88,6 +88,23 @@ Based on the screenshot analysis, I will generate a structured list of required 
 ["download", "flag", "side_panel", "view_details"]
 ```
 
+**Available Actions (Database Reference):**
+The following actions are currently defined in the database and available for use in grid configurations:
+
+**Core Actions:**
+- `activate` - Activate record
+- `alert` - Toggle alerts for this record
+- `deactivate` - Deactivate record
+- `download` - Download record data
+- `exclude` - Exclude from processing
+- `flag` - Flag this record
+- `side_panel` - Open side panel view
+- `tracking` - Track this record
+- `verifications` - Manage verifications
+- `view_details` - View detailed information
+
+**IMPORTANT**: When analyzing screenshots, only use action names from the list above. These are the only valid actions available in the system.
+
 ### Step 3: Confirmation Step
 **CRITICAL**: Before proceeding with the automated workflow, I will:
 1. Present the generated information in a clear, structured format
