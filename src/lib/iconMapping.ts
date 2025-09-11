@@ -75,6 +75,7 @@ import {
   faTrash,
   faStickyNote,
   faCode,
+  faPrescription,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Unified icon mapping that can contain either FontAwesome icons or SVG file paths
@@ -90,7 +91,7 @@ const iconMap: Record<string, IconDefinition | string> = {
   triangle: faPlay, // Using faPlay as triangle alternative
   "shield-halved": faShieldHalved,
   "clipboard-prescription": faClipboard,
-  prescription: faClipboard,
+  prescription: faPrescription,
   "clipboard-list-check": faClipboardList,
   "badge-check": faCheckCircle, // Using faCheckCircle as alternative
   "file-certificate": faCertificate,

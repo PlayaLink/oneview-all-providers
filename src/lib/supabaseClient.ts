@@ -203,6 +203,25 @@ export const DEALicenseSchema = z.object({
   provider: z.any().optional(),
 });
 
+export const StateControlledSubstanceLicenseSchema = z.object({
+  id: z.string(),
+  provider_id: z.string(),
+  license_type: z.string().nullable().optional(),
+  license_number: z.string().nullable().optional(),
+  state: z.string().nullable().optional(),
+  status: z.string().nullable().optional(),
+  issue_date: z.string().nullable().optional(),
+  expiration_date: z.string().nullable().optional(),
+  expires_within: z.string().nullable().optional(),
+  dont_renew: z.string().nullable().optional(),
+  is_primary: z.string().nullable().optional(),
+  first_name: z.string().nullable().optional(),
+  last_name: z.string().nullable().optional(),
+  tags: z.array(z.string()).nullable().optional(),
+  last_updated: z.string().nullable().optional(),
+  provider: z.any().optional(),
+});
+
 // Per-table helpers using dbFetch
 export function fetchStateLicenses() {
   return dbFetch(
@@ -229,6 +248,16 @@ export function fetchDEALicenses() {
     'dea_licenses',
     '*,provider:providers(id,first_name,last_name,title,primary_specialty)',
     DEALicenseSchema
+  ).then(result => {
+    return result;
+  });
+}
+
+export function fetchStateControlledSubstanceLicenses() {
+  return dbFetch(
+    'state_controlled_substance_licenses_with_provider',
+    '*',
+    StateControlledSubstanceLicenseSchema
   ).then(result => {
     return result;
   });
@@ -281,6 +310,59 @@ export async function updateDEALicense(id: string, updates: Record<string, any>)
 export async function deleteDEALicense(id: string) {
   const { error } = await supabase
     .from('dea_licenses')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
+  return true;
+}
+
+export async function fetchStateControlledSubstanceLicensesByProvider(providerId: string) {
+  const { data, error } = await supabase
+    .from('state_controlled_substance_licenses')
+    .select(`
+      *,
+      provider:providers(
+        id,
+        first_name,
+        last_name,
+        title,
+        primary_specialty
+      )
+    `)
+    .eq('provider_id', providerId);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function insertStateControlledSubstanceLicense(license: Record<string, any>) {
+  const insertCopy = { ...license };
+  if ('tags' in insertCopy) insertCopy.tags = fromIdLabelArray(insertCopy.tags);
+  
+  const { data, error } = await supabase
+    .from('state_controlled_substance_licenses')
+    .insert([insertCopy])
+    .select();
+  if (error) throw error;
+  return data?.[0];
+}
+
+export async function updateStateControlledSubstanceLicense(id: string, updates: Record<string, any>) {
+  const updatesCopy = { ...updates };
+  if ('tags' in updatesCopy) updatesCopy.tags = fromIdLabelArray(updatesCopy.tags);
+  
+  const { data, error } = await supabase
+    .from('state_controlled_substance_licenses')
+    .update(updatesCopy)
+    .eq('id', id)
+    .select();
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteStateControlledSubstanceLicense(id: string) {
+  const { error } = await supabase
+    .from('state_controlled_substance_licenses')
     .delete()
     .eq('id', id);
   if (error) throw error;

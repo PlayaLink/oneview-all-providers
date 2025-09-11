@@ -55,7 +55,16 @@ function GridsSection({
   const [currentGridIndex, setCurrentGridIndex] = React.useState(0);
 
   // Debug: Log gridsToShow
-  
+  console.log('🔍 GridsSection Debug:', {
+    gridsToShow: gridsToShow.length,
+    gridsToShowData: gridsToShow.map(item => ({
+      type: item.type,
+      gridKey: item.grid?.key,
+      gridDisplayName: item.grid?.display_name,
+      gridGroup: item.grid?.group,
+      sectionKey: item.section?.key
+    }))
+  });
 
   // Scroll to a specific grid by index
   const scrollToGrid = (idx: number) => {
@@ -460,11 +469,38 @@ const AllRecords: React.FC = () => {
   // Use shared utility for grouping/ordering
   const { grouped, flat } = React.useMemo(() => getOrderedSectionsAndGrids(gridSections, gridDefs, sectionFilters), [gridSections, gridDefs, sectionFilters]);
 
+  // Debug: Log grid system data
+  console.log('🔍 AllRecords Grid System Debug:', {
+    selectedItem,
+    selectedSection,
+    gridDefs: gridDefs.length,
+    gridSections: gridSections.length,
+    sectionFilters: sectionFilters?.size || 0,
+    grouped: grouped.length,
+    flat: flat.length,
+    flatItems: flat.map(item => ({
+      type: item.type,
+      gridKey: item.grid?.key,
+      gridDisplayName: item.grid?.display_name,
+      gridGroup: item.grid?.group,
+      sectionKey: item.section?.key
+    }))
+  });
+
   // Helper to determine which grids to show in all-records view (backend-driven)
   const getGridsToShow = () => {
+    console.log('🔍 getGridsToShow Debug:', {
+      selectedItem,
+      selectedSection,
+      flatLength: flat.length,
+      groupedLength: grouped.length
+    });
+
     if (selectedItem === "all-sections") {
       // Show all visible grids, grouped and ordered, flat list
-      return flat.filter(item => item.type === 'grid');
+      const result = flat.filter(item => item.type === 'grid');
+      console.log('📊 All-sections result:', result.length, result.map(r => r.grid?.display_name));
+      return result;
     } else if (selectedItem) {
       // Single grid selected
       const grid = gridDefs.find((g: any) => g.table_name === selectedItem || g.key === selectedItem);
@@ -477,10 +513,14 @@ const AllRecords: React.FC = () => {
       const group = grouped.find(g => g.section.key === selectedSection);
       if (!group || !group.grids.length) return [];
       // Just return grid items for this section
-      return group.grids.map(grid => ({ type: 'grid', grid, section: group.section }));
+      const result = group.grids.map(grid => ({ type: 'grid', grid, section: group.section }));
+      console.log('📊 Section result:', result.length, result.map(r => r.grid?.display_name));
+      return result;
     } else {
       // Fallback: show all visible grids
-      return flat.filter(item => item.type === 'grid');
+      const result = flat.filter(item => item.type === 'grid');
+      console.log('📊 Fallback result:', result.length, result.map(r => r.grid?.display_name));
+      return result;
     }
   };
 

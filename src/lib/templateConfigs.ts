@@ -7,6 +7,8 @@ import { addressTemplate } from '../components/grid-item-details/AddressDetails'
 import { facilityAffiliationsTemplate } from '../components/grid-item-details/FacilityAffiliationsDetails';
 import { deaLicensesTemplate } from '../components/grid-item-details/DEALicensesDetails';
 import { deaLicensesWideTemplate } from '../components/grid-item-details/DEALicensesDetailsWide';
+import { stateControlledSubstanceLicenseTemplate } from '../components/grid-item-details/StateControlledSubstanceLicenseDetails';
+import { stateControlledSubstanceLicenseWideTemplate } from '../components/grid-item-details/StateControlledSubstanceLicenseDetailsWide';
 import { generateDefaultHeaderText } from './utils';
 import React from 'react';
 
@@ -47,6 +49,7 @@ export const gridToTemplateMap: Record<string, string> = {
   "birth_info": "birth_info",
   "addresses": "addresses",
   "dea_licenses": "dea_licenses",
+  "state_controlled_substance_licenses": "state_controlled_substance_licenses",
   
   // Facility system grids
   "facility_affiliations": "facility_affiliations",
@@ -123,6 +126,17 @@ export function getTemplateConfigByGrid(gridKey: string, context?: 'sidepanel' |
         };
       }
       return deaLicensesTemplate;
+    }
+    case "state_controlled_substance_licenses": {
+      if (context === 'modal') {
+        return {
+          ...stateControlledSubstanceLicenseWideTemplate,
+          getDetailsComponent: (ctx: 'sidepanel' | 'modal') => {
+            return ctx === 'modal' ? stateControlledSubstanceLicenseWideTemplate.DetailsComponent : stateControlledSubstanceLicenseTemplate.DetailsComponent;
+          }
+        };
+      }
+      return stateControlledSubstanceLicenseTemplate;
     }
     
     // For grids without specific templates, return a default template

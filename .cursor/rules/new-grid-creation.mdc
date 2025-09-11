@@ -115,6 +115,15 @@ The following actions are currently defined in the database and available for us
 
 ## Phase 2: Automated Workflow (Only After Confirmation)
 
+**IMPORTANT**: This workflow creates grids without authentication requirements for easier development and testing. All database operations will work without user authentication.
+
+**CRITICAL DATABASE SCHEMA NOTES**:
+- Always reference the actual database schema before writing SQL
+- `grid_definitions` table columns: `id`, `key`, `display_name`, `table_name`, `"group"`, `icon`, `description`, `default_visible`, `section_id`, `"order"`
+- `grid_columns` table columns: `id`, `grid_id`, `name`, `display_name`, `type`, `"order"`, `visible`, `width`, `options`, `required`, `"group"`, `description`
+- `grid_actions` table columns: `id`, `grid_id`, `action_id`, `"order"`, `created_at`, `updated_at`
+- **NEVER** assume column names - always verify against the actual schema
+
 ### 1. Create Database Migration
 - Generate SQL migration file: `supabase/migrations/create_{table_name}_table.sql`
 - Include standard fields: id (uuid), provider_id (uuid), created_at, updated_at
@@ -128,6 +137,9 @@ The following actions are currently defined in the database and available for us
 - **ALWAYS** add proper indexes on foreign keys for performance
 - **ALWAYS** include foreign key constraints and validation rules
 - **ALWAYS** test migrations with sample data and validation queries
+- **NEVER** include RLS policies or authentication requirements - disable RLS for development
+- **ALWAYS** use `ALTER TABLE ... DISABLE ROW LEVEL SECURITY` for easier development/testing
+- **CRITICAL**: Use correct database column names - `display_name` NOT `grid_name`, `"group"` NOT `grid_group`, `"order"` NOT `display_order`
 
 ### 2. Create Provider View
 - Generate SQL migration file: `supabase/migrations/create_{table_name}_with_provider_view.sql`
@@ -139,6 +151,8 @@ The following actions are currently defined in the database and available for us
 - **ALWAYS** update grid_definitions.table_name to point to the new view
 - **ALWAYS** include verification query to confirm the update
 - **ALWAYS** provide raw SQL scripts instead of using Supabase CLI
+- **ALWAYS** grant permissions to `public` instead of `authenticated` for development
+- **NEVER** include authentication requirements for view access
 
 ### 3. Create Seeding Script
 - Generate TypeScript seeding script: `scripts/seed-{table_name}.ts`
@@ -165,29 +179,83 @@ The following actions are currently defined in the database and available for us
 - **ALWAYS** validate data types before database operations
 - **ALWAYS** convert technical errors to user-friendly messages
 - **ALWAYS** implement rollback mechanisms for optimistic updates
-- **ALWAYS** handle RLS policy violations with specific error messages
 - **ALWAYS** use toast notifications for consistent error feedback
 - **ALWAYS** include proper error logging with context information
+- **NEVER** include RLS policy violation handling since RLS is disabled
 
 ### 5. Create Grid Configuration
 - Generate SQL script to insert grid definition into `grid_definitions` table
 - Generate SQL script to insert all columns into `grid_columns` table
 - Include proper ordering, visibility, and grouping
 - Set appropriate column widths and types
+- **CRITICAL**: Use correct database schema column names:
+  - `grid_definitions` table: `key`, `display_name`, `table_name`, `"group"`, `icon`, `"order"`
+  - `grid_columns` table: `grid_id`, `name`, `display_name`, `type`, `"order"`, `visible`, `width`, `"group"`
+  - **NEVER** use: `grid_name`, `grid_group`, `display_order`, `field_name`, `data_type`, `order_index`, `group_name`
 
 ### 6. Create Grid Actions Configuration
 - Generate SQL script to link grid with specified actions in `grid_actions` table
 - Use helper functions to get grid_id and action_id by name
 - Include proper ordering for actions
 
-### 7. Create SelectInputOptions File
+### 7. Create Complete Database Script
+- Generate comprehensive SQL script: `scripts/create-{table_name}-complete.sql`
+- Combine all database operations into a single executable script
+- Include all steps: table creation, provider view, grid configuration, and actions setup
+- Add comprehensive verification queries at the end
+- Include proper error handling and rollback mechanisms
+- Add completion message with success indicators
+- **ALWAYS** make the script idempotent (can be run multiple times safely)
+- **ALWAYS** include debugging queries to verify each step
+- **ALWAYS** use proper variable declarations and error handling in PL/pgSQL blocks
+- **ALWAYS** include sample data insertion and cleanup for testing
+- **ALWAYS** provide clear section headers with `-- ============================================================================` dividers
+
+**Complete Database Script Template Structure:**
+```sql
+-- Complete {GridName} Grid Creation Script (No Auth Required)
+-- This script creates the entire grid system in one go
+-- Run this single script to set up everything
+
+-- ============================================================================
+-- 1. CREATE TABLE
+-- ============================================================================
+-- [Table creation with indexes, triggers, RLS disabled]
+
+-- ============================================================================
+-- 2. CREATE PROVIDER VIEW
+-- ============================================================================
+-- [Provider view creation with public permissions]
+
+-- ============================================================================
+-- 3. SETUP GRID DEFINITION AND COLUMNS
+-- ============================================================================
+-- [Grid definition insertion and column configuration]
+
+-- ============================================================================
+-- 4. SETUP GRID ACTIONS
+-- ============================================================================
+-- [Grid actions linking with proper ordering]
+
+-- ============================================================================
+-- 5. VERIFICATION QUERIES
+-- ============================================================================
+-- [Comprehensive verification of all components]
+
+-- ============================================================================
+-- COMPLETION MESSAGE
+-- ============================================================================
+-- [Success indicators and completion notice]
+```
+
+### 8. Create SelectInputOptions File
 - Generate `{GridName}SelectInputOptions.ts` file in `src/components/grid-item-details/`
 - Export all dropdown options as named constants (e.g., `STATE_OPTIONS`, `STATUS_OPTIONS`, `YES_NO_OPTIONS`)
 - Include both simple options for forms and extended options for seeding scripts
 - Use descriptive constant names that match the field purpose
 - Include TypeScript comments explaining the purpose of each option set
 
-### 8. Create Details Components
+### 9. Create Details Components
 - Generate `{GridName}Details.tsx` component in `src/components/grid-item-details/`
 - Generate `{GridName}DetailsWide.tsx` component in `src/components/grid-item-details/`
 - Import dropdown options from `{GridName}SelectInputOptions.ts`
@@ -207,7 +275,7 @@ The following actions are currently defined in the database and available for us
 - **ALWAYS** add data-testid attributes for DOM inspection and testing
 - **ALWAYS** include aria-hidden="true" for decorative icons
 
-### 9. Update Template Configuration
+### 10. Update Template Configuration
 - Add new grid to `gridToTemplateMap` in `src/lib/templateConfigs.ts`
 - Import both template objects from the Details components
 - Add case in `getTemplateConfigByGrid` function to handle context switching
@@ -216,7 +284,7 @@ The following actions are currently defined in the database and available for us
 - Include proper tab configuration (Details, Notes, Documents, History)
 - Use CollapsibleSection for field groups
 
-### 10. Add Semantic Markup
+### 11. Add Semantic Markup
 - Ensure all generated components include:
   - `data-testid` attributes with descriptive, hyphenated names
   - `role` attributes for accessibility
@@ -229,6 +297,7 @@ The following actions are currently defined in the database and available for us
 - Seeding scripts: `seed-{table_name}.ts`
 - Grid config scripts: `setup-{table_name}-grid.sql`
 - Actions config scripts: `setup-{table_name}-actions.sql`
+- Complete database script: `create-{table_name}-complete.sql`
 - SelectInputOptions file: `{GridName}SelectInputOptions.ts`
 - Details components: `{GridName}Details.tsx` and `{GridName}DetailsWide.tsx`
 
