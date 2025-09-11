@@ -176,9 +176,9 @@ const StateControlledSubstanceLicenseDetails: React.FC<StateControlledSubstanceL
       <CollapsibleSection title="Additional Info">
         <div className="flex flex-col gap-4 self-stretch">
           {additionalInfoFields.map((field) => (
-            <div key={field.key} data-testid={`field-${field.key}`}>
+            <React.Fragment key={field.key || field.label}>
               {renderFieldComponent({ field, formValues, handleChange })}
-            </div>
+            </React.Fragment>
           ))}
         </div>
       </CollapsibleSection>

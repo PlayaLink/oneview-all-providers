@@ -54,8 +54,9 @@ Based on the screenshot analysis, I will generate a structured list of required 
 - **Grid Name**: [Display name from screenshot]
 - **Table Name**: [Suggested snake_case table name]
 - **Grid Group**: [Suggested section/group]
-- **Icon**: [Suggested FontAwesome icon name]
+- **Icon**: [Suggested FontAwesome icon name in kebab-case format, e.g., "house-chimney-user" for faHouseChimneyUser]
 - **Order**: [What order should this grid appear in within its group?]
+- **Grid Key**: [MUST use underscores, e.g., "state_controlled_substance_licenses" NOT "state-controlled-substance-licenses"]
 
 **Fields Array:**
 ```javascript
@@ -192,6 +193,12 @@ The following actions are currently defined in the database and available for us
   - `grid_definitions` table: `key`, `display_name`, `table_name`, `"group"`, `icon`, `"order"`
   - `grid_columns` table: `grid_id`, `name`, `display_name`, `type`, `"order"`, `visible`, `width`, `"group"`
   - **NEVER** use: `grid_name`, `grid_group`, `display_order`, `field_name`, `data_type`, `order_index`, `group_name`
+- **CRITICAL**: Store icon in kebab-case format (e.g., "house-chimney-user") NOT FontAwesome format (e.g., "faHouseChimneyUser")
+- **CRITICAL**: Grid key consistency - ALWAYS use underscores in grid keys (e.g., "state_controlled_substance_licenses") NOT hyphens (e.g., "state-controlled-substance-licenses")
+  - Database `grid_definitions.key` must match template configuration key exactly
+  - Template configuration uses underscores: `case "state_controlled_substance_licenses"`
+  - Database must use same format: `key = 'state_controlled_substance_licenses'`
+  - **EXAMPLE**: `additional_names` ✅, `state_controlled_substance_licenses` ✅, `dea_licenses` ✅
 
 ### 6. Create Grid Actions Configuration
 - Generate SQL script to link grid with specified actions in `grid_actions` table
@@ -283,13 +290,12 @@ The following actions are currently defined in the database and available for us
 - Create template configuration with field groups for Details panel
 - Include proper tab configuration (Details, Notes, Documents, History)
 - Use CollapsibleSection for field groups
+- **CRITICAL**: Grid key consistency - Use underscores in template configuration keys
+  - Template case must match database key exactly: `case "state_controlled_substance_licenses"`
+  - Database key must use underscores: `key = 'state_controlled_substance_licenses'`
+  - **NEVER** use hyphens in grid keys: `"state-controlled-substance-licenses"` ❌
 
-### 11. Add Semantic Markup
-- Ensure all generated components include:
-  - `data-testid` attributes with descriptive, hyphenated names
-  - `role` attributes for accessibility
-  - `aria-*` attributes as appropriate
-  - Semantic HTML elements (section, main, aside, etc.)
+
 
 ## File Naming Conventions
 - Migration files: `create_{table_name}_table.sql`
@@ -391,6 +397,7 @@ When presenting information for confirmation, I will use this format:
 **Grid Group**: [group]
 **Icon**: [icon_name]
 **Order**: [order_number]
+**Grid Key**: [grid_key_with_underscores]
 
 ## Fields Configuration
 [Structured list of all fields]
@@ -407,6 +414,13 @@ When presenting information for confirmation, I will use this format:
 This rule ensures accuracy by requiring explicit confirmation before proceeding with the automated workflow, while still maintaining the efficiency of the automated process once confirmed.
 
 ## Best Practices from Recent Bug Fixes
+
+### Grid Key Consistency Standards
+- **ALWAYS** use underscores in grid keys: `state_controlled_substance_licenses` ✅
+- **NEVER** use hyphens in grid keys: `state-controlled-substance-licenses` ❌
+- **CRITICAL**: Database `grid_definitions.key` must match template configuration key exactly
+- **VERIFY**: Check that `gridToTemplateMap` and `getTemplateConfigByGrid` use same key format
+- **COMMON MISTAKE**: Hyphens vs underscores mismatch causes "No fields in Details panel" error
 
 ### Seeding Script Standards
 - **ALWAYS** include comprehensive error handling with try-catch blocks
@@ -458,3 +472,9 @@ This rule ensures accuracy by requiring explicit confirmation before proceeding 
 - **ALWAYS** add the icon mapping to the `iconMap` object with kebab-case naming
 - **ALWAYS** provide fallback to `faTable` if icon not found
 - **ALWAYS** test icon rendering in the grid header after adding to mapping
+
+### Icon Storage in Database
+- **CRITICAL**: Store icons in `grid_definitions.icon` column using **kebab-case format** (e.g., "house-chimney-user")
+- **NEVER** store FontAwesome format (e.g., "faHouseChimneyUser") in the database
+- **ALWAYS** convert FontAwesome icon names to kebab-case when inserting into grid_definitions table
+- **EXAMPLE**: faHouseChimneyUser → "house-chimney-user", faUserDoctor → "user-doctor", faFileMedical → "file-medical"

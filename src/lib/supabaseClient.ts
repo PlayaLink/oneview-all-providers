@@ -222,6 +222,21 @@ export const StateControlledSubstanceLicenseSchema = z.object({
   provider: z.any().optional(),
 });
 
+export const AdditionalNameSchema = z.object({
+  id: z.string(),
+  provider_id: z.string(),
+  type: z.string(),
+  first_name: z.string(),
+  middle_name: z.string().nullable().optional(),
+  last_name: z.string(),
+  title: z.string().nullable().optional(),
+  start_date: z.string().nullable().optional(),
+  end_date: z.string().nullable().optional(),
+  tags: z.array(z.string()).nullable().optional(),
+  last_updated: z.string().nullable().optional(),
+  provider: z.any().optional(),
+});
+
 // Per-table helpers using dbFetch
 export function fetchStateLicenses() {
   return dbFetch(
@@ -258,6 +273,16 @@ export function fetchStateControlledSubstanceLicenses() {
     'state_controlled_substance_licenses_with_provider',
     '*',
     StateControlledSubstanceLicenseSchema
+  ).then(result => {
+    return result;
+  });
+}
+
+export function fetchAdditionalNames() {
+  return dbFetch(
+    'additional_names_with_provider',
+    '*',
+    AdditionalNameSchema
   ).then(result => {
     return result;
   });
@@ -363,6 +388,59 @@ export async function updateStateControlledSubstanceLicense(id: string, updates:
 export async function deleteStateControlledSubstanceLicense(id: string) {
   const { error } = await supabase
     .from('state_controlled_substance_licenses')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
+  return true;
+}
+
+export async function fetchAdditionalNamesByProvider(providerId: string) {
+  const { data, error } = await supabase
+    .from('additional_names')
+    .select(`
+      *,
+      provider:providers(
+        id,
+        first_name,
+        last_name,
+        title,
+        primary_specialty
+      )
+    `)
+    .eq('provider_id', providerId);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function insertAdditionalName(additionalName: Record<string, any>) {
+  const insertCopy = { ...additionalName };
+  if ('tags' in insertCopy) insertCopy.tags = fromIdLabelArray(insertCopy.tags);
+  
+  const { data, error } = await supabase
+    .from('additional_names')
+    .insert([insertCopy])
+    .select();
+  if (error) throw error;
+  return data?.[0];
+}
+
+export async function updateAdditionalName(id: string, updates: Record<string, any>) {
+  const updatesCopy = { ...updates };
+  if ('tags' in updatesCopy) updatesCopy.tags = fromIdLabelArray(updatesCopy.tags);
+  
+  const { data, error } = await supabase
+    .from('additional_names')
+    .update(updatesCopy)
+    .eq('id', id)
+    .select();
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteAdditionalName(id: string) {
+  const { error } = await supabase
+    .from('additional_names')
     .delete()
     .eq('id', id);
   if (error) throw error;

@@ -76,6 +76,7 @@ import {
   faStickyNote,
   faCode,
   faPrescription,
+  faHouseChimneyUser,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Unified icon mapping that can contain either FontAwesome icons or SVG file paths
@@ -85,6 +86,7 @@ const iconMap: Record<string, IconDefinition | string> = {
   "user-doctor": faUserDoctor,
   weight: faWeightScale,
   "house-chimney": faHome,
+  "house-chimney-user": faHouseChimneyUser,
   "address-book": faAddressBook,
   "file-medical": faFileMedical,
   "book-atlas": faBook,
