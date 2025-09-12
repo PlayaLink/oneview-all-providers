@@ -763,7 +763,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     >
       {/* Grid Header */}
       <header
-        className={`flex items-center justify-between pl-1 pr-3 py-[9px] bg-gray-200 border-b border-gray-300 flex-shrink-0 overflow-visible cursor-pointer hover:bg-gray-300 transition-colors ${
+        className={`flex items-center justify-between pl-1 pr-3 py-[9px] bg-gray-100 border-b border-gray-300 flex-shrink-0 overflow-visible cursor-pointer hover:bg-gray-200 transition-colors ${
           isSidePanelOpen ? 'rounded-tl' : 'rounded-t'
         }`}
         role="button"
@@ -974,6 +974,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           rowHeight={42}
           suppressRowClickSelection={true}
           suppressCellFocus={true}
+          rowHoverHighlight={true}
           {...(!height ? { domLayout: "autoHeight" } : {})}
           getRowStyle={getRowStyle}
           getRowClass={getRowClass}

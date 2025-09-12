@@ -40,6 +40,7 @@ body {
   --ag-font-family:
     "Poppins", -apple-system, Roboto, Helvetica, Arial, sans-serif;
   --ag-foreground-color: #545454;
+  --ag-row-hover-color: var(--blue-50);
 }
 
 .ag-theme-quartz .ag-root-wrapper {
