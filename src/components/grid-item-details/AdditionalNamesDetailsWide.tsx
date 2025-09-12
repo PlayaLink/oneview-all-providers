@@ -33,7 +33,7 @@ const AdditionalNamesDetailsWide = ({ formValues, handleChange }) => (
   >
     {additionalNamesWideFieldGroup.fields.map((field) => (
       <React.Fragment key={field.key || field.label}>
-        {renderFieldComponent({ field, formValues, handleChange })}
+        {renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' })}
       </React.Fragment>
     ))}
   </div>
@@ -46,14 +46,12 @@ export const additionalNamesWideTemplate = {
   description: 'Template for displaying provider additional names in wide modal',
   header: ({ gridName, provider, isCreateMode }) => generateDefaultHeaderText({ gridName, provider, isCreateMode }),
   tabs: [
-    {
-      id: 'details',
-      label: 'Details',
-      component: AdditionalNamesDetailsWide,
-      icon: 'faHouseChimneyUser'
-    }
+    { id: 'details', label: 'Details', icon: 'bars-staggered', enabled: true },
+    { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true },
+    { id: 'documents', label: 'Docs', icon: 'folder', enabled: true },
   ],
   fieldGroups: [additionalNamesWideFieldGroup],
+  DetailsComponent: AdditionalNamesDetailsWide,
   validation: {
     required: ['type', 'first_name', 'last_name'],
     rules: {

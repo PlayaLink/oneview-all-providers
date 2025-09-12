@@ -276,6 +276,8 @@ The following actions are currently defined in the database and available for us
   - **Pattern 3 (SearchCriteriaSection)**: Use `SearchCriteriaSection` for search criteria, CollapsibleSection for other groups
 - Include proper TypeScript interfaces
 - Export template objects for both components (e.g., `{gridName}Template` and `{gridName}WideTemplate`)
+- **CRITICAL**: Include `DetailsComponent` property in template objects pointing to the component
+- **CRITICAL**: DetailsWide components MUST use `labelPosition="above"` for all input fields
 - **ALWAYS** add comprehensive ARIA support: role, aria-label, aria-labelledby, aria-expanded attributes
 - **ALWAYS** use semantic HTML elements (nav, main, aside, header, footer, section)
 - **ALWAYS** support keyboard navigation (Enter/Space keys) in interactive elements
@@ -350,8 +352,9 @@ Based on screenshot analysis, implement the appropriate pattern:
 </div>
 
 // For wide modal context, use grid layout as shown in screenshot
+// CRITICAL: DetailsWide components MUST use labelPosition="above"
 <div className="grid grid-cols-2 gap-4">
-  {fields.map(field => renderFieldComponent({ field, formValues, handleChange }))}
+  {fields.map(field => renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' }))}
 </div>
 ```
 
@@ -366,7 +369,8 @@ Based on screenshot analysis, implement the appropriate pattern:
   provider={provider}
 />
 <CollapsibleSection title="Additional Info">
-  {additionalFields.map(field => renderFieldComponent({ field, formValues, handleChange }))}
+  {/* CRITICAL: DetailsWide components MUST use labelPosition="above" */}
+  {additionalFields.map(field => renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' }))}
 </CollapsibleSection>
 ```
 
@@ -421,6 +425,19 @@ This rule ensures accuracy by requiring explicit confirmation before proceeding 
 - **CRITICAL**: Database `grid_definitions.key` must match template configuration key exactly
 - **VERIFY**: Check that `gridToTemplateMap` and `getTemplateConfigByGrid` use same key format
 - **COMMON MISTAKE**: Hyphens vs underscores mismatch causes "No fields in Details panel" error
+
+### Template Component Standards
+- **CRITICAL**: Template objects MUST include `DetailsComponent` property pointing to the React component
+- **VERIFY**: Both `{gridName}Template` and `{gridName}WideTemplate` have `DetailsComponent` property
+- **COMMON MISTAKE**: Missing `DetailsComponent` property causes "nothing rendering in Details tab" error
+- **EXAMPLE**: `DetailsComponent: AdditionalNamesDetails` ✅
+
+### DetailsWide Component Standards
+- **CRITICAL**: All DetailsWide components MUST use `labelPosition="above"` for all input fields
+- **VERIFY**: Every `renderFieldComponent` call in DetailsWide components includes `labelPosition: 'above'`
+- **COMMON MISTAKE**: Missing `labelPosition="above"` causes inconsistent label positioning in wide modals
+- **EXAMPLE**: `renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' })` ✅
+- **APPLIES TO**: All field rendering patterns (Simple Field List, CollapsibleSection, SearchCriteriaSection)
 
 ### Seeding Script Standards
 - **ALWAYS** include comprehensive error handling with try-catch blocks

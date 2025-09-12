@@ -177,7 +177,7 @@ const StateControlledSubstanceLicenseDetailsWide: React.FC<StateControlledSubsta
         <div className="grid grid-cols-2 gap-4">
           {additionalInfoFields.map((field) => (
             <div key={field.key} data-testid={`field-${field.key}`}>
-              {renderFieldComponent({ field, formValues, handleChange })}
+              {renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' })}
             </div>
           ))}
         </div>

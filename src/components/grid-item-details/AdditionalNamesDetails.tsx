@@ -46,14 +46,12 @@ export const additionalNamesTemplate = {
   description: 'Template for displaying provider additional names',
   header: ({ gridName, provider, isCreateMode }) => generateDefaultHeaderText({ gridName, provider, isCreateMode }),
   tabs: [
-    {
-      id: 'details',
-      label: 'Details',
-      component: AdditionalNamesDetails,
-      icon: 'faHouseChimneyUser'
-    }
+    { id: 'details', label: 'Details', icon: 'bars-staggered', enabled: true },
+    { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true },
+    { id: 'documents', label: 'Docs', icon: 'folder', enabled: true },
   ],
   fieldGroups: [additionalNamesFieldGroup],
+  DetailsComponent: AdditionalNamesDetails,
   validation: {
     required: ['type', 'first_name', 'last_name'],
     rules: {

@@ -203,7 +203,7 @@ const DEALicensesDetailsWide = ({ formValues, handleChange, provider }) => (
       <div className="grid grid-cols-2 gap-4">
         {additionalInfoFields.map((field) => (
           <React.Fragment key={field.key || field.label}>
-            {renderFieldComponent({ field, formValues, handleChange })}
+            {renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' })}
           </React.Fragment>
         ))}
       </div>
@@ -214,7 +214,7 @@ const DEALicensesDetailsWide = ({ formValues, handleChange, provider }) => (
       <div className="grid grid-cols-2 gap-4">
         {registeredAddressFields.map((field) => (
           <React.Fragment key={field.key || field.label}>
-            {renderFieldComponent({ field, formValues, handleChange })}
+            {renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' })}
           </React.Fragment>
         ))}
       </div>
