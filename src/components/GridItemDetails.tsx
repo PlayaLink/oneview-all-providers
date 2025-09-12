@@ -1243,7 +1243,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                 data-testid="grid-item-details-main-content"
               >
                 {/* Tab header */}
-                <div className="flex-shrink-0 p-5 border-b border-gray-100">
+                <div className="flex-shrink-0 p-5">
                   <h2 className="text-lg font-bold text-gray-700 tracking-wide">
                     {tabs.find((t) => t.id === tab)?.label || "Details"}
                   </h2>
