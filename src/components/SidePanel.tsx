@@ -3,12 +3,12 @@ import GridItemDetails, { InputField } from "./GridItemDetails";
 
 interface SidePanelProps {
   isOpen: boolean;
-  selectedRow: (any & { gridName: string }) | null;
+  selectedRow: (any & { gridKey: string }) | null;
   inputConfig: InputField[];
   onClose: () => void;
   title?: string;
   user: any;
-  onUpdateSelectedProvider?: (gridName: string, updatedProvider: any) => void;
+  onUpdateSelectedProvider?: (gridKey: string, updatedProvider: any) => void;
   /** Called when the expand icon is clicked in the header */
   onExpandDetailModal?: () => void;
 }

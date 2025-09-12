@@ -4,7 +4,7 @@ import { useGridActions, GridAction } from "@/hooks/useGridActions";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface ActionsColumnProps {
-  gridName: string;
+  gridKey: string;
   rowData: any;
   onActionClick: (actionName: string, rowData: any) => void;
   className?: string;
@@ -12,13 +12,13 @@ interface ActionsColumnProps {
 }
 
 const ActionsColumn: React.FC<ActionsColumnProps> = ({ 
-  gridName, 
+  gridKey, 
   rowData, 
   onActionClick, 
   className = "",
   excludeActions = []
 }) => {
-  const { gridActions, isLoading, error } = useGridActions(gridName);
+  const { gridActions, isLoading, error } = useGridActions(gridKey);
   const containerRef = useRef<HTMLDivElement>(null);
 
   if (isLoading) {
@@ -30,7 +30,7 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
   }
 
   if (error) {
-    console.error('Error loading grid actions for gridName:', gridName, 'Error:', error);
+    console.error('Error loading grid actions for gridKey:', gridKey, 'Error:', error);
     return (
       <div className={`flex items-center justify-center ${className}`} data-testid="actions-column-error">
         <span className="text-red-500 text-xs">Error</span>
@@ -53,7 +53,7 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
         className={`flex items-center justify-center gap-1 ${className}`} 
         data-testid="actions-column"
         role="group"
-        aria-label={`Actions for ${gridName}`}
+        aria-label={`Actions for ${gridKey}`}
       >
         {gridActions
           .filter((gridAction: GridAction) => !excludeActions.includes(gridAction.action.name))

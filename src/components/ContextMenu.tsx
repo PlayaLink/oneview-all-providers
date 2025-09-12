@@ -10,7 +10,7 @@ interface ContextMenuProps {
   y: number;
   onClose: () => void;
   rowData?: any;
-  gridName?: string;
+  gridKey?: string;
   handleShowFacilityDetails?: (facility: any) => void;
 }
 
@@ -29,7 +29,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   y,
   onClose,
   rowData,
-  gridName,
+  gridKey,
   handleShowFacilityDetails,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);

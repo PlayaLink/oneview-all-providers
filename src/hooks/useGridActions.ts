@@ -21,16 +21,16 @@ export interface GridAction {
   };
 }
 
-export function useGridActions(gridName?: string) {
+export function useGridActions(gridKey?: string) {
 
   const {
     data: gridActions = [],
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["grid_actions", gridName],
-    queryFn: () => gridName ? fetchGridActionsByGridName(gridName) : fetchAllGridActions(),
-    enabled: !!gridName,
+    queryKey: ["grid_actions", gridKey],
+    queryFn: () => gridKey ? fetchGridActionsByGridName(gridKey) : fetchAllGridActions(),
+    enabled: !!gridKey,
   });
 
 
@@ -57,17 +57,17 @@ export function useAllGridActions() {
 
   // Group actions by grid
   const actionsByGrid = allGridActions.reduce((acc, gridAction) => {
-    const gridName = gridAction.grid?.display_name || gridAction.grid?.table_name || gridAction.grid?.key;
-    if (!acc[gridName]) {
-      acc[gridName] = [];
+    const gridKey = gridAction.grid?.display_name || gridAction.grid?.table_name || gridAction.grid?.key;
+    if (!acc[gridKey]) {
+      acc[gridKey] = [];
     }
-    acc[gridName].push(gridAction);
+    acc[gridKey].push(gridAction);
     return acc;
   }, {} as Record<string, GridAction[]>);
 
   // Sort actions within each grid by order
-  Object.keys(actionsByGrid).forEach(gridName => {
-    actionsByGrid[gridName].sort((a, b) => a.order - b.order);
+  Object.keys(actionsByGrid).forEach(gridKey => {
+    actionsByGrid[gridKey].sort((a, b) => a.order - b.order);
   });
 
   return {

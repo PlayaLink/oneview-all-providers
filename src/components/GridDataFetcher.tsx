@@ -57,8 +57,8 @@ interface GridDataFetcherProps {
   handleShowFacilityDetails?: (facility: any) => void;
   selectedRowId?: string | null;
   selectedGridKey?: string | null;
-  onOpenDetailModal?: (row: any, gridName: string) => void;
-  onAddRecord?: (gridName: string) => void;
+  onOpenDetailModal?: (row: any, gridKey: string) => void;
+  onAddRecord?: (gridKey: string) => void;
   /** Whether to pin the actions column to the right */
   pinActionsColumn?: boolean;
   /** Whether the side panel is open */

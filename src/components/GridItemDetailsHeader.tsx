@@ -64,7 +64,7 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
         {gridKey && rowData && onActionClick && !isCreateMode && (
           <div className="flex flex-row justify-start my-2">
             <ActionsColumn
-              gridName={gridKey}
+              gridKey={gridKey}
               rowData={rowData}
               onActionClick={onActionClick}
               className="justify-start"

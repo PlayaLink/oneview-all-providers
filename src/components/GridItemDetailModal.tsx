@@ -4,12 +4,12 @@ import GridItemDetails, { InputField } from "./GridItemDetails";
 
 interface GridItemDetailModalProps {
   isOpen: boolean;
-  selectedRow: (any & { gridName: string }) | null;
+  selectedRow: (any & { gridKey: string }) | null;
   inputConfig: InputField[];
   onClose: () => void;
   title?: string;
   user: any;
-  onUpdateSelectedProvider?: (gridName: string, updatedProvider: any) => void;
+  onUpdateSelectedProvider?: (gridKey: string, updatedProvider: any) => void;
   /** Whether this modal is in create mode (for new records) */
   isCreateMode?: boolean;
   /** Callback when a new record is created */
@@ -29,9 +29,9 @@ const GridItemDetailModal: React.FC<GridItemDetailModalProps> = (props) => {
     onRecordCreated 
   } = props;
 
-  // For create mode, we need a minimal selectedRow with gridName
-  const effectiveSelectedRow = isCreateMode && selectedRow?.gridName 
-    ? { gridName: selectedRow.gridName, id: null }
+  // For create mode, we need a minimal selectedRow with gridKey
+  const effectiveSelectedRow = isCreateMode && selectedRow?.gridKey 
+    ? { gridKey: selectedRow.gridKey, id: null }
     : selectedRow;
 
   if (!effectiveSelectedRow) return null;

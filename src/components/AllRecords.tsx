@@ -146,7 +146,7 @@ function GridsSection({
                     onRowClicked={(row: any) => handleRowSelect(row, item.grid.key)}
                     handleShowFacilityDetails={handleShowFacilityDetails}
                     selectedRowId={selectedRow?.id}
-                    selectedGridKey={selectedRow?.gridName}
+                    selectedGridKey={selectedRow?.gridKey}
                     onOpenDetailModal={onOpenDetailModal}
                     onAddRecord={handleAddRecord}
                     pinActionsColumn={!selectedRow}
@@ -209,7 +209,7 @@ const AllRecords: React.FC = () => {
   const [selectedSection, setSelectedSection] = useState<string | null>("provider_info");
   // Remove local visibleSections and setVisibleSections state
   // const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
-  const [selectedRow, setSelectedRow] = useState<(any & { gridName: string }) | null>(null);
+  const [selectedRow, setSelectedRow] = useState<(any & { gridKey: string }) | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [detailModalRow, setDetailModalRow] = useState<any>(null);
   const [isCreateMode, setIsCreateMode] = useState(false);
@@ -436,16 +436,16 @@ const AllRecords: React.FC = () => {
     });
   };
 
-  const handleOpenDetailModal = (row: any, gridName: string) => {
-    const rowWithGridName = { ...row, gridName };
-    setDetailModalRow(rowWithGridName);
+  const handleOpenDetailModal = (row: any, gridKey: string) => {
+    const rowWithGridKey = { ...row, gridKey };
+    setDetailModalRow(rowWithGridKey);
     setShowDetailModal(true);
     setIsCreateMode(false);
   };
 
-  const handleAddRecord = (gridName: string) => {
-    const rowWithGridName = { gridName };
-    setDetailModalRow(rowWithGridName);
+  const handleAddRecord = (gridKey: string) => {
+    const rowWithGridKey = { gridKey };
+    setDetailModalRow(rowWithGridKey);
     setShowDetailModal(true);
     setIsCreateMode(true);
   };
@@ -530,9 +530,9 @@ const AllRecords: React.FC = () => {
 
   const gridsToShow = getGridsToShow();
 
-  // Remove normalizeGridName and use selectedRow?.gridName directly
-  const templateConfig = selectedRow?.gridName
-    ? getTemplateConfigByGrid(selectedRow.gridName)
+  // Remove normalizeGridName and use selectedRow?.gridKey directly
+  const templateConfig = selectedRow?.gridKey
+    ? getTemplateConfigByGrid(selectedRow.gridKey)
     : null;
 
   const inputConfig = templateConfig
@@ -545,8 +545,8 @@ const AllRecords: React.FC = () => {
     : [];
 
   // Generate inputConfig for modal based on detailModalRow
-  const modalTemplateConfig = detailModalRow?.gridName
-    ? getTemplateConfigByGrid(detailModalRow.gridName, 'modal')
+  const modalTemplateConfig = detailModalRow?.gridKey
+    ? getTemplateConfigByGrid(detailModalRow.gridKey, 'modal')
     : null;
 
   const modalInputConfig = modalTemplateConfig
@@ -567,9 +567,9 @@ const AllRecords: React.FC = () => {
         onClose={handleCloseDetailModal}
         selectedRow={detailModalRow}
         inputConfig={modalInputConfig}
-        title={modalTemplateConfig?.name || detailModalRow?.gridName || "Details"}
+        title={modalTemplateConfig?.name || detailModalRow?.gridKey || "Details"}
         user={user}
-        onUpdateSelectedProvider={(gridName: string, updatedProvider: any) => {
+        onUpdateSelectedProvider={(gridKey: string, updatedProvider: any) => {
           // Update the detailModalRow state when changes are saved
           setDetailModalRow(updatedProvider);
         }}

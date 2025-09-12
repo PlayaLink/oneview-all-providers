@@ -403,7 +403,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               ),
               cellRenderer: (params: any) => (
                 <ActionsColumn
-                  gridName={gridKey}
+                  gridKey={gridKey}
                   rowData={params.data}
                   onActionClick={(actionName, rowData) => {
                     switch (actionName) {
@@ -1029,7 +1029,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           x={contextMenu.x}
           y={contextMenu.y}
           rowData={contextMenu.rowData}
-          gridName={gridKey}
+          gridKey={gridKey}
           onClose={handleContextMenuClose}
           handleShowFacilityDetails={handleShowFacilityDetails}
         />
