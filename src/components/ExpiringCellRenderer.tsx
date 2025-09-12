@@ -72,7 +72,7 @@ const ExpiringCellRenderer: React.FC<ExpiringCellRendererProps> = ({
       <div className="flex items-center gap-2">
         <span className="text-sm">{formattedValue}</span>
         <span 
-          className="inline-flex items-center px-2.5 py-0.5 bg-[#F48100] rounded-full text-white font-semibold text-xs"
+          className="inline-flex items-center px-2.5 py-0.5 bg-orange-500 rounded-full text-white font-semibold text-xs"
           data-testid="expiring-pill"
           role="status"
           aria-label="Record is expiring"

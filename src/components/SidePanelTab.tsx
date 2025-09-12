@@ -25,8 +25,8 @@ const SidePanelTab: React.FC<SidePanelTabProps> = ({
     <div 
       className={`flex flex-col items-center gap-1 py-6 px-2 w-full transition-colors rounded ${
         isActive 
-          ? 'bg-[#008BC9] text-white hover:bg-[#0077B3]' 
-          : 'text-[#545454] hover:bg-gray-100'
+                  ? 'bg-blue-600 text-white hover:bg-blue-700'
+        : 'text-gray-600 hover:bg-gray-100'
       } ${className}`}
       data-testid={`tab-title-${rowKey}`}
       role="tab"
@@ -43,8 +43,8 @@ const SidePanelTab: React.FC<SidePanelTabProps> = ({
         <div 
           className={`rounded-full px-2 py-0.5 text-xs font-medium ${
             isActive 
-              ? 'bg-white text-[#008BC9]' 
-              : 'bg-[#545454] text-white'
+                      ? 'bg-white text-blue-600'
+        : 'bg-gray-600 text-white'
           }`}
           data-testid={`tab-count-${rowKey}`}
           aria-label={`${count} items`}

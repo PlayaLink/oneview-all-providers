@@ -88,7 +88,7 @@ const SideNav: React.FC<SideNavProps> = (props) => {
               className={cn(
                 "w-full text-left p-2",
                 isItemActive("all-sections")
-                  ? "bg-[#008BC9] text-white"
+                  ? "bg-blue-600 text-white"
                   : "hover:bg-gray-50"
               )}
               settingsDropdown={
@@ -100,7 +100,7 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                         icon={faEllipsis}
                         className={cn(
                           "w-4 h-4",
-                          isItemActive("all-sections") ? "text-white" : "text-[#545454]"
+                          isItemActive("all-sections") ? "text-white" : "text-gray-600"
                         )}
                       />
                     </span>
@@ -113,7 +113,7 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                   "font-bold text-sm tracking-wide",
                   isItemActive("all-sections")
                     ? "text-white"
-                    : "text-[#545454]",
+                    : "text-gray-600",
                 )}
                 role="all-sections-button-text"
               >
@@ -152,8 +152,8 @@ const SideNav: React.FC<SideNavProps> = (props) => {
                     className={cn(
                             "w-full text-left py-2 px-4 gap-2",
                             isItemActive(grid.key || grid.table_name)
-                        ? "bg-[#008BC9] text-white"
-                              : "text-[#545454] hover:bg-gray-50"
+                        ? "bg-blue-600 text-white"
+                              : "text-gray-600 hover:bg-gray-50"
                           )}
                           icon={<FontAwesomeIcon icon={getIconByName(grid.icon)} className="w-4 h-4" />}
                         >

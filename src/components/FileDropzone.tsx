@@ -25,7 +25,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFilesAccepted }) => {
   return (
     <div
       {...getRootProps()}
-      className={`border-2 border-dashed rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer transition-colors bg-[#fafafa] ${
+      className={`border-2 border-dashed rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer transition-colors bg-gray-50 ${
         isDragActive ? 'border-blue-400 bg-blue-50' : 'border-gray-300'
       }`}
       style={{ width: '100%', height: '200px' }}

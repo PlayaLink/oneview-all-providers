@@ -177,7 +177,7 @@ const SectionsDropdown: React.FC<SectionsDropdownProps> = ({ trigger, placement 
           {checkedGrids.map(grid => (
             <span
               key={grid.table_name || grid.tableName}
-              className="flex items-center bg-[#545454] text-white font-bold rounded px-3 py-1 mr-2 mb-1 text-sm"
+              className="flex items-center bg-gray-600 text-white font-bold rounded px-3 py-1 mr-2 mb-1 text-sm"
               style={{ lineHeight: '1.2' }}
               role="listitem"
               data-testid={`section-pill-${grid.table_name || grid.tableName}`}

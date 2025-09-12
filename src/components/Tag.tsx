@@ -9,7 +9,7 @@ const tagVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-[#E8F3FF] text-[#212529] rounded-sm",
+        default: "bg-blue-50 text-gray-900 rounded-sm",
         secondary: "bg-gray-100 text-gray-800 rounded-sm",
         destructive: "bg-red-50 text-red-800 rounded-sm",
         success: "bg-green-50 text-green-800 rounded-sm",
@@ -122,7 +122,7 @@ export const Tag = React.forwardRef<HTMLDivElement, TagProps>(
             disabled={loading}
             aria-label={`Remove ${label} tag`}
             data-testid={`remove-tag-${(label || '').toLowerCase().replace(/\s+/g, '-')}`}
-            className="ml-0 flex h-[18px] w-[18px] items-center justify-center border-l border-[#AFD6FF] text-[#212529] hover:text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="ml-0 flex h-[18px] w-[18px] items-center justify-center border-l border-blue-200 text-gray-900 hover:text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {removeIcon || <X className="h-2 w-2" />}
           </button>

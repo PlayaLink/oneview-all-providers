@@ -1081,7 +1081,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                 const activeTab = tabs.find((t) => t.id === tab);
                 return activeTab ? (
                   <h2
-                    className="text-lg font-semibold text-[#545454] my-4"
+                    className="text-lg font-semibold text-gray-600 my-4"
                     data-testid={`grid-item-details-tab-title-${context}`}
                   >
                     {activeTab.label}
@@ -1328,7 +1328,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         <div className="flex gap-3 justify-between">
           <div className="flex gap-3 flex-1">
             <button
-              className="flex-1 bg-gray-100 text-[#545454] py-2 px-4 rounded text-sm font-medium hover:bg-gray-200 transition-colors"
+              className="flex-1 bg-gray-100 text-gray-600 py-2 px-4 rounded text-sm font-medium hover:bg-gray-200 transition-colors"
               aria-label="Discard Changes"
               data-testid={`grid-item-details-discard-changes-button-${context}`}
               onClick={handleDiscardChanges}
@@ -1342,8 +1342,8 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                     isSaving
                       ? "bg-gray-400 text-white cursor-not-allowed"
                       : saveSuccess
-                        ? "bg-[#79AC48] text-white cursor-default"
-                        : "bg-[#008BC9] text-white hover:bg-[#007399]"
+                        ? "bg-green-500 text-white cursor-default"
+                        : "bg-blue-600 text-white hover:bg-blue-700"
                   }`}
                   onClick={() => handleSave(true)}
                   disabled={isSaving || saveSuccess}
@@ -1371,8 +1371,8 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                     isSaving
                       ? "bg-gray-400 text-white cursor-not-allowed"
                       : saveSuccess
-                        ? "bg-[#79AC48] text-white cursor-default"
-                        : "bg-[#008BC9] text-white hover:bg-[#007399]"
+                        ? "bg-green-500 text-white cursor-default"
+                        : "bg-blue-600 text-white hover:bg-blue-700"
                   }`}
                   onClick={() => handleSaveAndAddNew()}
                   disabled={isSaving || saveSuccess}
@@ -1402,8 +1402,8 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                   isSaving
                     ? "bg-gray-400 text-white cursor-not-allowed"
                     : saveSuccess
-                      ? "bg-[#79AC48] text-white cursor-default"
-                      : "bg-[#008BC9] text-white hover:bg-[#007399]"
+                      ? "bg-green-500 text-white cursor-default"
+                      : "bg-blue-600 text-white hover:bg-blue-700"
                 }`}
                 onClick={() => handleSave(true)}
                 disabled={isSaving || saveSuccess}
@@ -1431,7 +1431,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
           {/* Cancel button - only for modal context */}
           {context === "modal" && !isCreateMode && (
             <button
-              className="text-[#008BC9] hover:text-[#007399] py-2 px-4 rounded text-sm font-medium transition-colors"
+              className="text-blue-600 hover:text-blue-700 py-2 px-4 rounded text-sm font-medium transition-colors"
               onClick={onClose}
               aria-label="Cancel"
               data-testid={`grid-item-details-cancel-button-${context}`}

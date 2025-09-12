@@ -219,7 +219,7 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
                   disabled={disabled}
                   aria-label={computedAddButtonText}
                 >
-                  <Plus className="h-4 w-4 text-gray-600 group-hover:text-[#008BC9] transition-colors duration-150" />
+                  <Plus className="h-4 w-4 text-gray-600 group-hover:text-blue-600 transition-colors duration-150" />
                 </Button>
               </div>
             </PopoverTrigger>

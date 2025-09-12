@@ -98,7 +98,7 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user, isAnnotatio
 
       {/* Blue Navigation Bar */}
       <nav
-        className="bg-[#3BA8D1] text-white"
+        className="bg-blue-500 text-white"
         role="navigation"
         aria-label="Primary navigation"
       >

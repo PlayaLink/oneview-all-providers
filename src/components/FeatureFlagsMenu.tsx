@@ -29,7 +29,7 @@ const FeatureFlagsMenu: React.FC<FeatureFlagsMenuProps> = ({ isAnnotationMode, s
             checked={!!setting.setting_value}
             onCheckedChange={(checked) => updateFlag(setting.setting_key as any, checked)}
             disabled={isLoading}
-            className={!!setting.setting_value ? "data-[state=checked]:bg-[#3BA8D1]" : ""}
+            className={!!setting.setting_value ? "data-[state=checked]:bg-blue-500" : ""}
           />
         </div>
       ))}

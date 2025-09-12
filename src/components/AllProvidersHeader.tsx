@@ -30,7 +30,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
   }
 
   return (
-    <header ref={ref} className="bg-white text-[#545454] py-4 border-b border-gray-300 relative z-10" role="banner" aria-label="All Providers Header" data-testid="all-providers-header">
+          <header ref={ref} className="bg-white text-gray-600 py-4 border-b border-gray-300 relative z-10" role="banner" aria-label="All Providers Header" data-testid="all-providers-header">
       <div className="flex items-center gap-2 pl-1 pr-4">
         {/* Provider Info or All Providers/Team Title */}
         {provider ? (
@@ -40,14 +40,14 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
               <Icon icon="user" className="w-8 h-8 text-gray-400" />
             </div>
             <div className="flex flex-col">
-              <h1 className="font-bold text-base text-[#545454]">
+              <h1 className="font-bold text-base text-gray-600">
                 {provider.provider_name} 
               </h1>
               <h2 className="font-normal text-sm">
                 {provider.title}
               </h2>
               {provider.primary_specialty && (
-                <p className="font-semibold text-[#3BA8D1] text-sm">{provider.primary_specialty}</p> 
+                <p className="font-semibold text-blue-500 text-sm">{provider.primary_specialty}</p> 
               )}
               {/* {provider.npi_number && (
                 <span className="text-sm">NPI {provider.npi_number}</span> 
@@ -84,7 +84,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
             />
           ) : (
             <button
-              className="bg-[#545454] hover:bg-[#424242] text-white font-semibold py-2 px-4 rounded flex items-center gap-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#545454] text-sm"
+              className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded flex items-center gap-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-600 text-sm"
               type="button"
               aria-label="Add Provider"
               data-testid="add-provider-button"

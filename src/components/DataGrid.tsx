@@ -5,6 +5,7 @@ import Icon from "@/components/ui/Icon";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import { useGridActions } from "@/hooks/useGridActions";
 import { updateGridColumnWidths, updateGridExpiringWithin, bulkDeleteRecords } from "@/lib/supabaseClient";
+import { colorTokens } from "@/lib/colorTokens";
 import ContextMenu from "./ContextMenu";
 import ActionsColumn from "./ActionsColumn";
 import ExpiringCellRenderer from "./ExpiringCellRenderer";
@@ -47,7 +48,7 @@ const ActionsHeader: React.FC<{
       <div className="flex items-center gap-1">
         <button
           onClick={onAddRecord}
-          className="w-6 h-6 bg-[#79AC48] hover:bg-[#6B9A3F] rounded transition-colors flex items-center justify-center"
+          className="w-6 h-6 bg-green-500 hover:bg-green-600 rounded transition-colors flex items-center justify-center"
           data-testid="actions-add-button"
           data-referenceid="actions-add"
           aria-label="Add new record"
@@ -143,7 +144,6 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   React.useEffect(() => {
     console.log('DataGrid props:', { title, tableName, gridKey });
   }, [title, tableName, gridKey]);
-
   // Collapsible state
   const [isExpanded, setIsExpanded] = React.useState(true);
 
@@ -182,7 +182,6 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
   // Handle bulk deletion of selected rows
   const handleBulkDelete = React.useCallback(async () => {
-    console.log('handleBulkDelete called with:', { tableName, selectedRowsCount: selectedRows.length });
     
     if (!tableName || selectedRows.length === 0) {
       console.warn('No table name or selected rows for deletion:', { tableName, selectedRowsCount: selectedRows.length });
@@ -647,7 +646,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
   const getRowStyle = (params: any) => {
     const baseStyle = {
-      borderBottom: "0.5px solid #D2D5DC",
+      borderBottom: `0.5px solid ${colorTokens.gray[300]}`,
       backgroundColor: "white",
     };
 
@@ -656,14 +655,14 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     if (isRowSelected) {
       return {
         ...baseStyle,
-        backgroundColor: "#C4D8F7",
+        backgroundColor: colorTokens.blue[100],
       };
     }
 
     if (params.node.isSelected()) {
       return {
         ...baseStyle,
-        backgroundColor: "#E3F2FD",
+        backgroundColor: colorTokens.blue[50],
       };
     }
 
@@ -764,7 +763,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     >
       {/* Grid Header */}
       <header
-        className={`flex items-center justify-between pl-1 pr-3 py-[9px] bg-[#CFD8DC] border-b border-gray-300 flex-shrink-0 overflow-visible cursor-pointer hover:bg-[#B0BEC5] transition-colors ${
+        className={`flex items-center justify-between pl-1 pr-3 py-[9px] bg-gray-200 border-b border-gray-300 flex-shrink-0 overflow-visible cursor-pointer hover:bg-gray-300 transition-colors ${
           isSidePanelOpen ? 'rounded-tl' : 'rounded-t'
         }`}
         role="button"
@@ -783,10 +782,10 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         <div className="flex items-center gap-2 pl-4">
           <Icon
             icon={icon}
-            className="pr-1 w-4 h-4 text-[#545454]"
+            className="pr-1 w-4 h-4 text-gray-600"
             aria-hidden="true"
           />
-          <h2 className="text-[#545454] font-semibold text-xs tracking-wider">
+          <h2 className="text-gray-600 font-semibold text-xs tracking-wider">
             {title}
           </h2>
         </div>
@@ -801,7 +800,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               {expirationStats.expiring > 0 && (
                 <div className="relative">
                   <button
-                    className="flex items-center gap-1 px-2.5 py-0.5 bg-[#F48100] rounded-full hover:bg-[#E67300] transition-colors"
+                    className="flex items-center gap-1 px-2.5 py-0.5 bg-orange-500 rounded-full hover:bg-orange-600 transition-colors"
                     onClick={(e) => {
                       e.stopPropagation();
                       setShowExpiringDropdown(!showExpiringDropdown);
@@ -862,7 +861,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               )}
               {expirationStats.expired > 0 && (
                 <div
-                  className="flex items-center gap-1 px-2.5 py-0.5 bg-[#DB0D00] rounded-full"
+                  className="flex items-center gap-1 px-2.5 py-0.5 bg-red-500 rounded-full"
                   role="status"
                   aria-label={`${expirationStats.expired} items expired`}
                 >
@@ -871,7 +870,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                 </div>
               )}
               <div
-                className="flex items-center gap-1 px-2.5 py-0.5 bg-[#545454] rounded-full"
+                className="flex items-center gap-1 px-2.5 py-0.5 bg-gray-600 rounded-full"
                 role="status"
                 aria-label={`${expirationStats.total} total items`}
               >
@@ -885,7 +884,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
           <div className="flex items-center">
             <div
-              className="w-9 h-5 bg-[#79AC48] rounded-full relative"
+              className="w-9 h-5 bg-green-500 rounded-full relative"
               role="switch"
               aria-label="Toggle view mode"
               aria-checked="true"
@@ -902,10 +901,9 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       {/* Action Bar - Shows when rows are selected */}
       {isExpanded && selectedRows.length > 0 && (
         <div
-          className="flex px-4 py-2 border-b border-gray-300 gap-4"
+          className="flex px-4 py-2 border-b border-gray-300 gap-4 bg-blue-100"
           style={{ 
-            height: '40px', // Match AG Grid header height
-            backgroundColor: '#C4D8F7' // Match selected row background color
+            height: '40px' // Match AG Grid header height
           }}
           role="toolbar"
           aria-label="Row actions"

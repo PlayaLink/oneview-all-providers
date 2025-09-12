@@ -55,7 +55,7 @@ const TeamPage: React.FC = () => {
         onButtonClick={() => {
           // Add Provider functionality
         }}
-        buttonClassName="bg-[#79AC48] hover:bg-[#6B9A3F] text-white"
+        buttonClassName="bg-green-500 hover:bg-green-600 text-white"
       />
       <div className='px-4 pt-4'>
         <GridDataFetcher
