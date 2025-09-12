@@ -136,6 +136,12 @@ const gridToTableMap: Record<string, string> = {
   birth_info: "birth_info", // Handle lowercase version
   Addresses: "addresses",
   addresses: "addresses", // Handle lowercase version
+  Additional_Names: "additional_names",
+  additional_names: "additional_names", // Handle lowercase version
+  DEA_Licenses: "dea_licenses",
+  dea_licenses: "dea_licenses", // Handle lowercase version
+  State_Controlled_Substance_Licenses: "state_controlled_substance_licenses",
+  state_controlled_substance_licenses: "state_controlled_substance_licenses", // Handle lowercase version
 
   // Facility system tables
   Facility_Affiliations: "facility_affiliations",

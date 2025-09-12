@@ -221,6 +221,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
       'facility_affiliations_with_provider': 'facility_affiliations',
       'addresses_with_provider': 'addresses',
       'birth_info_with_provider': 'birth_info',
+      'additional_names_with_provider': 'additional_names',
       'facilities_with_properties': 'facilities',
       'facilities_with_all_data': 'facilities',
       'facilities_with_property_values': 'facilities',
