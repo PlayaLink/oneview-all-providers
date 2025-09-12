@@ -23,9 +23,9 @@ const SearchCriteriaSection: React.FC<SearchCriteriaSectionProps> = ({
   layout = 'vertical',
   labelPosition = 'left'
 }) => {
-  const containerClass = layout === 'horizontal' ? "flex flex-row gap-4 w-full" : "flex flex-col gap-4";
-  const fieldClass = layout === 'horizontal' ? "flex-1" : "flex-1";
-  const providerContainerClass = layout === 'horizontal' ? "flex flex-row gap-4 w-full mt-4" : "flex flex-col gap-4";
+  const containerClass = layout === 'horizontal' ? "flex flex-wrap gap-4 w-full" : "flex flex-col gap-4";
+  const fieldClass = layout === 'horizontal' ? "flex-1 min-w-[180px]" : "flex-1";
+  const providerContainerClass = layout === 'horizontal' ? "flex flex-wrap gap-4 w-full mt-4" : "flex flex-col gap-4";
 
   return (
     <div className={className}>
@@ -52,7 +52,7 @@ const SearchCriteriaSection: React.FC<SearchCriteriaSectionProps> = ({
         {/* Provider fields */}
         {provider && (
           <div className={providerContainerClass}>
-            <div className="flex-1">
+            <div className={layout === 'horizontal' ? "flex-1 min-w-[180px]" : "flex-1"}>
               <TextInputField
                 label="First Name"
                 labelPosition={labelPosition}
@@ -63,7 +63,7 @@ const SearchCriteriaSection: React.FC<SearchCriteriaSectionProps> = ({
                 aria-label="Provider first name"
               />
             </div>
-            <div className="flex-1">
+            <div className={layout === 'horizontal' ? "flex-1 min-w-[180px]" : "flex-1"}>
               <TextInputField
                 label="Last Name"
                 labelPosition={labelPosition}

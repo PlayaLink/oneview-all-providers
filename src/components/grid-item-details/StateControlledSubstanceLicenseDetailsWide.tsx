@@ -170,6 +170,8 @@ const StateControlledSubstanceLicenseDetailsWide: React.FC<StateControlledSubsta
         formValues={formValues}
         handleChange={handleChange}
         provider={provider}
+        layout="horizontal"
+        labelPosition="above"
       />
 
       {/* Additional Info Section */}

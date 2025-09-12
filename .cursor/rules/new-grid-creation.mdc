@@ -273,7 +273,7 @@ The following actions are currently defined in the database and available for us
 - **Apply the correct field grouping pattern** based on screenshot analysis:
   - **Pattern 1 (CollapsibleSection)**: Wrap field groups in `CollapsibleSection` components
   - **Pattern 2 (Simple Field List)**: Render fields directly, use grid layout for wide modal
-  - **Pattern 3 (SearchCriteriaSection)**: Use `SearchCriteriaSection` for search criteria, CollapsibleSection for other groups
+  - **Pattern 3 (SearchCriteriaSection)**: Use `SearchCriteriaSection` for search criteria with `layout="horizontal"` in DetailsWide, CollapsibleSection for other groups
 - Include proper TypeScript interfaces
 - Export template objects for both components (e.g., `{gridName}Template` and `{gridName}WideTemplate`)
 - **CRITICAL**: Include `DetailsComponent` property in template objects pointing to the component
@@ -367,6 +367,8 @@ Based on screenshot analysis, implement the appropriate pattern:
   formValues={formValues}
   handleChange={handleChange}
   provider={provider}
+  layout="horizontal" // CRITICAL: Layout should only be set as "horizontal" if DetailWide modal context
+  labelPosition="above"  // CRITICAL: labelPosition should only be set as "above" if DetailWide modal 
 />
 <CollapsibleSection title="Additional Info">
   {/* CRITICAL: DetailsWide components MUST use labelPosition="above" */}
@@ -438,6 +440,10 @@ This rule ensures accuracy by requiring explicit confirmation before proceeding 
 - **COMMON MISTAKE**: Missing `labelPosition="above"` causes inconsistent label positioning in wide modals
 - **EXAMPLE**: `renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' })` ✅
 - **APPLIES TO**: All field rendering patterns (Simple Field List, CollapsibleSection, SearchCriteriaSection)
+- **CRITICAL**: SearchCriteriaSection in DetailsWide components MUST use `layout="horizontal"`
+- **VERIFY**: Every SearchCriteriaSection in DetailsWide components includes `layout="horizontal"`
+- **COMMON MISTAKE**: Missing `layout="horizontal"` causes vertical layout in wide modals
+- **EXAMPLE**: `<SearchCriteriaSection layout="horizontal" labelPosition="above" />` ✅
 
 ### Seeding Script Standards
 - **ALWAYS** include comprehensive error handling with try-catch blocks
