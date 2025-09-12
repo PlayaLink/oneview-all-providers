@@ -36,7 +36,17 @@ export function renderFieldComponent({ field, formValues, handleChange, classNam
   const fieldKey = field.key || field.label;
 
   if (inputType === 'multi-select') {
-    const options = field.options?.map((opt) => ({ id: opt, label: opt })) || [];
+    // Handle both string arrays and object arrays
+    const options = field.options?.map((opt) => {
+      if (typeof opt === 'string') {
+        return { id: opt, label: opt };
+      } else if (typeof opt === 'object' && opt !== null && 'id' in opt && 'label' in opt) {
+        return opt; // Already in correct format
+      } else {
+        return { id: String(opt), label: String(opt) };
+      }
+    }) || [];
+    
     const stored = formValues[fieldKey] || [];
     const value = Array.isArray(stored)
       ? stored.map((v) => (typeof v === 'object' && v !== null ? v : options.find((opt) => opt.id === v))).filter(Boolean)
@@ -55,7 +65,17 @@ export function renderFieldComponent({ field, formValues, handleChange, classNam
       />
     );
   } else if (inputType === 'single-select') {
-    const options = field.options?.map((opt) => ({ id: opt, label: opt })) || [];
+    // Handle both string arrays and object arrays
+    const options = field.options?.map((opt) => {
+      if (typeof opt === 'string') {
+        return { id: opt, label: opt };
+      } else if (typeof opt === 'object' && opt !== null && 'id' in opt && 'label' in opt) {
+        return opt; // Already in correct format
+      } else {
+        return { id: String(opt), label: String(opt) };
+      }
+    }) || [];
+    
     // Handle both string values and object values from formValues
     const formValue = formValues[fieldKey];
     const selectedValue = typeof formValue === 'string' 
