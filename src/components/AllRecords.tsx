@@ -331,12 +331,16 @@ const AllRecords: React.FC = () => {
     }
   };
 
-  const handleRowSelect = (row: any | null, gridName?: string) => {
+  const handleRowSelect = (row: any | null, gridKey?: string) => {
     // If clicking the already selected row, unselect it and close sidepanel
-    if (row && gridName && selectedRow && selectedRow.id === row.id && selectedRow.gridName === gridName) {
+    if (row && gridKey && selectedRow && selectedRow.id === row.id && selectedRow.gridKey === gridKey) {
       setSelectedRow(null);
-    } else if (row && gridName) {
-      setSelectedRow({ ...row, gridName });
+    } else if (row) {
+      // Use gridKey from row data if available, otherwise use the parameter
+      const effectiveGridKey = row.gridKey || gridKey;
+      if (effectiveGridKey) {
+        setSelectedRow({ ...row, gridKey: effectiveGridKey });
+      }
     } else {
       setSelectedRow(null);
     }

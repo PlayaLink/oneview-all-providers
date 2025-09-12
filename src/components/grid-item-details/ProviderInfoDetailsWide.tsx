@@ -158,7 +158,7 @@ export const providerInfoWideTemplate = {
   id: 'provider_info_wide',
   name: 'Provider Information (Wide)',
   description: 'Template for displaying provider information details in wide format',
-  header: ({ gridName, row, provider, isCreateMode }) => generateDefaultHeaderText({ gridName, provider, isCreateMode }),
+  header: ({ gridKey, row, provider, isCreateMode }: { gridKey: string; row: any; provider?: any; isCreateMode?: boolean }) => generateDefaultHeaderText({ gridKey, provider, isCreateMode }),
   tabs: [
     { id: 'details', label: 'Details', icon: 'bars-staggered', enabled: true },
     { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true },

@@ -21,7 +21,7 @@ export interface TemplateConfig {
   description: string;
   tabs: TabConfig[];
   fieldGroups: FieldGroup[];
-  header?: (args: { gridName: string; row: any; provider?: any }) => string;
+  header?: (args: { gridKey: string; row: any; provider?: any; isCreateMode?: boolean }) => string;
   DetailsComponent?: React.ComponentType<any>;
   // Add support for context-specific components
   getDetailsComponent?: (context: 'sidepanel' | 'modal') => React.ComponentType<any>;
@@ -166,7 +166,7 @@ export function getTemplateConfigByGrid(gridKey: string, context?: 'sidepanel' |
           { id: 'documents', label: 'Documents', icon: 'file-lines', enabled: true },
         ],
         fieldGroups: [],
-        header: ({ gridName, row, provider }) => generateDefaultHeaderText({ gridName, provider }) || `${gridName} for ${row.id || 'Record'}`,
+        header: ({ gridKey, row, provider }) => generateDefaultHeaderText({ gridKey, provider }) || `${gridKey} for ${row.id || 'Record'}`,
       };
     }
   }

@@ -75,7 +75,7 @@ export const facilityAffiliationsTemplate = {
     { id: 'documents', label: 'Documents', icon: 'folder', enabled: true },
   ],
   fieldGroups: facilityAffiliationsFieldGroups,
-  header: ({ gridName, provider, isCreateMode }) => generateDefaultHeaderText({ gridName, provider, isCreateMode }),
+  header: ({ gridKey, provider, isCreateMode }: { gridKey: string; provider?: any; isCreateMode?: boolean }) => generateDefaultHeaderText({ gridKey, provider, isCreateMode }),
   DetailsComponent: FacilityAffiliationsDetails,
 };
 

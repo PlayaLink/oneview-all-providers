@@ -195,7 +195,7 @@ export const stateControlledSubstanceLicenseWideTemplate = {
   id: 'state_controlled_substance_licenses',
   name: 'State Controlled Substance Licenses',
   description: 'Template for displaying state controlled substance license details',
-  header: ({ gridName, row, provider, isCreateMode }) => generateDefaultHeaderText({ gridName, provider, isCreateMode }),
+  header: ({ gridKey, row, provider, isCreateMode }: { gridKey: string; row: any; provider?: any; isCreateMode?: boolean }) => generateDefaultHeaderText({ gridKey, provider, isCreateMode }),
   tabs: [
     { id: 'details', label: 'Details', icon: 'bars-staggered', enabled: true },
     { id: 'notes', label: 'Notes', icon: 'file-medical', enabled: true },

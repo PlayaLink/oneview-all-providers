@@ -47,10 +47,10 @@ export const generateProviderName = (provider?: any): string => {
 // generateProviderName() -> throws Error: "Provider object is required"
 
 // Reusable helper function for default header text generation
-export const generateDefaultHeaderText = ({ gridName, provider, isCreateMode }: { gridName: string; provider?: any; isCreateMode?: boolean }): string => {
+export const generateDefaultHeaderText = ({ gridKey, provider, isCreateMode }: { gridKey: string; provider?: any; isCreateMode?: boolean }): string => {
   const prefix = isCreateMode ? 'Create new ' : '';
-  // Convert grid name to Capital Case and replace underscores with spaces
-  const rawDisplayName = (gridName || '')
+  // Convert grid key to Capital Case and replace underscores with spaces
+  const rawDisplayName = (gridKey || '')
     .replace(/_/g, ' ')
     .replace(/\b\w/g, (c) => c.toUpperCase());
 
@@ -103,6 +103,6 @@ export const generateDefaultHeaderText = ({ gridName, provider, isCreateMode }: 
 };
 
 // Test cases for generateDefaultHeaderText:
-// generateDefaultHeaderText({ gridName: "Provider Info", provider: { first_name: "John", last_name: "Doe", title: "MD - Medical Doctor" } }) -> "Provider Info for John Doe MD"
-// generateDefaultHeaderText({ gridName: "Birth Info", provider: { first_name: "John", last_name: "Doe", title: "DO - Osteopathic Doctor" } }) -> "Birth Info for John Doe DO"
-// generateDefaultHeaderText({ gridName: "Provider Info" }) -> "Provider Info"
+// generateDefaultHeaderText({ gridKey: "provider_info", provider: { first_name: "John", last_name: "Doe", title: "MD - Medical Doctor" } }) -> "Provider Info for John Doe MD"
+// generateDefaultHeaderText({ gridKey: "birth_info", provider: { first_name: "John", last_name: "Doe", title: "DO - Osteopathic Doctor" } }) -> "Birth Info for John Doe DO"
+// generateDefaultHeaderText({ gridKey: "provider_info" }) -> "Provider Info"

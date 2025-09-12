@@ -99,8 +99,8 @@ interface DataGridProps {
   isSidePanelOpen?: boolean;
   /** Grid columns data from database for width persistence */
   gridColumnsData?: Array<{ id: string; name: string; width?: number; visible?: boolean }>;
-  /** Grid name/key for database operations */
-  gridName?: string;
+  /** Grid key for database operations (required) */
+  gridKey: string;
   /** Default expiring days filter from grid definition */
   defaultExpiringDays?: number;
   /** Table name for database operations (e.g., 'state_licenses', 'addresses') */
@@ -134,15 +134,15 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     onOpenDetailModal,
     isSidePanelOpen = false,
     gridColumnsData,
-    gridName,
+    gridKey,
     tableName,
     onRecordsDeleted,
   } = props;
 
   // Debug logging for props
   React.useEffect(() => {
-    console.log('DataGrid props:', { title, tableName, gridName });
-  }, [title, tableName, gridName]);
+    console.log('DataGrid props:', { title, tableName, gridKey });
+  }, [title, tableName, gridKey]);
 
   // Collapsible state
   const [isExpanded, setIsExpanded] = React.useState(true);
@@ -403,7 +403,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               ),
               cellRenderer: (params: any) => (
                 <ActionsColumn
-                  gridName={title}
+                  gridName={gridKey}
                   rowData={params.data}
                   onActionClick={(actionName, rowData) => {
                     switch (actionName) {
@@ -499,7 +499,9 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     }
 
     if (onRowClicked && event.data) {
-      onRowClicked(event.data);
+      // Add gridKey to the row data for proper mapping
+      const rowDataWithGridKey = { ...event.data, gridKey };
+      onRowClicked(rowDataWithGridKey);
     }
   };
 
@@ -548,7 +550,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       localStorage.setItem(gridStateKey, JSON.stringify(columnState));
       
       // Save column widths to database if we have grid columns data
-      if (gridColumnsData && gridName) {
+      if (gridColumnsData && gridKey) {
         try {
           const widthUpdates = columnState
             .filter((col: any) => col.width && columnIdMap.has(col.colId))
@@ -565,7 +567,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         }
       }
     }
-  }, [gridApi, gridStateKey, gridColumnsData, gridName, columnIdMap]);
+  }, [gridApi, gridStateKey, gridColumnsData, gridKey, columnIdMap]);
 
   // Debounced save function to prevent too many database calls
   const debouncedSaveColumnState = React.useCallback(() => {
@@ -828,20 +830,20 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                           value={expiringDaysFilter}
                           onChange={async (e) => {
                             const newValue = Number(e.target.value);
-                            console.log("Dropdown changed to:", newValue, "gridName:", gridName);
+                            console.log("Dropdown changed to:", newValue, "gridKey:", gridKey);
                             setExpiringDaysFilter(newValue);
                             
-                            // Save to database if we have a grid name
-                            if (gridName) {
+                            // Save to database if we have a grid key
+                            if (gridKey) {
                               try {
                                 console.log("Attempting to save to database...");
-                                const result = await updateGridExpiringWithin(gridName, newValue);
+                                const result = await updateGridExpiringWithin(gridKey, newValue);
                                 console.log("Save successful:", result);
                               } catch (error) {
                                 console.error("Failed to save expiring days to database:", error);
                               }
                             } else {
-                              console.warn("No gridName available for saving");
+                              console.warn("No gridKey available for saving");
                             }
                           }}
                           onClick={(e) => e.stopPropagation()}
@@ -1027,7 +1029,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           x={contextMenu.x}
           y={contextMenu.y}
           rowData={contextMenu.rowData}
-          gridName={title}
+          gridName={gridKey}
           onClose={handleContextMenuClose}
           handleShowFacilityDetails={handleShowFacilityDetails}
         />

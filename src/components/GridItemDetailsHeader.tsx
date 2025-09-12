@@ -8,7 +8,7 @@ interface GridItemDetailsHeaderProps {
   context: "sidepanel" | "modal";
   onExpandDetailModal?: () => void;
   onClose: () => void;
-  gridName?: string;
+  gridKey?: string;
   rowData?: any;
   onActionClick?: (actionName: string, rowData: any) => void;
   isCreateMode?: boolean;
@@ -23,7 +23,7 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
   context,
   onExpandDetailModal,
   onClose,
-  gridName,
+  gridKey,
   rowData,
   onActionClick,
   isCreateMode = false,
@@ -44,7 +44,7 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
       <div className="flex-1 flex-col">
         <h2 className="text-lg font-bold text-gray-700 tracking-wider mr-2">{headerText}</h2>
         {/* Provider Search - create mode only for non-provider_info grids */}
-        {isCreateMode && gridName !== "provider_info" && onSelectProvider && (
+        {isCreateMode && gridKey !== "provider_info" && onSelectProvider && (
           <div
             className="mt-4 mb-4"
             role="region"
@@ -61,10 +61,10 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
             />
           </div>
         )}
-        {gridName && rowData && onActionClick && !isCreateMode && (
+        {gridKey && rowData && onActionClick && !isCreateMode && (
           <div className="flex flex-row justify-start my-2">
             <ActionsColumn
-              gridName={gridName}
+              gridName={gridKey}
               rowData={rowData}
               onActionClick={onActionClick}
               className="justify-start"

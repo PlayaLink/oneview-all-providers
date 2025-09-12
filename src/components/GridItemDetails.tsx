@@ -69,12 +69,12 @@ export interface InputField {
 type ContextType = "sidepanel" | "modal";
 
 interface GridItemDetailsProps {
-  selectedRow: (any & { gridName: string }) | null;
+  selectedRow: (any & { gridKey: string }) | null;
   inputConfig: InputField[];
   onClose: () => void;
   title?: string;
   user: any;
-  onUpdateSelectedProvider?: (gridName: string, updatedProvider: any) => void;
+  onUpdateSelectedProvider?: (gridKey: string, updatedProvider: any) => void;
   /** Called when the expand icon is clicked in the header (only for sidepanel context) */
   onExpandDetailModal?: () => void;
   /** The context in which this component is being used */
@@ -125,69 +125,45 @@ export const detailsComponentMap: Record<string, React.ComponentType<any>> = {
   // Add more as needed
 };
 
-// Mapping from gridName to table name - Updated to match all database tables
+// Mapping from gridKey to table name - Using lowercase naming convention
 const gridToTableMap: Record<string, string> = {
   // Core provider tables
-  Provider_Info: "providers",
-  provider_info: "providers", // Handle lowercase version
-  State_Licenses: "state_licenses",
-  state_licenses: "state_licenses", // Handle lowercase version
-  Birth_Info: "birth_info",
-  birth_info: "birth_info", // Handle lowercase version
-  Addresses: "addresses",
-  addresses: "addresses", // Handle lowercase version
-  Additional_Names: "additional_names",
-  additional_names: "additional_names", // Handle lowercase version
-  DEA_Licenses: "dea_licenses",
-  dea_licenses: "dea_licenses", // Handle lowercase version
-  State_Controlled_Substance_Licenses: "state_controlled_substance_licenses",
-  state_controlled_substance_licenses: "state_controlled_substance_licenses", // Handle lowercase version
+  provider_info: "providers",
+  state_licenses: "state_licenses",
+  birth_info: "birth_info",
+  addresses: "addresses",
+  additional_names: "additional_names",
+  dea_licenses: "dea_licenses",
+  state_controlled_substance_licenses: "state_controlled_substance_licenses",
 
   // Facility system tables
-  Facility_Affiliations: "facility_affiliations",
-  facility_affiliations: "facility_affiliations", // Handle lowercase version
-  Facility_Properties: "facility_properties",
-  facility_properties: "facility_properties", // Handle lowercase version
-  Facility_Property_Values: "facility_property_values",
-  facility_property_values: "facility_property_values", // Handle lowercase version
-  Facility_Requirements: "facility_requirements",
-  facility_requirements: "facility_requirements", // Handle lowercase version
-  Facility_Requirement_Values: "facility_requirement_values",
-  facility_requirement_values: "facility_requirement_values", // Handle lowercase version
-  Facilities: "facilities",
-  facilities: "facilities", // Handle lowercase version
+  facility_affiliations: "facility_affiliations",
+  facility_properties: "facility_properties",
+  facility_property_values: "facility_property_values",
+  facility_requirements: "facility_requirements",
+  facility_requirement_values: "facility_requirement_values",
+  facilities: "facilities",
 
   // Requirements system tables
-  Requirements: "requirements",
-  requirements: "requirements", // Handle lowercase version
-  Requirement_Data: "requirement_data",
-  requirement_data: "requirement_data", // Handle lowercase version
-  Requirement_Data_Fields: "requirement_data_fields",
-  requirement_data_fields: "requirement_data_fields", // Handle lowercase version
+  requirements: "requirements",
+  requirement_data: "requirement_data",
+  requirement_data_fields: "requirement_data_fields",
 
   // Contact system tables
-  Contacts: "contacts",
-  contacts: "contacts", // Handle lowercase version
+  contacts: "contacts",
 
   // Document and notes tables
-  Notes: "notes",
-  notes: "notes", // Handle lowercase version
-  Documents: "documents",
-  documents: "documents", // Handle lowercase version
+  notes: "notes",
+  documents: "documents",
 
   // Grid system tables
-  Grid_Definitions: "grid_definitions",
-  grid_definitions: "grid_definitions", // Handle lowercase version
-  Grid_Columns: "grid_columns",
-  grid_columns: "grid_columns", // Handle lowercase version
-  Grid_Field_Groups: "grid_field_groups",
-  grid_field_groups: "grid_field_groups", // Handle lowercase version
-  Grid_Sections: "grid_sections",
-  grid_sections: "grid_sections", // Handle lowercase version
+  grid_definitions: "grid_definitions",
+  grid_columns: "grid_columns",
+  grid_field_groups: "grid_field_groups",
+  grid_sections: "grid_sections",
 
   // Feature settings
-  Feature_Settings: "feature_settings",
-  feature_settings: "feature_settings", // Handle lowercase version
+  feature_settings: "feature_settings",
 
   // Add more as needed
 };
@@ -209,12 +185,12 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
     onRecordCreated,
   } = props;
 
-  // Use gridName from selectedRow
-  const gridName = selectedRow?.gridName;
-  
-  // Validate that gridName is present
-  if (!gridName) {
-    throw new Error('GridItemDetails: gridName is required but not provided in selectedRow');
+  // Use gridKey from selectedRow
+  const gridKey = selectedRow?.gridKey;
+
+  // Validate that gridKey is present
+  if (!gridKey) {
+    throw new Error('GridItemDetails: gridKey is required but not provided in selectedRow');
   }
   const [formValues, setFormValues] = React.useState<Record<string, any>>({});
   const [tab, setTab] = useState("details");
@@ -230,11 +206,11 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   const [teamCount, setTeamCount] = useState<number>(0);
   const [selectedProvider, setSelectedProvider] = React.useState<any>(null);
 
-  // Select template based on gridName and context
-  const template = gridName ? getTemplateConfigByGrid(gridName, context) : null;
+  // Select template based on gridKey and context
+  const template = gridKey ? getTemplateConfigByGrid(gridKey, context) : null;
 
   // Fetch provider using provider_id from selectedRow (only for existing records)
-  const providerId = !isCreateMode && (gridName === "provider_info" ? selectedRow?.id : selectedRow?.provider_id || null);
+  const providerId = !isCreateMode && (gridKey === "provider_info" ? selectedRow?.id : selectedRow?.provider_id || null);
   const {
     data: provider,
     isLoading: providerLoading,
@@ -312,10 +288,10 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   // Fetch notes count for the selected record
   useEffect(() => {
     if (!selectedRow?.id) return;
-    fetchNotes(selectedRow.id, gridName)
+    fetchNotes(selectedRow.id, gridKey)
       .then((notes) => setNotesCount(notes?.length || 0))
       .catch(() => setNotesCount(0));
-  }, [selectedRow?.id, gridName]);
+  }, [selectedRow?.id, gridKey]);
 
   // Fetch team count (placeholder - replace with actual team data fetching)
   useEffect(() => {
@@ -417,10 +393,10 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   };
 
   const handleSave = async (shouldCloseModal: boolean = true) => {
-    if (!selectedRow || !gridName) {
+    if (!selectedRow || !gridKey) {
       console.error("Missing required data for save:", {
         selectedRow: !!selectedRow,
-        gridName,
+        gridKey,
       });
       toast({
         title: "Save Error",
@@ -431,7 +407,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
     }
 
     // For create mode, check if provider is selected for non-provider_info grids
-    if (isCreateMode && gridName !== "provider_info" && !selectedProvider) {
+    if (isCreateMode && gridKey !== "provider_info" && !selectedProvider) {
       toast({
         title: "Provider Required",
         description: "Please select a provider for this record",
@@ -450,7 +426,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       // Debug logging
       console.log("=== DEBUG: handleSave ===");
       console.log("isCreateMode:", isCreateMode);
-      console.log("gridName:", gridName);
+      console.log("gridKey:", gridKey);
       console.log("formValues:", formValues);
       console.log("inputConfig:", inputConfig);
 
@@ -611,7 +587,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       console.log("finalData:", finalData);
 
       // Add provider_id for non-provider_info grids in create mode
-      if (isCreateMode && gridName !== "provider_info" && selectedProvider) {
+      if (isCreateMode && gridKey !== "provider_info" && selectedProvider) {
         finalData.provider_id = selectedProvider.id;
       }
 
@@ -643,11 +619,11 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         }
       }
 
-      const tableName = gridToTableMap[gridName];
+      const tableName = gridToTableMap[gridKey];
       if (!tableName) {
         console.error("Available grid mappings:", Object.keys(gridToTableMap));
-        console.error("Grid name not found in mappings:", gridName);
-        throw new Error(`No table mapping found for gridName: ${gridName}`);
+        console.error("Grid key not found in mappings:", gridKey);
+        throw new Error(`No table mapping found for gridKey: ${gridKey}`);
       }
 
       let result;
@@ -698,7 +674,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       // Update parent state as well
       if (onUpdateSelectedProvider && !isCreateMode) {
         const updatedProvider = { ...selectedRow, ...finalData };
-        onUpdateSelectedProvider(gridName, updatedProvider);
+        onUpdateSelectedProvider(gridKey, updatedProvider);
       }
 
       // Invalidate and refetch the appropriate query cache to ensure consistency
@@ -708,7 +684,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         Birth_Info: "birth_info",
         // Add more as needed
       };
-      const queryKey = queryKeyMap[gridName];
+      const queryKey = queryKeyMap[gridKey];
       if (queryKey) {
         await queryClient.invalidateQueries({ queryKey: [queryKey] });
       }
@@ -732,9 +708,9 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
       console.error("Failed to save:", err);
 
       // Rollback optimistic updates on error
-      if (gridName === "State_Licenses" && previousData) {
+      if (gridKey === "State_Licenses" && previousData) {
         queryClient.setQueryData(["stateLicenses"], previousData);
-      } else if (gridName === "provider_info" && previousData) {
+      } else if (gridKey === "provider_info" && previousData) {
         queryClient.setQueryData(["providers"], previousData);
       }
 
@@ -906,17 +882,16 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   // Header formatting
   let headerText = "";
   if (template && template.header) {
-    const displayGridName = formatGridName(gridName);
+    const displayGridKey = formatGridName(gridKey);
     if (providerLoading) {
       headerText = "Loading provider...";
     } else if (providerError) {
       headerText = "Error loading provider";
     } else {
       headerText = template.header({
-        gridName: displayGridName,
+        gridKey: displayGridKey,
         row: selectedRow,
         provider: effectiveProvider,
-        // @ts-expect-error extended parameter used by our generator
         isCreateMode,
       });
     }
@@ -1041,7 +1016,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
         context={context}
         onExpandDetailModal={onExpandDetailModal}
         onClose={onClose}
-        gridName={gridName}
+        gridKey={gridKey}
         rowData={selectedRow}
         onActionClick={(actionName, rowData) => {
           // Handle action clicks here
@@ -1152,7 +1127,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                           React.createElement(NotesComponent, {
                             className: "flex-1 min-h-0",
                             recordId: selectedRow.id,
-                            recordType: gridName,
+                            recordType: gridKey,
                             user: user,
                           })
                         );
@@ -1285,7 +1260,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
                               React.createElement(NotesComponent, {
                                 className: "flex-1 min-h-0",
                                 recordId: selectedRow.id,
-                                recordType: gridName,
+                                recordType: gridKey,
                                 user: user,
                               })
                             );
