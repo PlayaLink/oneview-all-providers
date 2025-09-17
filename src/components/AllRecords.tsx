@@ -56,15 +56,6 @@ function GridsSection({
 
   // Debug: Log gridsToShow
   // Debug: GridsSection Debug
-    gridsToShow: gridsToShow.length,
-    gridsToShowData: gridsToShow.map(item => ({
-      type: item.type,
-      gridKey: item.grid?.key,
-      gridDisplayName: item.grid?.display_name,
-      gridGroup: item.grid?.group,
-      sectionKey: item.section?.key
-    }))
-  });
 
   // Scroll to a specific grid by index
   const scrollToGrid = (idx: number) => {
@@ -475,30 +466,10 @@ const AllRecords: React.FC = () => {
 
   // Debug: Log grid system data
   // Debug: AllRecords Grid System Debug
-    selectedItem,
-    selectedSection,
-    gridDefs: gridDefs.length,
-    gridSections: gridSections.length,
-    sectionFilters: sectionFilters?.size || 0,
-    grouped: grouped.length,
-    flat: flat.length,
-    flatItems: flat.map(item => ({
-      type: item.type,
-      gridKey: item.grid?.key,
-      gridDisplayName: item.grid?.display_name,
-      gridGroup: item.grid?.group,
-      sectionKey: item.section?.key
-    }))
-  });
 
   // Helper to determine which grids to show in all-records view (backend-driven)
   const getGridsToShow = () => {
     // Debug: getGridsToShow Debug
-      selectedItem,
-      selectedSection,
-      flatLength: flat.length,
-      groupedLength: grouped.length
-    });
 
     if (selectedItem === "all-sections") {
       // Show all visible grids, grouped and ordered, flat list
