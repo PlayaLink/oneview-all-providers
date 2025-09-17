@@ -97,7 +97,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
 
   // Function to invalidate grid data cache after deletion
   const handleRecordsDeleted = React.useCallback((deletedIds: string[]) => {
-    console.log('Records deleted, invalidating cache for:', gridDef?.table_name);
+    // Debug: Records deleted, invalidating cache
     
     // Invalidate the specific grid data query
     if (gridDef?.table_name) {

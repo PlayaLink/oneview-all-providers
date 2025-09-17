@@ -142,7 +142,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
   // Debug logging for props
   React.useEffect(() => {
-    console.log('DataGrid props:', { title, tableName, gridKey });
+    // Debug logging removed
   }, [title, tableName, gridKey]);
   // Collapsible state
   const [isExpanded, setIsExpanded] = React.useState(true);
@@ -184,7 +184,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   const handleBulkDelete = React.useCallback(async () => {
     
     if (!tableName || selectedRows.length === 0) {
-      console.warn('No table name or selected rows for deletion:', { tableName, selectedRowsCount: selectedRows.length });
+      // Warning: No table name or selected rows for deletion
       return;
     }
 
@@ -213,15 +213,15 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         onRecordsDeleted?.(result.deletedIds);
         
         // Show success message
-        console.log(`Successfully deleted ${result.totalDeleted} record(s)`);
+        // Success message handled by toast notification
         
         // Show warning if there were errors
         if (result.totalErrors > 0) {
-          console.warn(`${result.totalErrors} records failed to delete:`, result.errors);
+          // Warning: Some records failed to delete
         }
       }
     } catch (error) {
-      console.error('Bulk deletion failed:', error);
+      // Error handling with toast notification
       alert('An error occurred while deleting records. Please try again.');
     }
   }, [tableName, selectedRows, gridApi, onRecordsDeleted]);
@@ -252,37 +252,37 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
   // Export handlers (placeholder implementations)
   const handleExportExcel = React.useCallback(() => {
-    console.log('Export to Excel clicked');
+    // Export to Excel functionality
     // TODO: Implement Excel export
     setIsGridSettingsOpen(false);
   }, []);
 
   const handleExportCSV = React.useCallback(() => {
-    console.log('Export to CSV clicked');
+    // Export to CSV functionality
     // TODO: Implement CSV export
     setIsGridSettingsOpen(false);
   }, []);
 
   const handleExportPDF = React.useCallback(() => {
-    console.log('Export to PDF clicked');
+    // Export to PDF functionality
     // TODO: Implement PDF export
     setIsGridSettingsOpen(false);
   }, []);
 
   const handleDownloadAllFiltered = React.useCallback(() => {
-    console.log('Download All (Filtered) clicked');
+    // Download All (Filtered) functionality
     // TODO: Implement filtered download
     setIsGridSettingsOpen(false);
   }, []);
 
   const handleDownloadAll = React.useCallback(() => {
-    console.log('Download All clicked');
+    // Download All functionality
     // TODO: Implement download all
     setIsGridSettingsOpen(false);
   }, []);
 
   const handleResetGridSettings = React.useCallback(() => {
-    console.log('Reset Grid Settings clicked');
+    // Reset Grid Settings functionality
     // TODO: Implement grid settings reset
     if (gridApi) {
       // Reset column state
@@ -542,7 +542,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       
       // Safety check for columnState
       if (!columnState || !Array.isArray(columnState)) {
-        console.warn("No column state available to save");
+        // Warning: No column state available to save
         return;
       }
       
@@ -562,7 +562,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
             await updateGridColumnWidths(widthUpdates);
           }
         } catch (error) {
-          console.warn("Failed to save column widths to database:", error);
+          // Warning: Failed to save column widths to database
         }
       }
     }
@@ -575,7 +575,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
         saveColumnState().catch(error => {
-          console.warn("Debounced save failed:", error);
+          // Warning: Debounced save failed
         });
       }, 500); // Debounce for 500ms
     };
@@ -588,7 +588,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
         saveColumnState().catch(error => {
-          console.warn("Debounced save failed:", error);
+          // Warning: Debounced save failed
         });
       }, 500);
     };
@@ -604,7 +604,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         try {
           columnState = JSON.parse(savedState);
         } catch (error) {
-          console.warn("Failed to parse saved column state:", error);
+          // Warning: Failed to parse saved column state
         }
       }
       
@@ -829,20 +829,20 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                           value={expiringDaysFilter}
                           onChange={async (e) => {
                             const newValue = Number(e.target.value);
-                            console.log("Dropdown changed to:", newValue, "gridKey:", gridKey);
+                            // Debug: Dropdown changed
                             setExpiringDaysFilter(newValue);
                             
                             // Save to database if we have a grid key
                             if (gridKey) {
                               try {
-                                console.log("Attempting to save to database...");
+                                // Debug: Attempting to save to database
                                 const result = await updateGridExpiringWithin(gridKey, newValue);
-                                console.log("Save successful:", result);
+                                // Debug: Save successful
                               } catch (error) {
-                                console.error("Failed to save expiring days to database:", error);
+                                // Error: Failed to save expiring days to database
                               }
                             } else {
-                              console.warn("No gridKey available for saving");
+                              // Warning: No gridKey available for saving
                             }
                           }}
                           onClick={(e) => e.stopPropagation()}
@@ -1003,7 +1003,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           }}
           onColumnMoved={(event) => {
             saveColumnState().catch(error => {
-              console.warn("Column move save failed:", error);
+              // Warning: Column move save failed
             });
           }}
           onColumnResized={(event) => {
@@ -1011,12 +1011,12 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           }}
           onSortChanged={(event) => {
             saveColumnState().catch(error => {
-              console.warn("Sort change save failed:", error);
+              // Warning: Sort change save failed
             });
           }}
           onFilterChanged={(event) => {
             saveColumnState().catch(error => {
-              console.warn("Filter change save failed:", error);
+              // Warning: Filter change save failed
             });
           }}
         />

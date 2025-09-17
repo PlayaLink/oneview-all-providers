@@ -136,7 +136,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
           copiedTimeoutRef.current = null;
         }, 2000);
       } catch (err) {
-        console.error("Failed to copy text: ", err);
+        // Error: Failed to copy text
         // Still show the tooltip even if copy failed, for better UX
         setShowCopied(true);
 

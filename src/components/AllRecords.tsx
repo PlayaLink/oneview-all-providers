@@ -55,7 +55,7 @@ function GridsSection({
   const [currentGridIndex, setCurrentGridIndex] = React.useState(0);
 
   // Debug: Log gridsToShow
-  console.log('🔍 GridsSection Debug:', {
+  // Debug: GridsSection Debug
     gridsToShow: gridsToShow.length,
     gridsToShowData: gridsToShow.map(item => ({
       type: item.type,
@@ -357,7 +357,7 @@ const AllRecords: React.FC = () => {
       
       // After the database refactor, facility_affiliations now has facility_id
       if (!facilityAffiliation.facility_id) {
-        console.warn('No facility_id found in facility affiliation:', facilityAffiliation);
+        // Warning: No facility_id found in facility affiliation
         // Create a facility object with just the name for display
         const facility = {
           id: 'unknown',
@@ -386,7 +386,7 @@ const AllRecords: React.FC = () => {
         .single();
       
       if (facilityError || !facility) {
-        console.warn('No facility found with id:', facilityAffiliation.facility_id);
+        // Warning: No facility found with id
         // Create a facility object with just the name for display
         const fallbackFacility = {
           id: facilityAffiliation.facility_id,
@@ -424,7 +424,7 @@ const AllRecords: React.FC = () => {
         requirementValues,
       });
     } catch (error) {
-      console.error('Error fetching facility details:', error);
+      // Error: Error fetching facility details
     }
   };
 
@@ -464,7 +464,7 @@ const AllRecords: React.FC = () => {
   const handleRecordCreated = (newRecord: any) => {
     // Refresh the grid data after creating a new record
     // This will be handled by the query invalidation in GridItemDetails
-    console.log("New record created:", newRecord);
+    // Debug: New record created
   };
 
   // Use sectionFilters for filtering
@@ -474,7 +474,7 @@ const AllRecords: React.FC = () => {
   const { grouped, flat } = React.useMemo(() => getOrderedSectionsAndGrids(gridSections, gridDefs, sectionFilters), [gridSections, gridDefs, sectionFilters]);
 
   // Debug: Log grid system data
-  console.log('🔍 AllRecords Grid System Debug:', {
+  // Debug: AllRecords Grid System Debug
     selectedItem,
     selectedSection,
     gridDefs: gridDefs.length,
@@ -493,7 +493,7 @@ const AllRecords: React.FC = () => {
 
   // Helper to determine which grids to show in all-records view (backend-driven)
   const getGridsToShow = () => {
-    console.log('🔍 getGridsToShow Debug:', {
+    // Debug: getGridsToShow Debug
       selectedItem,
       selectedSection,
       flatLength: flat.length,
@@ -503,7 +503,7 @@ const AllRecords: React.FC = () => {
     if (selectedItem === "all-sections") {
       // Show all visible grids, grouped and ordered, flat list
       const result = flat.filter(item => item.type === 'grid');
-      console.log('📊 All-sections result:', result.length, result.map(r => r.grid?.display_name));
+      // Debug: All-sections result
       return result;
     } else if (selectedItem) {
       // Single grid selected
@@ -518,12 +518,12 @@ const AllRecords: React.FC = () => {
       if (!group || !group.grids.length) return [];
       // Just return grid items for this section
       const result = group.grids.map(grid => ({ type: 'grid', grid, section: group.section }));
-      console.log('📊 Section result:', result.length, result.map(r => r.grid?.display_name));
+      // Debug: Section result
       return result;
     } else {
       // Fallback: show all visible grids
       const result = flat.filter(item => item.type === 'grid');
-      console.log('📊 Fallback result:', result.length, result.map(r => r.grid?.display_name));
+      // Debug: Fallback result
       return result;
     }
   };

@@ -54,7 +54,7 @@ const NavItem: React.FC<NavItemProps> = ({
   let variantStyles = NAVITEM_VARIANTS[variant];
   if (!variantStyles) {
     if (process.env.NODE_ENV !== 'production') {
-      console.warn(`Unknown NavItem variant: ${variant}, defaulting to 'sidenav'`);
+      // Warning: Unknown NavItem variant
     }
     variantStyles = NAVITEM_VARIANTS.sidenav;
   }

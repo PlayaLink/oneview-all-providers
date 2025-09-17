@@ -153,7 +153,7 @@ export function AnnotationForm({ element, position, onClose, isAnnotationMode, a
       setText('');
       onClose();
     } catch (error) {
-      console.error('Error saving annotation:', error);
+      // Error: Error saving annotation
       // You might want to show a toast notification here
     }
   };

@@ -30,7 +30,7 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
   }
 
   if (error) {
-    console.error('Error loading grid actions for gridKey:', gridKey, 'Error:', error);
+    // Error: Error loading grid actions for gridKey
     return (
       <div className={`flex items-center justify-center ${className}`} data-testid="actions-column-error">
         <span className="text-red-500 text-xs">Error</span>
@@ -62,7 +62,7 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
           const { action } = gridAction;
           
           if (!action.icon) {
-            console.warn(`Icon not found for action: ${action.name}`);
+            // Warning: Icon not found for action
             return null;
           }
 

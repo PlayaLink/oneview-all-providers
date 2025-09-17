@@ -33,7 +33,7 @@ const ExpiringCellRenderer: React.FC<ExpiringCellRendererProps> = ({
         return expDate <= daysFromNow;
       }
     } catch (error) {
-      console.warn("Error parsing expiration date:", expirationDate, error);
+      // Warning: Error parsing expiration date
       return false;
     }
     

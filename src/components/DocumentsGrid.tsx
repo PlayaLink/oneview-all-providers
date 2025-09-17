@@ -45,7 +45,7 @@ const DocumentsGrid: React.FC<DocumentsGridProps> = ({ documents }) => {
             applyFilter: true,
           });
         } catch (error) {
-          console.warn("Failed to load column state:", error);
+          // Warning: Failed to load column state
         }
       }
     }

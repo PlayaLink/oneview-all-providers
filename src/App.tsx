@@ -60,7 +60,7 @@ const AuthWrapper = ({ user, loading, isAnnotationMode, setAnnotationMode }: {
       {/* Login route always accessible */}
       <Route path="/login" element={<AuthPage />} />
       {/* Redirect home to /team */}
-      <Route path="/" element={<Navigate to="/team" replace />} />
+      <Route path="/" element={<Navigate to="/all-records" replace />} />
       {/* Main app layout and routes */}
               <Route element={<AppLayout user={effectiveUser} isAnnotationMode={isAnnotationMode} setAnnotationMode={setAnnotationMode} />}>
         <Route path=":provider_id" element={<SingleProvider />} />

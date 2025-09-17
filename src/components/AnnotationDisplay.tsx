@@ -29,7 +29,7 @@ export function AnnotationDisplay({
   const [elementPositions, setElementPositions] = useState<Record<string, { x: number; y: number; width: number; height: number }>>({});
 
   // Debug: Log when annotations change
-  // console.log('🔍 AnnotationDisplay: annotations prop changed', {
+  // Debug: AnnotationDisplay: annotations prop changed
   //   count: annotations.length,
   //   isAnnotationMode,
   //   currentBranch
@@ -72,7 +72,7 @@ export function AnnotationDisplay({
       return pageMatch && branchMatch;
     });
     
-    // console.log('🔍 Filtered annotations:', {
+    // Debug: Filtered annotations
     //   totalAnnotations: annotations.length,
     //   currentPage: window.location.pathname,
     //   currentBranch,
@@ -92,9 +92,9 @@ export function AnnotationDisplay({
     //   ann.text === 'forms' && ann.elementSelector.includes('button.font-bold')
     // );
     // if (newAnnotation) {
-    //   console.log('✅ New annotation found in filtered results:', newAnnotation);
+    //   // Debug: New annotation found in filtered results
     // } else {
-    //   console.log('❌ New annotation NOT found in filtered results');
+    //   // Debug: New annotation NOT found in filtered results
     //   console.log('All annotations:', annotations.map(ann => ({
     //     id: ann.id,
     //     text: ann.text,
@@ -127,20 +127,20 @@ export function AnnotationDisplay({
               };
             } else {
               notFoundElements.push(annotation.elementSelector);
-              console.warn(`Element for annotation ${annotation.id} has zero dimensions:`, annotation.elementSelector);
+              // Warning: Element for annotation has zero dimensions
             }
           } else {
             notFoundElements.push(annotation.elementSelector);
-            console.warn(`Could not find visible element for annotation ${annotation.id}:`, annotation.elementSelector);
+            // Warning: Could not find visible element for annotation
           }
         } catch (error) {
           notFoundElements.push(annotation.elementSelector);
-          console.warn(`Error finding element for annotation ${annotation.id}:`, error);
+          // Warning: Error finding element for annotation
         }
       });
       
       if (notFoundElements.length > 0) {
-        // console.log('⚠️ Elements not found for annotations:', notFoundElements);
+        // Debug: Elements not found for annotations
       }
       
       setElementPositions(newPositions);
@@ -182,7 +182,7 @@ export function AnnotationDisplay({
       
       if (!elementPosition) {
         // Fallback to original position if element not found
-        console.warn(`Element not found for annotation ${annotation.id}, using fallback position`);
+        // Warning: Element not found for annotation, using fallback position
         return {
           position: 'fixed' as const,
           top: `${annotation.position.y}px`,
@@ -273,7 +273,7 @@ export function AnnotationDisplay({
         pointerEvents: 'auto' as const
       };
 
-      // console.log('🔍 Dynamic annotation positioning:', {
+      // Debug: Dynamic annotation positioning
       //   id: annotation.id,
       //   elementPosition,
       //   placement: annotation.placement,
@@ -286,7 +286,7 @@ export function AnnotationDisplay({
 
       return finalStyle;
     } catch (error) {
-      console.error('Error calculating annotation position:', error);
+      // Error: Error calculating annotation position
       return { display: 'none' };
     }
   };
@@ -310,7 +310,7 @@ export function AnnotationDisplay({
         }, 3000);
       }
     } catch (error) {
-      console.error('Error finding annotated element:', error);
+      // Error: Error finding annotated element
     }
   };
 
@@ -326,7 +326,7 @@ export function AnnotationDisplay({
       setEditingAnnotationId(null);
       setEditText('');
     } catch (error) {
-      console.error('Error updating annotation:', error);
+      // Error: Error updating annotation
     }
   };
 
@@ -425,7 +425,7 @@ export function AnnotationDisplay({
                           try {
                             await removeAnnotation(annotation.id);
                           } catch (error) {
-                            console.error('Error removing annotation:', error);
+                            // Error: Error removing annotation
                             // You might want to show a toast notification here
                           }
                         }}
