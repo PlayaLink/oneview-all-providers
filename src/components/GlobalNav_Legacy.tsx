@@ -142,7 +142,7 @@ const GlobalNav_Legacy: React.FC<GlobalNav_LegacyProps> = ({ user }) => {
 
       {/* Blue Navigation Bar */}
               <nav className="bg-blue-500 text-white" role="navigation" aria-label="Primary navigation">
-        <div className="flex items-center justify-between px-4 py-3">
+        <div className="flex items-center justify-between px-4 pt-1">
           <div className="flex items-center gap-5 flex-1 self-stretch">
             <div className="flex items-center gap-2 self-stretch" role="menubar" aria-label="Main application sections">
               <NavItem

@@ -2,6 +2,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getIconByName } from "@/lib/iconMapping";
+import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 
 interface NavItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   active?: boolean;
@@ -18,9 +19,9 @@ interface NavItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const NAVITEM_VARIANTS = {
   global: {
-    base: "font-bold rounded transition-colors select-none px-4 py-2 text-sm w-full flex items-center gap-2",
-    active: "bg-white text-blue-500",
-    inactive: "text-white hover:bg-blue-400",
+    base: "font-bold transition-colors select-none px-4 py-2 text-sm w-full flex items-center gap-2",
+    active: "rounded bg-white text-blue-500",
+    inactive: "rounded text-white hover:bg-blue-400",
     alignment: "justify-start",
   },
   horizontal: {
@@ -51,6 +52,8 @@ const NavItem: React.FC<NavItemProps> = ({
   settingsDropdown,
   ...props
 }) => {
+  const { value: newNav } = useFeatureFlag("new_nav_option_1");
+  
   let variantStyles = NAVITEM_VARIANTS[variant];
   if (!variantStyles) {
     if (process.env.NODE_ENV !== 'production') {
@@ -58,7 +61,14 @@ const NavItem: React.FC<NavItemProps> = ({
     }
     variantStyles = NAVITEM_VARIANTS.sidenav;
   }
-  const stateStyles = active ? variantStyles.active : variantStyles.inactive;
+  // Conditional styling for global nav items based on feature flag
+  let stateStyles;
+  if (variant === "global" && active && !newNav) {
+    // When new_nav_option_1 is false, use white underline instead of white background
+    stateStyles = "text-white border-b-4 border-white";
+  } else {
+    stateStyles = active ? variantStyles.active : variantStyles.inactive;
+  }
 
   // Always render CAQH in all caps
   let content = children;
