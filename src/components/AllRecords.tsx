@@ -221,7 +221,7 @@ const AllRecords: React.FC = () => {
   const globalNavRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const horizontalNavRef = useRef<HTMLDivElement>(null);
-  const [gridHeight, setGridHeight] = useState<number>(400);
+  const [gridHeight, setGridHeight] = useState<number>(510);
 
   const calculateGridHeight = useCallback(() => {
     const viewportHeight = window.innerHeight;
@@ -232,11 +232,12 @@ const AllRecords: React.FC = () => {
     setGridHeight(Math.max(viewportHeight - totalHeaderHeight -175, 200)); // 200px min height
   }, [isLeftNav]);
 
-  useEffect(() => {
-    calculateGridHeight();
-    window.addEventListener('resize', calculateGridHeight);
-    return () => window.removeEventListener('resize', calculateGridHeight);
-  }, [calculateGridHeight]);
+  // Fixed height of 510px - disabled dynamic height calculation
+  // useEffect(() => {
+  //   calculateGridHeight();
+  //   window.addEventListener('resize', calculateGridHeight);
+  //   return () => window.removeEventListener('resize', calculateGridHeight);
+  // }, [calculateGridHeight]);
 
   const { data: providerInfoData, isLoading, error } = useQuery<any[], Error>({
     queryKey: ["providers"],
