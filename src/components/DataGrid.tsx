@@ -782,10 +782,10 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         <div className="flex items-center gap-2 pl-4">
           <Icon
             icon={icon}
-            className="pr-1 w-4 h-4 text-gray-600"
+            className="pr-1 w-4 h-4 text-gray-800"
             aria-hidden="true"
           />
-          <h2 className="text-gray-600 font-semibold text-xs tracking-wider">
+          <h2 className="text-gray-800 font-semibold text-xs tracking-wider">
             {title}
           </h2>
         </div>
