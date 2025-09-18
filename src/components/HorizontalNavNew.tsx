@@ -3,6 +3,7 @@ import SectionsDropdown from "./SectionsDropdown";
 import NavItem from "@/components/NavItem";
 import { useSectionFilterStore } from "@/lib/useVisibleSectionsStore";
 import { useGridConfig } from "@/lib/useGridConfig";
+import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 
 interface GridSection {
   id: string;
@@ -24,6 +25,7 @@ const HorizontalNavNew: React.FC<HorizontalNavNewProps> = ({
   selectedSection,
   onSectionSelect,
 }) => {
+  const { value: newNav } = useFeatureFlag("new_nav_option_1");
   // Use global Zustand store for sectionFilters
   const sectionFilters = useSectionFilterStore((s) => s.sectionFilters);
   const { groupKeyToGrids } = useGridConfig();
@@ -71,25 +73,28 @@ const HorizontalNavNew: React.FC<HorizontalNavNewProps> = ({
               </NavItem>
             ))}
           </div>
-          <div className="flex-shrink-0" role="group" aria-label="Section visibility controls">
-            <SectionsDropdown
-              trigger={
-                <div className="relative" role="group" aria-label="Section visibility controls" style={{ display: 'inline-block' }}>
-                  <button
-                    className="flex items-center gap-2 text-gray-600 font-bold tracking-wide rounded px-3 py-1 bg-white focus:outline-none focus:ring-0"
-                    type="button"
-                    aria-haspopup="true"
-                    aria-expanded={false}
-                    aria-label="Sections dropdown"
-                    data-testid="sections-dropdown-button"
-                  >
-                    Sections
-                    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-down" className="svg-inline--fa fa-chevron-down w-3 h-3 ml-1" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"></path></svg>
-                  </button>
-                </div>
-              }
-            />
-          </div>
+          {/* Only show SectionsDropdown when new_nav_option_1 is true */}
+          {newNav && (
+            <div className="flex-shrink-0" role="group" aria-label="Section visibility controls">
+              <SectionsDropdown
+                trigger={
+                  <div className="relative" role="group" aria-label="Section visibility controls" style={{ display: 'inline-block' }}>
+                    <button
+                      className="flex items-center gap-2 text-gray-600 font-bold tracking-wide rounded px-3 py-1 bg-white focus:outline-none focus:ring-0"
+                      type="button"
+                      aria-haspopup="true"
+                      aria-expanded={false}
+                      aria-label="Sections dropdown"
+                      data-testid="sections-dropdown-button"
+                    >
+                      Sections
+                      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-down" className="svg-inline--fa fa-chevron-down w-3 h-3 ml-1" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"></path></svg>
+                    </button>
+                  </div>
+                }
+              />
+            </div>
+          )}
         </div>
       </div>
     </nav>
