@@ -76,7 +76,7 @@ const TeamsToggle: React.FC<TeamsToggleProps> = ({ textVariant = 'light' }) => {
             />
           </div>
           <div
-            className={`font-bold text-base leading-7 ${
+            className={`font-bold text-sm leading-7 ${
               textVariant === 'dark' ? 'text-gray-800' : 'text-white'
             }`}
             style={{

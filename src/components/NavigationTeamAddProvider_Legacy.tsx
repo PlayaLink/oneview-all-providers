@@ -1,6 +1,6 @@
 import React from "react";
-import Icon from "@/components/ui/Icon";
 import TeamsToggle from "@/components/TeamsToggle";
+import AddProviderButton from "@/components/AddProviderButton";
 
 interface NavigationTeamAddProvider_LegacyProps {
   onAddProvider?: () => void;
@@ -23,17 +23,11 @@ const NavigationTeamAddProvider_Legacy: React.FC<NavigationTeamAddProvider_Legac
 
       {/* Right side: Add Provider Button */}
       <div className="flex items-center" data-testid="add-provider-container">
-        <button
-          className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-3 rounded flex items-center gap-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-600 text-sm transition-colors"
-          type="button"
-          aria-label="Add Provider"
+        <AddProviderButton
+          onClick={onAddProvider}
           data-testid="add-provider-button-legacy"
           data-referenceid="add-provider-legacy"
-          onClick={onAddProvider}
-        >
-          Add Provider
-          <Icon icon="plus" className="w-4 h-4" aria-hidden="true" />
-        </button>
+        />
       </div>
     </nav>
   );

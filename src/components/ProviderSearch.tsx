@@ -26,7 +26,7 @@ interface ProviderSearchProps {
 
 const ProviderSearch: React.FC<ProviderSearchProps> = ({ 
   className = "w-[375px]", 
-  placeholder = "Search by provider name or NPI #",
+  placeholder = "Search by Provider Name or NPI...",
   onSelect,
   onClear,
   isCreateMode

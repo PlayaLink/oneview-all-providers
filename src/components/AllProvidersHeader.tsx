@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import SectionsDropdown from "@/components/SectionsDropdown";
 import ProviderSearch from "@/components/ProviderSearch";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
+import AddProviderButton from "@/components/AddProviderButton";
 
 interface Provider {
   id: string;
@@ -75,7 +76,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
                 <SectionsDropdown
                   trigger={
                     <button
-                    className="flex items-center gap-2 text-gray-600 font-bold tracking-wide rounded px-3 py-1 bg-white focus:outline-none focus:ring-0"
+                    className="flex items-center gap-2 text-gray-600 font-bold tracking-wide rounded px-3 py-1 bg-white focus:outline-none focus:ring-0 text-sm"
                     type="button"
                     aria-haspopup="true"
                     aria-expanded={false}
@@ -93,17 +94,11 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
             <>
               {/* Only show Add Provider button when New Nav feature flag is true */}
               {newNav && (
-                <button
-                  className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-3 rounded flex items-center gap-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-600 text-sm"
-                  type="button"
-                  aria-label="Add Provider"
+                <AddProviderButton
+                  onClick={onAddProvider}
                   data-testid="add-provider-button"
                   data-referenceid="add-provider"
-                  onClick={onAddProvider}
-                >
-                  Add Provider
-                  <Icon icon="plus" className="w-4 h-4" aria-hidden="true" />
-                </button>
+                />
               )}
             </>
           )}
