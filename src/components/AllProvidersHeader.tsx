@@ -3,6 +3,7 @@ import Icon from "@/components/ui/Icon";
 import { useLocation } from "react-router-dom";
 import SectionsDropdown from "@/components/SectionsDropdown";
 import ProviderSearch from "@/components/ProviderSearch";
+import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 
 interface Provider {
   id: string;
@@ -22,6 +23,7 @@ interface AllProvidersHeaderProps {
 
 const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps>(({ provider, onAddProvider }, ref) => {
   const location = useLocation();
+  const { value: newNav } = useFeatureFlag("new_nav_option_1");
 
   // Determine title for non-provider view
   let headerTitle = "All Providers";
@@ -83,17 +85,22 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
               }
             />
           ) : (
-            <button
-              className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-3 rounded flex items-center gap-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-600 text-sm"
-              type="button"
-              aria-label="Add Provider"
-              data-testid="add-provider-button"
-              data-referenceid="add-provider"
-              onClick={onAddProvider}
-            >
-              Add Provider
-              <Icon icon="plus" className="w-4 h-4" aria-hidden="true" />
-            </button>
+            <>
+              {/* Only show Add Provider button when New Nav feature flag is true */}
+              {newNav && (
+                <button
+                  className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-3 rounded flex items-center gap-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-600 text-sm"
+                  type="button"
+                  aria-label="Add Provider"
+                  data-testid="add-provider-button"
+                  data-referenceid="add-provider"
+                  onClick={onAddProvider}
+                >
+                  Add Provider
+                  <Icon icon="plus" className="w-4 h-4" aria-hidden="true" />
+                </button>
+              )}
+            </>
           )}
         </div>
       </div>

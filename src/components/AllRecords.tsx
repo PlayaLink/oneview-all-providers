@@ -196,6 +196,7 @@ const AllRecords: React.FC = () => {
   const { provider_id } = useParams<{ provider_id?: string }>();
   const navigate = useNavigate();
   const { value: isLeftNav, isLoading: navLoading } = useFeatureFlag("left_nav");
+  const { value: newNav } = useFeatureFlag("new_nav_option_1");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [selectedSection, setSelectedSection] = useState<string | null>("provider_info");
@@ -551,8 +552,8 @@ const AllRecords: React.FC = () => {
       {/* Global Navigation (add ref) */}
       <div ref={globalNavRef} id="global-navigation-ref" />
       
-      {/* Navigation Team Add Provider Legacy - Only show when New Nav is false */}
-      {!isLeftNav && (
+      {/* Navigation Team Add Provider Legacy - Only show when new_nav_option_1 is false */}
+      {!newNav && (
         <NavigationTeamAddProvider_Legacy onAddProvider={handleAddProvider} />
       )}
       
