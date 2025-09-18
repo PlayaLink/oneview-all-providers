@@ -33,12 +33,12 @@ const ApplicationFooter: React.FC<ApplicationFooterProps> = ({ showFooter = true
       </div>
               {/* Chat Bubble */}
               <button 
-          className="bg-blue-400 px-5 py-3 rounded-full flex items-center gap-3 hover:bg-blue-500 transition-colors absolute right-5 -top-4"
+          className="bg-blue-400 px-5 py-3 rounded-full flex items-center gap-3 hover:bg-blue-500 transition-colors absolute right-12 -top-4 text-gray-800"
           aria-label="Open chat support"
           data-testid="chat-button"
         >
-          <Icon icon="comment" className="w-4 h-4 text-white" aria-hidden="true" />
-          <span className="text-white font-bold text-xs">Chat</span>
+          <Icon icon="comment" className="w-6 h-6" aria-hidden="true" />
+          <span className="font-bold text-sm">Chat</span>
         </button>
     </footer>
   );

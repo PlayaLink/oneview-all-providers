@@ -48,9 +48,11 @@ const teams = [
 interface TeamsToggleProps {
   /** Text color variant - 'dark' for white backgrounds, 'light' for dark backgrounds */
   textVariant?: 'dark' | 'light';
+  /** Custom CSS classes for the logo image, including size classes like w-7 h-7 */
+  logoClassName?: string;
 }
 
-const TeamsToggle: React.FC<TeamsToggleProps> = ({ textVariant = 'light' }) => {
+const TeamsToggle: React.FC<TeamsToggleProps> = ({ textVariant = 'light', logoClassName = 'w-7 h-7' }) => {
   const [open, setOpen] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(teams[0]);
 
@@ -68,11 +70,11 @@ const TeamsToggle: React.FC<TeamsToggleProps> = ({ textVariant = 'light' }) => {
           aria-haspopup="true"
           data-testid="teams-toggle-trigger"
         >
-          <div className="flex items-center w-7 h-7 rounded-full overflow-hidden">
+          <div className={`flex items-center ${logoClassName} rounded-full overflow-hidden`}>
             <img
               src={selectedTeam.logo}
               alt={`${selectedTeam.name} logo`}
-              className="w-7 h-7 object-cover rounded-full"
+              className={`${logoClassName} object-cover rounded-full`}
             />
           </div>
           <div
@@ -100,7 +102,7 @@ const TeamsToggle: React.FC<TeamsToggleProps> = ({ textVariant = 'light' }) => {
           <FontAwesomeIcon
             icon={faChevronDown}
             className={`w-4 h-4 ${
-              textVariant === 'dark' ? 'text-gray-600' : 'text-white'
+              textVariant === 'dark' ? 'text-gray-700' : 'text-white'
             }`}
             aria-hidden="true"
           />

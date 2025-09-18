@@ -18,7 +18,7 @@ const NavigationTeamAddProvider_Legacy: React.FC<NavigationTeamAddProvider_Legac
     >
       {/* Left side: Teams Toggle */}
       <div className="flex items-center" data-testid="teams-toggle-container">
-        <TeamsToggle textVariant="dark" />
+        <TeamsToggle textVariant="dark" logoClassName="w-11 h-11" />
       </div>
 
       {/* Right side: Add Provider Button */}

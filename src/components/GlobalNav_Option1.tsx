@@ -104,7 +104,7 @@ const GlobalNav_Option1: React.FC<GlobalNav_Option1Props> = ({ user, isAnnotatio
       >
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-5 flex-1 self-stretch">
-            <TeamsToggle />
+            <TeamsToggle logoClassName="w-8 h-8" />
             <div
               className="flex items-center gap-2 self-stretch"
               role="menubar"

@@ -19,7 +19,7 @@ interface NavItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const NAVITEM_VARIANTS = {
   global: {
-    base: "font-bold transition-colors select-none px-4 py-2 text-sm w-full flex items-center gap-2",
+    base: "font-bold transition-colors select-none px-4 py-2.5 text-xs w-full flex items-center",
     active: "rounded bg-white text-blue-500",
     inactive: "rounded text-white hover:bg-blue-400",
     alignment: "justify-start",
