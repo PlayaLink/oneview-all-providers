@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import SideNav from "@/components/SideNav";
 import HorizontalNavNew from "@/components/HorizontalNavNew";
 import AllProvidersHeader from "@/components/AllProvidersHeader";
+import NavigationTeamAddProvider_Legacy from "@/components/NavigationTeamAddProvider_Legacy";
 // import MainContent from "@/components/MainContent"; // Currently unused
 
 import { useParams, useNavigate } from "react-router-dom";
@@ -549,6 +550,12 @@ const AllRecords: React.FC = () => {
       />
       {/* Global Navigation (add ref) */}
       <div ref={globalNavRef} id="global-navigation-ref" />
+      
+      {/* Navigation Team Add Provider Legacy - Only show when New Nav is false */}
+      {!isLeftNav && (
+        <NavigationTeamAddProvider_Legacy onAddProvider={handleAddProvider} />
+      )}
+      
       {/* All Providers Header (add ref) */}
       <div ref={headerRef} id="all-providers-header-ref">
         <AllProvidersHeader

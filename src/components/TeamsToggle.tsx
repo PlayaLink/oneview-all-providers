@@ -45,7 +45,12 @@ const teams = [
   },
 ];
 
-const TeamsToggle: React.FC = () => {
+interface TeamsToggleProps {
+  /** Text color variant - 'dark' for white backgrounds, 'light' for dark backgrounds */
+  textVariant?: 'dark' | 'light';
+}
+
+const TeamsToggle: React.FC<TeamsToggleProps> = ({ textVariant = 'light' }) => {
   const [open, setOpen] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(teams[0]);
 
@@ -58,7 +63,7 @@ const TeamsToggle: React.FC = () => {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
-          className="flex items-center gap-2 px-2 rounded-lg hover:bg-white/10 transition-colors"
+          className="flex items-center gap-2 rounded-lg hover:bg-white/10 transition-colors"
           aria-label="Team organization selector"
           aria-haspopup="true"
           data-testid="teams-toggle-trigger"
@@ -71,7 +76,9 @@ const TeamsToggle: React.FC = () => {
             />
           </div>
           <div
-            className="text-white font-bold text-base leading-7"
+            className={`font-bold text-base leading-7 ${
+              textVariant === 'dark' ? 'text-gray-800' : 'text-white'
+            }`}
             style={{
               fontFamily:
                 "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -80,7 +87,9 @@ const TeamsToggle: React.FC = () => {
             {selectedTeam.name}
           </div>
           <div
-            className="text-white text-[10px] leading-normal tracking-wide"
+            className={`text-[10px] leading-normal tracking-wide ${
+              textVariant === 'dark' ? 'text-gray-600' : 'text-white'
+            }`}
             style={{
               fontFamily:
                 "Poppins, -apple-system, Roboto, Helvetica, sans-serif",
@@ -90,7 +99,9 @@ const TeamsToggle: React.FC = () => {
           </div>
           <FontAwesomeIcon
             icon={faChevronDown}
-            className="w-4 h-4"
+            className={`w-4 h-4 ${
+              textVariant === 'dark' ? 'text-gray-600' : 'text-white'
+            }`}
             aria-hidden="true"
           />
         </button>

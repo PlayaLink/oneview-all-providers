@@ -87,23 +87,6 @@ const GlobalNav_Legacy: React.FC<GlobalNav_LegacyProps> = ({ user }) => {
               alt="Modio"
               className="flex items-start gap-2"
             />
-            {/* CompHealth Dropdown */}
-            <div className="flex items-center gap-2 px-2 rounded-lg" role="button" tabIndex={0} aria-label="CompHealth organization selector">
-              <div className="flex items-center w-7 h-7 rounded-full overflow-hidden">
-                <img
-                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/47f216dffab8a61501f2184cb57a9b37a11a21ed?width=58"
-                  alt="CompHealth logo"
-                  className="w-7 h-7 object-cover rounded-full"
-                />
-              </div>
-              <div className="text-white font-bold text-base leading-7" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
-                CompHealth
-              </div>
-              <div className="text-white text-[10px] leading-normal tracking-wide" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
-                (Salt Lake City, Utah)
-              </div>
-              <FontAwesomeIcon icon={faChevronDown} className="w-4 h-4" aria-hidden="true" />
-            </div>
           </div>
           <div className="flex items-center gap-8">
             {/* Right Side Links */}
@@ -111,10 +94,10 @@ const GlobalNav_Legacy: React.FC<GlobalNav_LegacyProps> = ({ user }) => {
               {/* New Features Dropdown */}
               <FeatureFlags/>
              
-              <a href="#" className="text-white text-center text-xs leading-normal tracking-wide hover:underline" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
+              <a href="#" className="text-white text-center text-xs leading-normal tracking-wide hover:underline font-bold" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
                 Modio U
               </a>
-              <a href="#" className="text-white text-center text-xs leading-normal tracking-wide hover:underline" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
+              <a href="#" className="text-white text-center text-xs leading-normal tracking-wide hover:underline font-bold" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
                 Support
               </a>
             </nav>
