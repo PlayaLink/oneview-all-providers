@@ -59,7 +59,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
             </div>
           </div>
         ) : (
-          <h1 className="font-bold text-base tracking-wider capitalize px-4 text-sm" role="all-providers-header-title">
+          <h1 className="font-bold text-base tracking-wider capitalize px-4 text-xs" role="all-providers-header-title">
             {headerTitle}
           </h1>
         )}
@@ -76,7 +76,7 @@ const AllProvidersHeader = React.forwardRef<HTMLElement, AllProvidersHeaderProps
                 <SectionsDropdown
                   trigger={
                     <button
-                    className="flex items-center gap-2 text-gray-600 font-bold tracking-wide rounded px-3 py-1 bg-white focus:outline-none focus:ring-0 text-sm"
+                    className="flex items-center gap-2 text-gray-600 font-bold tracking-wide rounded px-3 py-1 bg-white focus:outline-none focus:ring-0 text-xs"
                     type="button"
                     aria-haspopup="true"
                     aria-expanded={false}
