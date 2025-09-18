@@ -55,6 +55,15 @@ body {
   font-size: 12px !important;
 }
 
+/* Hide the AG Grid header filter and ellipsis icons */
+.ag-theme-quartz .ag-header-icon.ag-header-cell-filter-button {
+  display: none !important;
+}
+
+.ag-theme-quartz .ag-icon.ag-icon-menu-alt {
+  display: none !important;
+}
+
 .ag-theme-quartz .ag-root-wrapper {
   border-top-left-radius: 0 !important;
   border-top-right-radius: 0 !important;
