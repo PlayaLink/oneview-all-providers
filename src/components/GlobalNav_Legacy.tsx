@@ -94,10 +94,10 @@ const GlobalNav_Legacy: React.FC<GlobalNav_LegacyProps> = ({ user }) => {
               {/* New Features Dropdown */}
               <FeatureFlags/>
              
-              <a href="#" className="text-white text-center text-xs leading-normal tracking-wide hover:underline font-bold" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
+              <a href="#" className="text-white text-center text-xs leading-normal tracking-wide hover:text-gray-300 font-bold" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
                 Modio U
               </a>
-              <a href="#" className="text-white text-center text-xs leading-normal tracking-wide hover:underline font-bold" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
+              <a href="#" className="text-white text-center text-xs leading-normal tracking-wide hover:text-gray-300 font-bold" style={{ fontFamily: "Poppins, -apple-system, Roboto, Helvetica, sans-serif" }}>
                 Support
               </a>
             </nav>
