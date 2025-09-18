@@ -41,7 +41,7 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
   if (!gridActions || gridActions.length === 0) {
     return (
       <div className={`flex items-center justify-center ${className}`} data-testid="actions-column-empty">
-        <span className="text-gray-400 text-xs">No actions</span>
+        <span className="text-gray-800 text-xs">No actions</span>
       </div>
     );
   }
@@ -79,7 +79,7 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
                 >
                   <Icon 
                     icon={action.icon} 
-                    className="w-4 h-4 text-gray-600 hover:text-gray-800" 
+                    className="w-4 h-4 text-gray-800 hover:text-gray-900" 
                   />
                 </button>
               </TooltipTrigger>

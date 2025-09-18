@@ -39,8 +39,20 @@ body {
   --ag-header-background-color: #fff;
   --ag-font-family:
     "Poppins", -apple-system, Roboto, Helvetica, Arial, sans-serif;
-  --ag-foreground-color: #545454;
+  --ag-foreground-color: var(--gray-800);
   --ag-row-hover-color: var(--blue-50);
+}
+
+/* Make AG Grid header text bold */
+.ag-theme-quartz .ag-header-cell-text {
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* AG Grid cell data styling */
+.ag-theme-quartz .ag-cell {
+  font-size: 12px !important;
 }
 
 .ag-theme-quartz .ag-root-wrapper {
@@ -91,7 +103,7 @@ body {
   :root {
     /* Legacy semantic colors (maintained for backward compatibility) */
     --background: 0 0% 100%;
-    --foreground: #545454;
+    --foreground: #202938;
 
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;

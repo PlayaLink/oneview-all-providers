@@ -35,7 +35,7 @@ const ActionsHeader: React.FC<{
         </span>
         <button
           onClick={onHelp}
-          className="w-4 h-4 text-gray-400 hover:text-gray-600 transition-colors"
+          className="w-4 h-4 text-gray-800 hover:text-gray-600 transition-colors"
           data-testid="actions-help-button"
           data-referenceid="actions-help"
           aria-label="Help for actions"
