@@ -139,6 +139,7 @@ const iconMap: Record<string, IconDefinition | string> = {
   paperclip: faPaperclip,
   "circle-plus": faCirclePlus,
   "circle-xmark": faCircleXmark,
+  "circle-x": faCircleXmark, // Alias for circle-xmark
   "star-half-stroke": faStarHalf,
   "shield-check": faShieldHalved,
   "pen-to-square": faPenToSquare,
@@ -172,8 +173,8 @@ const iconMap: Record<string, IconDefinition | string> = {
   "delete": faTrash, // Alias for trash
   
   // Toggle icons
-  "toggle-on": faToggleOn,
-  "toggle-off": faToggleOff,
+  "toggle-on": "/icons/toggle-on.svg",
+  "toggle-off": "/icons/toggle-off.svg",
 
   // File export icons (using file-export as fallback for free FontAwesome)
   "file-excel": faFileExport,
