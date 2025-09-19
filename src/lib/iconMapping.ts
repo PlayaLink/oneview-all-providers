@@ -50,9 +50,6 @@ import {
   faCircleExclamation,
   faColumns,
   faPaperclip,
-  faTimes,
-  faToggleOn,
-  faToggleOff,
   faCirclePlus,
   faCircleXmark,
   faStarHalf,
@@ -77,6 +74,7 @@ import {
   faCode,
   faPrescription,
   faHouseChimneyUser,
+  faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 
 // Unified icon mapping that can contain either FontAwesome icons or SVG file paths
@@ -157,7 +155,8 @@ const iconMap: Record<string, IconDefinition | string> = {
   "clipboard": faClipboard,
   "user": faUser,
   "xmark": faXmark,
-  "times": faTimes, // Alias for xmark
+  "times-circle": faTimesCircle,
+  "times": faXmark, // Alias for xmark
   "upload": faUpload,
   "caret-down": faCaretDown,
   "check": faCheck,
