@@ -68,7 +68,7 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
               rowData={rowData}
               onActionClick={onActionClick}
               className="justify-start"
-              excludeActions={["side_panel", "view_details"]}
+              excludeActions={["side_panel", "view_details", "deactivate", "activate"]}
             />
           </div>
         )}
