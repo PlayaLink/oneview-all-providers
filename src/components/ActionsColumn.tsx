@@ -3,6 +3,22 @@ import Icon from "@/components/ui/Icon";
 import { useGridActions, GridAction } from "@/hooks/useGridActions";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
+// Action icon mapping based on action names
+const ACTION_ICON_MAP: Record<string, string> = {
+  'side_panel': 'sidebar-flip',
+  'verifications': 'shield-check',
+  'download': 'circle-down',
+  'activate': 'circle-plus',
+  'toggle_on': 'toggle-on',
+  'alert': 'bell',
+  'flag': 'flag',
+  'tracking': 'star-half-stroke',
+  'toggle_off': 'toggle-off',
+  'deactivate': 'circle-x',
+  'view_details': 'pen-to-square',
+  'exclude': 'times-circle'
+};
+
 interface ActionsColumnProps {
   gridKey: string;
   rowData: any;
@@ -61,7 +77,10 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
       
           const { action } = gridAction;
           
-          if (!action.icon) {
+          // Get icon from mapping object instead of database
+          const iconName = ACTION_ICON_MAP[action.name];
+          
+          if (!iconName) {
             // Warning: Icon not found for action
             return null;
           }
@@ -78,7 +97,7 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
                   title={action.tooltip}
                 >
                   <Icon 
-                    icon={action.icon} 
+                    icon={iconName} 
                     className="w-4 h-4 text-gray-800 hover:text-gray-900" 
                   />
                 </button>
