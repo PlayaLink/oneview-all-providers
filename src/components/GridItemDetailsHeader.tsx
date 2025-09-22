@@ -1,6 +1,6 @@
 import React from "react";
 import ActionsColumn from "./ActionsColumn";
-import Icon from "@/components/ui/Icon";
+import IconButton from "./ui/IconButton";
 import ProviderSearch from "./ProviderSearch";
 
 interface GridItemDetailsHeaderProps {
@@ -76,28 +76,23 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
         <div className="flex flex-row justify-end">
                    {/* Expand icon button - only for sidepanel context */}
       {context === "sidepanel" && onExpandDetailModal && (
-        <button
+        <IconButton
+          icon="expand"
           onClick={onExpandDetailModal}
-          className="px-2 pb-2 pt-1 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors"
           aria-label="Expand details modal"
           data-testid="expand-detail-modal-button"
-        >
-          <Icon
-            icon="expand"
-            className="w-5 h-5"
-          />
-        </button>
+          data-referenceid="expand-detail-modal-button"
+        />
       )}
       {/* Close icon button - only for sidepanel context */}
       {context === "sidepanel" && (
-        <button
+        <IconButton
+          icon="xmark"
           onClick={onClose}
-          className={`pl-2 pr-4 pb-2 pt-1 rounded-full transition-colors hover:bg-white hover:bg-opacity-20`}
-          aria-label={`Close sidepanel`}
-          data-testid={`close-sidepanel-button`}
-        >
-          <Icon icon="xmark" className="w-5 h-5" />
-        </button>
+          aria-label="Close sidepanel"
+          data-testid="close-sidepanel-button"
+          data-referenceid="close-sidepanel-button"
+        />
       )}
         </div>
       </div>
