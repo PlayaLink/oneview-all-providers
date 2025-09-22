@@ -468,6 +468,8 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   ]);
 
   const isActionsColumnClickedRef = React.useRef(false);
+  const clickTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+  const lastClickTimeRef = React.useRef<number>(0);
 
   const handleCellClicked = (event: any) => {
     // If the click is on the actions column, set a flag to prevent row click
@@ -484,33 +486,51 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       return;
     }
     
-    // Check if this is a double-click - if so, don't trigger row selection
-    // Let AG Grid handle the double-click for cell editing
-    if (event.event && event.event.detail === 2) {
+    const currentTime = Date.now();
+    const timeSinceLastClick = currentTime - lastClickTimeRef.current;
+    
+    // Clear any existing timeout
+    if (clickTimeoutRef.current) {
+      clearTimeout(clickTimeoutRef.current);
+      clickTimeoutRef.current = null;
+    }
+    
+    // If this click happened within 200ms of the last click, treat it as a double-click
+    if (timeSinceLastClick < 200) {
+      // This is a double-click - don't trigger row selection
+      // Let AG Grid handle the double-click for cell editing
+      lastClickTimeRef.current = 0; // Reset to prevent triple-click issues
       return;
     }
     
-    event.api.setFocusedCell(null, null);
+    // Update the last click time
+    lastClickTimeRef.current = currentTime;
+    
+    // Set a timeout to handle single-click after a delay
+    clickTimeoutRef.current = setTimeout(() => {
+      // This is a single-click - proceed with row selection
+      event.api.setFocusedCell(null, null);
 
-    if (selectedRowId === event.data.id) {
+      if (selectedRowId === event.data.id) {
+        if (controlledSelectedRowId === undefined) {
+          setInternalSelectedRowId(null);
+        }
+        if (onRowClicked) {
+          onRowClicked(null);
+        }
+        return;
+      }
+
       if (controlledSelectedRowId === undefined) {
-        setInternalSelectedRowId(null);
+        setInternalSelectedRowId(event.data.id);
       }
-      if (onRowClicked) {
-        onRowClicked(null);
+
+      if (onRowClicked && event.data) {
+        // Add gridKey to the row data for proper mapping
+        const rowDataWithGridKey = { ...event.data, gridKey };
+        onRowClicked(rowDataWithGridKey);
       }
-      return;
-    }
-
-    if (controlledSelectedRowId === undefined) {
-      setInternalSelectedRowId(event.data.id);
-    }
-
-    if (onRowClicked && event.data) {
-      // Add gridKey to the row data for proper mapping
-      const rowDataWithGridKey = { ...event.data, gridKey };
-      onRowClicked(rowDataWithGridKey);
-    }
+    }, 200);
   };
 
   const handleSelectionChanged = (event: any) => {
