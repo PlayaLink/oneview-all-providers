@@ -90,7 +90,7 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
               <TooltipTrigger asChild>
                 <button
                   onClick={() => onActionClick(action.name, rowData)}
-                  className="flex p-1 hover:bg-gray-100 rounded transition-colors"
+                  className="w-6 h-6 flex items-center justify-center rounded transition-colors hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                   data-testid={`action-${action.name}`}
                   data-referenceid={`action-${action.name}-${rowData.id}`}
                   aria-label={action.tooltip}

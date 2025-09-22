@@ -7,6 +7,7 @@ interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
   size?: "sm" | "md" | "lg";
   variant?: "default" | "ghost" | "outline";
   hoverColor?: "blue" | "gray" | "red" | "green";
+  shape?: "rounded" | "rounded-full";
   "data-testid"?: string;
   "data-referenceid"?: string;
 }
@@ -16,6 +17,7 @@ const IconButton: React.FC<IconButtonProps> = ({
   size = "md",
   variant = "default",
   hoverColor = "blue",
+  shape = "rounded",
   className,
   children,
   "data-testid": dataTestId,
@@ -51,7 +53,9 @@ const IconButton: React.FC<IconButtonProps> = ({
     <button
       className={cn(
         // Base styles
-        "flex items-center justify-center rounded transition-colors  focus:ring-2 focus:ring-offset-2",
+        "flex items-center justify-center transition-colors focus:ring-2 focus:ring-offset-2",
+        // Shape
+        shape === "rounded-full" ? "rounded-full" : "rounded",
         // Size
         sizeClasses[size],
         // Hover color
