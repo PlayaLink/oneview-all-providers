@@ -334,6 +334,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               sortable: false,
               filter: false,
               resizable: false,
+              editable: false,
             },
           ]
         : []),
@@ -392,6 +393,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               resizable: false,
               floatingFilter: false,
               suppressRowClickSelection: true,
+              editable: false,
               headerComponent: (params: any) => (
                 <ActionsHeader
                   onAddRecord={onAddRecord}
@@ -416,15 +418,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                         onToggleAlert?.(rowData, true);
                         break;
                       case "side_panel":
-                        // Trigger row selection and side panel opening
-                        if (controlledSelectedRowId === undefined) {
-                          setInternalSelectedRowId(rowData.id);
-                        }
-                        if (onRowClicked && rowData) {
-                          // Add gridKey to the row data for proper mapping
-                          const rowDataWithGridKey = { ...rowData, gridKey };
-                          onRowClicked(rowDataWithGridKey);
-                        }
+                        onToggleSidebar?.(rowData);
                         break;
                       case "verifications":
                         onToggleFlag?.(rowData, true);
@@ -525,6 +519,27 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
 
   const handleContextMenuClose = () => {
     setContextMenu(null);
+  };
+
+  const handleCellValueChanged = (event: any) => {
+    // Handle cell value changes for inline editing
+    const { data, colDef, newValue, oldValue } = event;
+    
+    // Only proceed if the value actually changed
+    if (newValue === oldValue) return;
+    
+    // TODO: Add database update logic here
+    // For now, just log the change
+    console.log('Cell value changed:', {
+      rowId: data.id,
+      field: colDef.field,
+      oldValue,
+      newValue,
+      gridKey
+    });
+    
+    // You can add database update logic here:
+    // await updateRecord(tableName, data.id, { [colDef.field]: newValue });
   };
 
   // Save column state to localStorage and database
@@ -961,11 +976,14 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           onRowClicked={handleRowClicked}
           onCellClicked={handleCellClicked}
           onCellContextMenu={handleCellContextMenu}
+          onCellValueChanged={handleCellValueChanged}
           rowSelection={showCheckboxes ? "multiple" : undefined}
           headerHeight={selectedRows.length > 0 ? 0 : 40} // Hide headers when rows are selected
           rowHeight={42}
           suppressRowClickSelection={true}
-          suppressCellFocus={true}
+          suppressCellFocus={false}
+          singleClickEdit={false}
+          stopEditingWhenCellsLoseFocus={true}
           {...(!height ? { domLayout: "autoHeight" } : {})}
           getRowStyle={getRowStyle}
           getRowClass={getRowClass}
@@ -975,6 +993,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
             filter: true,
             floatingFilter: showFloatingFilters,
             cellClass: "ag-cell-vertically-centered",
+            editable: true,
             filterParams: {
               buttons: ["reset"],
               closeOnApply: true,
