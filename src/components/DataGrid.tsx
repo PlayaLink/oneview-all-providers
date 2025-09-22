@@ -416,7 +416,15 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                         onToggleAlert?.(rowData, true);
                         break;
                       case "side_panel":
-                        onToggleSidebar?.(rowData);
+                        // Trigger row selection and side panel opening
+                        if (controlledSelectedRowId === undefined) {
+                          setInternalSelectedRowId(rowData.id);
+                        }
+                        if (onRowClicked && rowData) {
+                          // Add gridKey to the row data for proper mapping
+                          const rowDataWithGridKey = { ...rowData, gridKey };
+                          onRowClicked(rowDataWithGridKey);
+                        }
                         break;
                       case "verifications":
                         onToggleFlag?.(rowData, true);
@@ -481,27 +489,11 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       isActionsColumnClickedRef.current = false; // Reset the flag
       return;
     }
+    
+    // Disable row selection - only allow selection through side_panel action
+    // Clear any existing selection
     event.api.setFocusedCell(null, null);
-
-    if (selectedRowId === event.data.id) {
-      if (controlledSelectedRowId === undefined) {
-        setInternalSelectedRowId(null);
-      }
-      if (onRowClicked) {
-        onRowClicked(null);
-      }
-      return;
-    }
-
-    if (controlledSelectedRowId === undefined) {
-      setInternalSelectedRowId(event.data.id);
-    }
-
-    if (onRowClicked && event.data) {
-      // Add gridKey to the row data for proper mapping
-      const rowDataWithGridKey = { ...event.data, gridKey };
-      onRowClicked(rowDataWithGridKey);
-    }
+    return;
   };
 
   const handleSelectionChanged = (event: any) => {
