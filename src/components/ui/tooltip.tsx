@@ -7,7 +7,41 @@ const TooltipProvider = TooltipPrimitive.Provider;
 
 const Tooltip = TooltipPrimitive.Root;
 
-const TooltipTrigger = TooltipPrimitive.Trigger;
+const TooltipTrigger = React.forwardRef<
+  React.ElementRef<typeof TooltipPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Trigger>
+>(({ asChild, ...props }, ref) => {
+  const handleRef = React.useCallback((node: HTMLElement | null) => {
+    // Disable native tooltips on the trigger element
+    if (node) {
+      node.removeAttribute('title');
+    }
+    
+    // If using asChild, also disable native tooltips on child elements
+    if (asChild && node) {
+      const childElement = node.firstElementChild as HTMLElement;
+      if (childElement) {
+        childElement.removeAttribute('title');
+      }
+    }
+  }, [asChild]);
+
+  return (
+    <TooltipPrimitive.Trigger
+      ref={(node) => {
+        handleRef(node);
+        if (typeof ref === 'function') {
+          ref(node);
+        } else if (ref) {
+          ref.current = node;
+        }
+      }}
+      asChild={asChild}
+      {...props}
+    />
+  );
+});
+TooltipTrigger.displayName = TooltipPrimitive.Trigger.displayName;
 
 const TooltipContent = React.forwardRef<
   React.ElementRef<typeof TooltipPrimitive.Content>,

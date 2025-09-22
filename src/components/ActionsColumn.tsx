@@ -94,7 +94,6 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
                   data-testid={`action-${action.name}`}
                   data-referenceid={`action-${action.name}-${rowData.id}`}
                   aria-label={action.tooltip}
-                  title={action.tooltip}
                 >
                   <Icon 
                     icon={iconName} 
