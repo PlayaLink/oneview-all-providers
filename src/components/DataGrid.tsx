@@ -484,10 +484,27 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       return;
     }
     
-    // Disable row selection - only allow selection through side_panel action
-    // Clear any existing selection
     event.api.setFocusedCell(null, null);
-    return;
+
+    if (selectedRowId === event.data.id) {
+      if (controlledSelectedRowId === undefined) {
+        setInternalSelectedRowId(null);
+      }
+      if (onRowClicked) {
+        onRowClicked(null);
+      }
+      return;
+    }
+
+    if (controlledSelectedRowId === undefined) {
+      setInternalSelectedRowId(event.data.id);
+    }
+
+    if (onRowClicked && event.data) {
+      // Add gridKey to the row data for proper mapping
+      const rowDataWithGridKey = { ...event.data, gridKey };
+      onRowClicked(rowDataWithGridKey);
+    }
   };
 
   const handleSelectionChanged = (event: any) => {
