@@ -974,7 +974,6 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           rowHeight={42}
           suppressRowClickSelection={true}
           suppressCellFocus={true}
-          rowHoverHighlight={true}
           {...(!height ? { domLayout: "autoHeight" } : {})}
           getRowStyle={getRowStyle}
           getRowClass={getRowClass}

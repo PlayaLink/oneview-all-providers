@@ -40,7 +40,7 @@ body {
   --ag-font-family:
     "Poppins", -apple-system, Roboto, Helvetica, Arial, sans-serif;
   --ag-foreground-color: var(--gray-800);
-  --ag-row-hover-color: var(--blue-50);
+  --ag-row-hover-color: transparent;
 }
 
 /* Make AG Grid header text bold */
