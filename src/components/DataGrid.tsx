@@ -484,6 +484,12 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       return;
     }
     
+    // Check if this is a double-click - if so, don't trigger row selection
+    // Let AG Grid handle the double-click for cell editing
+    if (event.event && event.event.detail === 2) {
+      return;
+    }
+    
     event.api.setFocusedCell(null, null);
 
     if (selectedRowId === event.data.id) {
