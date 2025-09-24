@@ -626,7 +626,33 @@ export function fetchAddresses() {
     '*,provider:providers(id,first_name,last_name,title,primary_specialty)',
     AddressSchema
   );
-} 
+}
+
+export async function updateBirthInfo(id: string, updates: Record<string, any>) {
+  const updatesCopy = { ...updates };
+  if ('tags' in updatesCopy) updatesCopy.tags = fromIdLabelArray(updatesCopy.tags);
+  
+  const { data, error } = await supabase
+    .from('birth_info')
+    .update(updatesCopy)
+    .eq('id', id)
+    .select();
+  if (error) throw error;
+  return data;
+}
+
+export async function updateAddress(id: string, updates: Record<string, any>) {
+  const updatesCopy = { ...updates };
+  if ('tags' in updatesCopy) updatesCopy.tags = fromIdLabelArray(updatesCopy.tags);
+  
+  const { data, error } = await supabase
+    .from('addresses')
+    .update(updatesCopy)
+    .eq('id', id)
+    .select();
+  if (error) throw error;
+  return data;
+}
 
 // --- FACILITY AFFILIATIONS HELPERS ---
 
