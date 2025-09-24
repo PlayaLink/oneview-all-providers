@@ -1,7 +1,7 @@
 ---
+description: Whenever we are making changes that involve CRUD operations with the database
 alwaysApply: false
 ---
-
 # Database Schema Context
 
 ## Core Tables
