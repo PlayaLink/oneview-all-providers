@@ -503,6 +503,12 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       return;
     }
     
+    // Check if any cell is currently being edited
+    if (event.api.getEditingCells().length > 0) {
+      // If a cell is being edited, don't trigger row selection
+      return;
+    }
+    
     const currentTime = Date.now();
     const timeSinceLastClick = currentTime - lastClickTimeRef.current;
     
@@ -525,6 +531,11 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     
     // Set a timeout to handle single-click after a delay
     clickTimeoutRef.current = setTimeout(() => {
+      // Double-check if any cell is being edited before proceeding
+      if (event.api.getEditingCells().length > 0) {
+        return;
+      }
+      
       // This is a single-click - proceed with row selection
       event.api.setFocusedCell(null, null);
 
