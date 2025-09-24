@@ -1,184 +1,538 @@
 ---
-description: This file includes all the database schemas for the project. This context is helpful whenever we are creating new objects in the database or are touching files that reference our supabaseClient file or otherwise communicate with the database. If I ask for you to create a new table in the database, this file should be referenced. It should also be referenced when I ask about seeding the database or creating dummy data. 
 alwaysApply: false
 ---
-create table public.feature_settings (
-  id uuid not null default gen_random_uuid (),
-  setting_key text not null,
-  setting_value boolean not null,
-  description text null,
-  created_at timestamp with time zone null default now(),
-  updated_at timestamp with time zone null default now(),
-  label text null,
-  constraint feature_settings_pkey primary key (id),
-  constraint feature_settings_setting_key_key unique (setting_key)
-) TABLESPACE pg_default;
 
-create index IF not exists idx_feature_settings_key on public.feature_settings using btree (setting_key) TABLESPACE pg_default;
+# Database Schema Context
 
-create trigger update_feature_settings_updated_at BEFORE
-update on feature_settings for EACH row
-execute FUNCTION update_updated_at_column ();
+## Core Tables
+[
+  {
+    "type": "TABLE",
+    "name": "actions",
+    "details": "Columns: id uuid NOT NULL, name text NOT NULL, label text NOT NULL, icon text NOT NULL, tooltip text NOT NULL, description text, created_at timestamp with time zone, updated_at timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "additional_names",
+    "details": "Columns: id uuid NOT NULL, provider_id uuid NOT NULL, type text NOT NULL, first_name text NOT NULL, middle_name text, last_name text NOT NULL, title text, start_date date, end_date date, tags ARRAY, last_updated timestamp with time zone, created_at timestamp with time zone, updated_at timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "additional_names_with_provider",
+    "details": "Columns: id uuid, provider_id uuid, provider_name text, title text, primary_specialty text, type text, first_name text, middle_name text, last_name text, name_title text, start_date date, end_date date, tags ARRAY, last_updated timestamp with time zone, created_at timestamp with time zone, updated_at timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "addresses",
+    "details": "Columns: id uuid NOT NULL, provider_id uuid NOT NULL, type text, address text, address_2 text, city text, state text, zip_postal_code text, phone_number text, email text, start_date date, end_date date, county text, country text, tags ARRAY, last_updated timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "addresses_with_provider",
+    "details": "Columns: id uuid, provider_id uuid, type text, address text, address_2 text, city text, state text, zip_postal_code text, phone_number text, email text, start_date date, end_date date, county text, country text, tags ARRAY, last_updated timestamp with time zone, provider_name text, title text, primary_specialty text"
+  },
+  {
+    "type": "TABLE",
+    "name": "annotations",
+    "details": "Columns: id uuid NOT NULL, text text NOT NULL, element_selector text NOT NULL, position_x integer NOT NULL, position_y integer NOT NULL, placement text NOT NULL, page_url text NOT NULL, git_branch text, created_at timestamp with time zone, updated_at timestamp with time zone, user_name text NOT NULL"
+  },
+  {
+    "type": "TABLE",
+    "name": "birth_info",
+    "details": "Columns: id uuid NOT NULL, provider_id uuid NOT NULL, date_of_birth date, country_of_citizenship text, citizenship_work_auth text, us_work_auth text, tags ARRAY, last_updated timestamp with time zone, birth_city text, birth_state_province text, birth_county text, birth_country text, gender text, identifies_transgender boolean, hair_color text, eye_color text, height_ft integer, height_in integer, weight_lbs integer, ethnicity text"
+  },
+  {
+    "type": "TABLE",
+    "name": "birth_info_with_provider",
+    "details": "Columns: id uuid, provider_id uuid, date_of_birth date, country_of_citizenship text, citizenship_work_auth text, us_work_auth text, tags ARRAY, last_updated timestamp with time zone, birth_city text, birth_state_province text, birth_county text, birth_country text, gender text, identifies_transgender boolean, hair_color text, eye_color text, height_ft integer, height_in integer, weight_lbs integer, ethnicity text, provider_name text, title text, primary_specialty text"
+  },
+  {
+    "type": "TABLE",
+    "name": "board_certifications",
+    "details": "Columns: id uuid NOT NULL, provider_id uuid, abmsuid character varying, org_type character varying NOT NULL, board_organization character varying NOT NULL, specialty character varying NOT NULL, issue_date date, expiration_date date, recertification_date date, certificate_duration character varying, cert_status character varying, certification_number character varying, is_primary_board boolean, is_board_eligible boolean, exam_passed character varying, moc_occ_status character varying, meeting_moc_occ boolean, tags ARRAY, last_updated timestamp with time zone, created_at timestamp with time zone, updated_at timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "board_certifications_with_provider",
+    "details": "Columns: id uuid, provider_id uuid, abmsuid character varying, org_type character varying, board_organization character varying, specialty character varying, issue_date date, expiration_date date, recertification_date date, certificate_duration character varying, cert_status character varying, certification_number character varying, is_primary_board boolean, is_board_eligible boolean, exam_passed character varying, moc_occ_status character varying, meeting_moc_occ boolean, tags ARRAY, last_updated timestamp with time zone, created_at timestamp with time zone, updated_at timestamp with time zone, first_name text, last_name text, title text, primary_specialty text, npi_number text, date_of_birth date, provider_name text"
+  },
+  {
+    "type": "TABLE",
+    "name": "contacts",
+    "details": "Columns: id uuid NOT NULL, facility_id uuid, type text NOT NULL, first_name text NOT NULL, last_name text NOT NULL, job_title text, department text, restrictions text, preferred_contact_method text, email text, phone text, fax text, notes text, created_at timestamp with time zone, updated_at timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "dea_licenses",
+    "details": "Columns: id uuid NOT NULL, provider_id uuid NOT NULL, state text, license_number text NOT NULL, first_name text, last_name text, status text, payment_indicator text, issue_date date, expiration_date date, dont_renew text, dont_transfer text, primary_license text, approved_erx text, dea_schedules text, address text, address2 text, city text, address_state text, zip_code text, tags ARRAY, last_updated timestamp with time zone, created_at timestamp with time zone, updated_at timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "dea_licenses_with_provider",
+    "details": "Columns: id uuid, provider_id uuid, state text, license_number text, first_name text, last_name text, status text, payment_indicator text, issue_date date, expiration_date date, dont_renew text, dont_transfer text, primary_license text, approved_erx text, dea_schedules text, address text, address2 text, city text, address_state text, zip_code text, tags ARRAY, last_updated timestamp with time zone, created_at timestamp with time zone, updated_at timestamp with time zone, provider_name text, title text, primary_specialty text"
+  },
+  {
+    "type": "TABLE",
+    "name": "documents",
+    "details": "Columns: id uuid NOT NULL, user_id uuid NOT NULL, record_id uuid NOT NULL, name text NOT NULL, size integer, document_type text, permission text, date date, exp_date date, verif_date date, exp_na boolean, bucket text NOT NULL, path text NOT NULL, created_at timestamp with time zone, updated_at timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "facilities",
+    "details": "Columns: id uuid NOT NULL, label text NOT NULL, icon text, facility_properties ARRAY, requirements ARRAY, providers ARRAY, created_at timestamp with time zone, updated_at timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "facilities_basic",
+    "details": "Columns: id uuid, label text, icon text, created_at timestamp with time zone, updated_at timestamp with time zone, property_count bigint, requirement_count bigint, active_provider_count bigint"
+  },
+  {
+    "type": "TABLE",
+    "name": "facilities_with_all_data",
+    "details": "Columns: id uuid, label text, icon text, created_at timestamp with time zone, updated_at timestamp with time zone, properties json, requirements json, providers json"
+  },
+  {
+    "type": "TABLE",
+    "name": "facilities_with_properties",
+    "details": "Columns: id uuid, label text, icon text, created_at timestamp with time zone, updated_at timestamp with time zone, properties json"
+  },
+  {
+    "type": "TABLE",
+    "name": "facilities_with_property_values",
+    "details": "Columns: facility_id uuid, facility_label text, facility_icon text, facility_requirements ARRAY, facility_providers ARRAY, facility_created_at timestamp with time zone, facility_updated_at timestamp with time zone, property_id uuid, property_key text, property_label text, property_group text, property_type text, property_value jsonb, value_created_at timestamp with time zone, value_updated_at timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "facilities_with_requirements",
+    "details": "Columns: id uuid, label text, icon text, created_at timestamp with time zone, updated_at timestamp with time zone, requirements json"
+  },
+  {
+    "type": "TABLE",
+    "name": "facility_affiliations",
+    "details": "Columns: id uuid NOT NULL, provider_id uuid NOT NULL, facility_id uuid NOT NULL, staff_category text, in_good_standing boolean, currently_affiliated boolean, appt_end_date date, start_date date, end_date date, reason_for_leaving text, accepting_new_patients boolean, telemedicine boolean, takes_calls boolean, admitting_privileges boolean, primary_affiliation boolean, tags ARRAY, last_updated timestamp with time zone, created_at timestamp with time zone, updated_at timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "facility_affiliations_backup",
+    "details": "Columns: id uuid, provider_id uuid, facility_name text, staff_category text, in_good_standing boolean, facility_type text, currently_affiliated boolean, appt_end_date date, start_date date, end_date date, reason_for_leaving text, accepting_new_patients boolean, telemedicine boolean, takes_calls boolean, admitting_privileges boolean, primary_affiliation boolean, tags ARRAY, last_updated timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "facility_affiliations_with_provider",
+    "details": "Columns: id uuid, provider_id uuid, facility_id uuid, first_name text, last_name text, title text, primary_specialty text, provider_name text, facility_name text, facility_type jsonb, staff_category text, in_good_standing boolean, currently_affiliated boolean, appt_end_date date, start_date date, end_date date, reason_for_leaving text, accepting_new_patients boolean, telemedicine boolean, takes_calls boolean, admitting_privileges boolean, primary_affiliation boolean, tags ARRAY, last_updated timestamp with time zone, created_at timestamp with time zone, updated_at timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "facility_properties",
+    "details": "Columns: id uuid NOT NULL, key text NOT NULL, label text NOT NULL, group text NOT NULL, value text, type text NOT NULL, created_at timestamp with time zone, updated_at timestamp with time zone, default_value text, is_required boolean, validation_rules jsonb"
+  },
+  {
+    "type": "TABLE",
+    "name": "facility_property_options",
+    "details": "Columns: id uuid NOT NULL, property_key text NOT NULL, value text NOT NULL, label text NOT NULL, sort_order integer, created_at timestamp with time zone, updated_at timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "facility_property_values",
+    "details": "Columns: id uuid NOT NULL, facility_id uuid NOT NULL, facility_property_id uuid NOT NULL, value jsonb, created_at timestamp with time zone, updated_at timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "facility_providers",
+    "details": "Columns: id uuid NOT NULL, facility_id uuid NOT NULL, provider_id uuid NOT NULL, role text, start_date date, end_date date, is_active boolean, created_at timestamp with time zone, updated_at timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "facility_requirement_values",
+    "details": "Columns: id uuid NOT NULL, facility_id uuid, requirement_id uuid, requirement_data_id uuid, value jsonb, created_at timestamp with time zone, updated_at timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "facility_requirements",
+    "details": "Columns: id uuid NOT NULL, facility_id uuid NOT NULL, requirement_id uuid NOT NULL, is_active boolean, assigned_at timestamp with time zone, created_at timestamp with time zone, updated_at timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "feature_settings",
+    "details": "Columns: id uuid NOT NULL, setting_key text NOT NULL, setting_value boolean NOT NULL, description text, created_at timestamp with time zone, updated_at timestamp with time zone, label text"
+  },
+  {
+    "type": "TABLE",
+    "name": "grid_actions",
+    "details": "Columns: id uuid NOT NULL, grid_id uuid NOT NULL, action_id uuid NOT NULL, order integer, enabled boolean, config jsonb, created_at timestamp with time zone, updated_at timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "grid_columns",
+    "details": "Columns: id uuid NOT NULL, grid_id uuid NOT NULL, name text NOT NULL, display_name text NOT NULL, type text NOT NULL, order integer NOT NULL, visible boolean NOT NULL, width integer, options jsonb, required boolean, group text, description text"
+  },
+  {
+    "type": "TABLE",
+    "name": "grid_definitions",
+    "details": "Columns: id uuid NOT NULL, key text NOT NULL, display_name text NOT NULL, group text NOT NULL, icon text, description text, default_visible boolean NOT NULL, table_name text NOT NULL, section_id uuid, order integer NOT NULL, expiring_within integer"
+  },
+  {
+    "type": "TABLE",
+    "name": "grid_field_groups",
+    "details": "Columns: id uuid NOT NULL, grid_id uuid NOT NULL, name text NOT NULL, order integer NOT NULL"
+  },
+  {
+    "type": "TABLE",
+    "name": "grid_sections",
+    "details": "Columns: id uuid NOT NULL, key text NOT NULL, name text NOT NULL, order integer NOT NULL"
+  },
+  {
+    "type": "TABLE",
+    "name": "notes",
+    "details": "Columns: id uuid NOT NULL, text text NOT NULL, created_at timestamp with time zone NOT NULL, author text NOT NULL, record_id uuid NOT NULL, record_type text NOT NULL"
+  },
+  {
+    "type": "TABLE",
+    "name": "providers",
+    "details": "Columns: id uuid NOT NULL, created_at timestamp with time zone, prefix text, first_name text, middle_name text, last_name text, suffix text, pronouns text, title text, primary_specialty text, classifications ARRAY, taxonomy_codes ARRAY, clinical_services ARRAY, marital_status text, telemed_exp text, fluent_languages ARRAY, cms_medicare_specialty_codes ARRAY, work_email text, personal_email text, mobile_phone_number text, mobile_phone_carrier_name text, pager_number text, fax_number text, emergency_contact_name text, emergency_contact_email text, emergency_contact_phone text, emergency_contact_relationship text, social_security_number text, npi_number text, last_updated date, enumeration_date date, driver_license_or_id_number text, state_issued text, issue_date date, expiration_date date, tags ARRAY, other_specialties ARRAY"
+  },
+  {
+    "type": "TABLE",
+    "name": "providers_with_full_name",
+    "details": "Columns: id uuid, created_at timestamp with time zone, prefix text, first_name text, middle_name text, last_name text, suffix text, pronouns text, title text, primary_specialty text, classifications ARRAY, taxonomy_codes ARRAY, clinical_services ARRAY, marital_status text, telemed_exp text, fluent_languages ARRAY, cms_medicare_specialty_codes ARRAY, work_email text, personal_email text, mobile_phone_number text, mobile_phone_carrier_name text, pager_number text, fax_number text, emergency_contact_name text, emergency_contact_email text, emergency_contact_phone text, emergency_contact_relationship text, social_security_number text, npi_number text, last_updated date, enumeration_date date, driver_license_or_id_number text, state_issued text, issue_date date, expiration_date date, tags ARRAY, other_specialties ARRAY, provider_name text"
+  },
+  {
+    "type": "TABLE",
+    "name": "requirement_data",
+    "details": "Columns: id uuid NOT NULL, label text NOT NULL, value text, data_type USER-DEFINED NOT NULL, key text NOT NULL, created_at timestamp with time zone, updated_at timestamp with time zone, requirement_id uuid, default_value text, is_required boolean, validation_rules jsonb, order integer"
+  },
+  {
+    "type": "TABLE",
+    "name": "requirements",
+    "details": "Columns: id uuid NOT NULL, type USER-DEFINED NOT NULL, key text NOT NULL, group text NOT NULL, label text NOT NULL, note text, visible boolean NOT NULL, required boolean NOT NULL, credentialing_entities ARRAY, data ARRAY, created_at timestamp with time zone, updated_at timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "requirements_with_data",
+    "details": "Columns: id uuid, type USER-DEFINED, key text, group text, label text, note text, visible boolean, required boolean, credentialing_entities ARRAY, data ARRAY, created_at timestamp with time zone, updated_at timestamp with time zone, requirement_data_items json"
+  },
+  {
+    "type": "TABLE",
+    "name": "state_controlled_substance_licenses",
+    "details": "Columns: id uuid NOT NULL, provider_id uuid NOT NULL, license_type text, license_number text, state text, status text, issue_date date, expiration_date date, expires_within text, dont_renew text, is_primary text, first_name text, last_name text, tags ARRAY, last_updated timestamp with time zone, created_at timestamp with time zone, updated_at timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "state_controlled_substance_licenses_with_provider",
+    "details": "Columns: id uuid, provider_id uuid, license_type text, license_number text, state text, status text, issue_date date, expiration_date date, expires_within text, dont_renew text, is_primary text, first_name text, last_name text, tags ARRAY, last_updated timestamp with time zone, created_at timestamp with time zone, updated_at timestamp with time zone, provider_name text, title text, primary_specialty text"
+  },
+  {
+    "type": "TABLE",
+    "name": "state_licenses",
+    "details": "Columns: id uuid NOT NULL, provider_id uuid, license_type text, license text, license_additional_info text, state text, status text, issue_date date, expiration_date date, expires_within text, dont_renew boolean, is_primary boolean, is_multistate boolean, taxonomy_code text, enrolled_in_pdmp boolean, fee_exemption text, tags ARRAY, last_updated timestamp with time zone"
+  },
+  {
+    "type": "TABLE",
+    "name": "state_licenses_with_provider",
+    "details": "Columns: id uuid, provider_id uuid, license_type text, license text, license_additional_info text, state text, status text, issue_date date, expiration_date date, expires_within text, dont_renew boolean, is_primary boolean, is_multistate boolean, taxonomy_code text, enrolled_in_pdmp boolean, fee_exemption text, tags ARRAY, last_updated timestamp with time zone, provider_name text, title text, primary_specialty text"
+  },
+  {
+    "type": "VIEW",
+    "name": "additional_names_with_provider",
+    "details": "Definition:  SELECT an.id,\n    an.provider_id,\n    p.provider_name,\n    p.title,\n    p.primary_specialty,\n    an.type,\n    an.first_name,\n    an.middle_name,\n    an.last_name,\n    an.title AS name_title,\n    an.s..."
+  },
+  {
+    "type": "VIEW",
+    "name": "addresses_with_provider",
+    "details": "Definition:  SELECT a.id,\n    a.provider_id,\n    a.type,\n    a.address,\n    a.address_2,\n    a.city,\n    a.state,\n    a.zip_postal_code,\n    a.phone_number,\n    a.email,\n    a.start_date,\n    a.end_date,\n    a.co..."
+  },
+  {
+    "type": "VIEW",
+    "name": "birth_info_with_provider",
+    "details": "Definition:  SELECT b.id,\n    b.provider_id,\n    b.date_of_birth,\n    b.country_of_citizenship,\n    b.citizenship_work_auth,\n    b.us_work_auth,\n    b.tags,\n    b.last_updated,\n    b.birth_city,\n    b.birth_state..."
+  },
+  {
+    "type": "VIEW",
+    "name": "board_certifications_with_provider",
+    "details": "Definition:  SELECT bc.id,\n    bc.provider_id,\n    bc.abmsuid,\n    bc.org_type,\n    bc.board_organization,\n    bc.specialty,\n    bc.issue_date,\n    bc.expiration_date,\n    bc.recertification_date,\n    bc.certific..."
+  },
+  {
+    "type": "VIEW",
+    "name": "dea_licenses_with_provider",
+    "details": "Definition:  SELECT d.id,\n    d.provider_id,\n    d.state,\n    d.license_number,\n    d.first_name,\n    d.last_name,\n    d.status,\n    d.payment_indicator,\n    d.issue_date,\n    d.expiration_date,\n    d.dont_renew,..."
+  },
+  {
+    "type": "VIEW",
+    "name": "facilities_basic",
+    "details": "Definition:  SELECT f.id,\n    f.label,\n    f.icon,\n    f.created_at,\n    f.updated_at,\n    count(DISTINCT fpv.id) AS property_count,\n    count(DISTINCT frv.id) AS requirement_count,\n    count(DISTINCT fpr.provide..."
+  },
+  {
+    "type": "VIEW",
+    "name": "facilities_with_all_data",
+    "details": "Definition:  SELECT id,\n    label,\n    icon,\n    created_at,\n    updated_at,\n    ( SELECT json_agg(jsonb_build_object('id', fp.id, 'key', fp.key, 'label', fp.label, 'type', fp.type, 'group', fp.\"group\", 'value', ..."
+  },
+  {
+    "type": "VIEW",
+    "name": "facilities_with_properties",
+    "details": "Definition:  SELECT f.id,\n    f.label,\n    f.icon,\n    f.created_at,\n    f.updated_at,\n    json_agg(jsonb_build_object('id', fp.id, 'key', fp.key, 'label', fp.label, 'type', fp.type, 'group', fp.\"group\", 'value',..."
+  },
+  {
+    "type": "VIEW",
+    "name": "facilities_with_property_values",
+    "details": "Definition:  SELECT f.id AS facility_id,\n    f.label AS facility_label,\n    f.icon AS facility_icon,\n    f.requirements AS facility_requirements,\n    f.providers AS facility_providers,\n    f.created_at AS facilit..."
+  },
+  {
+    "type": "VIEW",
+    "name": "facilities_with_requirements",
+    "details": "Definition:  SELECT f.id,\n    f.label,\n    f.icon,\n    f.created_at,\n    f.updated_at,\n    json_agg(jsonb_build_object('id', r.id, 'key', r.key, 'label', r.label, 'group', r.\"group\", 'type', r.type, 'note', r.not..."
+  },
+  {
+    "type": "VIEW",
+    "name": "facility_affiliations_with_provider",
+    "details": "Definition:  SELECT fa.id,\n    fa.provider_id,\n    fa.facility_id,\n    p.first_name,\n    p.last_name,\n    p.title,\n    p.primary_specialty,\n    concat(p.first_name, ' ', p.last_name) AS provider_name,\n    f.label..."
+  },
+  {
+    "type": "VIEW",
+    "name": "providers_with_full_name",
+    "details": "Definition:  SELECT id,\n    created_at,\n    prefix,\n    first_name,\n    middle_name,\n    last_name,\n    suffix,\n    pronouns,\n    title,\n    primary_specialty,\n    classifications,\n    taxonomy_codes,\n    clinica..."
+  },
+  {
+    "type": "VIEW",
+    "name": "requirements_with_data",
+    "details": "Definition:  SELECT id,\n    type,\n    key,\n    \"group\",\n    label,\n    note,\n    COALESCE(visible, true) AS visible,\n    COALESCE(required, false) AS required,\n    credentialing_entities,\n    data,\n    created_at..."
+  },
+  {
+    "type": "VIEW",
+    "name": "state_controlled_substance_licenses_with_provider",
+    "details": "Definition:  SELECT s.id,\n    s.provider_id,\n    s.license_type,\n    s.license_number,\n    s.state,\n    s.status,\n    s.issue_date,\n    s.expiration_date,\n    s.expires_within,\n    s.dont_renew,\n    s.is_primary,..."
+  },
+  {
+    "type": "VIEW",
+    "name": "state_licenses_with_provider",
+    "details": "Definition:  SELECT s.id,\n    s.provider_id,\n    s.license_type,\n    s.license,\n    s.license_additional_info,\n    s.state,\n    s.status,\n    s.issue_date,\n    s.expiration_date,\n    s.expires_within,\n    s.dont_..."
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "additional_names.provider_id",
+    "details": "References: providers.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "addresses.provider_id",
+    "details": "References: providers.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "birth_info.provider_id",
+    "details": "References: providers.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "board_certifications.provider_id",
+    "details": "References: providers.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "contacts.facility_id",
+    "details": "References: facilities.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "dea_licenses.provider_id",
+    "details": "References: providers.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "facility_affiliations.facility_id",
+    "details": "References: facilities.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "facility_affiliations.provider_id",
+    "details": "References: providers.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "facility_property_options.property_key",
+    "details": "References: facility_properties.key"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "facility_property_values.facility_id",
+    "details": "References: facilities.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "facility_property_values.facility_property_id",
+    "details": "References: facility_properties.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "facility_providers.facility_id",
+    "details": "References: facilities.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "facility_providers.provider_id",
+    "details": "References: providers.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "facility_requirement_values.facility_id",
+    "details": "References: facilities.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "facility_requirement_values.requirement_data_id",
+    "details": "References: requirement_data.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "facility_requirement_values.requirement_id",
+    "details": "References: requirements.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "facility_requirements.facility_id",
+    "details": "References: facilities.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "facility_requirements.requirement_id",
+    "details": "References: requirements.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "grid_actions.action_id",
+    "details": "References: actions.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "grid_actions.grid_id",
+    "details": "References: grid_definitions.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "grid_columns.grid_id",
+    "details": "References: grid_definitions.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "grid_definitions.section_id",
+    "details": "References: grid_sections.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "grid_field_groups.grid_id",
+    "details": "References: grid_definitions.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "requirement_data.requirement_id",
+    "details": "References: requirements.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "state_controlled_substance_licenses.provider_id",
+    "details": "References: providers.id"
+  },
+  {
+    "type": "FOREIGN_KEY",
+    "name": "state_licenses.provider_id",
+    "details": "References: providers.id"
+  },
+  {
+    "type": "ENUM",
+    "name": "requirement_data_type",
+    "details": "Values: [text, number, boolean, date, email, url, phone, single-select, multi-select, file, oneview_record]"
+  },
+  {
+    "type": "ENUM",
+    "name": "requirement_type",
+    "details": "Values: [facility, board]"
+  },
+  {
+    "type": "PATTERN",
+    "name": "Grid Keys",
+    "details": "Grid keys use underscores (e.g., state_controlled_substance_licenses)"
+  },
+  {
+    "type": "PATTERN",
+    "name": "Grid System",
+    "details": "Uses grid_definitions, grid_columns, and grid_actions for UI configuration"
+  },
+  {
+    "type": "PATTERN",
+    "name": "Icon Storage",
+    "details": "Icons stored in kebab-case format (e.g., house-chimney-user)"
+  },
+  {
+    "type": "PATTERN",
+    "name": "Permissions",
+    "details": "Views granted to public role for easier development"
+  },
+  {
+    "type": "PATTERN",
+    "name": "Primary Keys",
+    "details": "All tables use UUID primary key with gen_random_uuid() default"
+  },
+  {
+    "type": "PATTERN",
+    "name": "Provider Tables",
+    "details": "All have provider_id UUID foreign key to providers table"
+  },
+  {
+    "type": "PATTERN",
+    "name": "Provider Views",
+    "details": "Views ending in _with_provider join data tables with provider information"
+  },
+  {
+    "type": "PATTERN",
+    "name": "RLS",
+    "details": "Most tables have RLS disabled for development"
+  },
+  {
+    "type": "PATTERN",
+    "name": "Reserved Words",
+    "details": "Use double quotes for reserved words: \"group\", \"order\""
+  },
+  {
+    "type": "PATTERN",
+    "name": "Tags",
+    "details": "Many tables have tags TEXT[] array for categorization"
+  },
+  {
+    "type": "PATTERN",
+    "name": "Timestamps",
+    "details": "Most tables have created_at and updated_at timestamp columns"
+  }
+]
 
+## Key Relationships  
+[Foreign key relationships from the script output]
 
+## Naming Conventions
+- Grid keys use underscores (state_controlled_substance_licenses)
+- Icons stored in kebab-case (house-chimney-user)
+- Reserved words use double quotes ("group", "order")
 
-create table public.grid_sections (
-  id uuid not null default gen_random_uuid (),
-  key text not null,
-  name text not null,
-  "order" integer not null default 0,
-  constraint grid_sections_pkey primary key (id),
-  constraint grid_sections_key_key unique (key)
-) TABLESPACE pg_default;
+## Standard Patterns
+- All tables have UUID primary keys with gen_random_uuid()
+- Provider-related tables have provider_id foreign key
+- Most tables have created_at, updated_at, tags[] columns
+- Views ending in _with_provider join with provider data
 
+# Database Schema Context
 
+## Core Tables
+[Output from essential-schemas.sql showing all table structures]
 
-create table public.grid_definitions (
-  id uuid not null default gen_random_uuid (),
-  key text not null,
-  display_name text not null,
-  "group" text not null,
-  icon text null,
-  description text null,
-  default_visible boolean not null default true,
-  table_name text not null default ''::text,
-  section_id uuid null,
-  "order" integer not null default 0,
-  constraint grid_definitions_pkey primary key (id),
-  constraint grid_definitions_key_key unique (key),
-  constraint grid_definitions_section_id_fkey foreign KEY (section_id) references grid_sections (id)
-) TABLESPACE pg_default;
+## Key Relationships  
+[Foreign key relationships from the script output]
 
+## Naming Conventions
+- Grid keys use underscores (state_controlled_substance_licenses)
+- Icons stored in kebab-case (house-chimney-user)
+- Reserved words use double quotes ("group", "order")
 
-
-create table public.grid_columns (
-  id uuid not null default gen_random_uuid (),
-  grid_id uuid not null,
-  name text not null,
-  display_name text not null,
-  type text not null,
-  "order" integer not null default 0,
-  visible boolean not null default true,
-  width integer null,
-  options jsonb null,
-  required boolean null default false,
-  "group" text null,
-  description text null,
-  constraint grid_columns_pkey primary key (id),
-  constraint grid_columns_grid_id_fkey foreign KEY (grid_id) references grid_definitions (id) on delete CASCADE
-) TABLESPACE pg_default;
-
-create unique INDEX IF not exists idx_grid_columns_gridid_name on public.grid_columns using btree (grid_id, name) TABLESPACE pg_default;
-
-create index IF not exists idx_grid_columns_gridid on public.grid_columns using btree (grid_id) TABLESPACE pg_default;
-
-
-
-create table public.grid_field_groups (
-  id uuid not null default gen_random_uuid (),
-  grid_id uuid not null,
-  name text not null,
-  "order" integer not null default 0,
-  constraint grid_field_groups_pkey primary key (id),
-  constraint grid_field_groups_grid_id_fkey foreign KEY (grid_id) references grid_definitions (id) on delete CASCADE
-) TABLESPACE pg_default;
-
-
-
-create table public.providers (
-  id uuid not null default gen_random_uuid (),
-  created_at timestamp with time zone null default timezone ('utc'::text, now()),
-  prefix text null,
-  first_name text null,
-  middle_name text null,
-  last_name text null,
-  suffix text null,
-  pronouns text null,
-  title text null,
-  primary_specialty text null,
-  classifications text[] null,
-  taxonomy_codes text[] null,
-  clinical_services text[] null,
-  marital_status text null,
-  telemed_exp text null,
-  fluent_languages text[] null,
-  cms_medicare_specialty_codes text[] null,
-  work_email text null,
-  personal_email text null,
-  mobile_phone_number text null,
-  mobile_phone_carrier_name text null,
-  pager_number text null,
-  fax_number text null,
-  emergency_contact_name text null,
-  emergency_contact_email text null,
-  emergency_contact_phone text null,
-  emergency_contact_relationship text null,
-  social_security_number text null,
-  npi_number text null,
-  last_updated date null,
-  enumeration_date date null,
-  driver_license_or_id_number text null,
-  state_issued text null,
-  issue_date date null,
-  expiration_date date null,
-  tags text[] null,
-  other_specialties text[] null,
-  constraint providers_pkey primary key (id)
-) TABLESPACE pg_default;
-
-
-
-create table public.birth_info (
-  id uuid not null default gen_random_uuid (),
-  provider_id uuid not null,
-  date_of_birth date null,
-  country_of_citizenship text null,
-  citizenship_work_auth text null,
-  us_work_auth text null,
-  tags text[] null,
-  last_updated timestamp with time zone null default now(),
-  birth_city text null,
-  birth_state_province text null,
-  birth_county text null,
-  birth_country text null,
-  gender text null,
-  identifies_transgender boolean null,
-  hair_color text null,
-  eye_color text null,
-  height_ft integer null,
-  height_in integer null,
-  weight_lbs integer null,
-  ethnicity text null,
-  constraint birth_info_pkey primary key (id),
-  constraint birth_info_provider_id_fkey foreign KEY (provider_id) references providers (id) on delete CASCADE
-) TABLESPACE pg_default;
-
-create index IF not exists idx_birth_info_provider_id on public.birth_info using btree (provider_id) TABLESPACE pg_default;
-
-
-
-create table public.addresses (
-  id uuid not null default gen_random_uuid (),
-  provider_id uuid not null,
-  type text null,
-  address text null,
-  address_2 text null,
-  city text null,
-  state text null,
-  zip_postal_code text null,
-  phone_number text null,
-  email text null,
-  start_date date null,
-  end_date date null,
-  county text null,
-  country text null,
-  tags text[] null,
-  last_updated timestamp with time zone null default now(),
-  constraint addresses_pkey primary key (id),
-  constraint addresses_provider_id_fkey foreign KEY (provider_id) references providers (id) on delete CASCADE
-) TABLESPACE pg_default;
-
-create index IF not exists idx_addresses_provider_id on public.addresses using btree (provider_id) TABLESPACE pg_default;
-
-
+## Standard Patterns
+- All tables have UUID primary keys with gen_random_uuid()
+- Provider-related tables have provider_id foreign key
+- Most tables have created_at, updated_at, tags[] columns
+- Views ending in _with_provider join with provider data
 
