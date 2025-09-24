@@ -916,7 +916,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
   
   const containerClassName =
     context === "sidepanel"
-      ? `h-full bg-white transform transition-transform duration-300 ease-in-out z-[1000] flex flex-col ${isOpen ? "translate-x-0" : "translate-x-full"}`
+      ? `h-full bg-white transform transition-transform duration-300 ease-in-out z-[49] flex flex-col ${isOpen ? "translate-x-0" : "translate-x-full"}`
       : "flex-1 min-h-0 flex flex-col";
 
   const containerStyle =

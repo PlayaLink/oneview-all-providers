@@ -107,6 +107,27 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
     }
   }, [queryClient, gridDef?.table_name, providerIdFilter]);
 
+  // Function to invalidate grid data cache after cell update
+  const handleCellUpdated = React.useCallback((gridKey: string, recordId: string, field: string, newValue: any) => {
+    console.log(`Cell updated in ${gridKey}: ${field} = ${newValue} for record ${recordId}`);
+    
+    // Invalidate the specific grid data query to refresh the UI
+    if (gridDef?.table_name) {
+      console.log(`Invalidating cache for table: ${gridDef.table_name}`);
+      queryClient.invalidateQueries({
+        queryKey: ["grid_data", gridDef.table_name, providerIdFilter]
+      });
+    }
+    
+    // Also invalidate the general grid_data query like the side panel does
+    queryClient.refetchQueries({
+      queryKey: ["grid_data"],
+      exact: false,
+    });
+    
+    console.log(`Cache invalidation complete - grid should refresh with updated data`);
+  }, [queryClient, gridDef?.table_name, providerIdFilter]);
+
   // Fetch columns for this grid
   const { data: gridColumnsData } = useQuery({
     queryKey: gridDef ? ["grid_columns_by_name", gridKey] : ["grid_columns_by_name", "none"],
@@ -305,6 +326,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
         tableName={getBaseTableName(gridDef.table_name)}
         onRecordsDeleted={handleRecordsDeleted}
         defaultExpiringDays={gridDefinition?.expiring_within}
+        onCellUpdated={handleCellUpdated}
       />
       {isLoading && <div className="text-gray-500 mt-4">Loading...</div>}
       {error && (

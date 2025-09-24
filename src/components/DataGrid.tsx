@@ -4,7 +4,21 @@ import { ColDef } from "ag-grid-enterprise";
 import Icon from "@/components/ui/Icon";
 import { useFeatureFlag } from "@/contexts/FeatureFlagContext";
 import { useGridActions } from "@/hooks/useGridActions";
-import { updateGridColumnWidths, updateGridExpiringWithin, bulkDeleteRecords } from "@/lib/supabaseClient";
+import { toast } from "@/hooks/use-toast";
+import { 
+  updateGridColumnWidths, 
+  updateGridExpiringWithin, 
+  bulkDeleteRecords,
+  updateProvider, 
+  updateStateLicense, 
+  updateRecord,
+  updateDEALicense,
+  updateStateControlledSubstanceLicense,
+  updateAdditionalName,
+  updateFacilityAffiliation,
+  updateBirthInfo,
+  updateAddress
+} from "@/lib/supabaseClient";
 import { colorTokens } from "@/lib/colorTokens";
 import ContextMenu from "./ContextMenu";
 import ActionsColumn from "./ActionsColumn";
@@ -108,6 +122,8 @@ interface DataGridProps {
   tableName?: string;
   /** Callback when records are deleted */
   onRecordsDeleted?: (deletedIds: string[]) => void;
+  /** Callback when a cell is successfully updated - used for cache invalidation */
+  onCellUpdated?: (gridKey: string, recordId: string, field: string, newValue: any) => void;
 }
 
 const DataGrid: React.FC<DataGridProps> = (props) => {
@@ -138,6 +154,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     gridKey,
     tableName,
     onRecordsDeleted,
+    onCellUpdated,
   } = props;
 
   // Debug logging for props
@@ -564,25 +581,110 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     setContextMenu(null);
   };
 
-  const handleCellValueChanged = (event: any) => {
+  const handleCellValueChanged = async (event: any) => {
     // Handle cell value changes for inline editing
     const { data, colDef, newValue, oldValue } = event;
     
     // Only proceed if the value actually changed
     if (newValue === oldValue) return;
     
-    // TODO: Add database update logic here
-    // For now, just log the change
     console.log('Cell value changed:', {
       rowId: data.id,
       field: colDef.field,
       oldValue,
       newValue,
-      gridKey
+      gridKey,
+      tableName
     });
     
-    // You can add database update logic here:
-    // await updateRecord(tableName, data.id, { [colDef.field]: newValue });
+    try {
+      // Map grid keys to their corresponding update functions
+      const updateFunctions: Record<string, (id: string, updates: Record<string, any>) => Promise<any>> = {
+        'provider_info': updateProvider,
+        'state_licenses': updateStateLicense,
+        'birth_info': updateBirthInfo,
+        'addresses': updateAddress,
+        'dea_licenses': updateDEALicense,
+        'state_controlled_substance_licenses': updateStateControlledSubstanceLicense,
+        'additional_names': updateAdditionalName,
+        'facility_affiliations': updateFacilityAffiliation,
+      };
+      
+      // Get the appropriate update function for this grid
+      const updateFunction = updateFunctions[gridKey];
+      
+      if (updateFunction) {
+        // Use the specific update function for this grid type
+        console.log(`Attempting to update ${gridKey} record ${data.id} field ${colDef.field} with value:`, newValue);
+        console.log(`Update function being used:`, updateFunction.name);
+        
+        try {
+          // Add last_updated timestamp like the side panel does
+          const updateData = { 
+            [colDef.field]: newValue,
+            last_updated: new Date().toISOString()
+          };
+          
+          const result = await updateFunction(data.id, updateData);
+          console.log(`Update result for ${gridKey}:`, result);
+          console.log(`Successfully updated ${gridKey} record ${data.id} field ${colDef.field}`);
+          
+          // Verify the update actually happened by checking if result has data
+          if (!result || (Array.isArray(result) && result.length === 0)) {
+            console.warn(`Update function returned empty result - database update may have failed`);
+            throw new Error('Update function returned empty result');
+          }
+          
+          // Notify parent component to refresh cache (like side panel does)
+          if (onCellUpdated) {
+            console.log(`Notifying parent component of cell update for cache refresh`);
+            onCellUpdated(gridKey, data.id, colDef.field, newValue);
+          } else {
+            console.log(`No onCellUpdated callback provided - cache may not refresh`);
+          }
+          
+        } catch (updateError) {
+          console.error(`Update function failed:`, updateError);
+          throw updateError; // Re-throw to be caught by outer catch
+        }
+      } else {
+        console.warn(`No update function found for gridKey: ${gridKey}`);
+        toast({
+          title: "Update Failed",
+          description: `Cannot update ${gridKey} - no update function configured`,
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Show success message
+      toast({
+        title: "Update Successful",
+        description: `Updated ${colDef.field} successfully`,
+        variant: "success",
+      });
+      
+    } catch (error) {
+      console.error('Error updating cell value:', error);
+      console.error('Error details:', {
+        gridKey,
+        field: colDef.field,
+        recordId: data.id,
+        newValue,
+        oldValue,
+        error: error instanceof Error ? error.message : error,
+        stack: error instanceof Error ? error.stack : undefined
+      });
+      
+      toast({
+        title: "Update Failed",
+        description: `Failed to update ${colDef.field}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        variant: "destructive",
+      });
+      
+      // Revert the cell value in the grid if the update failed
+      event.api.setValue(colDef.field, data.id, oldValue);
+    }
   };
 
   // Save column state to localStorage and database
