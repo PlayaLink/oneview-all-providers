@@ -36,15 +36,7 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
 }) => {
   const { gridActions, isLoading, error } = useGridActions(gridKey);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [hoveredAction, setHoveredAction] = React.useState<string | null>(null);
 
-  // Debug logging
-  React.useEffect(() => {
-    console.log(`ActionsColumn mounted for gridKey: ${gridKey}, rowData.id: ${rowData?.id}`);
-    return () => {
-      console.log(`ActionsColumn unmounting for gridKey: ${gridKey}, rowData.id: ${rowData?.id}`);
-    };
-  }, [gridKey, rowData?.id]);
 
   if (isLoading) {
     return (
@@ -94,24 +86,10 @@ const ActionsColumn: React.FC<ActionsColumnProps> = ({
         }
 
         return (
-          <Tooltip 
-            key={gridAction.id} 
-            open={hoveredAction === action.name}
-            delayDuration={500}
-          >
+          <Tooltip key={gridAction.id}>
             <TooltipTrigger asChild>
               <button
                 onClick={() => onActionClick(action.name, rowData)}
-                onMouseEnter={() => {
-                  console.log(`Tooltip hover ENTER: ${action.name}`);
-                  setHoveredAction(action.name);
-                }}
-                onMouseLeave={() => {
-                  console.log(`Tooltip hover LEAVE: ${action.name}`);
-                  setHoveredAction(null);
-                }}
-                onFocus={() => console.log(`Tooltip focus: ${action.name}`)}
-                onBlur={() => console.log(`Tooltip blur: ${action.name}`)}
                 className="w-6 h-6 flex items-center justify-center rounded transition-colors hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                 data-testid={`action-${action.name}`}
                 data-referenceid={`action-${action.name}-${rowData.id}`}
