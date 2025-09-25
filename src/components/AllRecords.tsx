@@ -336,6 +336,12 @@ const AllRecords: React.FC = () => {
     // Only manage row selection - sidepanel is now independent
     if (row && gridKey && selectedRow && selectedRow.id === row.id && selectedRow.gridKey === gridKey) {
       setSelectedRow(null); // Unselect the row
+      
+      // If sidepanel is open and we're unselecting the current row, close the sidepanel
+      if (isSidePanelOpen) {
+        setIsSidePanelOpen(false);
+        setSidePanelRow(null);
+      }
     } else if (row) {
       // Use gridKey from row data if available, otherwise use the parameter
       const effectiveGridKey = row.gridKey || gridKey;
@@ -350,6 +356,12 @@ const AllRecords: React.FC = () => {
       }
     } else {
       setSelectedRow(null); // Clear selection
+      
+      // If sidepanel is open and we're clearing selection, close the sidepanel
+      if (isSidePanelOpen) {
+        setIsSidePanelOpen(false);
+        setSidePanelRow(null);
+      }
     }
   };
 
@@ -485,7 +497,7 @@ const AllRecords: React.FC = () => {
     // Keep row selected for 500ms before clearing to show fade effect
     setTimeout(() => {
       setSelectedRow(null);
-    }, 1000);
+    }, 500);
   };
 
   const handleRecordCreated = (newRecord: any) => {
