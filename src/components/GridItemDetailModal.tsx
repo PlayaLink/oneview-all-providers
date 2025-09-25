@@ -41,6 +41,7 @@ const GridItemDetailModal: React.FC<GridItemDetailModalProps> = (props) => {
       <DialogContent 
         className="max-w-7xl w-full h-[90vh] flex flex-col" 
         data-testid="grid-item-detail-modal"
+        onClose={onClose}
         onOpenAutoFocus={(e) => {
           // Prevent default focus behavior
           e.preventDefault();
