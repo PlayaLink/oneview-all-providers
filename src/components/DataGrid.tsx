@@ -587,11 +587,16 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         return;
       }
       
-      // Disable row selection - just clear focus
+      // Clear focus
       event.api.setFocusedCell(null, null);
 
-      // Row selection is completely disabled - no callbacks or state changes
-      // This prevents the side panel from opening when clicking on rows
+      // Allow row selection only if side panel is already open
+      // This lets users change the selected row when side panel is open
+      if (isSidePanelOpen && onRowClicked && event.data) {
+        // Add gridKey to the row data for proper mapping
+        const rowDataWithGridKey = { ...event.data, gridKey };
+        onRowClicked(rowDataWithGridKey);
+      }
     }, 200);
   };
 
