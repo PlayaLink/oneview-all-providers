@@ -58,6 +58,7 @@ export const generateDefaultHeaderText = ({ gridKey, provider, isCreateMode }: {
   const singularizePhrase = (phrase: string): string => {
     const exceptions: Record<string, string> = {
       'state licenses': 'State License',
+      'dea licenses': 'DEA License',
       'addresses': 'Address',
       'facility affiliations': 'Facility Affiliation',
       'facility properties': 'Facility Property',

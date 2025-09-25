@@ -170,7 +170,7 @@ const StateLicenseDetailsWide = ({ formValues, handleChange, provider }) => {
       <CollapsibleSection title="Additional Info">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
           {additionalInfoFields.map((field) => (
-            <div key={field.key || field.label}>
+            <div key={field.key}>
               {renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' })}
             </div>
           ))}

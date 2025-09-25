@@ -202,7 +202,7 @@ const DEALicensesDetailsWide = ({ formValues, handleChange, provider }) => (
     <CollapsibleSection title="Additional Info">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
         {additionalInfoFields.map((field) => (
-          <React.Fragment key={field.key || field.label}>
+          <React.Fragment key={field.key}>
             {renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' })}
           </React.Fragment>
         ))}
@@ -213,7 +213,7 @@ const DEALicensesDetailsWide = ({ formValues, handleChange, provider }) => (
     <CollapsibleSection title="Registered Address">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
         {registeredAddressFields.map((field) => (
-          <React.Fragment key={field.key || field.label}>
+          <React.Fragment key={field.key}>
             {renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' })}
           </React.Fragment>
         ))}

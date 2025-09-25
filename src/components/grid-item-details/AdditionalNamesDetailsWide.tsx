@@ -32,7 +32,7 @@ const AdditionalNamesDetailsWide = ({ formValues, handleChange }) => (
     data-testid="additional-names-details-wide"
   >
     {additionalNamesWideFieldGroup.fields.map((field) => (
-      <React.Fragment key={field.key || field.label}>
+      <React.Fragment key={field.key}>
         {renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' })}
       </React.Fragment>
     ))}
