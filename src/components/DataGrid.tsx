@@ -474,6 +474,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                 <ActionsColumn
                   gridKey={gridKey}
                   rowData={params.data}
+                  excludeActions={["side_panel", "view_details"]}
                   onActionClick={(actionName, rowData) => {
                     switch (actionName) {
                       case "download":
