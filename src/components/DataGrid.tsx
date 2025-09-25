@@ -649,14 +649,6 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     // Only proceed if the value actually changed
     if (newValue === oldValue) return;
     
-    console.log('Cell value changed:', {
-      rowId: data.id,
-      field: colDef.field,
-      oldValue,
-      newValue,
-      gridKey,
-      tableName
-    });
     
     try {
       // Map grid keys to their corresponding update functions
@@ -676,8 +668,6 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       
       if (updateFunction) {
         // Use the specific update function for this grid type
-        console.log(`Attempting to update ${gridKey} record ${data.id} field ${colDef.field} with value:`, newValue);
-        console.log(`Update function being used:`, updateFunction.name);
         
         try {
           // Add last_updated timestamp like the side panel does
@@ -687,29 +677,20 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           };
           
           const result = await updateFunction(data.id, updateData);
-          console.log(`Update result for ${gridKey}:`, result);
-          console.log(`Successfully updated ${gridKey} record ${data.id} field ${colDef.field}`);
           
           // Verify the update actually happened by checking if result has data
           if (!result || (Array.isArray(result) && result.length === 0)) {
-            console.warn(`Update function returned empty result - database update may have failed`);
             throw new Error('Update function returned empty result');
           }
           
           // Notify parent component to refresh cache (like side panel does)
           if (onCellUpdated) {
-            console.log(`Notifying parent component of cell update for cache refresh`);
             onCellUpdated(gridKey, data.id, colDef.field, newValue);
-          } else {
-            console.log(`No onCellUpdated callback provided - cache may not refresh`);
           }
-          
         } catch (updateError) {
-          console.error(`Update function failed:`, updateError);
           throw updateError; // Re-throw to be caught by outer catch
         }
       } else {
-        console.warn(`No update function found for gridKey: ${gridKey}`);
         toast({
           title: "Update Failed",
           description: `Cannot update ${gridKey} - no update function configured`,
@@ -726,17 +707,6 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       });
       
     } catch (error) {
-      console.error('Error updating cell value:', error);
-      console.error('Error details:', {
-        gridKey,
-        field: colDef.field,
-        recordId: data.id,
-        newValue,
-        oldValue,
-        error: error instanceof Error ? error.message : error,
-        stack: error instanceof Error ? error.stack : undefined
-      });
-      
       toast({
         title: "Update Failed",
         description: `Failed to update ${colDef.field}: ${error instanceof Error ? error.message : 'Unknown error'}`,
