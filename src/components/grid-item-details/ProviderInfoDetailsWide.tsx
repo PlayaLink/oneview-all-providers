@@ -5,6 +5,24 @@ import { SingleSelect } from '../inputs/SingleSelect';
 import TextInputField from '../inputs/TextInputField';
 import { generateProviderName, generateDefaultHeaderText } from '@/lib/utils';
 import { providerInfoFieldGroups } from './ProviderInfoDetails';
+import {
+  PREFIX_OPTIONS,
+  SUFFIX_OPTIONS,
+  PRONOUN_OPTIONS,
+  PROVIDER_TITLE_OPTIONS,
+  SPECIALTY_OPTIONS,
+  TAXONOMY_CODE_OPTIONS,
+  CLINICAL_SERVICES_OPTIONS,
+  MARITAL_STATUS_OPTIONS,
+  TELEMED_EXP_OPTIONS,
+  LANGUAGE_OPTIONS,
+  OTHER_SPECIALTIES_OPTIONS,
+  CLASSIFICATION_OPTIONS,
+  CMS_MEDICARE_SPECIALTY_OPTIONS,
+  MOBILE_CARRIER_OPTIONS,
+  RELATIONSHIP_OPTIONS,
+  US_STATE_OPTIONS
+} from './ProviderInfoSelectInputOptions';
 
 // Helper to get value and onChange for a field
 function getFieldProps(fieldKey, formValues, handleChange) {
@@ -20,7 +38,7 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => (
     <CollapsibleSection title="Provider Name">
       <div className="flex flex-row gap-4 w-full">
         <div className="flex-1">
-          <SingleSelect label="Prefix" labelPosition="above" options={["Dr.", "Mr.", "Mrs.", "Ms.", "Mx.", "Prof.", "Rev.", "Sr.", "Fr.", "Hon.", "Other"].map(opt => ({ id: opt, label: opt }))} {...getFieldProps('prefix', formValues, handleChange)} />
+          <SingleSelect label="Prefix" labelPosition="above" options={PREFIX_OPTIONS} {...getFieldProps('prefix', formValues, handleChange)} />
         </div>
         <div className="flex-1">
           <TextInputField label="First Name" labelPosition="above" {...getFieldProps('first_name', formValues, handleChange)} />
@@ -34,10 +52,10 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => (
       </div>
       <div className="flex flex-row gap-4 w-full mt-2">
         <div className="flex-1">
-          <SingleSelect label="Suffix" labelPosition="above" options={["Jr.", "Sr.", "II", "III", "IV", "V", "MD", "DO", "PhD", "Esq.", "Other"].map(opt => ({ id: opt, label: opt }))} {...getFieldProps('suffix', formValues, handleChange)} />
+          <SingleSelect label="Suffix" labelPosition="above" options={SUFFIX_OPTIONS} {...getFieldProps('suffix', formValues, handleChange)} />
         </div>
         <div className="flex-1">
-          <SingleSelect label="Pronouns" labelPosition="above" options={["He/him/his", "She/her/hers", "They/them/theirs", "Other (please specify)"].map(opt => ({ id: opt, label: opt }))} {...getFieldProps('pronouns', formValues, handleChange)} />
+          <SingleSelect label="Pronouns" labelPosition="above" options={PRONOUN_OPTIONS} {...getFieldProps('pronouns', formValues, handleChange)} />
         </div>
         <div className="flex-1" />
         <div className="flex-1" />
@@ -48,38 +66,38 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => (
     <CollapsibleSection title="Title, Specialty & Classifications">
       <div className="flex flex-row gap-4 w-full">
         <div className="flex-1">
-          <SingleSelect label="Provider Title" labelPosition="above" options={["ND - Doctor of Naturopathy", "OD - Optometrist", "OTD - Doctor of Occupational Therapy", "PharmD - Doctor of Pharmacy", "PsyD - Doctor of Psychology", "SLPD - Doctor of Speech-Language Pathology", "SP - Supervising Physician", "MD - Medical Doctor", "PA - Physician Assistant", "NP - Nurse Practitioner", "CNM - Certified Nurse Midwife", "DC - Doctor of Chiropractic", "DPT - Doctor of Physical Therapy", "DPM - Doctor of Podiatric Medicine", "DDS - Doctor of Dental Surgery", "RD - Registered Dietitian", "LCSW - Licensed Clinical Social Worker", "LCPC - Licensed Clinical Professional Counselor", "LPC - Licensed Professional Counselor", "DO - Osteopathic Doctor", "DNP - Doctor of Nursing Practice", "DMD - Doctor of Dental Medicine", "DVM - Doctor of Veterinary Medicine", "DrPH - Doctor of Public Health", "EdD - Doctor of Education", "DMSc - Doctor of Medical Science"].map(opt => ({ id: opt, label: opt }))} {...getFieldProps('title', formValues, handleChange)} />
+          <SingleSelect label="Provider Title" labelPosition="above" options={PROVIDER_TITLE_OPTIONS} {...getFieldProps('title', formValues, handleChange)} />
         </div>
         <div className="flex-1">
-          <SingleSelect label="Specialty List" labelPosition="above" options={["Abdominal Imaging", "Acupuncture", "Acute Care Imaging", "Acute Care Nurse Practitioner", "Acute Registered Nurse", "Addiction (Substance Use Disorder)", "Adolescent Medicine", "Adult Medicine", "Allergy and Immunology", "Anesthesiology", "Bariatric Medicine", "Breast Surgery", "Burn Surgery", "Cardiology", "Cardiothoracic Surgery", "Pediatrics", "Acute Care", "Aerospace Medicine", "Critical Care Medicine", "Dermatology"].map(opt => ({ id: opt, label: opt }))} {...getFieldProps('primary_specialty', formValues, handleChange)} />
+          <SingleSelect label="Specialty List" labelPosition="above" options={SPECIALTY_OPTIONS} {...getFieldProps('primary_specialty', formValues, handleChange)} />
         </div>
         <div className="flex-1">
-          <MultiSelectInput label="Taxonomy Codes" labelPosition="above" options={["Counselor - Addiction (101YA0400X)", "Counselor (101Y00000X)", "Counselor - Mental Health (101YM0800X)", "Counselor - Pastoral (101YP1600X)", "Counselor - Professional (101YP2500X)", "Counselor - School (101YS0200X)", "Psychoanalyst (102L00000X)", "Psychologist (103T00000X)", "Psychologist - Clinical (103TC0700X)", "Social Worker - Clinical (1041C0700X)", "Marriage & Family Therapist (106H00000X)", "Behavior Analyst (103K00000X)", "Case Manager/Care Coordinator (171M00000X)", "Psychiatrist & Neurologist (2084P0800X)", "Developmental Therapist (222Q00000X)"].map(opt => ({ id: opt, label: opt }))} {...getFieldProps('taxonomy_codes', formValues, handleChange)} />
-        </div>
-      </div>
-      <div className="flex flex-row gap-4 w-full mt-2">
-        <div className="flex-1">
-          <MultiSelectInput label="Clinical Services" labelPosition="above" options={["Outpatient Psychiatric Treatment: Children", "Outpatient Psychiatric Treatment: Geriatric", "Outpatient Psychiatric Treatment: Adult", "Outpatient Psychiatric Treatment Adolescent", "Outpatient Substance Use Disorder Treatment: Geriatric", "Outpatient Substance Use Disorder Treatment: Adult", "Outpatient Substance Use Disorder Treatment: Youth", "Partial Hospitalization Program (PHP)", "Intensive Outpatient Program (IOP)", "Medication Management", "Group Therapy", "Family Therapy", "Individual Counseling", "Psychoeducation Services", "Case Management"].map(opt => ({ id: opt, label: opt }))} {...getFieldProps('clinical_services', formValues, handleChange)} />
-        </div>
-        <div className="flex-1">
-          <SingleSelect label="Marital Status" labelPosition="above" options={["Single", "Married", "Divorced", "Widowed", "Separated", "Other"].map(opt => ({ id: opt, label: opt }))} {...getFieldProps('marital_status', formValues, handleChange)} />
-        </div>
-        <div className="flex-1">
-          <SingleSelect label="Telemed Exp." labelPosition="above" options={["None", "Some", "Extensive"].map(opt => ({ id: opt, label: opt }))} {...getFieldProps('telemed_exp', formValues, handleChange)} />
-        </div>
-        <div className="flex-1">
-          <MultiSelectInput label="Fluent Languages" labelPosition="above" options={["English", "Spanish", "French", "German", "Chinese", "Other"].map(opt => ({ id: opt, label: opt }))} {...getFieldProps('fluent_languages', formValues, handleChange)} />
+          <MultiSelectInput label="Taxonomy Codes" labelPosition="above" options={TAXONOMY_CODE_OPTIONS} {...getFieldProps('taxonomy_codes', formValues, handleChange)} />
         </div>
       </div>
       <div className="flex flex-row gap-4 w-full mt-2">
         <div className="flex-1">
-          <MultiSelectInput label="CMS Medicare Specialty Codes" labelPosition="above" options={["CMS Code: CMS Desc - Taxonomy Desc (Taxonomy Code)", "Other"].map(opt => ({ id: opt, label: opt }))} {...getFieldProps('cms_medicare_specialty_codes', formValues, handleChange)} />
+          <MultiSelectInput label="Clinical Services" labelPosition="above" options={CLINICAL_SERVICES_OPTIONS} {...getFieldProps('clinical_services', formValues, handleChange)} />
         </div>
         <div className="flex-1">
-          <MultiSelectInput label="Other Specialties" labelPosition="above" options={["Pain Management", "Sports Medicine", "Geriatrics", "Sleep Medicine", "Palliative Care", "Infectious Disease", "Genetics", "Occupational Medicine", "Preventive Medicine", "Rehabilitation Medicine", "Other (please specify)"].map(opt => ({ id: opt, label: opt }))} {...getFieldProps('other_specialties', formValues, handleChange)} />
+          <SingleSelect label="Marital Status" labelPosition="above" options={MARITAL_STATUS_OPTIONS} {...getFieldProps('marital_status', formValues, handleChange)} />
         </div>
         <div className="flex-1">
-          <MultiSelectInput label="Classifications" labelPosition="above" options={["Specialist", "Locum Tenens", "Primary Care", "Hospital-based", "Hospitalist", "PRN", "New Hire", "Acquisition", "Rehire", "Float Pool", "Internal Transfer", "Cross Credentialed", "Fellowship", "Subspecialist", "Rotating", "Clinic Only"].map(opt => ({ id: opt, label: opt }))} {...getFieldProps('classifications', formValues, handleChange)} />
+          <SingleSelect label="Telemed Exp." labelPosition="above" options={TELEMED_EXP_OPTIONS} {...getFieldProps('telemed_exp', formValues, handleChange)} />
+        </div>
+        <div className="flex-1">
+          <MultiSelectInput label="Fluent Languages" labelPosition="above" options={LANGUAGE_OPTIONS} {...getFieldProps('fluent_languages', formValues, handleChange)} />
+        </div>
+      </div>
+      <div className="flex flex-row gap-4 w-full mt-2">
+        <div className="flex-1">
+          <MultiSelectInput label="CMS Medicare Specialty Codes" labelPosition="above" options={CMS_MEDICARE_SPECIALTY_OPTIONS} {...getFieldProps('cms_medicare_specialty_codes', formValues, handleChange)} />
+        </div>
+        <div className="flex-1">
+          <MultiSelectInput label="Other Specialties" labelPosition="above" options={OTHER_SPECIALTIES_OPTIONS} {...getFieldProps('other_specialties', formValues, handleChange)} />
+        </div>
+        <div className="flex-1">
+          <MultiSelectInput label="Classifications" labelPosition="above" options={CLASSIFICATION_OPTIONS} {...getFieldProps('classifications', formValues, handleChange)} />
         </div>
         <div className="flex-1" />
       </div>
@@ -97,10 +115,10 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => (
       </div>
       <div className="flex flex-row gap-4 w-full mt-2">
         <div className="flex-1">
-          <TextInputField label="Label goes here" labelPosition="above" {...getFieldProps('mobile_phone_number', formValues, handleChange)} />
+          <TextInputField label="Mobile Phone #" labelPosition="above" {...getFieldProps('mobile_phone_number', formValues, handleChange)} />
         </div>
         <div className="flex-1">
-          <SingleSelect label="Mobile Phone Carrier Name" labelPosition="above" options={["AT&T", "Verizon", "T-Mobile", "Sprint", "Other"].map(opt => ({ id: opt, label: opt }))} {...getFieldProps('mobile_phone_carrier_name', formValues, handleChange)} />
+          <SingleSelect label="Mobile Phone Carrier Name" labelPosition="above" options={MOBILE_CARRIER_OPTIONS} {...getFieldProps('mobile_phone_carrier_name', formValues, handleChange)} />
         </div>
       </div>
     </CollapsibleSection>
@@ -118,7 +136,7 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => (
           <TextInputField label="Mobile Phone #" labelPosition="above" {...getFieldProps('emergency_contact_phone', formValues, handleChange)} />
         </div>
         <div className="flex-1">
-          <SingleSelect label="Relationship" labelPosition="above" options={["Parent", "Sibling", "Spouse", "Friend", "Other"].map(opt => ({ id: opt, label: opt }))} {...getFieldProps('emergency_contact_relationship', formValues, handleChange)} />
+          <SingleSelect label="Relationship" labelPosition="above" options={RELATIONSHIP_OPTIONS} {...getFieldProps('emergency_contact_relationship', formValues, handleChange)} />
         </div>
       </div>
     </CollapsibleSection>
@@ -141,7 +159,7 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => (
           <TextInputField label="Driver License or ID #" labelPosition="above" {...getFieldProps('driver_license_or_id_number', formValues, handleChange)} />
         </div>
         <div className="flex-1">
-          <SingleSelect label="State Issued" labelPosition="above" options={["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"].map(opt => ({ id: opt, label: opt }))} {...getFieldProps('state_issued', formValues, handleChange)} />
+          <SingleSelect label="State Issued" labelPosition="above" options={US_STATE_OPTIONS} {...getFieldProps('state_issued', formValues, handleChange)} />
         </div>
         <div className="flex-1">
           <TextInputField label="Issue Date" labelPosition="above" {...getFieldProps('issue_date', formValues, handleChange)} />
