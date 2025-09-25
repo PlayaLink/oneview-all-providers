@@ -45,11 +45,9 @@ function GridsSection({
   onOpenDetailModal,
   handleAddRecord,
   inputConfig,
-  setDetailModalRow,
   setSelectedRow,
   setShowDetailModal,
   isSidePanelOpen,
-  sidePanelRow,
   handleOpenSidePanel,
   setIsSidePanelOpen,
   ...rest
@@ -181,12 +179,11 @@ function GridsSection({
         {/* SidePanel - rendered inline next to grids list */}
         <SidePanel
           isOpen={isSidePanelOpen}
-          selectedRow={sidePanelRow}
+          selectedRow={selectedRow}
           inputConfig={inputConfig}
           onClose={handleCloseSidePanel}
           user={user}
           onExpandDetailModal={() => {
-            setDetailModalRow(sidePanelRow);
             setIsSidePanelOpen(false);
             setShowDetailModal(true);
           }}
@@ -209,10 +206,15 @@ const AllRecords: React.FC = () => {
   // const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
   const [selectedRow, setSelectedRow] = useState<(any & { gridKey: string }) | null>(null);
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
-  const [sidePanelRow, setSidePanelRow] = useState<(any & { gridKey: string }) | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
-  const [detailModalRow, setDetailModalRow] = useState<any>(null);
   const [isCreateMode, setIsCreateMode] = useState(false);
+
+  // Console log state changes for debugging
+  React.useEffect(() => {
+    console.log('🔵 selectedRow:', selectedRow);
+    console.log('📋 isSidePanelOpen:', isSidePanelOpen);
+    console.log('🪟 showDetailModal:', showDetailModal);
+  }, [selectedRow, isSidePanelOpen, showDetailModal]);
 
   // Facility details modal state
   const [facilityDetailsModal, setFacilityDetailsModal] = useState<{
@@ -340,7 +342,6 @@ const AllRecords: React.FC = () => {
       // If sidepanel is open and we're unselecting the current row, close the sidepanel
       if (isSidePanelOpen) {
         setIsSidePanelOpen(false);
-        setSidePanelRow(null);
       }
     } else if (row) {
       // Use gridKey from row data if available, otherwise use the parameter
@@ -348,11 +349,7 @@ const AllRecords: React.FC = () => {
       if (effectiveGridKey) {
         const rowWithGridKey = { ...row, gridKey: effectiveGridKey };
         setSelectedRow(rowWithGridKey); // Select the row
-        
-        // If sidepanel is open, automatically update it with the newly selected row
-        if (isSidePanelOpen) {
-          setSidePanelRow(rowWithGridKey);
-        }
+        // Sidepanel will automatically show the new selectedRow
       }
     } else {
       setSelectedRow(null); // Clear selection
@@ -360,7 +357,6 @@ const AllRecords: React.FC = () => {
       // If sidepanel is open and we're clearing selection, close the sidepanel
       if (isSidePanelOpen) {
         setIsSidePanelOpen(false);
-        setSidePanelRow(null);
       }
     }
   };
@@ -372,18 +368,14 @@ const AllRecords: React.FC = () => {
 
   const handleCloseSidePanel = () => {
     setIsSidePanelOpen(false);
-    setSidePanelRow(null);
   };
 
   const handleOpenSidePanel = (row: any, gridKey?: string) => {
     const effectiveGridKey = row.gridKey || gridKey;
     if (effectiveGridKey) {
       const rowWithGridKey = { ...row, gridKey: effectiveGridKey };
-      setSidePanelRow(rowWithGridKey);
-      setIsSidePanelOpen(true);
-      
-      // Also select the row when opening sidepanel
-      setSelectedRow(rowWithGridKey);
+      setSelectedRow(rowWithGridKey); // Select the row
+      setIsSidePanelOpen(true); // Open the sidepanel
     }
   };
 
@@ -475,17 +467,15 @@ const AllRecords: React.FC = () => {
 
   const handleOpenDetailModal = (row: any, gridKey: string) => {
     const rowWithGridKey = { ...row, gridKey };
-    setDetailModalRow(rowWithGridKey);
-    setShowDetailModal(true);
+    setSelectedRow(rowWithGridKey); // Select the row
+    setShowDetailModal(true); // Open the modal
     setIsCreateMode(false);
-    // Keep the row selected when modal opens
-    setSelectedRow(rowWithGridKey);
   };
 
   const handleAddRecord = (gridKey: string) => {
     const rowWithGridKey = { gridKey };
-    setDetailModalRow(rowWithGridKey);
-    setShowDetailModal(true);
+    setSelectedRow(rowWithGridKey); // Select the row
+    setShowDetailModal(true); // Open the modal
     setIsCreateMode(true);
   };
 
@@ -495,7 +485,6 @@ const AllRecords: React.FC = () => {
 
   const handleCloseDetailModal = () => {
     setShowDetailModal(false);
-    setDetailModalRow(null);
     setIsCreateMode(false);
     // Keep row selected for 500ms before clearing to show fade effect
     setTimeout(() => {
@@ -566,9 +555,9 @@ const AllRecords: React.FC = () => {
       )
     : [];
 
-  // Generate inputConfig for modal based on detailModalRow
-  const modalTemplateConfig = detailModalRow?.gridKey
-    ? getTemplateConfigByGrid(detailModalRow.gridKey, 'modal')
+  // Generate inputConfig for modal based on selectedRow
+  const modalTemplateConfig = selectedRow?.gridKey
+    ? getTemplateConfigByGrid(selectedRow.gridKey, 'modal')
     : null;
 
   const modalInputConfig = modalTemplateConfig
@@ -587,13 +576,13 @@ const AllRecords: React.FC = () => {
       <GridItemDetailModal
         isOpen={showDetailModal}
         onClose={handleCloseDetailModal}
-        selectedRow={detailModalRow}
+        selectedRow={selectedRow}
         inputConfig={modalInputConfig}
-        title={modalTemplateConfig?.name || detailModalRow?.gridKey || "Details"}
+        title={modalTemplateConfig?.name || selectedRow?.gridKey || "Details"}
         user={user}
         onUpdateSelectedProvider={(gridKey: string, updatedProvider: any) => {
-          // Update the detailModalRow state when changes are saved
-          setDetailModalRow(updatedProvider);
+          // Update the selectedRow state when changes are saved
+          setSelectedRow(updatedProvider);
         }}
         isCreateMode={isCreateMode}
         onRecordCreated={handleRecordCreated}
@@ -678,12 +667,10 @@ const AllRecords: React.FC = () => {
               handleShowFacilityDetails={handleShowFacilityDetails}
               onOpenDetailModal={handleOpenDetailModal}
               inputConfig={inputConfig}
-              setDetailModalRow={setDetailModalRow}
               setSelectedRow={setSelectedRow}
               setShowDetailModal={setShowDetailModal}
               handleAddRecord={handleAddRecord}
               isSidePanelOpen={isSidePanelOpen}
-              sidePanelRow={sidePanelRow}
               handleOpenSidePanel={handleOpenSidePanel}
               setIsSidePanelOpen={setIsSidePanelOpen}
               // Remove visibleSections and handleSectionVisibilityChange props
@@ -718,12 +705,10 @@ const AllRecords: React.FC = () => {
               handleShowFacilityDetails={handleShowFacilityDetails}
               onOpenDetailModal={handleOpenDetailModal}
               inputConfig={inputConfig}
-              setDetailModalRow={setDetailModalRow}
               setSelectedRow={setSelectedRow}
               setShowDetailModal={setShowDetailModal}
               handleAddRecord={handleAddRecord}
               isSidePanelOpen={isSidePanelOpen}
-              sidePanelRow={sidePanelRow}
               handleOpenSidePanel={handleOpenSidePanel}
               setIsSidePanelOpen={setIsSidePanelOpen}
             />
