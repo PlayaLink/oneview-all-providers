@@ -107,6 +107,16 @@ body {
   justify-content: flex-start !important;
 }
 
+/* Row transition effects for smooth fade */
+.ag-theme-quartz .row-transition {
+  transition: background-color 0.5s ease-in-out !important;
+}
+
+/* Ensure selected row styling is smooth */
+.ag-theme-quartz .row-selected {
+  background-color: var(--blue-100) !important;
+}
+
 
 @layer base {
   :root {

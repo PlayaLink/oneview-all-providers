@@ -1,6 +1,7 @@
 import React from "react";
 import { Dialog, DialogContent } from "./ui/dialog";
 import GridItemDetails, { InputField } from "./GridItemDetails";
+import IconButton from "./ui/IconButton";
 
 interface GridItemDetailModalProps {
   isOpen: boolean;
@@ -41,6 +42,7 @@ const GridItemDetailModal: React.FC<GridItemDetailModalProps> = (props) => {
       <DialogContent 
         className="max-w-7xl w-full h-[90vh] flex flex-col" 
         data-testid="grid-item-detail-modal"
+        hideCloseButton={true}
         onOpenAutoFocus={(e) => {
           // Prevent default focus behavior
           e.preventDefault();
@@ -51,6 +53,15 @@ const GridItemDetailModal: React.FC<GridItemDetailModalProps> = (props) => {
           }
         }}
       >
+        {/* Custom close button */}
+        <IconButton
+          icon="xmark"
+          onClick={onClose}
+          aria-label="Close modal"
+          data-testid="close-modal-button"
+          data-referenceid="close-modal-button"
+          className="absolute right-4 top-4 z-10"
+        />
         <GridItemDetails
           selectedRow={effectiveSelectedRow}
           inputConfig={inputConfig}
