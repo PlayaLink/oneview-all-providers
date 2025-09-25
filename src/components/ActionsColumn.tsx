@@ -5,7 +5,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 
 // Action icon mapping based on action names
 const ACTION_ICON_MAP: Record<string, string> = {
-  'side_panel': 'sidebar-flip',
+  'side_panel': 'chevron-right',
   'verifications': 'shield-check',
   'download': 'circle-down',
   'activate': 'circle-plus',
@@ -15,7 +15,7 @@ const ACTION_ICON_MAP: Record<string, string> = {
   'tracking': 'star-half-stroke',
   'toggle_off': 'toggle-off',
   'deactivate': 'circle-x',
-  'view_details': 'pen-to-square',
+  'view_details': 'up-right-and-down-left-from-center',
   'exclude': 'times-circle'
 };
 
