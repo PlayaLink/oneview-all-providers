@@ -77,17 +77,19 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
                 onActionClick={onActionClick}
                 excludeActions={["side_panel", "view_details", "deactivate", "activate"]}
               />
-              <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={showRowDetailsInModal}
-                  onChange={(e) => setShowRowDetailsInModal(e.target.checked)}
-                  className="w-4 h-4 text-gray-600 bg-gray-100 border-gray-300 rounded focus:ring-gray-500 focus:ring-2"
-                  data-testid="open-modal-by-default-checkbox"
-                  data-referenceid="open-modal-by-default-checkbox"
-                />
-                Open modal by default
-              </label>
+              {context === "modal" && (
+                <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={showRowDetailsInModal}
+                    onChange={(e) => setShowRowDetailsInModal(e.target.checked)}
+                    className="w-4 h-4 text-gray-600 bg-gray-100 border-gray-300 rounded focus:ring-gray-500 focus:ring-2"
+                    data-testid="open-modal-by-default-checkbox"
+                    data-referenceid="open-modal-by-default-checkbox"
+                  />
+                  Open modal by default on row click
+                </label>
+              )}
             </div>
 
           )}
