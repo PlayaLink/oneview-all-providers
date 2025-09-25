@@ -197,6 +197,41 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   const [gridApi, setGridApi] = React.useState<any>(null);
   const gridStateKey = `ag-grid-state-${title}`;
 
+  // Handle actions column pinning/unpinning when selection changes
+  React.useEffect(() => {
+    if (!gridApi || !showActionsColumn) return;
+
+    const shouldPinActionsColumn = pinActionsColumn && selectedRows.length === 0;
+    
+    // Check current pin state
+    const columnState = gridApi.getColumnState();
+    const actionsColumnState = columnState.find((col: any) => col.colId === 'actions');
+    const isCurrentlyPinned = actionsColumnState?.pinned === 'right';
+
+    // Only make changes if the pin state needs to change
+    if (shouldPinActionsColumn && !isCurrentlyPinned) {
+      // Pin the actions column to the right
+      gridApi.applyColumnState({
+        state: [{ colId: 'actions', pinned: 'right' }],
+        applyOrder: false,
+        applyVisible: false,
+        applySize: false,
+        applySort: false,
+        applyFilter: false,
+      });
+    } else if (!shouldPinActionsColumn && isCurrentlyPinned) {
+      // Unpin the actions column
+      gridApi.applyColumnState({
+        state: [{ colId: 'actions', pinned: null }],
+        applyOrder: false,
+        applyVisible: false,
+        applySize: false,
+        applySort: false,
+        applyFilter: false,
+      });
+    }
+  }, [gridApi, showActionsColumn, pinActionsColumn, selectedRows.length]);
+
   // Handle bulk deletion of selected rows
   const handleBulkDelete = React.useCallback(async () => {
     
@@ -335,6 +370,9 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   // Prepare column definitions
   const columnDefs = React.useMemo(() => {
     const hasSort = columns.some((col) => col.sort);
+    
+    // Determine if actions column should be pinned based on row selection
+    const shouldPinActionsColumn = pinActionsColumn && selectedRows.length === 0;
 
     return [
       // Checkbox column
@@ -378,22 +416,23 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         }
 
         // Add custom cell renderer for expires_within column
-        if (col.field === "expires_within") {
-          baseCol.cellRenderer = (params: any) => (
-            <ExpiringCellRenderer
-              value={params.value}
-              data={params.data}
-              colDef={params.colDef}
-              expiringDaysFilter={expiringDaysFilter}
-            />
-          );
-        }
+        // if (col.field === "expires_within") {
+        //   baseCol.cellRenderer = (params: any) => (
+        //     <ExpiringCellRenderer
+        //       value={params.value}
+        //       data={params.data}
+        //       colDef={params.colDef}
+        //       expiringDaysFilter={expiringDaysFilter}
+        //     />
+        //   );
+        // }
 
         return baseCol;
       }),
 
-      // Actions column - only show when pinActionsColumn is true
-      ...(showActionsColumn && pinActionsColumn
+      // Actions column - always show when showActionsColumn is true, but pin/unpin based on selection
+      // When rows are selected, actions column unpins and moves to end of scroll container
+      ...(showActionsColumn
         ? [
             {
               headerName: "",
@@ -402,8 +441,8 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               minWidth: minWidthActionsColumn, // Minimum width
               maxWidth: 300, // Maximum width
               suppressSizeToFit: true, // Prevent AG Grid from auto-sizing this column
-              pinned: "right" as const,
-              lockPosition: true,
+              pinned: shouldPinActionsColumn ? "right" as const : undefined, // Pin only when no rows selected
+              lockPosition: shouldPinActionsColumn, // Lock position only when pinned
               suppressMenu: true,
               sortable: false,
               filter: false,
@@ -973,10 +1012,10 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
                   >
                     <span className="text-white font-bold text-xs">{expirationStats.expiring}</span>
                     <span className="text-white font-bold text-xs">Expiring</span>
-                    <Icon 
+                    {/* <Icon 
                       icon="chevron-down" 
                       className={`w-3 h-3 text-white`}
-                    />
+                    /> */}
                   </button>
                   
                   {showExpiringDropdown && (
@@ -1061,7 +1100,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         </div>
       </header>
 
-      {/* Action Bar - Shows when rows are selected */}
+      {/* Action Bar - Shows when rows are selected (actions column unpins to end of scroll) */}
       {isExpanded && selectedRows.length > 0 && (
         <div
           className="flex px-4 py-2 border-b border-gray-300 gap-4 bg-blue-100"
@@ -1134,7 +1173,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           onCellContextMenu={handleCellContextMenu}
           onCellValueChanged={handleCellValueChanged}
           rowSelection={showCheckboxes ? "multiple" : undefined}
-          headerHeight={selectedRows.length > 0 ? 0 : 40} // Hide headers when rows are selected
+          headerHeight={40} // Keep headers visible so users can see unpinned actions column
           rowHeight={42}
           suppressRowClickSelection={true}
           suppressCellFocus={false}
