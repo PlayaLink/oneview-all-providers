@@ -4,7 +4,6 @@ import Icon from "@/components/ui/Icon";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -31,9 +30,8 @@ const SidePanelTabLegacy: React.FC<SidePanelTabLegacyProps> = ({
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <TooltipProvider>
-      <Tooltip open={isHovered}>
-        <TooltipTrigger asChild>
+    <Tooltip open={isHovered}>
+      <TooltipTrigger asChild>
           <div
             className={cn(
               "flex w-full flex-col items-center justify-center gap-2 border-l border-b border-gray-200 px-1 py-5 transition-all duration-200 cursor-pointer",
@@ -89,7 +87,6 @@ const SidePanelTabLegacy: React.FC<SidePanelTabLegacyProps> = ({
           {fullLabel}
         </TooltipContent>
       </Tooltip>
-    </TooltipProvider>
   );
 };
 
