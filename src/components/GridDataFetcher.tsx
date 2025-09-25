@@ -63,6 +63,8 @@ interface GridDataFetcherProps {
   pinActionsColumn?: boolean;
   /** Whether the side panel is open */
   isSidePanelOpen?: boolean;
+  /** Callback to toggle sidebar */
+  onToggleSidebar?: (row: any) => void;
 }
 
 const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
@@ -79,6 +81,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
   onAddRecord,
   pinActionsColumn = true,
   isSidePanelOpen = false,
+  onToggleSidebar,
 }) => {
   const queryClient = useQueryClient();
   const lowerKey = gridKey.toLowerCase();
@@ -109,11 +112,11 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
 
   // Function to invalidate grid data cache after cell update
   const handleCellUpdated = React.useCallback((gridKey: string, recordId: string, field: string, newValue: any) => {
-    console.log(`Cell updated in ${gridKey}: ${field} = ${newValue} for record ${recordId}`);
+    // Debug: Cell updated
     
     // Invalidate the specific grid data query to refresh the UI
     if (gridDef?.table_name) {
-      console.log(`Invalidating cache for table: ${gridDef.table_name}`);
+      // Debug: Invalidating cache
       queryClient.invalidateQueries({
         queryKey: ["grid_data", gridDef.table_name, providerIdFilter]
       });
@@ -125,7 +128,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
       exact: false,
     });
     
-    console.log(`Cache invalidation complete - grid should refresh with updated data`);
+    // Debug: Cache invalidation complete
   }, [queryClient, gridDef?.table_name, providerIdFilter]);
 
   // Fetch columns for this grid
@@ -312,8 +315,7 @@ const GridDataFetcher: React.FC<GridDataFetcherProps> = ({
                   onToggleAlert={(data, enabled) => {}}
         onToggleSidebar={(data) => {
           // For side_panel action, we want to open the side panel directly
-          // This bypasses the row click suppression logic
-          onRowClicked?.(data);
+          onToggleSidebar?.(data);
         }}
                   onToggleFlag={(data, flagged) => {}}
         onOpenDetailModal={(data) => onOpenDetailModal?.(data, gridKey)}

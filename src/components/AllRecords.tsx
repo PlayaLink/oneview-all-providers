@@ -48,6 +48,10 @@ function GridsSection({
   setDetailModalRow,
   setSelectedRow,
   setShowDetailModal,
+  isSidePanelOpen,
+  sidePanelRow,
+  handleOpenSidePanel,
+  setIsSidePanelOpen,
   ...rest
 }: any) {
   // Add refs for each grid container
@@ -141,8 +145,9 @@ function GridsSection({
                     selectedGridKey={selectedRow?.gridKey}
                     onOpenDetailModal={onOpenDetailModal}
                     onAddRecord={handleAddRecord}
-                    pinActionsColumn={!selectedRow}
-                    isSidePanelOpen={!!selectedRow}
+                    pinActionsColumn={!isSidePanelOpen}
+                    isSidePanelOpen={isSidePanelOpen}
+                    onToggleSidebar={(row: any) => handleOpenSidePanel(row, item.grid.key)}
                   />
                 </div>
               ))}
@@ -175,14 +180,14 @@ function GridsSection({
         )}
         {/* SidePanel - rendered inline next to grids list */}
         <SidePanel
-          isOpen={!!selectedRow}
-          selectedRow={selectedRow}
+          isOpen={isSidePanelOpen}
+          selectedRow={sidePanelRow}
           inputConfig={inputConfig}
           onClose={handleCloseSidePanel}
           user={user}
           onExpandDetailModal={() => {
-            setDetailModalRow(selectedRow);
-            setSelectedRow(null);
+            setDetailModalRow(sidePanelRow);
+            setIsSidePanelOpen(false);
             setShowDetailModal(true);
           }}
         />
@@ -203,6 +208,8 @@ const AllRecords: React.FC = () => {
   // Remove local visibleSections and setVisibleSections state
   // const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
   const [selectedRow, setSelectedRow] = useState<(any & { gridKey: string }) | null>(null);
+  const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
+  const [sidePanelRow, setSidePanelRow] = useState<(any & { gridKey: string }) | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [detailModalRow, setDetailModalRow] = useState<any>(null);
   const [isCreateMode, setIsCreateMode] = useState(false);
@@ -326,22 +333,43 @@ const AllRecords: React.FC = () => {
   };
 
   const handleRowSelect = (row: any | null, gridKey?: string) => {
-    // If clicking the already selected row, unselect it and close sidepanel
+    // Only manage row selection - sidepanel is now independent
     if (row && gridKey && selectedRow && selectedRow.id === row.id && selectedRow.gridKey === gridKey) {
-      setSelectedRow(null);
+      setSelectedRow(null); // Unselect the row
     } else if (row) {
       // Use gridKey from row data if available, otherwise use the parameter
       const effectiveGridKey = row.gridKey || gridKey;
       if (effectiveGridKey) {
-        setSelectedRow({ ...row, gridKey: effectiveGridKey });
+        const rowWithGridKey = { ...row, gridKey: effectiveGridKey };
+        setSelectedRow(rowWithGridKey); // Select the row
+        
+        // If sidepanel is open, automatically update it with the newly selected row
+        if (isSidePanelOpen) {
+          setSidePanelRow(rowWithGridKey);
+        }
       }
     } else {
-      setSelectedRow(null);
+      setSelectedRow(null); // Clear selection
     }
   };
 
+  const handleRowDoubleClick = (row: any, gridKey?: string) => {
+    // Double-click opens sidepanel
+    handleOpenSidePanel(row, gridKey);
+  };
+
   const handleCloseSidePanel = () => {
-    setSelectedRow(null);
+    setIsSidePanelOpen(false);
+    setSidePanelRow(null);
+  };
+
+  const handleOpenSidePanel = (row: any, gridKey?: string) => {
+    const effectiveGridKey = row.gridKey || gridKey;
+    if (effectiveGridKey) {
+      const rowWithGridKey = { ...row, gridKey: effectiveGridKey };
+      setSidePanelRow(rowWithGridKey);
+      setIsSidePanelOpen(true);
+    }
   };
 
   // Handler for showing facility details modal
@@ -457,7 +485,7 @@ const AllRecords: React.FC = () => {
     // Keep row selected for 500ms before clearing to show fade effect
     setTimeout(() => {
       setSelectedRow(null);
-    }, 500);
+    }, 1000);
   };
 
   const handleRecordCreated = (newRecord: any) => {
@@ -639,6 +667,10 @@ const AllRecords: React.FC = () => {
               setSelectedRow={setSelectedRow}
               setShowDetailModal={setShowDetailModal}
               handleAddRecord={handleAddRecord}
+              isSidePanelOpen={isSidePanelOpen}
+              sidePanelRow={sidePanelRow}
+              handleOpenSidePanel={handleOpenSidePanel}
+              setIsSidePanelOpen={setIsSidePanelOpen}
               // Remove visibleSections and handleSectionVisibilityChange props
               // visibleSections={visibleSections}
               // handleSectionVisibilityChange={handleSectionVisibilityChange}
@@ -675,6 +707,10 @@ const AllRecords: React.FC = () => {
               setSelectedRow={setSelectedRow}
               setShowDetailModal={setShowDetailModal}
               handleAddRecord={handleAddRecord}
+              isSidePanelOpen={isSidePanelOpen}
+              sidePanelRow={sidePanelRow}
+              handleOpenSidePanel={handleOpenSidePanel}
+              setIsSidePanelOpen={setIsSidePanelOpen}
             />
         </div>
       )}
