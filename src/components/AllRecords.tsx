@@ -209,12 +209,6 @@ const AllRecords: React.FC = () => {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [isCreateMode, setIsCreateMode] = useState(false);
 
-  // Console log state changes for debugging
-  React.useEffect(() => {
-    console.log('🔵 selectedRow:', selectedRow);
-    console.log('📋 isSidePanelOpen:', isSidePanelOpen);
-    console.log('🪟 showDetailModal:', showDetailModal);
-  }, [selectedRow, isSidePanelOpen, showDetailModal]);
 
   // Facility details modal state
   const [facilityDetailsModal, setFacilityDetailsModal] = useState<{
