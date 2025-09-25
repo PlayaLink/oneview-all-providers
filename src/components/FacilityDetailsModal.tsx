@@ -91,7 +91,6 @@ export const FacilityDetailsModal: React.FC<FacilityDetailsModalProps> = ({
       <DialogContent
         className="max-w-6xl max-h-[90vh] flex flex-col"
         data-testid="facility-details-modal"
-        onClose={onClose}
       >
         <DialogHeader className="flex flex-row items-center justify-between pb-4 flex-shrink-0">
           <DialogTitle className="flex items-center gap-2 text-sm font-bold text-gray-700 tracking-wider uppercase">
