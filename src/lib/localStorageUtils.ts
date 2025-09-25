@@ -11,6 +11,7 @@ export interface LocalStorageKeys {
   
   // UI preference keys
   SIDE_PANEL_WIDTH: 'sidePanelWidth';
+  SHOW_ROW_DETAILS_IN_MODAL: 'showRowDetailsInModal';
   
   // Add more keys as needed
   [key: string]: string;
@@ -21,6 +22,7 @@ export const LOCAL_STORAGE_KEYS: LocalStorageKeys = {
   GRID_STATE_PREFIX: 'ag-grid-state-',
   DOCUMENTS_GRID_STATE: 'ag-grid-state-documents',
   SIDE_PANEL_WIDTH: 'sidePanelWidth',
+  SHOW_ROW_DETAILS_IN_MODAL: 'showRowDetailsInModal',
 };
 
 /**
