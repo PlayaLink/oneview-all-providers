@@ -79,7 +79,7 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
                    {/* Expand icon button - only for sidepanel context */}
       {context === "sidepanel" && onExpandDetailModal && (
         <Tooltip>
-          <TooltipTrigger asChild>
+          <TooltipTrigger>
             <IconButton
               icon="expand"
               onClick={onExpandDetailModal}
@@ -88,7 +88,7 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
               data-referenceid="expand-detail-modal-button"
             />
           </TooltipTrigger>
-          <TooltipContent>
+          <TooltipContent side="top" align="center">
             <p>Expand to modal</p>
           </TooltipContent>
         </Tooltip>
