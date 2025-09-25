@@ -2,6 +2,7 @@ import React from "react";
 import { Dialog, DialogContent } from "./ui/dialog";
 import GridItemDetails, { InputField } from "./GridItemDetails";
 import IconButton from "./ui/IconButton";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 interface GridItemDetailModalProps {
   isOpen: boolean;
@@ -55,17 +56,25 @@ const GridItemDetailModal: React.FC<GridItemDetailModalProps> = (props) => {
           }
         }}
       >
+        <TooltipProvider>
         {/* Custom buttons */}
         <div className="absolute right-4 top-4 z-10 flex flex-row gap-2">
           {/* Collapse to sidepanel button */}
           {onCollapseToSidepanel && (
-            <IconButton
-              icon="collapse"
-              onClick={onCollapseToSidepanel}
-              aria-label="Collapse to sidepanel"
-              data-testid="collapse-to-sidepanel-button"
-              data-referenceid="collapse-to-sidepanel-button"
-            />
+            <Tooltip>
+              <TooltipTrigger>
+                <IconButton
+                  icon="collapse"
+                  onClick={onCollapseToSidepanel}
+                  aria-label="Collapse to sidepanel"
+                  data-testid="collapse-to-sidepanel-button"
+                  data-referenceid="collapse-to-sidepanel-button"
+                />
+              </TooltipTrigger>
+              <TooltipContent side="top" align="center">
+                <p>Collapse to side panel</p>
+              </TooltipContent>
+            </Tooltip>
           )}
           {/* Close button */}
           <IconButton
@@ -89,6 +98,7 @@ const GridItemDetailModal: React.FC<GridItemDetailModalProps> = (props) => {
           isCreateMode={isCreateMode}
           onRecordCreated={onRecordCreated}
         />
+        </TooltipProvider>
       </DialogContent>
     </Dialog>
   );
