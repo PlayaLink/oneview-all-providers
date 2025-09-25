@@ -38,7 +38,19 @@ const GridItemDetailModal: React.FC<GridItemDetailModalProps> = (props) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={open => { if (!open) onClose(); }}>
-      <DialogContent className="max-w-5xl w-full h-[90vh] flex flex-col" data-testid="grid-item-detail-modal">
+      <DialogContent 
+        className="max-w-5xl w-full h-[90vh] flex flex-col" 
+        data-testid="grid-item-detail-modal"
+        onOpenAutoFocus={(e) => {
+          // Prevent default focus behavior
+          e.preventDefault();
+          // Focus the first tab instead (details tab)
+          const firstTab = document.querySelector('[data-testid="grid-item-details-tab"]');
+          if (firstTab) {
+            (firstTab as HTMLElement).focus();
+          }
+        }}
+      >
         <GridItemDetails
           selectedRow={effectiveSelectedRow}
           inputConfig={inputConfig}
