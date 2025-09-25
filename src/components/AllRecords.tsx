@@ -20,6 +20,7 @@ import { getTemplateConfigByGrid } from "@/lib/templateConfigs";
 import { getOrderedSectionsAndGrids } from "@/lib/gridOrdering";
 import { FacilityDetailsModal } from "./FacilityDetailsModal";
 import GridItemDetailModal from "./GridItemDetailModal";
+import { getLocalStorage, setLocalStorage, LOCAL_STORAGE_KEYS } from "@/lib/localStorageUtils";
 
 const fetchProviders = async () => {
   const { data, error } = await supabase.from('providers').select('*');
@@ -184,6 +185,8 @@ function GridsSection({
           onClose={handleCloseSidePanel}
           user={user}
           onExpandDetailModal={() => {
+            // Set user preference to show details in modal
+            setLocalStorage(LOCAL_STORAGE_KEYS.SHOW_ROW_DETAILS_IN_MODAL, true);
             setIsSidePanelOpen(false);
             setShowDetailModal(true);
           }}
@@ -343,7 +346,20 @@ const AllRecords: React.FC = () => {
       if (effectiveGridKey) {
         const rowWithGridKey = { ...row, gridKey: effectiveGridKey };
         setSelectedRow(rowWithGridKey); // Select the row
-        // Sidepanel will automatically show the new selectedRow
+        
+        // Check user preference for how to display row details
+        const showRowDetailsInModal = getLocalStorage<boolean>(
+          LOCAL_STORAGE_KEYS.SHOW_ROW_DETAILS_IN_MODAL, 
+          false
+        );
+        
+        if (showRowDetailsInModal) {
+          // User prefers modal - open detail modal
+          handleOpenDetailModal(rowWithGridKey, effectiveGridKey);
+        } else {
+          // User prefers sidepanel - open sidepanel
+          handleOpenSidePanel(rowWithGridKey, effectiveGridKey);
+        }
       }
     } else {
       setSelectedRow(null); // Clear selection
@@ -486,6 +502,13 @@ const AllRecords: React.FC = () => {
     }, 500);
   };
 
+  const handleCollapseToSidepanel = () => {
+    // Set user preference to show details in sidepanel
+    setLocalStorage(LOCAL_STORAGE_KEYS.SHOW_ROW_DETAILS_IN_MODAL, false);
+    setShowDetailModal(false);
+    setIsSidePanelOpen(true);
+  };
+
   const handleRecordCreated = (newRecord: any) => {
     // Refresh the grid data after creating a new record
     // This will be handled by the query invalidation in GridItemDetails
@@ -570,6 +593,7 @@ const AllRecords: React.FC = () => {
       <GridItemDetailModal
         isOpen={showDetailModal}
         onClose={handleCloseDetailModal}
+        onCollapseToSidepanel={handleCollapseToSidepanel}
         selectedRow={selectedRow}
         inputConfig={modalInputConfig}
         title={modalTemplateConfig?.name || selectedRow?.gridKey || "Details"}

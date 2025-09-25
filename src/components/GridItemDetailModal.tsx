@@ -8,6 +8,7 @@ interface GridItemDetailModalProps {
   selectedRow: (any & { gridKey: string }) | null;
   inputConfig: InputField[];
   onClose: () => void;
+  onCollapseToSidepanel?: () => void;
   title?: string;
   user: any;
   onUpdateSelectedProvider?: (gridKey: string, updatedProvider: any) => void;
@@ -23,6 +24,7 @@ const GridItemDetailModal: React.FC<GridItemDetailModalProps> = (props) => {
     selectedRow, 
     inputConfig, 
     onClose, 
+    onCollapseToSidepanel,
     title, 
     user, 
     onUpdateSelectedProvider,
@@ -53,19 +55,32 @@ const GridItemDetailModal: React.FC<GridItemDetailModalProps> = (props) => {
           }
         }}
       >
-        {/* Custom close button */}
-        <IconButton
-          icon="xmark"
-          onClick={onClose}
-          aria-label="Close modal"
-          data-testid="close-modal-button"
-          data-referenceid="close-modal-button"
-          className="absolute right-4 top-4 z-10"
-        />
+        {/* Custom buttons */}
+        <div className="absolute right-4 top-4 z-10 flex flex-row gap-2">
+          {/* Collapse to sidepanel button */}
+          {onCollapseToSidepanel && (
+            <IconButton
+              icon="collapse"
+              onClick={onCollapseToSidepanel}
+              aria-label="Collapse to sidepanel"
+              data-testid="collapse-to-sidepanel-button"
+              data-referenceid="collapse-to-sidepanel-button"
+            />
+          )}
+          {/* Close button */}
+          <IconButton
+            icon="xmark"
+            onClick={onClose}
+            aria-label="Close modal"
+            data-testid="close-modal-button"
+            data-referenceid="close-modal-button"
+          />
+        </div>
         <GridItemDetails
           selectedRow={effectiveSelectedRow}
           inputConfig={inputConfig}
           onClose={onClose}
+          onCollapseToSidepanel={onCollapseToSidepanel}
           title={isCreateMode ? `New ${title || 'Record'}` : title}
           user={user}
           onUpdateSelectedProvider={onUpdateSelectedProvider}

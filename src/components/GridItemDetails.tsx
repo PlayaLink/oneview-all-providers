@@ -77,6 +77,8 @@ interface GridItemDetailsProps {
   onUpdateSelectedProvider?: (gridKey: string, updatedProvider: any) => void;
   /** Called when the expand icon is clicked in the header (only for sidepanel context) */
   onExpandDetailModal?: () => void;
+  /** Called when the collapse icon is clicked in the header (only for modal context) */
+  onCollapseToSidepanel?: () => void;
   /** The context in which this component is being used */
   context: ContextType;
   /** Panel width for sidepanel context */
@@ -177,6 +179,7 @@ const GridItemDetails: React.FC<GridItemDetailsProps> = (props) => {
     user,
     onUpdateSelectedProvider,
     onExpandDetailModal,
+    onCollapseToSidepanel,
     context,
     panelWidth = 484,
     isOpen = true,

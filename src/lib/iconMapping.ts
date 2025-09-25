@@ -69,6 +69,7 @@ import {
   faUserPlus,
   faSearch,
   faUpRightAndDownLeftFromCenter,
+  faDownLeftAndUpRightToCenter,
   faTrash,
   faStickyNote,
   faCode,
@@ -165,6 +166,8 @@ const iconMap: Record<string, IconDefinition | string> = {
   "search": faSearch,
   "up-right-and-down-left-from-center": faUpRightAndDownLeftFromCenter,
   "expand": faUpRightAndDownLeftFromCenter, // Alias for expand
+  "down-left-and-up-right-to-center": faDownLeftAndUpRightToCenter,
+  "collapse": faDownLeftAndUpRightToCenter, // Alias for collapse
   
   // Delete and trash icons
   "trash": faTrash,
