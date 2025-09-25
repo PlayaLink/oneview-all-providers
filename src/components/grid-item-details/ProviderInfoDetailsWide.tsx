@@ -36,7 +36,7 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => (
   <>
     {/* Provider Name Section */}
     <CollapsibleSection title="Provider Name">
-      <div className="flex flex-row gap-4 w-full">
+      <div className="flex flex-col sm:flex-row gap-4 w-full">
         <div className="flex-1">
           <SingleSelect label="Prefix" labelPosition="above" options={PREFIX_OPTIONS} {...getFieldProps('prefix', formValues, handleChange)} />
         </div>
@@ -50,7 +50,7 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => (
           <TextInputField label="Last Name" labelPosition="above" {...getFieldProps('last_name', formValues, handleChange)} />
         </div>
       </div>
-      <div className="flex flex-row gap-4 w-full mt-2">
+      <div className="flex flex-col sm:flex-row gap-4 w-full mt-2">
         <div className="flex-1">
           <SingleSelect label="Suffix" labelPosition="above" options={SUFFIX_OPTIONS} {...getFieldProps('suffix', formValues, handleChange)} />
         </div>
@@ -64,7 +64,7 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => (
 
     {/* Type, Specialty & Classifications Section */}
     <CollapsibleSection title="Title, Specialty & Classifications">
-      <div className="flex flex-row gap-4 w-full">
+      <div className="flex flex-col sm:flex-row gap-4 w-full">
         <div className="flex-1">
           <SingleSelect label="Provider Title" labelPosition="above" options={PROVIDER_TITLE_OPTIONS} {...getFieldProps('title', formValues, handleChange)} />
         </div>
@@ -75,7 +75,7 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => (
           <MultiSelectInput label="Taxonomy Codes" labelPosition="above" options={TAXONOMY_CODE_OPTIONS} {...getFieldProps('taxonomy_codes', formValues, handleChange)} />
         </div>
       </div>
-      <div className="flex flex-row gap-4 w-full mt-2">
+      <div className="flex flex-col sm:flex-row gap-4 w-full mt-2">
         <div className="flex-1">
           <MultiSelectInput label="Clinical Services" labelPosition="above" options={CLINICAL_SERVICES_OPTIONS} {...getFieldProps('clinical_services', formValues, handleChange)} />
         </div>
@@ -89,7 +89,7 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => (
           <MultiSelectInput label="Fluent Languages" labelPosition="above" options={LANGUAGE_OPTIONS} {...getFieldProps('fluent_languages', formValues, handleChange)} />
         </div>
       </div>
-      <div className="flex flex-row gap-4 w-full mt-2">
+      <div className="flex flex-col sm:flex-row gap-4 w-full mt-2">
         <div className="flex-1">
           <MultiSelectInput label="CMS Medicare Specialty Codes" labelPosition="above" options={CMS_MEDICARE_SPECIALTY_OPTIONS} {...getFieldProps('cms_medicare_specialty_codes', formValues, handleChange)} />
         </div>
@@ -105,7 +105,7 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => (
 
     {/* Contact Info Section */}
     <CollapsibleSection title="Contact Info">
-      <div className="flex flex-row gap-4 w-full">
+      <div className="flex flex-col sm:flex-row gap-4 w-full">
         <div className="flex-1">
           <TextInputField label="Work Email" labelPosition="above" {...getFieldProps('work_email', formValues, handleChange)} />
         </div>
@@ -113,7 +113,7 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => (
           <TextInputField label="Personal Email" labelPosition="above" {...getFieldProps('personal_email', formValues, handleChange)} />
         </div>
       </div>
-      <div className="flex flex-row gap-4 w-full mt-2">
+      <div className="flex flex-col sm:flex-row gap-4 w-full mt-2">
         <div className="flex-1">
           <TextInputField label="Mobile Phone #" labelPosition="above" {...getFieldProps('mobile_phone_number', formValues, handleChange)} />
         </div>
@@ -125,7 +125,7 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => (
 
     {/* Emergency Contact Section */}
     <CollapsibleSection title="Emergency Contact">
-      <div className="flex flex-row gap-4 w-full">
+      <div className="flex flex-col sm:flex-row gap-4 w-full">
         <div className="flex-1">
           <TextInputField label="Emergency Contact Name" labelPosition="above" {...getFieldProps('emergency_contact_name', formValues, handleChange)} />
         </div>
@@ -143,7 +143,7 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => (
 
     {/* Identification Section */}
     <CollapsibleSection title="Identification">
-      <div className="flex flex-row gap-4 w-full">
+      <div className="flex flex-col sm:flex-row gap-4 w-full">
         <div className="flex-1">
           <TextInputField label="Social Security #" labelPosition="above" {...getFieldProps('social_security_number', formValues, handleChange)} />
         </div>
@@ -154,7 +154,7 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => (
           <TextInputField label="Last Updated" labelPosition="above" {...getFieldProps('last_updated', formValues, handleChange)} />
         </div>
       </div>
-      <div className="flex flex-row gap-4 w-full mt-2">
+      <div className="flex flex-col sm:flex-row gap-4 w-full mt-2">
         <div className="flex-1">
           <TextInputField label="Driver License or ID #" labelPosition="above" {...getFieldProps('driver_license_or_id_number', formValues, handleChange)} />
         </div>
