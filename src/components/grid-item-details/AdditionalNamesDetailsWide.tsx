@@ -26,7 +26,7 @@ export const additionalNamesWideFieldGroup = {
 
 const AdditionalNamesDetailsWide = ({ formValues, handleChange }) => (
   <div 
-    className="grid grid-cols-2 gap-4"
+    className="grid grid-cols-1 sm:grid-cols-2 gap-4"
     role="main"
     aria-label="Additional Names Details Wide"
     data-testid="additional-names-details-wide"
