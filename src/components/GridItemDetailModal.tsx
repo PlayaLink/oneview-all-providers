@@ -9,7 +9,6 @@ interface GridItemDetailModalProps {
   selectedRow: (any & { gridKey: string }) | null;
   inputConfig: InputField[];
   onClose: () => void;
-  onCollapseToSidepanel?: () => void;
   title?: string;
   user: any;
   onUpdateSelectedProvider?: (gridKey: string, updatedProvider: any) => void;
@@ -25,7 +24,6 @@ const GridItemDetailModal: React.FC<GridItemDetailModalProps> = (props) => {
     selectedRow, 
     inputConfig, 
     onClose, 
-    onCollapseToSidepanel,
     title, 
     user, 
     onUpdateSelectedProvider,
@@ -59,23 +57,6 @@ const GridItemDetailModal: React.FC<GridItemDetailModalProps> = (props) => {
         <TooltipProvider>
         {/* Custom buttons */}
         <div className="absolute right-4 top-4 z-10 flex flex-row gap-2">
-          {/* Collapse to sidepanel button */}
-          {onCollapseToSidepanel && (
-            <Tooltip>
-              <TooltipTrigger>
-                <IconButton
-                  icon="collapse"
-                  onClick={onCollapseToSidepanel}
-                  aria-label="Collapse to sidepanel"
-                  data-testid="collapse-to-sidepanel-button"
-                  data-referenceid="collapse-to-sidepanel-button"
-                />
-              </TooltipTrigger>
-              <TooltipContent side="top" align="center">
-                <p>Collapse to side panel</p>
-              </TooltipContent>
-            </Tooltip>
-          )}
           {/* Close button */}
           <IconButton
             icon="xmark"
@@ -89,7 +70,6 @@ const GridItemDetailModal: React.FC<GridItemDetailModalProps> = (props) => {
           selectedRow={effectiveSelectedRow}
           inputConfig={inputConfig}
           onClose={onClose}
-          onCollapseToSidepanel={onCollapseToSidepanel}
           title={isCreateMode ? `New ${title || 'Record'}` : title}
           user={user}
           onUpdateSelectedProvider={onUpdateSelectedProvider}
