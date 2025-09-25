@@ -586,24 +586,12 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         return;
       }
       
-      // This is a single-click - proceed with row selection
+      // Clear focus
       event.api.setFocusedCell(null, null);
 
-      if (selectedRowId === event.data.id) {
-        if (controlledSelectedRowId === undefined) {
-          setInternalSelectedRowId(null);
-        }
-        if (onRowClicked) {
-          onRowClicked(null);
-        }
-        return;
-      }
-
-      if (controlledSelectedRowId === undefined) {
-        setInternalSelectedRowId(event.data.id);
-      }
-
-      if (onRowClicked && event.data) {
+      // Allow row selection only if side panel is already open
+      // This lets users change the selected row when side panel is open
+      if (isSidePanelOpen && onRowClicked && event.data) {
         // Add gridKey to the row data for proper mapping
         const rowDataWithGridKey = { ...event.data, gridKey };
         onRowClicked(rowDataWithGridKey);
