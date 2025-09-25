@@ -15,8 +15,8 @@ import { faker } from '@faker-js/faker';
 import { useAnnotationMode } from "./hooks/useAnnotationMode";
 import { AnnotationController } from "./components/AnnotationController";
 
-const AuthWrapper = ({ user, loading, isAnnotationMode, setAnnotationMode }: { 
-  user: any, 
+const AuthWrapper = ({ user, loading, isAnnotationMode, setAnnotationMode }: {
+  user: any,
   loading: boolean,
   isAnnotationMode: boolean,
   setAnnotationMode: (value: boolean) => void
@@ -62,7 +62,7 @@ const AuthWrapper = ({ user, loading, isAnnotationMode, setAnnotationMode }: {
       {/* Redirect home to /team */}
       <Route path="/" element={<Navigate to="/all-records" replace />} />
       {/* Main app layout and routes */}
-              <Route element={<AppLayout user={effectiveUser} isAnnotationMode={isAnnotationMode} setAnnotationMode={setAnnotationMode} />}>
+      <Route element={<AppLayout user={effectiveUser} isAnnotationMode={isAnnotationMode} setAnnotationMode={setAnnotationMode} />}>
         <Route path=":provider_id" element={<SingleProvider />} />
         <Route path="/all-records" element={<AllRecords />} />
         <Route path="/team" element={<TeamPage />} />
@@ -102,13 +102,13 @@ const App = () => {
     (async () => {
       const { data } = await supabase.auth.getSession();
       if (isMounted) {
-      setUser(data.session?.user ?? null);
-      setLoading(false);
+        setUser(data.session?.user ?? null);
+        setLoading(false);
       }
     })();
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (isMounted) {
-      setUser(session?.user ?? null);
+        setUser(session?.user ?? null);
       }
     });
     return () => {
@@ -131,7 +131,7 @@ const App = () => {
         if (!cancelled) {
           const newRequireAuth = data ? data.setting_value : true;
           setRequireAuth(newRequireAuth);
-          
+
           // If authentication is now required, clear any dummy user
           if (newRequireAuth) {
             sessionStorage.removeItem('oneview_dummy_user');
