@@ -220,46 +220,26 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         applyFilter: false,
       });
     } else if (!shouldPinActionsColumn && isCurrentlyPinned) {
-      // Unpin the actions column and ensure it's the last column
-      const allColumns = gridApi.getAllDisplayedColumns();
-      const unpinnedColumns = allColumns.filter((col: any) => !col.getPinned());
+      // Get all unpinned columns (excluding the currently pinned actions column)
+      const unpinnedColumns = columnState.filter((col: any) => !col.pinned);
+      const unpinnedColumnIds = unpinnedColumns.map((col: any) => col.colId);
       
-      // First unpin the column
+      // Create new column order with actions at the end
+      const newColumnOrder = [...unpinnedColumnIds, 'actions'];
+      
+      // Unpin and reorder in a single operation to prevent flashing
       gridApi.applyColumnState({
-        state: [{ colId: 'actions', pinned: null }],
-        applyOrder: false,
+        state: newColumnOrder.map((colId: string, index: number) => ({
+          colId,
+          pinned: colId === 'actions' ? null : undefined,
+          sortIndex: index
+        })),
+        applyOrder: true,
         applyVisible: false,
         applySize: false,
         applySort: false,
         applyFilter: false,
       });
-      
-      // Then move it to the end of unpinned columns
-      setTimeout(() => {
-        // Get the current column order after unpinning
-        const currentColumnState = gridApi.getColumnState();
-        const unpinnedColumnIds = currentColumnState
-          .filter((col: any) => !col.pinned)
-          .map((col: any) => col.colId);
-        
-        // Create new column order with actions at the end
-        const newColumnOrder = unpinnedColumnIds
-          .filter((colId: string) => colId !== 'actions')
-          .concat(['actions']);
-        
-        // Apply the new column order
-        gridApi.applyColumnState({
-          state: newColumnOrder.map((colId: string, index: number) => ({
-            colId,
-            sortIndex: index
-          })),
-          applyOrder: true,
-          applyVisible: false,
-          applySize: false,
-          applySort: false,
-          applyFilter: false,
-        });
-      }, 1);
     }
   }, [gridApi, showActionsColumn, pinActionsColumn, selectedRows.length]);
 
@@ -1229,6 +1209,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
           suppressColumnVirtualisation={false}
           cellSelection={false}
           maintainColumnOrder={true}
+          suppressColumnMoveAnimation={true}
           onGridReady={(params) => {
             setGridApi(params.api);
             params.api.sizeColumnsToFit();
