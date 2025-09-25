@@ -19,6 +19,7 @@ import {
   updateBirthInfo,
   updateAddress
 } from "@/lib/supabaseClient";
+import { getLocalStorage, setLocalStorage, removeLocalStorage } from "@/lib/localStorageUtils";
 import { colorTokens } from "@/lib/colorTokens";
 import ContextMenu from "./ContextMenu";
 import ActionsColumn from "./ActionsColumn";
@@ -351,7 +352,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
       // Reset column state
       gridApi.resetColumnState();
       // Clear localStorage
-      localStorage.removeItem(`ag-grid-state-${title}`);
+      removeLocalStorage(`ag-grid-state-${title}`);
     }
     setIsGridSettingsOpen(false);
   }, [gridApi, title]);
@@ -729,7 +730,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         return;
       }
       
-      localStorage.setItem(gridStateKey, JSON.stringify(columnState));
+      setLocalStorage(gridStateKey, columnState);
       
       // Save column widths to database if we have grid columns data
       if (gridColumnsData && gridKey) {
@@ -780,16 +781,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   // Load column state from localStorage and database
   const loadColumnState = React.useCallback(() => {
     if (gridApi) {
-      const savedState = localStorage.getItem(gridStateKey);
-      let columnState = [];
-      
-      if (savedState) {
-        try {
-          columnState = JSON.parse(savedState);
-        } catch (error) {
-          // Warning: Failed to parse saved column state
-        }
-      }
+      let columnState = getLocalStorage<any[]>(gridStateKey, []);
       
       // Apply database widths to column state if available
       if (gridColumnsData) {

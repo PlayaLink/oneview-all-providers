@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import GridItemDetails, { InputField } from "./GridItemDetails";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 interface SidePanelProps {
   isOpen: boolean;
@@ -16,18 +17,9 @@ interface SidePanelProps {
 const SidePanel: React.FC<SidePanelProps> = (props) => {
   const { isOpen, selectedRow, inputConfig, onClose, title, user, onUpdateSelectedProvider, onExpandDetailModal } = props;
   
-  const [panelWidth, setPanelWidth] = useState(() => {
-    // Load saved width from localStorage, fallback to default
-    const savedWidth = localStorage.getItem('sidePanelWidth');
-    return savedWidth ? parseInt(savedWidth, 10) : 575;
-  });
+  const [panelWidth, setPanelWidth] = useLocalStorage('sidePanelWidth', 575);
   const [isDragging, setIsDragging] = useState(false);
   const dividerRef = useRef<HTMLDivElement>(null);
-
-  // Save width to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem('sidePanelWidth', panelWidth.toString());
-  }, [panelWidth]);
 
   // Handle mouse down on divider
   const handleMouseDown = useCallback((e: React.MouseEvent) => {

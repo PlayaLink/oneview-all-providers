@@ -2,6 +2,7 @@ import React from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-enterprise/styles/ag-grid.css";
 import "ag-grid-enterprise/styles/ag-theme-quartz.css";
+import { getLocalStorage, setLocalStorage } from "@/lib/localStorageUtils";
 
 interface Document {
   id: string;
@@ -25,28 +26,23 @@ const DocumentsGrid: React.FC<DocumentsGridProps> = ({ documents }) => {
   const saveColumnState = React.useCallback(() => {
     if (gridApi) {
       const columnState = gridApi.getColumnState();
-      localStorage.setItem(gridStateKey, JSON.stringify(columnState));
+      setLocalStorage(gridStateKey, columnState);
     }
   }, [gridApi, gridStateKey]);
 
   // Load column state from localStorage
   const loadColumnState = React.useCallback(() => {
     if (gridApi) {
-      const savedState = localStorage.getItem(gridStateKey);
-      if (savedState) {
-        try {
-          const columnState = JSON.parse(savedState);
-          gridApi.applyColumnState({
-            state: columnState,
-            applyOrder: true,
-            applyVisible: true,
-            applySize: true,
-            applySort: true,
-            applyFilter: true,
-          });
-        } catch (error) {
-          // Warning: Failed to load column state
-        }
+      const columnState = getLocalStorage<any[]>(gridStateKey, []);
+      if (columnState.length > 0) {
+        gridApi.applyColumnState({
+          state: columnState,
+          applyOrder: true,
+          applyVisible: true,
+          applySize: true,
+          applySort: true,
+          applyFilter: true,
+        });
       }
     }
   }, [gridApi, gridStateKey]);
