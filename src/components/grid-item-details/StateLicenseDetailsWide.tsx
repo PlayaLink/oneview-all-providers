@@ -168,23 +168,9 @@ const StateLicenseDetailsWide = ({ formValues, handleChange, provider }) => {
 
       {/* Additional Info Section */}
       <CollapsibleSection title="Additional Info">
-        <div className="flex flex-row gap-4 w-full">
-          {additionalInfoFields.slice(0, 4).map((field) => (
-            <div key={field.key || field.label} className="flex-1">
-              {renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' })}
-            </div>
-          ))}
-        </div>
-        <div className="flex flex-row gap-4 w-full mt-2">
-          {additionalInfoFields.slice(4, 8).map((field) => (
-            <div key={field.key || field.label} className="flex-1">
-              {renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' })}
-            </div>
-          ))}
-        </div>
-        <div className="flex flex-row gap-4 w-full mt-2">
-          {additionalInfoFields.slice(8).map((field) => (
-            <div key={field.key || field.label} className="flex-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+          {additionalInfoFields.map((field) => (
+            <div key={field.key || field.label}>
               {renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' })}
             </div>
           ))}
