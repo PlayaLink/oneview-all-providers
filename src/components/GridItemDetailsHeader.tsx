@@ -2,6 +2,7 @@ import React from "react";
 import ActionsColumn from "./ActionsColumn";
 import IconButton from "./ui/IconButton";
 import ProviderSearch from "./ProviderSearch";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 interface GridItemDetailsHeaderProps {
   headerText: string;
@@ -36,10 +37,11 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
       ? "flex justify-between px-4 pb-1 pt-4 border-b border-gray-200"
       : "flex flex-row items-center justify-between pb-1 flex-shrink-0 border-b border-gray-300";
   return (
-    <div
-      className={headerClassName}
-      data-testid={`grid-item-details-header-${context}`}
-    >
+    <TooltipProvider>
+      <div
+        className={headerClassName}
+        data-testid={`grid-item-details-header-${context}`}
+      >
       <div className="flex-1 flex-col">
         <h2 className="text-lg font-bold text-gray-700 tracking-wider mr-2">{headerText}</h2>
         {/* Provider Search - create mode only for non-provider_info grids */}
@@ -76,13 +78,20 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
         <div className="flex flex-row justify-end">
                    {/* Expand icon button - only for sidepanel context */}
       {context === "sidepanel" && onExpandDetailModal && (
-        <IconButton
-          icon="expand"
-          onClick={onExpandDetailModal}
-          aria-label="Expand details modal"
-          data-testid="expand-detail-modal-button"
-          data-referenceid="expand-detail-modal-button"
-        />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <IconButton
+              icon="expand"
+              onClick={onExpandDetailModal}
+              aria-label="Expand details modal"
+              data-testid="expand-detail-modal-button"
+              data-referenceid="expand-detail-modal-button"
+            />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Expand to modal</p>
+          </TooltipContent>
+        </Tooltip>
       )}
       {/* Close icon button - only for sidepanel context */}
       {context === "sidepanel" && (
@@ -97,6 +106,7 @@ const GridItemDetailsHeader: React.FC<GridItemDetailsHeaderProps> = ({
         </div>
       </div>
     </div>
+    </TooltipProvider>
   );
 };
 
