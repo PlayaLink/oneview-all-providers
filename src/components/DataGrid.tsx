@@ -587,28 +587,11 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
         return;
       }
       
-      // This is a single-click - proceed with row selection
+      // Disable row selection - just clear focus
       event.api.setFocusedCell(null, null);
 
-      if (selectedRowId === event.data.id) {
-        if (controlledSelectedRowId === undefined) {
-          setInternalSelectedRowId(null);
-        }
-        if (onRowClicked) {
-          onRowClicked(null);
-        }
-        return;
-      }
-
-      if (controlledSelectedRowId === undefined) {
-        setInternalSelectedRowId(event.data.id);
-      }
-
-      if (onRowClicked && event.data) {
-        // Add gridKey to the row data for proper mapping
-        const rowDataWithGridKey = { ...event.data, gridKey };
-        onRowClicked(rowDataWithGridKey);
-      }
+      // Row selection is completely disabled - no callbacks or state changes
+      // This prevents the side panel from opening when clicking on rows
     }, 200);
   };
 
