@@ -176,7 +176,7 @@ const StateControlledSubstanceLicenseDetailsWide: React.FC<StateControlledSubsta
 
       {/* Additional Info Section */}
       <CollapsibleSection title="Additional Info">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
           {additionalInfoFields.map((field) => (
             <div key={field.key} data-testid={`field-${field.key}`}>
               {renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' })}
