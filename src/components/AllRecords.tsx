@@ -381,6 +381,9 @@ const AllRecords: React.FC = () => {
       const rowWithGridKey = { ...row, gridKey: effectiveGridKey };
       setSidePanelRow(rowWithGridKey);
       setIsSidePanelOpen(true);
+      
+      // Also select the row when opening sidepanel
+      setSelectedRow(rowWithGridKey);
     }
   };
 
