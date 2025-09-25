@@ -435,6 +435,8 @@ const AllRecords: React.FC = () => {
     setDetailModalRow(rowWithGridKey);
     setShowDetailModal(true);
     setIsCreateMode(false);
+    // Keep the row selected when modal opens
+    setSelectedRow(rowWithGridKey);
   };
 
   const handleAddRecord = (gridKey: string) => {
@@ -452,7 +454,10 @@ const AllRecords: React.FC = () => {
     setShowDetailModal(false);
     setDetailModalRow(null);
     setIsCreateMode(false);
-    setSelectedRow(null); // Clear the main selectedRow when modal closes
+    // Keep row selected for 500ms before clearing to show fade effect
+    setTimeout(() => {
+      setSelectedRow(null);
+    }, 500);
   };
 
   const handleRecordCreated = (newRecord: any) => {

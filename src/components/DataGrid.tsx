@@ -823,6 +823,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     const baseStyle = {
       borderBottom: `1px solid ${colorTokens.gray[300]}`,
       backgroundColor: "white",
+      transition: "background-color 0.5s ease-in-out", // Add fade transition
     };
 
     const isRowSelected = selectedRowId === params.data.id;
@@ -845,13 +846,19 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   };
 
   const getRowClass = (params: any) => {
+    const classes = [];
+    
     if (params.node.isSelected()) {
-      return "checkbox-selected";
+      classes.push("checkbox-selected");
     }
     if (selectedRowId === params.data.id) {
-      return "row-selected";
+      classes.push("row-selected");
     }
-    return "";
+    
+    // Add transition class for smooth fade effect
+    classes.push("row-transition");
+    
+    return classes.join(" ");
   };
 
   const computedHeight = typeof height === "number" ? `${height}px` : height;
