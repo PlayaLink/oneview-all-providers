@@ -185,8 +185,6 @@ function GridsSection({
           onClose={handleCloseSidePanel}
           user={user}
           onExpandDetailModal={() => {
-            // Set user preference to show details in modal
-            setLocalStorage(LOCAL_STORAGE_KEYS.SHOW_ROW_DETAILS_IN_MODAL, true);
             setIsSidePanelOpen(false);
             setShowDetailModal(true);
           }}
@@ -503,8 +501,6 @@ const AllRecords: React.FC = () => {
   };
 
   const handleCollapseToSidepanel = () => {
-    // Set user preference to show details in sidepanel
-    setLocalStorage(LOCAL_STORAGE_KEYS.SHOW_ROW_DETAILS_IN_MODAL, false);
     setShowDetailModal(false);
     setIsSidePanelOpen(true);
   };
