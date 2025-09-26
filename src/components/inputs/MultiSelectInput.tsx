@@ -185,7 +185,7 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
         )}
         <div 
           data-testid="multiselect-input-container" 
-          className={cn("flex-1 flex items-center gap-2")}
+          className={cn("flex-1 flex items-start gap-2")}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         > {/* Value UI container */}
@@ -251,6 +251,7 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
               value={validValue.map(item => item.label).join(', ')}
               isHovered={isHovered}
               disabled={disabled}
+              className="mt-1"
               ariaLabel="Copy selected items"
               dataTestId="multiselect-copy-button"
             />
