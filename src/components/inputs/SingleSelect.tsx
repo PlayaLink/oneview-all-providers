@@ -4,6 +4,7 @@ import Icon from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import CopyOnHover from "./CopyOnHover";
 
 export interface SingleSelectOption {
   id: string | number;
@@ -68,9 +69,6 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
   ) => {
     const [open, setOpen] = React.useState(false);
     const [searchValue, setSearchValue] = React.useState("");
-    const [showCopied, setShowCopied] = React.useState(false);
-    const [isHovered, setIsHovered] = React.useState(false);
-    const copiedTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
     // Filter options based on search
     const filteredOptions = React.useMemo(() => {
@@ -101,64 +99,6 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
       }
     };
 
-    const handleCopy = async (e: React.MouseEvent) => {
-      e.stopPropagation();
-      if (!value?.label) return;
-
-      try {
-        // Always use the fallback method in iframe environments to avoid permission issues
-        const textArea = document.createElement("textarea");
-        textArea.value = value.label;
-        textArea.style.position = "fixed";
-        textArea.style.left = "-999999px";
-        textArea.style.top = "-999999px";
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-
-        const successful = document.execCommand("copy");
-        document.body.removeChild(textArea);
-
-        if (!successful) {
-          throw new Error("Failed to copy using fallback method");
-        }
-
-        setShowCopied(true);
-
-        // Clear any existing timeout
-        if (copiedTimeoutRef.current) {
-          clearTimeout(copiedTimeoutRef.current);
-        }
-
-        // Hide tooltip after 2 seconds
-        copiedTimeoutRef.current = setTimeout(() => {
-          setShowCopied(false);
-          copiedTimeoutRef.current = null;
-        }, 2000);
-      } catch (err) {
-        // Error: Failed to copy text
-        // Still show the tooltip even if copy failed, for better UX
-        setShowCopied(true);
-
-        if (copiedTimeoutRef.current) {
-          clearTimeout(copiedTimeoutRef.current);
-        }
-
-        copiedTimeoutRef.current = setTimeout(() => {
-          setShowCopied(false);
-          copiedTimeoutRef.current = null;
-        }, 2000);
-      }
-    };
-
-    // Cleanup timeout on unmount
-    React.useEffect(() => {
-      return () => {
-        if (copiedTimeoutRef.current) {
-          clearTimeout(copiedTimeoutRef.current);
-        }
-      };
-    }, []);
 
     return (
       <div
@@ -196,15 +136,6 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                 disabled && "opacity-50 cursor-not-allowed",
                 open && "ring-1 ring-blue-400",
               )}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => {
-                setIsHovered(false);
-                setShowCopied(false);
-                if (copiedTimeoutRef.current) {
-                  clearTimeout(copiedTimeoutRef.current);
-                  copiedTimeoutRef.current = null;
-                }
-              }}
               aria-label={`Select ${label}`}
               aria-expanded={open}
               aria-haspopup="listbox"
@@ -217,36 +148,12 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                   {value ? value.label : (open ? placeholder : "")}
                 </div>
                 {value && (
-                  <div className="relative flex items-center">
-                    <div
-                      onClick={handleCopy}
-                      className={cn(
-                        "flex w-5 h-5 py-1 justify-center items-center gap-1 rounded hover:bg-gray-50 transition-all disabled:opacity-50 ml-1 cursor-pointer",
-                        isHovered ? "opacity-100" : "opacity-0",
-                        disabled && "opacity-50 cursor-not-allowed"
-                      )}
-                      aria-label={`Copy ${label} selection to clipboard`}
-                      data-testid={`single-select-copy-${label.toLowerCase().replace(/\s+/g, '-')}`}
-                    >
-                      <Icon
-                        icon="copy"
-                        className="text-[14px] text-blue-600"
-                      />
-                    </div>
-                    {/* Tooltip */}
-                    {showCopied && isHovered && (
-                      <div className="absolute -top-[35px] left-1/2 transform -translate-x-1/2 z-50">
-                        <div className="flex py-1 px-3 flex-col justify-end items-center gap-1 rounded border border-gray-200 bg-white shadow-md">
-                          <div className="text-gray-600 text-center text-[10px] font-normal leading-normal tracking-wide font-['Poppins',sans-serif]">
-                            Copied
-                          </div>
-                          {/* Arrow pointing down */}
-                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-1 border-r-1 border-t-2 border-l-transparent border-r-transparent border-t-gray-200" />
-                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-1 border-r-1 border-t-2 border-l-transparent border-r-transparent border-t-white translate-y-[-1px]" />
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  <CopyOnHover 
+                    value={value.label}
+                    className="ml-1"
+                    ariaLabel={`Copy ${label} selection to clipboard`}
+                    dataTestId={`single-select-copy-${label.toLowerCase().replace(/\s+/g, '-')}`}
+                  />
                 )}
               </div>
               <div className="flex-1" />
