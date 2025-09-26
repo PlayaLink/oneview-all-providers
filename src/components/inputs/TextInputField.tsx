@@ -52,6 +52,7 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
   ...rest
 }) => {
   const [focused, setFocused] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   // Only show placeholder when focused
   const showPlaceholder = focused;
@@ -83,6 +84,8 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
       )}
       <div
         className="flex flex-1 items-center h-[38px] relative w-full"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         <input
           type={type}
@@ -105,6 +108,7 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
           <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
             <CopyOnHover 
               value={value}
+              isHovered={isHovered}
               ariaLabel={`Copy ${label || 'value'} to clipboard`}
               dataTestId={`text-input-copy-${label?.toLowerCase().replace(/\s+/g, '-') || 'field'}`}
             />

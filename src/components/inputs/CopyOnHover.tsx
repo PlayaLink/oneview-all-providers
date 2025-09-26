@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 
 interface CopyOnHoverProps {
   value: string;
+  isHovered: boolean;
   className?: string;
   buttonClassName?: string;
   iconClassName?: string;
@@ -16,6 +17,7 @@ interface CopyOnHoverProps {
 
 export const CopyOnHover: React.FC<CopyOnHoverProps> = ({
   value,
+  isHovered,
   className,
   buttonClassName,
   iconClassName,
@@ -25,7 +27,6 @@ export const CopyOnHover: React.FC<CopyOnHoverProps> = ({
   dataTestId,
 }) => {
   const [showCopied, setShowCopied] = React.useState(false);
-  const [isHovered, setIsHovered] = React.useState(false);
   const copiedTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   const handleCopy = async (e: React.MouseEvent) => {
@@ -90,15 +91,6 @@ export const CopyOnHover: React.FC<CopyOnHoverProps> = ({
   return (
     <div 
       className={cn("relative flex items-center", className)}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => {
-        setIsHovered(false);
-        setShowCopied(false);
-        if (copiedTimeoutRef.current) {
-          clearTimeout(copiedTimeoutRef.current);
-          copiedTimeoutRef.current = null;
-        }
-      }}
     >
       <button
         type="button"

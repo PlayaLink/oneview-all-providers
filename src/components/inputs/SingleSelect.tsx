@@ -69,6 +69,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
   ) => {
     const [open, setOpen] = React.useState(false);
     const [searchValue, setSearchValue] = React.useState("");
+    const [isHovered, setIsHovered] = React.useState(false);
 
     // Filter options based on search
     const filteredOptions = React.useMemo(() => {
@@ -136,6 +137,8 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                 disabled && "opacity-50 cursor-not-allowed",
                 open && "ring-1 ring-blue-400",
               )}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
               aria-label={`Select ${label}`}
               aria-expanded={open}
               aria-haspopup="listbox"
@@ -150,6 +153,7 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
                 {value && (
                   <CopyOnHover 
                     value={value.label}
+                    isHovered={isHovered}
                     className="ml-1"
                     ariaLabel={`Copy ${label} selection to clipboard`}
                     dataTestId={`single-select-copy-${label.toLowerCase().replace(/\s+/g, '-')}`}
