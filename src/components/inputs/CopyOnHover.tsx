@@ -1,8 +1,7 @@
 import * as React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import Icon from "../ui/Icon";
 
 interface CopyOnHoverProps {
   value: string;
@@ -115,8 +114,8 @@ export const CopyOnHover: React.FC<CopyOnHoverProps> = ({
               aria-label={ariaLabel}
               data-testid={dataTestId}
             >
-              <FontAwesomeIcon 
-                icon={faCopy} 
+              <Icon 
+                icon={showCopied ? "check" : "copy"} 
                 className={cn("text-[14px] text-blue-600", iconClassName)} 
               />
             </button>
