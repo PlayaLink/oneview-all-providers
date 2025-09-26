@@ -3,6 +3,7 @@ import CollapsibleSection from '../CollapsibleSection';
 import SearchCriteriaSection from './SearchCriteriaSection';
 import { renderFieldComponent } from './getInputType';
 import { extractTitleAcronym, generateProviderName, generateDefaultHeaderText } from '@/lib/utils';
+import { useIsSingleColumn } from '@/hooks/use-is-single-column';
 import { 
   STATE_OPTIONS, 
   LICENSE_TYPE_OPTIONS, 
@@ -153,12 +154,17 @@ const StateControlledSubstanceLicenseDetailsWide: React.FC<StateControlledSubsta
   handleChange,
   provider
 }) => {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const isSingleColumn = useIsSingleColumn(containerRef);
+  const labelPosition = isSingleColumn ? 'left' : 'above';
+
   const searchCriteriaFields = stateControlledSubstanceLicenseWideFieldGroups[0].fields;
   const additionalInfoFields = stateControlledSubstanceLicenseWideFieldGroups[1].fields;
 
   return (
     <div 
-      className="flex flex-col gap-6 self-stretch"
+      ref={containerRef}
+      className="@container flex flex-col gap-6 self-stretch"
       role="main"
       aria-label="State Controlled Substance License Details Wide"
       data-testid="state-controlled-substance-license-details-wide"
@@ -171,15 +177,15 @@ const StateControlledSubstanceLicenseDetailsWide: React.FC<StateControlledSubsta
         handleChange={handleChange}
         provider={provider}
         layout="horizontal"
-        labelPosition="above"
+        labelPosition={labelPosition}
       />
 
       {/* Additional Info Section */}
       <CollapsibleSection title="Additional Info">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+        <div className="grid grid-cols-1 @md:grid-cols-2 @lg:grid-cols-3 @2xl:grid-cols-4 gap-4 w-full">
           {additionalInfoFields.map((field) => (
             <div key={field.key} data-testid={`field-${field.key}`}>
-              {renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' })}
+              {renderFieldComponent({ field, formValues, handleChange, labelPosition })}
             </div>
           ))}
         </div>

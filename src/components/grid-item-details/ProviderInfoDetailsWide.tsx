@@ -348,7 +348,7 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => {
 
     {/* Title, Specialty & Classifications Section */}
     <CollapsibleSection title="Title, Specialty & Classifications">
-      <div className="grid grid-cols-1 @sm:grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4 gap-4 w-full">
+      <div className="grid grid-cols-1 @md:grid-cols-2 @lg:grid-cols-3 @2xl:grid-cols-4 gap-4 w-full">
         {titleSpecialtyFields.map((field) => (
           <React.Fragment key={field.key}>
             {renderFieldComponent({ field, formValues, handleChange, labelPosition })}
@@ -359,7 +359,7 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => {
 
     {/* Contact Info Section */}
     <CollapsibleSection title="Contact Info">
-      <div className="grid grid-cols-1 @sm:grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4 gap-4 w-full">
+      <div className="grid grid-cols-1 @md:grid-cols-2 @lg:grid-cols-3 @2xl:grid-cols-4 gap-4 w-full">
         {contactInfoFields.map((field) => (
           <React.Fragment key={field.key}>
             {renderFieldComponent({ field, formValues, handleChange, labelPosition })}
@@ -370,7 +370,7 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => {
 
     {/* Emergency Contact Section */}
     <CollapsibleSection title="Emergency Contact">
-      <div className="grid grid-cols-1 @sm:grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4 gap-4 w-full">
+      <div className="grid grid-cols-1 @md:grid-cols-2 @lg:grid-cols-3 @2xl:grid-cols-4 gap-4 w-full">
         {emergencyContactFields.map((field) => (
           <React.Fragment key={field.key}>
             {renderFieldComponent({ field, formValues, handleChange, labelPosition })}
@@ -381,7 +381,7 @@ const ProviderInfoDetailsWide = ({ formValues, handleChange }) => {
 
     {/* Identification Section */}
     <CollapsibleSection title="Identification">
-      <div className="grid grid-cols-1 @sm:grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4 gap-4 w-full">
+      <div className="grid grid-cols-1 @md:grid-cols-2 @lg:grid-cols-3 @2xl:grid-cols-4 gap-4 w-full">
         {identificationFields.map((field) => (
           <React.Fragment key={field.key}>
             {renderFieldComponent({ field, formValues, handleChange, labelPosition })}

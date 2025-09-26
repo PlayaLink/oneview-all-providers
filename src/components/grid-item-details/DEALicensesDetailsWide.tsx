@@ -3,6 +3,7 @@ import CollapsibleSection from '../CollapsibleSection';
 import SearchCriteriaSection from './SearchCriteriaSection';
 import { renderFieldComponent } from './getInputType';
 import { extractTitleAcronym, generateProviderName, generateDefaultHeaderText } from '@/lib/utils';
+import { useIsSingleColumn } from '@/hooks/use-is-single-column';
 import { 
   STATE_OPTIONS, 
   STATUS_OPTIONS, 
@@ -185,8 +186,13 @@ const additionalInfoFields = deaLicenseWideFieldGroups[1].fields;
 // 3. Gather the remaining fields for Registered Address
 const registeredAddressFields = deaLicenseWideFieldGroups[2].fields;
 
-const DEALicensesDetailsWide = ({ formValues, handleChange, provider }) => (
-  <div className="flex flex-col gap-6" data-testid="dea-licenses-details-wide" role="main">
+const DEALicensesDetailsWide = ({ formValues, handleChange, provider }) => {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const isSingleColumn = useIsSingleColumn(containerRef);
+  const labelPosition = isSingleColumn ? 'left' : 'above';
+
+  return (
+    <div ref={containerRef} className="@container flex flex-col gap-6" data-testid="dea-licenses-details-wide" role="main">
     {/* Search Criteria Section */}
     <SearchCriteriaSection
       title="Search Criteria"
@@ -195,15 +201,15 @@ const DEALicensesDetailsWide = ({ formValues, handleChange, provider }) => (
       handleChange={handleChange}
       provider={provider}
       layout="horizontal"
-      labelPosition="above"
+      labelPosition={labelPosition}
     />
     
     {/* Additional Info Section */}
     <CollapsibleSection title="Additional Info">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+      <div className="grid grid-cols-1 @md:grid-cols-2 @lg:grid-cols-3 @2xl:grid-cols-4 gap-4 w-full">
         {additionalInfoFields.map((field) => (
           <React.Fragment key={field.key}>
-            {renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' })}
+            {renderFieldComponent({ field, formValues, handleChange, labelPosition })}
           </React.Fragment>
         ))}
       </div>
@@ -211,16 +217,17 @@ const DEALicensesDetailsWide = ({ formValues, handleChange, provider }) => (
 
     {/* Registered Address Section */}
     <CollapsibleSection title="Registered Address">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+      <div className="grid grid-cols-1 @md:grid-cols-2 @lg:grid-cols-3 @2xl:grid-cols-4 gap-4 w-full">
         {registeredAddressFields.map((field) => (
           <React.Fragment key={field.key}>
-            {renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' })}
+            {renderFieldComponent({ field, formValues, handleChange, labelPosition })}
           </React.Fragment>
         ))}
       </div>
     </CollapsibleSection>
   </div>
-);
+  );
+};
 
 // Unified template object for DEA Licenses wide modal
 export const deaLicensesWideTemplate = {

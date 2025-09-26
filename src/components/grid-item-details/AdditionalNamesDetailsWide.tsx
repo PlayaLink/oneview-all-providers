@@ -5,6 +5,7 @@ import { SingleSelect } from '../inputs/SingleSelect';
 import TextInputField from '../inputs/TextInputField';
 import { getInputType, renderFieldComponent } from './getInputType';
 import { extractTitleAcronym, generateProviderName, generateDefaultHeaderText } from '@/lib/utils';
+import { useIsSingleColumn } from '@/hooks/use-is-single-column';
 import { TYPE_OPTIONS, TITLE_OPTIONS, TAG_OPTIONS } from './AdditionalNamesSelectInputOptions';
 
 // Additional Names field group definition for wide modal - Pattern 2: Simple Field List with Grid Layout
@@ -24,20 +25,29 @@ export const additionalNamesWideFieldGroup = {
   ],
 };
 
-const AdditionalNamesDetailsWide = ({ formValues, handleChange }) => (
-  <div 
-    className="grid grid-cols-1 sm:grid-cols-2 gap-4"
-    role="main"
-    aria-label="Additional Names Details Wide"
-    data-testid="additional-names-details-wide"
-  >
-    {additionalNamesWideFieldGroup.fields.map((field) => (
-      <React.Fragment key={field.key}>
-        {renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' })}
-      </React.Fragment>
-    ))}
-  </div>
-);
+const AdditionalNamesDetailsWide = ({ formValues, handleChange }) => {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const isSingleColumn = useIsSingleColumn(containerRef);
+  const labelPosition = isSingleColumn ? 'left' : 'above';
+
+  return (
+    <div 
+      ref={containerRef}
+      className="@container flex flex-col gap-6"
+      role="main"
+      aria-label="Additional Names Details Wide"
+      data-testid="additional-names-details-wide"
+    >
+      <div className="grid grid-cols-1 @md:grid-cols-2 @lg:grid-cols-3 @2xl:grid-cols-4 gap-4 w-full">
+        {additionalNamesWideFieldGroup.fields.map((field) => (
+          <React.Fragment key={field.key}>
+            {renderFieldComponent({ field, formValues, handleChange, labelPosition })}
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 // Unified template object for Additional Names wide modal
 export const additionalNamesWideTemplate = {
