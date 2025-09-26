@@ -145,24 +145,23 @@ export const SingleSelect = React.forwardRef<HTMLDivElement, SingleSelectProps>(
               disabled={disabled}
               data-testid={`single-select-${label.toLowerCase().replace(/\s+/g, '-')}`}
             >
-              {/* Content + Copy button */}
+              {/* Content */}
               <div className="flex items-center gap-1">
                 <div className="text-gray-900 text-xs font-normal leading-normal tracking-wide font-['Poppins',sans-serif]">
                   {value ? value.label : (open ? placeholder : "")}
                 </div>
+              </div>
+              <div className="flex-1" />
+              {/* Copy + X + Caret */}
+              <div className="flex items-center gap-1">
                 {value && (
                   <CopyOnHover 
                     value={value.label}
                     isHovered={isHovered}
-                    className="ml-1"
                     ariaLabel={`Copy ${label} selection to clipboard`}
                     dataTestId={`single-select-copy-${label.toLowerCase().replace(/\s+/g, '-')}`}
                   />
                 )}
-              </div>
-              <div className="flex-1" />
-              {/* X + Caret */}
-              <div className="flex items-center gap-1">
                 {clearable && value && (
                   <div
                     onClick={handleClear}
