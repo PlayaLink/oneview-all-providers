@@ -1,10 +1,10 @@
 import * as React from "react";
-import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Tag } from "../Tag";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { MultiSelectDropdown } from "./MultiSelectDropdown";
+import Icon from "../ui/Icon";
 
 export interface MultiSelectItem {
   id: string | number;
@@ -89,6 +89,9 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
     },
     ref,
   ) => {
+    // Console log the label
+    console.log('MultiSelectInput label:', label);
+    
     // Extra safety: ensure value and options are never undefined
     value = Array.isArray(value) ? value : [];
     options = options ?? [];
@@ -187,7 +190,7 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
               <div
                 ref={containerRef}
                 className={cn(
-                  "flex flex-wrap items-center gap-1 rounded px-2 min-h-[40px] bg-white cursor-pointer relative z-10",
+                  "flex flex-wrap items-center gap-1 rounded px-2 min-h-[40px] bg-white relative z-10",
                   disabled && "opacity-50 cursor-not-allowed",
                   labelPosition === "left" && "min-h-[38px]"
                 )}
@@ -208,19 +211,15 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
                   />
                 ))}
                 {validValue.length === 0 && (
-                  <span className="text-gray-400 text-xs mr-1">{computedAddButtonText}</span>
+                  <span className="text-blue-600 text-xs font-medium">Add</span>
                 )}
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="h-7 w-7 p-0 flex items-center justify-center"
+                <span
+                  className="h-7 w-7 p-0 flex items-center justify-center text-blue-600"
                   tabIndex={-1}
-                  disabled={disabled}
                   aria-label={computedAddButtonText}
                 >
-                  <Plus className="h-4 w-4 text-gray-600 group-hover:text-blue-600 transition-colors duration-150" />
-                </Button>
+                  <Icon icon="plus" className="h-4 w-4" />
+                </span>
               </div>
             </PopoverTrigger>
             <PopoverContent
