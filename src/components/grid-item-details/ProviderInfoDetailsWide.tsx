@@ -2,7 +2,7 @@ import React from 'react';
 import CollapsibleSection from '../CollapsibleSection';
 import { renderFieldComponent } from './getInputType';
 import { generateProviderName, generateDefaultHeaderText } from '@/lib/utils';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { useIsSingleColumn } from '@/hooks/use-is-single-column';
 import {
   PREFIX_OPTIONS,
   SUFFIX_OPTIONS,
@@ -328,8 +328,8 @@ const emergencyContactFields = providerInfoWideFieldGroups[3].fields;
 const identificationFields = providerInfoWideFieldGroups[4].fields;
 
 const ProviderInfoDetailsWide = ({ formValues, handleChange }) => {
-  const isMobile = useIsMobile();
-  const labelPosition = isMobile ? 'left' : 'above';
+  const isSingleColumn = useIsSingleColumn();
+  const labelPosition = isSingleColumn ? 'left' : 'above';
 
   return (
     <div className="flex flex-col gap-6" data-testid="provider-info-details-wide" role="main">
