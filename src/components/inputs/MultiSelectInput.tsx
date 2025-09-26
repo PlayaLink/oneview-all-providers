@@ -183,7 +183,12 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
             labelPosition === "left" && "min-w-[120px] max-w-[120px] break-words whitespace-normal mt-3"
           )}>{label}</label>
         )}
-        <div className={cn("flex-1 flex items-center gap-2")}> {/* Value UI container */}
+        <div 
+          data-testid="multiselect-input-container" 
+          className={cn("flex-1 flex items-center gap-2")}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        > {/* Value UI container */}
           <Popover open={open} onOpenChange={(newOpen) => {
         
             setOpen(newOpen);
@@ -202,8 +207,6 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
                 aria-expanded={open}
                 style={{ width: '100%' }}
                 onClick={() => { if (!disabled) setOpen((prev) => !prev); }}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
               >
                 {/* Only show selected items and their remove buttons if there are selected values */}
                 {validValue.length > 0 && validValue.map((item) => (
