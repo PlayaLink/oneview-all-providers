@@ -2,6 +2,7 @@ import * as React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 
 interface CopyOnHoverProps {
   value: string;
@@ -89,42 +90,38 @@ export const CopyOnHover: React.FC<CopyOnHoverProps> = ({
   }, []);
 
   return (
-    <div 
-      className={cn("relative flex items-center", className)}
-    >
-      <button
-        type="button"
-        onClick={handleCopy}
-        className={cn(
-          "flex w-5 h-5 py-1 justify-center items-center gap-1 rounded hover:bg-gray-50 transition-all",
-          isHovered ? "opacity-100" : "opacity-0",
-          disabled && "opacity-50 cursor-not-allowed",
-          buttonClassName
-        )}
-        tabIndex={-1}
-        disabled={disabled}
-        aria-label={ariaLabel}
-        data-testid={dataTestId}
+    <TooltipProvider>
+      <div 
+        className={cn("relative flex items-center", className)}
       >
-        <FontAwesomeIcon 
-          icon={faCopy} 
-          className={cn("text-[14px] text-blue-600", iconClassName)} 
-        />
-      </button>
-      {/* Tooltip */}
-      {showCopied && isHovered && (
-        <div className={cn("absolute -top-[35px] left-1/2 transform -translate-x-1/2 z-50", tooltipClassName)}>
-          <div className="flex py-1 px-3 flex-col justify-end items-center gap-1 rounded border border-gray-200 bg-white shadow-md">
-            <div className="text-gray-600 text-center text-[10px] font-normal leading-normal tracking-wide font-['Poppins',sans-serif]">
-              Copied
-            </div>
-            {/* Arrow pointing down */}
-            <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-1 border-r-1 border-t-2 border-l-transparent border-r-transparent border-t-gray-200" />
-            <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-1 border-r-1 border-t-2 border-l-transparent border-r-transparent border-t-white translate-y-[-1px]" />
-          </div>
-        </div>
-      )}
-    </div>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              onClick={handleCopy}
+              className={cn(
+                "flex w-5 h-5 py-1 justify-center items-center gap-1 rounded hover:bg-gray-50 transition-all",
+                isHovered ? "opacity-100" : "opacity-0",
+                disabled && "opacity-50 cursor-not-allowed",
+                buttonClassName
+              )}
+              tabIndex={-1}
+              disabled={disabled}
+              aria-label={ariaLabel}
+              data-testid={dataTestId}
+            >
+              <FontAwesomeIcon 
+                icon={faCopy} 
+                className={cn("text-[14px] text-blue-600", iconClassName)} 
+              />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="top" align="center">
+            <p>{showCopied ? "Copied!" : "Copy"}</p>
+          </TooltipContent>
+        </Tooltip>
+      </div>
+    </TooltipProvider>
   );
 };
 
