@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { MultiSelectDropdown } from "./MultiSelectDropdown";
 import Icon from "../ui/Icon";
+import { CopyOnHover } from "./CopyOnHover";
 
 export interface MultiSelectItem {
   id: string | number;
@@ -115,6 +116,7 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
     const containerRef = React.useRef<HTMLDivElement>(null);
     const anchorRef = React.useRef<HTMLButtonElement>(null);
     const [contentWidth, setContentWidth] = React.useState<number | undefined>(undefined);
+    const [isHovered, setIsHovered] = React.useState(false);
 
     const handleSelectionChange = React.useCallback(
       (item: MultiSelectItem, isSelected: boolean) => {
@@ -181,7 +183,7 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
             labelPosition === "left" && "min-w-[120px] max-w-[120px] break-words whitespace-normal mt-3"
           )}>{label}</label>
         )}
-        <div className={cn("flex-1")}> {/* Value UI container */}
+        <div className={cn("flex-1 flex items-center gap-2")}> {/* Value UI container */}
           <Popover open={open} onOpenChange={(newOpen) => {
         
             setOpen(newOpen);
@@ -190,7 +192,7 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
               <div
                 ref={containerRef}
                 className={cn(
-                  "flex flex-wrap items-center gap-1 rounded px-2 min-h-[40px] bg-white relative z-10",
+                  "flex flex-wrap items-center gap-1 rounded px-2 min-h-[40px] bg-white relative z-10 flex-1",
                   disabled && "opacity-50 cursor-not-allowed",
                   labelPosition === "left" && "min-h-[38px]"
                 )}
@@ -200,6 +202,8 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
                 aria-expanded={open}
                 style={{ width: '100%' }}
                 onClick={() => { if (!disabled) setOpen((prev) => !prev); }}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
               >
                 {/* Only show selected items and their remove buttons if there are selected values */}
                 {validValue.length > 0 && validValue.map((item) => (
@@ -238,6 +242,16 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
               />
             </PopoverContent>
           </Popover>
+          {/* CopyOnHover component to the right of the Value UI container - only show if there are values */}
+          {validValue.length > 0 && (
+            <CopyOnHover
+              value={validValue.map(item => item.label).join(', ')}
+              isHovered={isHovered}
+              disabled={disabled}
+              ariaLabel="Copy selected items"
+              dataTestId="multiselect-copy-button"
+            />
+          )}
         </div>
       </div>
     );
