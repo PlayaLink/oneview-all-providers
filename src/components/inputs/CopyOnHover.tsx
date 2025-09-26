@@ -90,7 +90,7 @@ export const CopyOnHover: React.FC<CopyOnHoverProps> = ({
   }, []);
 
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={0}>
       <div 
         className={cn("relative flex items-center", className)}
       >
