@@ -210,16 +210,14 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
                     removable={allowRemove}
                   />
                 ))}
-                {validValue.length === 0 && (
-                  <span className="text-blue-600 text-xs font-medium">Add</span>
-                )}
-                <span
-                  className="h-7 w-7 p-0 flex items-center justify-center text-blue-600"
+                <button
+                  className="py-1 px-2 flex items-center justify-center text-blue-600 hover:bg-blue-50 rounded transition-colors duration-150"
                   tabIndex={-1}
                   aria-label={computedAddButtonText}
                 >
+                  <span className="text-xs font-medium mr-2">Add</span>
                   <Icon icon="plus" className="h-4 w-4" />
-                </span>
+                </button>
               </div>
             </PopoverTrigger>
             <PopoverContent

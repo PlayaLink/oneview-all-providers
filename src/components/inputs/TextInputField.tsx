@@ -1,7 +1,6 @@
 import React, { useState, useRef, InputHTMLAttributes } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
+import CopyOnHover from "./CopyOnHover";
 
 interface TextInputFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange"> {
   label?: string;
@@ -53,9 +52,6 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
   ...rest
 }) => {
   const [focused, setFocused] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const [showCopied, setShowCopied] = useState(false);
-  const copiedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Only show placeholder when focused
   const showPlaceholder = focused;
@@ -75,48 +71,6 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
     }
   };
 
-  const handleCopy = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!value) return;
-    try {
-      const textArea = document.createElement("textarea");
-      textArea.value = value;
-      textArea.style.position = "fixed";
-      textArea.style.left = "-999999px";
-      textArea.style.top = "-999999px";
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textArea);
-      setShowCopied(true);
-      if (copiedTimeoutRef.current) {
-        clearTimeout(copiedTimeoutRef.current);
-      }
-      copiedTimeoutRef.current = setTimeout(() => {
-        setShowCopied(false);
-        copiedTimeoutRef.current = null;
-      }, 2000);
-    } catch (err) {
-      setShowCopied(true);
-      if (copiedTimeoutRef.current) {
-        clearTimeout(copiedTimeoutRef.current);
-      }
-      copiedTimeoutRef.current = setTimeout(() => {
-        setShowCopied(false);
-        copiedTimeoutRef.current = null;
-      }, 2000);
-    }
-  };
-
-  // Cleanup timeout on unmount
-  React.useEffect(() => {
-    return () => {
-      if (copiedTimeoutRef.current) {
-        clearTimeout(copiedTimeoutRef.current);
-      }
-    };
-  }, []);
 
   return (
     <div className={labelPosition === "above" ? `gap-2 flex flex-col items-start ${className}` : `flex items-center ${className}`}>
@@ -129,15 +83,6 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
       )}
       <div
         className="flex flex-1 items-center h-[38px] relative w-full"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => {
-          setIsHovered(false);
-          setShowCopied(false);
-          if (copiedTimeoutRef.current) {
-            clearTimeout(copiedTimeoutRef.current);
-            copiedTimeoutRef.current = null;
-          }
-        }}
       >
         <input
           type={type}
@@ -158,30 +103,11 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
         />
         {value && (
           <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
-            <button
-              type="button"
-              onClick={handleCopy}
-              className={cn(
-                "flex w-5 h-5 py-1 justify-center items-center gap-1 rounded hover:bg-gray-50 transition-all",
-                isHovered ? "opacity-100" : "opacity-0"
-              )}
-              tabIndex={-1}
-            >
-              <FontAwesomeIcon icon={faCopy} className="text-[14px] text-blue-600" />
-            </button>
-            {/* Tooltip */}
-            {showCopied && isHovered && (
-              <div className="absolute -top-[35px] left-1/2 transform -translate-x-1/2 z-50">
-                <div className="flex py-1 px-3 flex-col justify-end items-center gap-1 rounded border border-gray-200 bg-white shadow-md">
-                  <div className="text-gray-600 text-center text-[10px] font-normal leading-normal tracking-wide font-['Poppins',sans-serif]">
-                    Copied
-                  </div>
-                  {/* Arrow pointing down */}
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-1 border-r-1 border-t-2 border-l-transparent border-r-transparent border-t-gray-200" />
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-1 border-r-1 border-t-2 border-l-transparent border-r-transparent border-t-white translate-y-[-1px]" />
-                </div>
-              </div>
-            )}
+            <CopyOnHover 
+              value={value}
+              ariaLabel={`Copy ${label || 'value'} to clipboard`}
+              dataTestId={`text-input-copy-${label?.toLowerCase().replace(/\s+/g, '-') || 'field'}`}
+            />
           </div>
         )}
       </div>
