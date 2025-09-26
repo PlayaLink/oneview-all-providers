@@ -3,6 +3,7 @@ import CollapsibleSection from '../CollapsibleSection';
 import SearchCriteriaSection from './SearchCriteriaSection';
 import { renderFieldComponent } from './getInputType';
 import { generateProviderName, generateDefaultHeaderText, extractTitleAcronym } from '@/lib/utils';
+import { useIsSingleColumn } from '@/hooks/use-is-single-column';
 import { STATE_OPTIONS, LICENSE_TYPE_OPTIONS, STATUS_OPTIONS, YES_NO_OPTIONS, TAG_OPTIONS } from './StateLicenseSelectInputOptions';
 
 // State Licenses fieldGroups definition for wide layout
@@ -153,8 +154,13 @@ const searchCriteriaFields = stateLicenseWideFieldGroups[0].fields;
 const additionalInfoFields = stateLicenseWideFieldGroups[1].fields;
 
 const StateLicenseDetailsWide = ({ formValues, handleChange, provider }) => {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const isSingleColumn = useIsSingleColumn(containerRef);
+  const labelPosition = isSingleColumn ? 'left' : 'above';
+
+
   return (
-    <div className="flex flex-col gap-7">
+    <div ref={containerRef} className="@container flex flex-col gap-7">
       {/* Search Criteria Section */}
       <SearchCriteriaSection
         title="Search Criteria"
@@ -163,15 +169,15 @@ const StateLicenseDetailsWide = ({ formValues, handleChange, provider }) => {
         handleChange={handleChange}
         provider={provider}
         layout="horizontal"
-        labelPosition="above"
+        labelPosition={labelPosition}
       />
 
       {/* Additional Info Section */}
       <CollapsibleSection title="Additional Info">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+        <div className="grid grid-cols-1 @sm:grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4 gap-4 w-full">
           {additionalInfoFields.map((field) => (
             <div key={field.key}>
-              {renderFieldComponent({ field, formValues, handleChange, labelPosition: 'above' })}
+              {renderFieldComponent({ field, formValues, handleChange, labelPosition })}
             </div>
           ))}
         </div>

@@ -54,6 +54,7 @@
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/supabase-js": "^2.51.0",
     "@swc/core": "^1.11.24",
+    "@tailwindcss/container-queries": "^0.1.1",
     "@tanstack/react-query": "^5.81.5",
     "ag-grid-enterprise": "^34.0.1",
     "ag-grid-react": "^34.0.1",

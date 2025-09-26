@@ -18,6 +18,9 @@ export default {
       },
     },
     extend: {
+      gridTemplateColumns: {
+        '3': 'repeat(3, minmax(0, 1fr))',
+      },
       colors: {
         // Legacy semantic colors (maintained for backward compatibility)
         border: "hsl(var(--border))",
@@ -239,5 +242,8 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("@tailwindcss/container-queries"),
+  ],
 } satisfies Config;
