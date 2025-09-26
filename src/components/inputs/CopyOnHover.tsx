@@ -28,6 +28,7 @@ export const CopyOnHover: React.FC<CopyOnHoverProps> = ({
   dataTestId,
 }) => {
   const [showCopied, setShowCopied] = React.useState(false);
+  const [tooltipOpen, setTooltipOpen] = React.useState(false);
   const copiedTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   const handleCopy = async (e: React.MouseEvent) => {
@@ -53,6 +54,7 @@ export const CopyOnHover: React.FC<CopyOnHoverProps> = ({
       }
 
       setShowCopied(true);
+      setTooltipOpen(true);
 
       // Clear any existing timeout
       if (copiedTimeoutRef.current) {
@@ -62,12 +64,14 @@ export const CopyOnHover: React.FC<CopyOnHoverProps> = ({
       // Hide tooltip after 2 seconds
       copiedTimeoutRef.current = setTimeout(() => {
         setShowCopied(false);
+        setTooltipOpen(false);
         copiedTimeoutRef.current = null;
       }, 2000);
     } catch (err) {
       // Error: Failed to copy text
       // Still show the tooltip even if copy failed, for better UX
       setShowCopied(true);
+      setTooltipOpen(true);
 
       if (copiedTimeoutRef.current) {
         clearTimeout(copiedTimeoutRef.current);
@@ -75,6 +79,7 @@ export const CopyOnHover: React.FC<CopyOnHoverProps> = ({
 
       copiedTimeoutRef.current = setTimeout(() => {
         setShowCopied(false);
+        setTooltipOpen(false);
         copiedTimeoutRef.current = null;
       }, 2000);
     }
@@ -94,7 +99,7 @@ export const CopyOnHover: React.FC<CopyOnHoverProps> = ({
       <div 
         className={cn("relative flex items-center", className)}
       >
-        <Tooltip>
+        <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
           <TooltipTrigger asChild>
             <button
               type="button"
