@@ -209,14 +209,18 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
                 onClick={() => { if (!disabled) setOpen((prev) => !prev); }}
               >
                 {/* Only show selected items and their remove buttons if there are selected values */}
-                {validValue.length > 0 && validValue.map((item) => (
-                  <SelectedItemComponent
-                    key={item.id}
-                    item={item}
-                    onRemove={allowRemove ? () => handleRemove(item) : undefined}
-                    removable={allowRemove}
-                  />
-                ))}
+                {validValue.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-1 mt-2">
+                    {validValue.map((item) => (
+                      <SelectedItemComponent
+                        key={item.id}
+                        item={item}
+                        onRemove={allowRemove ? () => handleRemove(item) : undefined}
+                        removable={allowRemove}
+                      />
+                    ))}
+                  </div>
+                )}
                 <button
                   className="py-1 px-2 flex items-center justify-center text-blue-600 hover:bg-blue-50 rounded transition-colors duration-150"
                   tabIndex={-1}
@@ -251,7 +255,7 @@ export const MultiSelectInput = React.forwardRef<HTMLDivElement, MultiSelectInpu
               value={validValue.map(item => item.label).join(', ')}
               isHovered={isHovered}
               disabled={disabled}
-              className="mt-1"
+              className="mt-3"
               ariaLabel="Copy selected items"
               dataTestId="multiselect-copy-button"
             />
